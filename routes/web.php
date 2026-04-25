@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\ArticleManagementController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\EventManagementController;
 use App\Http\Controllers\Admin\FinanceManagementController;
+use App\Http\Controllers\Admin\InformationCenterController;
+use App\Http\Controllers\Admin\NewsletterManagementController;
+use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PermissionManagementController;
 use App\Http\Controllers\Admin\PlanManagementController;
 use App\Http\Controllers\Admin\ProviderManagementController;
@@ -19,6 +22,7 @@ use App\Http\Controllers\Dashboard\VisitorDashboardController;
 use App\Http\Controllers\Editor\ArticleController as EditorArticleController;
 use App\Http\Controllers\Editor\EventController as EditorEventController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\InformationPageController;
 use App\Http\Controllers\Provider\BillingController;
 use App\Http\Controllers\Provider\ProfileController as ProviderProfileController;
 use App\Http\Controllers\Provider\ReviewController as ProviderReviewController;
@@ -28,6 +32,8 @@ use App\Http\Controllers\PublicNewsletterController;
 use App\Http\Controllers\ReviewController;
 use App\Models\AppearanceSlide;
 use App\Models\Event;
+use App\Models\InformationPage;
+use App\Models\Partner;
 use App\Models\Provider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -60,7 +66,21 @@ Route::get('/', function () {
             ->get()
         : collect();
 
-    return view('welcome', compact('homeEvents', 'homeProviders', 'heroSlides'));
+    $homePartners = Schema::hasTable('partners')
+        ? Partner::query()
+            ->where('is_active', true)
+            ->orderByDesc('is_featured')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->limit(12)
+            ->get()
+        : collect();
+
+    $informationPages = Schema::hasTable('information_pages')
+        ? InformationPage::query()->orderBy('sort_order')->orderBy('id')->get()
+        : collect();
+
+    return view('welcome', compact('homeEvents', 'homeProviders', 'heroSlides', 'homePartners', 'informationPages'));
 })->name('home');
 
 Route::post('/contact', [PublicContactController::class, 'store'])
@@ -70,6 +90,14 @@ Route::post('/contact', [PublicContactController::class, 'store'])
 Route::post('/newsletter/subscribe', [PublicNewsletterController::class, 'subscribe'])
     ->name('newsletter.subscribe')
     ->middleware('throttle:10,1');
+
+Route::get('/newsletter/desabonnement/{subscriber}', [PublicNewsletterController::class, 'unsubscribe'])
+    ->middleware(['signed', 'throttle:20,1'])
+    ->name('newsletter.unsubscribe');
+
+// ── CENTRE D'INFORMATION (pages publiques) ────────────────────────────────
+Route::get('/information/{informationPage}', [InformationPageController::class, 'show'])
+    ->name('information.show');
 
 // ── ARTICLES PUBLICS ──────────────────────────────────────────────────────
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
@@ -141,8 +169,29 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/administration/medias/{siteMediaItem}', [AdministrationController::class, 'destroySiteMedia'])->name('administration.media.destroy');
         Route::get('/administration/parametres', [AdministrationController::class, 'settings'])->name('administration.settings');
         Route::put('/administration/parametres', [AdministrationController::class, 'updateSiteSettings'])->name('administration.settings.update');
-        Route::get('/administration/partenaires', [AdministrationController::class, 'partners'])->name('administration.partners');
-        Route::get('/administration/centre-information', [AdministrationController::class, 'infoCenter'])->name('administration.info-center');
+        Route::get('/administration/partenaires', [PartnerController::class, 'index'])->name('administration.partners');
+        Route::get('/administration/partenaires/creer', [PartnerController::class, 'create'])->name('administration.partners.create');
+        Route::post('/administration/partenaires', [PartnerController::class, 'store'])->name('administration.partners.store');
+        Route::get('/administration/partenaires/{partner}/modifier', [PartnerController::class, 'edit'])->name('administration.partners.edit');
+        Route::put('/administration/partenaires/{partner}', [PartnerController::class, 'update'])->name('administration.partners.update');
+        Route::delete('/administration/partenaires/{partner}', [PartnerController::class, 'destroy'])->name('administration.partners.destroy');
+        Route::patch('/administration/partenaires/{partner}/vedette', [PartnerController::class, 'toggleFeatured'])->name('administration.partners.toggle-featured');
+        Route::patch('/administration/partenaires/{partner}/actif', [PartnerController::class, 'toggleActive'])->name('administration.partners.toggle-active');
+        Route::get('/administration/centre-information', [InformationCenterController::class, 'index'])->name('administration.info-center');
+        Route::get('/administration/centre-information/{informationPage}/modifier', [InformationCenterController::class, 'edit'])->name('administration.info-center.edit');
+        Route::put('/administration/centre-information/{informationPage}', [InformationCenterController::class, 'update'])->name('administration.info-center.update');
+
+        Route::get('/newsletter', [NewsletterManagementController::class, 'index'])->name('newsletter.index');
+        Route::get('/newsletter/abonnes/export', [NewsletterManagementController::class, 'exportSubscribers'])
+            ->name('newsletter.subscribers.export');
+        Route::get('/newsletter/abonnes/{subscriber}/message', [NewsletterManagementController::class, 'individualMessageForm'])
+            ->name('newsletter.subscribers.message');
+        Route::post('/newsletter/abonnes/{subscriber}/message', [NewsletterManagementController::class, 'sendIndividual'])
+            ->name('newsletter.subscribers.message.send')
+            ->middleware('throttle:30,60');
+        Route::post('/newsletter/envoyer', [NewsletterManagementController::class, 'send'])
+            ->name('newsletter.send')
+            ->middleware('throttle:6,60');
 
         // Articles
         Route::get('/articles', [ArticleManagementController::class, 'index'])->name('articles.index');

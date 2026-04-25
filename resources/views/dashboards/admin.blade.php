@@ -163,7 +163,7 @@
                 <a href="#" class="flex items-center gap-2 text-slate-400 hover:text-white text-sm transition">
                     <i class="fas fa-circle-check text-emerald-400 w-4"></i> Valider des prestataires
                 </a>
-                <a href="#" class="flex items-center gap-2 text-slate-400 hover:text-white text-sm transition">
+                <a href="{{ route('admin.newsletter.index') }}" class="flex items-center gap-2 text-slate-400 hover:text-white text-sm transition">
                     <i class="fas fa-envelope-open-text text-blue-400 w-4"></i> Envoyer newsletter
                 </a>
             </div>

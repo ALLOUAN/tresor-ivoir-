@@ -5,8 +5,29 @@
 
 @section('content')
 
+@if(session('newsletter_success'))
+    <div class="mb-5 px-4 py-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-200 text-sm rounded-xl flex items-center gap-2">
+        <i class="fas fa-circle-check"></i> {{ session('newsletter_success') }}
+    </div>
+@endif
+@if(session('newsletter_info'))
+    <div class="mb-5 px-4 py-3 bg-slate-800 border border-slate-600 text-slate-200 text-sm rounded-xl flex items-center gap-2">
+        <i class="fas fa-circle-info text-amber-400"></i> {{ session('newsletter_info') }}
+    </div>
+@endif
+@if(session('newsletter_error'))
+    <div class="mb-5 px-4 py-3 bg-rose-900/30 border border-rose-700/40 text-rose-200 text-sm rounded-xl flex items-center gap-2">
+        <i class="fas fa-circle-exclamation"></i> {{ session('newsletter_error') }}
+    </div>
+@endif
+@if($errors->has('newsletter_email'))
+    <div class="mb-5 px-4 py-3 bg-rose-900/30 border border-rose-700/40 text-rose-200 text-sm rounded-xl">
+        {{ $errors->first('newsletter_email') }}
+    </div>
+@endif
+
 {{-- ── Welcome banner ──────────────────────────────────────────────────── --}}
-<div class="bg-gradient-to-r from-amber-900/30 to-slate-900 border border-amber-700/20 rounded-2xl p-6 mb-8 flex items-center gap-5">
+<div class="bg-gradient-to-r from-amber-900/30 to-slate-900 border border-amber-700/20 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-5">
     <div class="w-14 h-14 rounded-2xl bg-amber-500 flex items-center justify-center text-white text-xl font-bold shrink-0">
         {{ auth()->user()->initials }}
     </div>
@@ -21,10 +42,26 @@
         <span class="text-emerald-300 text-xs font-medium">Abonné à la newsletter</span>
     </div>
     @else
-    <a href="#" class="hidden sm:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 py-2 transition">
-        <i class="fas fa-envelope text-amber-400"></i>
-        <span class="text-slate-300 text-xs font-medium">S'abonner à la newsletter</span>
-    </a>
+    <form method="post" action="{{ route('newsletter.subscribe') }}" class="hidden sm:flex items-stretch shrink-0">
+        @csrf
+        <input type="hidden" name="newsletter_email" value="{{ old('newsletter_email', auth()->user()->email) }}">
+        <input type="hidden" name="redirect_to" value="dashboard">
+        <button type="submit" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 py-2 transition text-left">
+            <i class="fas fa-envelope text-amber-400"></i>
+            <span class="text-slate-300 text-xs font-medium">S’abonner avec mon e-mail</span>
+        </button>
+    </form>
+    @endif
+    @if(! $newsletter)
+    <form method="post" action="{{ route('newsletter.subscribe') }}" class="sm:hidden w-full">
+        @csrf
+        <input type="hidden" name="newsletter_email" value="{{ old('newsletter_email', auth()->user()->email) }}">
+        <input type="hidden" name="redirect_to" value="dashboard">
+        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 py-2.5 transition text-sm text-slate-300 font-medium">
+            <i class="fas fa-envelope text-amber-400"></i>
+            S’abonner à la newsletter
+        </button>
+    </form>
     @endif
 </div>
 

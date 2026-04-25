@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Services\RolePermissionMap;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -78,7 +77,7 @@ class UserRoleManagementController extends Controller
 
         $user = User::create([
             'email' => $validated['email'],
-            'password_hash' => Hash::make($validated['password']),
+            'password_hash' => $validated['password'],
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'role' => $validated['role'],

@@ -382,22 +382,4 @@ class AdministrationController extends Controller
 
         return back()->with('success', 'Paramètres enregistrés.');
     }
-
-    public function partners(): View
-    {
-        return view('admin.system.page', [
-            'title' => 'Partenaires',
-            'description' => 'Administrez les partenaires et leurs informations.',
-            'icon' => 'fa-handshake',
-        ]);
-    }
-
-    public function infoCenter(): View
-    {
-        return view('admin.system.page', [
-            'title' => 'Centre d\'information',
-            'description' => 'Pilotez les contenus informatifs du back-office.',
-            'icon' => 'fa-circle-info',
-        ]);
-    }
 }

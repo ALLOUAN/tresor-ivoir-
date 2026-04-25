@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -102,11 +102,195 @@
         ::-webkit-scrollbar-track { background: #0d0d0b; }
         ::-webkit-scrollbar-thumb { background: #e8a020; border-radius: 3px; }
 
+        /* ── Ultra-modern top bar & header (2025) ─────────────── */
+        .font-plus { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
+        #home-top-bar.topbar-ultra {
+            position: relative;
+            isolation: isolate;
+            background: linear-gradient(105deg, #0c0b09 0%, #12100c 42%, #15120e 100%);
+            border-bottom: 1px solid rgba(232, 160, 32, 0.14);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        #home-top-bar.topbar-ultra::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(100% 180% at 0% 0%, rgba(232, 160, 32, 0.11), transparent 52%),
+                radial-gradient(80% 120% at 100% 100%, rgba(120, 90, 40, 0.08), transparent 50%);
+            pointer-events: none;
+        }
+        #home-top-bar.topbar-ultra > * { position: relative; z-index: 1; }
+        .topbar-slogan-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem 0.35rem 0.65rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 0 1px rgba(232,160,32,0.06), 0 4px 24px rgba(0,0,0,0.25);
+        }
+        .topbar-slogan-pill .pulse-dot {
+            width: 6px; height: 6px; border-radius: 9999px;
+            background: linear-gradient(135deg, #f5b942, #e8a020);
+            box-shadow: 0 0 10px rgba(232,160,32,0.75);
+            animation: topbarPulse 2.2s ease-in-out infinite;
+        }
+        @keyframes topbarPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.65; transform: scale(0.92); }
+        }
+        .topbar-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.32rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: rgba(226, 232, 240, 0.88);
+            border: 1px solid rgba(255,255,255,0.07);
+            background: rgba(255,255,255,0.035);
+            backdrop-filter: blur(10px);
+            transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease, box-shadow .2s ease;
+        }
+        .topbar-action:hover {
+            color: #fde68a;
+            border-color: rgba(232,160,32,0.35);
+            background: rgba(232,160,32,0.08);
+            box-shadow: 0 0 20px rgba(232,160,32,0.12);
+            transform: translateY(-1px);
+        }
+        .topbar-action i { opacity: 0.75; }
+
+        #main-header.main-header-ultra:not(.header-scrolled) {
+            background: linear-gradient(180deg, rgba(13,13,11,0.92) 0%, rgba(13,13,11,0.72) 55%, rgba(13,13,11,0.45) 100%);
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        #main-header.main-header-ultra .header-shell {
+            position: relative;
+        }
+        #main-header.main-header-ultra .header-shell::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: min(72%, 640px);
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(232,160,32,0.25), transparent);
+            pointer-events: none;
+        }
+        .nav-pill {
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            color: rgba(226, 232, 240, 0.82);
+            transition: color .2s ease, background .2s ease, box-shadow .2s ease;
+        }
+        .nav-pill:hover {
+            color: #fef3c7;
+            background: rgba(255,255,255,0.06);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .nav-pill-glow::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            width: 0;
+            height: 2px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #c4811a, #f5b942, #e8a020);
+            transform: translateX(-50%);
+            transition: width .28s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(232,160,32,0.45);
+        }
+        .nav-pill-glow:hover::after { width: 70%; }
+        .logo-ring {
+            position: relative;
+            border-radius: 1rem;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.12), rgba(232,160,32,0.25));
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
+        }
+        .logo-ring-inner {
+            border-radius: calc(1rem - 2px);
+            overflow: hidden;
+            background: rgba(13,13,11,0.9);
+        }
+        .lang-switch-ultra {
+            display: inline-flex;
+            padding: 3px;
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .lang-switch-ultra button {
+            border-radius: 9999px;
+            padding: 0.35rem 0.75rem;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+        }
+        .btn-ghost-header {
+            border-radius: 9999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            transition: border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+        }
+        .btn-ghost-header:hover {
+            border-color: rgba(232,160,32,0.35);
+            background: rgba(232,160,32,0.08);
+            color: #fef3c7;
+            box-shadow: 0 0 24px rgba(232,160,32,0.1);
+        }
+        .btn-gold-header {
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #f5b942 0%, #e8a020 50%, #c4811a 100%);
+            box-shadow: 0 4px 20px rgba(232,160,32,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        }
+        .btn-gold-header:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+            box-shadow: 0 8px 28px rgba(232,160,32,0.45), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+        #mobile-menu.mobile-menu-ultra {
+            background: rgba(10,10,9,0.96);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-top: 1px solid rgba(232,160,32,0.12);
+        }
+        #mobile-menu.mobile-menu-ultra a,
+        #mobile-menu.mobile-menu-ultra button {
+            border-radius: 0.75rem;
+            border: 1px solid transparent;
+        }
+        #mobile-menu.mobile-menu-ultra a:hover,
+        #mobile-menu.mobile-menu-ultra button:hover {
+            border-color: rgba(232,160,32,0.2);
+            background: rgba(232,160,32,0.06);
+        }
+
         /* ── Header scroll effect ────────────────────────────── */
         .header-scrolled {
-            background: rgba(13,13,11,.97) !important;
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(232,160,32,.15) !important;
+            background: rgba(8,8,7,.94) !important;
+            backdrop-filter: blur(28px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(232,160,32,.22) !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
         }
 
         /* ── Gold line decoration ────────────────────────────── */
@@ -139,31 +323,51 @@
     $topContact = $siteBrand['contact'] ?? [];
     $topPhoneDisplay = !empty($topContact['phone_1']) ? $topContact['phone_1'] : '+225 27 22 48 36 90';
     $topPhoneHref = 'tel:'.preg_replace('/[^\d+]/', '', $topPhoneDisplay);
+    $infoPages = $informationPages ?? collect();
+    $infoGuide = $infoPages->firstWhere('slug', 'user-guide');
+    $infoFaq = $infoPages->firstWhere('slug', 'faq');
+    $infoLegal = $infoPages->firstWhere('slug', 'legal-notice');
 @endphp
 
 {{-- ══════════════════════════════════════════════════════════
-     TOP BAR
+     TOP BAR (ultra-modern)
 ══════════════════════════════════════════════════════════ --}}
-<div id="home-top-bar" class="bg-dark-800 border-b border-white/5 text-xs text-gray-400 hidden md:block">
-    <div class="max-w-7xl mx-auto px-6">
+<div id="home-top-bar" class="topbar-ultra font-plus text-gray-300 hidden md:block">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @if(session('contact_success') || session('contact_error'))
-            <div class="py-2 text-center text-[11px] font-medium border-b border-white/5 {{ session('contact_success') ? 'text-emerald-400/90' : 'text-red-400/90' }}">
+            <div class="py-2.5 text-center text-[11px] font-semibold tracking-wide border-b border-white/[0.06] {{ session('contact_success') ? 'text-emerald-400/95' : 'text-red-400/95' }}">
                 {{ session('contact_success') ?? session('contact_error') }}
             </div>
         @endif
-        <div class="py-2 flex items-center justify-between">
-        <span class="tracking-widest uppercase font-elegant text-gold-400/70 text-[11px]">
-            {{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}
-        </span>
-        <div class="flex items-center gap-6">
-            <a href="{{ $topPhoneHref }}" class="flex items-center gap-1.5 hover:text-gold-400 transition">
-                <i class="fas fa-phone text-gold-500/60 text-[10px]"></i>
-                {{ $topPhoneDisplay }}
-            </a>
-            <button type="button" onclick="openContactModal()" class="hover:text-gold-400 transition text-left">Contact</button>
-            <a href="#" class="hover:text-gold-400 transition">Guide d'utilisation</a>
-            <a href="#" class="hover:text-gold-400 transition">FAQ</a>
-        </div>
+        <div class="py-2.5 flex flex-wrap items-center justify-between gap-y-2 gap-x-4 min-h-[2.5rem]">
+            <div class="topbar-slogan-pill">
+                <span class="pulse-dot shrink-0" aria-hidden="true"></span>
+                <span class="text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] uppercase text-gold-200/90">
+                    {{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}
+                </span>
+            </div>
+            <div class="flex flex-wrap items-center justify-end gap-2 sm:gap-2.5">
+                <a href="{{ $topPhoneHref }}" class="topbar-action">
+                    <i class="fas fa-phone-volume text-[10px] text-gold-400/90"></i>
+                    <span>{{ $topPhoneDisplay }}</span>
+                </a>
+                <button type="button" onclick="openContactModal()" class="topbar-action cursor-pointer">
+                    <i class="fas fa-message text-[10px] text-gold-400/90"></i>
+                    Contact
+                </button>
+                @if($infoGuide)
+                <a href="{{ route('information.show', $infoGuide) }}" class="topbar-action">
+                    <i class="fas fa-book-open text-[10px] text-gold-400/90"></i>
+                    Guide
+                </a>
+                @endif
+                @if($infoFaq)
+                <a href="{{ route('information.show', $infoFaq) }}" class="topbar-action">
+                    <i class="fas fa-circle-question text-[10px] text-gold-400/90"></i>
+                    FAQ
+                </a>
+                @endif
+            </div>
         </div>
     </div>
 </div>
@@ -177,30 +381,38 @@
      HEADER
 ══════════════════════════════════════════════════════════ --}}
 <header id="main-header"
-    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent"
+    class="main-header-ultra font-plus fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out"
     style="top: 0"
     x-data>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between gap-6">
+    <div class="header-shell max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[4.25rem] md:h-[5.25rem] flex items-center justify-between gap-4 md:gap-8">
 
         {{-- Logo --}}
-        <a href="/" class="flex items-center gap-3 shrink-0">
+        <a href="/" class="flex items-center gap-3 sm:gap-3.5 shrink-0 group">
             @if(!empty($siteBrand['logo_url']))
-                <div class="w-9 h-9 md:w-11 md:h-11 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shadow-lg overflow-hidden p-0.5">
-                    <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
+                <div class="logo-ring shrink-0">
+                    <div class="logo-ring-inner w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] flex items-center justify-center">
+                        <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain p-0.5">
+                    </div>
                 </div>
             @else
-                <div class="w-9 h-9 md:w-11 md:h-11 rounded-lg bg-gold-500 flex items-center justify-center shadow-lg">
-                    <i class="fas fa-gem text-dark-900 text-sm md:text-base"></i>
+                <div class="logo-ring shrink-0">
+                    <div class="logo-ring-inner w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] flex items-center justify-center bg-linear-to-br from-gold-400 to-gold-600">
+                        <i class="fas fa-gem text-dark-900 text-sm md:text-base drop-shadow-sm"></i>
+                    </div>
                 </div>
             @endif
             <div class="hidden sm:block min-w-0">
-                <p class="text-gold-400 font-serif font-bold text-base md:text-lg leading-tight tracking-wide truncate">{{ $siteBrand['site_name'] }}</p>
-                <p class="text-gray-500 text-[10px] tracking-widest uppercase truncate">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
+                <p class="text-transparent bg-clip-text bg-linear-to-r from-gold-200 via-gold-400 to-amber-200 font-serif font-bold text-base md:text-lg leading-tight tracking-tight truncate group-hover:from-gold-100 group-hover:to-gold-300 transition-all duration-300">
+                    {{ $siteBrand['site_name'] }}
+                </p>
+                <p class="text-gray-500 group-hover:text-gray-400 text-[9px] md:text-[10px] tracking-[0.22em] uppercase truncate font-plus font-medium mt-0.5 transition-colors">
+                    {{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}
+                </p>
             </div>
         </a>
 
         {{-- Nav desktop --}}
-        <nav class="hidden lg:flex items-center gap-1">
+        <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1">
             @php $navItems = [
                 ['label' => 'Accueil',              'href' => '/'],
                 ['label' => 'Articles',             'href' => '#articles'],
@@ -210,65 +422,63 @@
             ]; @endphp
             @foreach($navItems as $item)
             <a href="{{ $item['href'] }}"
-               class="px-3 xl:px-4 py-2 text-sm text-gray-300 hover:text-gold-400 transition font-medium tracking-wide relative group">
+               class="nav-pill nav-pill-glow whitespace-nowrap">
                 {{ $item['label'] }}
-                <span class="absolute bottom-0 left-1/2 -translate-x-1/2 h-px w-0 bg-gold-400 group-hover:w-4/5 transition-all duration-300"></span>
             </a>
             @endforeach
             <button type="button" onclick="openContactModal()"
-                class="px-3 xl:px-4 py-2 text-sm text-gray-300 hover:text-gold-400 transition font-medium tracking-wide relative group">
+                class="nav-pill nav-pill-glow cursor-pointer whitespace-nowrap">
                 Contact
-                <span class="absolute bottom-0 left-1/2 -translate-x-1/2 h-px w-0 bg-gold-400 group-hover:w-4/5 transition-all duration-300"></span>
             </button>
         </nav>
 
         {{-- Right actions --}}
-        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-            {{-- Language --}}
-            <div class="hidden sm:flex items-center rounded-full border border-white/10 overflow-hidden text-xs font-semibold">
-                <button class="px-3 py-1.5 bg-gold-500 text-dark-900">FR</button>
-                <button class="px-3 py-1.5 text-gray-400 hover:text-white transition">EN</button>
+        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <div class="lang-switch-ultra hidden sm:inline-flex">
+                <button type="button" class="bg-gold-500 text-dark-900 shadow-sm">FR</button>
+                <button type="button" class="text-gray-400 hover:text-white">EN</button>
             </div>
 
             @auth
             <a href="{{ route('dashboard') }}"
-               class="hidden sm:inline-flex items-center gap-2 px-4 py-2 border border-gold-500/40 hover:border-gold-400 text-gold-400 text-sm font-medium rounded-lg transition">
-                <i class="fas fa-gauge-high text-xs"></i> Dashboard
+               class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gold-200 btn-ghost-header">
+                <i class="fas fa-gauge-high text-xs opacity-80"></i>
+                <span>Dashboard</span>
             </a>
             @else
             <a href="{{ route('login') }}"
-               class="hidden sm:inline-flex items-center gap-2 px-4 py-2 border border-white/15 hover:border-gold-400/40 text-gray-300 hover:text-white text-sm font-medium rounded-lg transition">
+               class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-200 btn-ghost-header">
                 Connexion
             </a>
-            <a href="#"
-               class="inline-flex items-center gap-1.5 px-3 sm:px-5 py-2 bg-gold-500 hover:bg-gold-400 text-dark-900 text-sm font-semibold rounded-lg transition shadow-lg shadow-gold-500/20">
-                <i class="fas fa-gem text-xs hidden sm:inline"></i> S'abonner
+            <a href="#newsletter-footer"
+               class="inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 text-dark-900 text-xs sm:text-sm font-bold btn-gold-header">
+                <i class="fas fa-star text-[10px] sm:text-xs opacity-90 hidden sm:inline"></i>
+                <span>S’abonner</span>
             </a>
             @endauth
 
-            {{-- Mobile hamburger --}}
-            <button id="menu-toggle" onclick="document.getElementById('mobile-menu').classList.toggle('open')"
-                class="lg:hidden w-9 h-9 flex items-center justify-center border border-white/10 rounded-lg text-gray-300 hover:text-white transition">
-                <i class="fas fa-bars"></i>
+            <button id="menu-toggle" type="button" onclick="document.getElementById('mobile-menu').classList.toggle('open')"
+                class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-gray-200 hover:text-white hover:border-gold-500/30 hover:bg-gold-500/5 transition">
+                <i class="fas fa-bars-staggered text-sm"></i>
             </button>
         </div>
     </div>
 
     {{-- Mobile menu --}}
-    <div id="mobile-menu" class="lg:hidden bg-dark-800/98 backdrop-blur border-t border-white/5">
-        <div class="px-4 py-4 space-y-1">
+    <div id="mobile-menu" class="mobile-menu-ultra lg:hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-1.5 font-plus">
             @foreach($navItems as $item)
-            <a href="{{ $item['href'] }}" class="block px-4 py-2.5 text-gray-300 hover:text-gold-400 hover:bg-white/5 rounded-lg text-sm transition">
+            <a href="{{ $item['href'] }}" class="block px-4 py-3 text-gray-200 font-medium text-sm tracking-wide">
                 {{ $item['label'] }}
             </a>
             @endforeach
             <button type="button" onclick="openContactModal(); document.getElementById('mobile-menu').classList.remove('open')"
-                class="w-full text-left block px-4 py-2.5 text-gray-300 hover:text-gold-400 hover:bg-white/5 rounded-lg text-sm transition">
+                class="w-full text-left block px-4 py-3 text-gray-200 font-medium text-sm tracking-wide">
                 Contact
             </button>
-            <div class="pt-3 border-t border-white/5 flex gap-2">
-                <a href="{{ route('login') }}" class="flex-1 text-center py-2 border border-white/15 text-gray-300 text-sm rounded-lg">Connexion</a>
-                <a href="#" class="flex-1 text-center py-2 bg-gold-500 text-dark-900 text-sm font-semibold rounded-lg">S'abonner</a>
+            <div class="pt-4 mt-2 border-t border-white/10 flex flex-col gap-2">
+                <a href="{{ route('login') }}" class="text-center py-3 text-sm font-semibold text-gray-200 btn-ghost-header">Connexion</a>
+                <a href="#newsletter-footer" class="text-center py-3 text-sm font-bold text-dark-900 btn-gold-header">S’abonner à la newsletter</a>
             </div>
         </div>
     </div>
@@ -761,6 +971,61 @@
 </section>
 
 {{-- ══════════════════════════════════════════════════════════
+     SECTION : PARTENAIRES
+══════════════════════════════════════════════════════════ --}}
+<section id="partenaires" class="py-16 sm:py-24 bg-dark-900 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-14 reveal">
+            <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Ils nous font confiance</p>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4 leading-snug text-white">
+                Nos partenaires
+            </h2>
+            <p class="text-gray-400 font-elegant text-lg font-light leading-relaxed">
+                Institutions, entreprises et organisations qui soutiennent la mise en valeur du patrimoine et du tourisme ivoirien.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            @forelse(($homePartners ?? collect()) as $partner)
+                @php $ptype = $partner->typeEnum(); @endphp
+                <article class="reveal bg-dark-800/80 border border-white/8 rounded-2xl p-5 sm:p-6 flex flex-col items-center text-center hover:border-gold-500/25 hover:bg-dark-800 transition-all duration-300 group">
+                    @if($partner->logo_url)
+                        <div class="w-full max-w-[140px] h-20 sm:h-24 mb-4 flex items-center justify-center mx-auto">
+                            @if($partner->website_url)
+                                <a href="{{ $partner->website_url }}" target="_blank" rel="noopener noreferrer" class="flex h-full w-full items-center justify-center">
+                                    <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="max-h-full max-w-full object-contain opacity-90 group-hover:opacity-100 transition">
+                                </a>
+                            @else
+                                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="max-h-full max-w-full object-contain opacity-90 group-hover:opacity-100 transition">
+                            @endif
+                        </div>
+                    @else
+                        <div class="w-14 h-14 rounded-xl bg-dark-700 border border-white/10 flex items-center justify-center mb-4 group-hover:border-gold-500/30 transition">
+                            <i class="fas fa-handshake text-gold-400/70 text-xl"></i>
+                        </div>
+                    @endif
+                    <h3 class="font-serif text-sm sm:text-base font-semibold text-white leading-snug line-clamp-2 mb-1">{{ $partner->name }}</h3>
+                    @if($ptype)
+                        <span class="text-[10px] sm:text-xs text-gold-400/80 uppercase tracking-wider mb-3">{{ $ptype->label() }}</span>
+                    @endif
+                    @if($partner->website_url)
+                        <a href="{{ $partner->website_url }}" target="_blank" rel="noopener noreferrer"
+                            class="mt-auto inline-flex items-center gap-1.5 text-xs text-gold-400 hover:text-gold-300 font-medium transition">
+                            <span>Visiter le site</span>
+                            <i class="fas fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    @endif
+                </article>
+            @empty
+                <div class="col-span-full text-center text-gray-500 text-sm py-8 rounded-2xl border border-dashed border-white/10 bg-dark-800/40">
+                    Les logos de nos partenaires seront affichés ici dès leur publication dans l’administration.
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════════════════════ --}}
 <footer class="bg-dark-800 border-t border-white/5">
@@ -901,9 +1166,13 @@
             <div>
                 <h4 class="text-white font-semibold text-sm mb-4">Contact</h4>
                 <ul class="space-y-2.5 text-sm text-gray-500 mb-5">
-                    @foreach(['À propos', 'Guide d\'utilisation', 'FAQ', 'Mentions légales', 'Politique de confidentialité'] as $l)
-                    <li><a href="#" class="hover:text-gold-400 transition">{{ $l }}</a></li>
-                    @endforeach
+                    @forelse($infoPages as $infoPage)
+                    <li>
+                        <a href="{{ route('information.show', $infoPage) }}" class="hover:text-gold-400 transition">{{ $infoPage->title_fr }}</a>
+                    </li>
+                    @empty
+                    <li class="text-gray-600 italic text-xs">Pages d’information à configurer dans l’administration.</li>
+                    @endforelse
                 </ul>
                 <div class="space-y-3 text-xs text-gray-500">
                     @if(!empty($c['phone_1']))
@@ -963,8 +1232,12 @@
         <div class="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
             <p>&copy; {{ date('Y') }} {{ $siteBrand['site_name'] }} — Tous droits réservés</p>
             <div class="flex items-center gap-4">
-                <a href="#" class="hover:text-gray-400 transition">Mentions légales</a>
-                <a href="#" class="hover:text-gray-400 transition">CGU</a>
+                @if($infoLegal)
+                <a href="{{ route('information.show', $infoLegal) }}" class="hover:text-gray-400 transition">Mentions légales</a>
+                @endif
+                @if($infoGuide)
+                <a href="{{ route('information.show', $infoGuide) }}" class="hover:text-gray-400 transition">CGU</a>
+                @endif
                 <a href="{{ route('login') }}" class="hover:text-gold-400 transition flex items-center gap-1">
                     <i class="fas fa-lock text-[10px]"></i>Espace membres
                 </a>

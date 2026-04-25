@@ -12,11 +12,123 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         [x-cloak] { display: none !important; }
-        .sidebar-link { @apply flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition text-sm; }
-        .sidebar-link.active { @apply bg-amber-500/10 text-amber-400 font-medium; }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            transition: color 0.15s ease, background 0.15s ease;
+        }
+        .sidebar-link:hover { background: #1e293b; color: #fff; }
+        .sidebar-link.active {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            font-weight: 500;
+        }
+        /* ——— Sidebar administrateur ——— */
+        .admin-sidebar {
+            width: 18rem;
+            background: linear-gradient(165deg, #0f172a 0%, #020617 55%, #0c1222 100%);
+            border-right: 1px solid rgba(245, 158, 11, 0.12);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+        }
+        .admin-sidebar-brand {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, transparent 55%);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .admin-sidebar .nav-section-title {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #64748b;
+            padding: 1rem 0.75rem 0.4rem;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .admin-sidebar .nav-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(100, 116, 139, 0.45), transparent);
+        }
+        .admin-sidebar .nav-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.45rem 0.65rem 0.45rem 0.5rem;
+            border-radius: 0.75rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+            margin-bottom: 1px;
+        }
+        .admin-sidebar .nav-row:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #f1f5f9;
+        }
+        .admin-sidebar .nav-row.is-active {
+            font-weight: 600;
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0.02) 100%);
+            color: #fde68a;
+            box-shadow: inset 3px 0 0 #f59e0b;
+        }
+        .admin-sidebar .nav-row-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.55rem;
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(71, 85, 105, 0.35);
+            flex-shrink: 0;
+            font-size: 0.8rem;
+            transition: inherit;
+        }
+        .admin-sidebar .nav-row:hover .nav-row-icon {
+            background: rgba(51, 65, 85, 0.95);
+            border-color: rgba(100, 116, 139, 0.45);
+            color: #e2e8f0;
+        }
+        .admin-sidebar .nav-row.is-active .nav-row-icon {
+            background: rgba(245, 158, 11, 0.18);
+            border-color: rgba(245, 158, 11, 0.35);
+            color: #fbbf24;
+        }
+        .admin-sidebar .nav-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(245, 158, 11, 0.35) transparent;
+        }
+        .admin-sidebar .role-pill {
+            background: linear-gradient(135deg, rgba(190, 18, 60, 0.35), rgba(136, 19, 55, 0.25));
+            border: 1px solid rgba(251, 113, 133, 0.25);
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.12);
+        }
+        .admin-sidebar-footer {
+            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.9));
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .admin-sidebar .user-card {
+            border-radius: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            background: rgba(30, 41, 59, 0.55);
+            border: 1px solid rgba(71, 85, 105, 0.35);
+        }
+        .admin-sidebar .user-avatar {
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
     </style>
 </head>
 <body class="h-full bg-slate-950 text-white flex">
+    @php $role = auth()->user()->role; @endphp
     @if(session('success'))
         <div id="success-toast"
              class="fixed top-4 right-4 z-[80] max-w-sm w-[calc(100%-2rem)] sm:w-auto px-4 py-3 rounded-lg border border-emerald-400/40 bg-emerald-500/15 text-emerald-200 shadow-2xl shadow-emerald-900/30 flex items-start gap-2 transition-opacity duration-300">
@@ -27,30 +139,30 @@
 
     {{-- ══════════════ SIDEBAR ══════════════ --}}
     <aside id="sidebar"
-        class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        class="fixed inset-y-0 left-0 z-50 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300
+            {{ $role === 'admin' ? 'admin-sidebar' : 'w-64 bg-slate-900 border-r border-slate-800' }}">
 
         {{-- Brand --}}
-        <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-800">
+        <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-800 {{ $role === 'admin' ? 'admin-sidebar-brand !border-b-0' : '' }}">
             @if(!empty($siteBrand['logo_url']))
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-white/5 border border-slate-700 shrink-0 overflow-hidden p-0.5">
+                <div class="flex items-center justify-center {{ $role === 'admin' ? 'w-10 h-10 rounded-xl' : 'w-9 h-9 rounded-lg' }} bg-white/5 border border-slate-700 shrink-0 overflow-hidden p-0.5">
                     <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
                 </div>
             @else
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-amber-500 shrink-0">
-                    <i class="fas fa-gem text-white text-base"></i>
+                <div class="flex items-center justify-center {{ $role === 'admin' ? 'w-10 h-10 rounded-xl shadow-lg shadow-amber-900/40' : 'w-9 h-9 rounded-lg' }} bg-gradient-to-br from-amber-400 to-amber-600 shrink-0">
+                    <i class="fas fa-gem text-white {{ $role === 'admin' ? 'text-lg' : 'text-base' }}"></i>
                 </div>
             @endif
             <div class="min-w-0">
-                <p class="text-amber-400 font-bold text-sm leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
-                <p class="text-slate-500 text-xs truncate">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
+                <p class="text-amber-400 font-bold {{ $role === 'admin' ? 'text-[0.95rem] tracking-tight' : 'text-sm' }} leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
+                <p class="text-slate-500 {{ $role === 'admin' ? 'text-[11px]' : 'text-xs' }} truncate">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
             </div>
         </div>
 
         {{-- Role badge --}}
-        <div class="px-5 py-3 border-b border-slate-800">
-            @php $role = auth()->user()->role; @endphp
+        <div class="px-5 py-3 border-b border-slate-800 {{ $role === 'admin' ? '!border-slate-700/50' : '' }}">
             <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full
-                {{ $role === 'admin'    ? 'bg-rose-900/50 text-rose-300'    :
+                {{ $role === 'admin'    ? 'role-pill text-rose-100' :
                   ($role === 'editor'   ? 'bg-blue-900/50 text-blue-300'    :
                   ($role === 'provider' ? 'bg-violet-900/50 text-violet-300' :
                                          'bg-emerald-900/50 text-emerald-300')) }}">
@@ -65,87 +177,107 @@
         </div>
 
         {{-- Navigation --}}
-        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5 {{ $role === 'admin' ? 'nav-scroll' : '' }}">
 
             @if($role === 'admin')
-                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Administration</p>
+                <p class="nav-section-title"><span>Général</span></p>
                 <a href="{{ route('admin.dashboard') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-gauge-high w-4 text-center"></i> Tableau de bord
+                   class="nav-row {{ request()->routeIs('admin.dashboard') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-gauge-high"></i></span>
+                    <span>Tableau de bord</span>
                 </a>
                 <a href="{{ route('admin.users.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <i class="fas fa-users w-4 text-center"></i> Utilisateurs
+                   class="nav-row {{ request()->routeIs('admin.users.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-users"></i></span>
+                    <span>Utilisateurs</span>
                 </a>
                 <a href="{{ route('admin.providers.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.providers.*') ? 'active' : '' }}">
-                    <i class="fas fa-store w-4 text-center"></i> Prestataires
+                   class="nav-row {{ request()->routeIs('admin.providers.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-store"></i></span>
+                    <span>Prestataires</span>
                 </a>
                 <a href="{{ route('admin.articles.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.articles.*') ? 'active' : '' }}">
-                    <i class="fas fa-newspaper w-4 text-center"></i> Articles
+                   class="nav-row {{ request()->routeIs('admin.articles.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-newspaper"></i></span>
+                    <span>Articles</span>
                 </a>
                 <a href="{{ route('admin.events.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-days w-4 text-center"></i> Événements
+                   class="nav-row {{ request()->routeIs('admin.events.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-calendar-days"></i></span>
+                    <span>Événements</span>
                 </a>
                 <a href="{{ route('admin.reviews.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
-                    <i class="fas fa-star w-4 text-center"></i> Avis
+                   class="nav-row {{ request()->routeIs('admin.reviews.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-star"></i></span>
+                    <span>Avis</span>
                 </a>
-                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Bouton Administration</p>
+                <p class="nav-section-title"><span>Site &amp; maintenance</span></p>
                 <a href="{{ route('admin.administration.maintenance') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.administration.maintenance') ? 'active' : '' }}">
-                    <i class="fas fa-screwdriver-wrench w-4 text-center"></i> Maintenance
+                   class="nav-row {{ request()->routeIs('admin.administration.maintenance') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-screwdriver-wrench"></i></span>
+                    <span>Maintenance</span>
                 </a>
                 <a href="{{ route('admin.administration.appearance') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.administration.appearance', 'admin.administration.social', 'admin.administration.media') ? 'active' : '' }}">
-                    <i class="fas fa-palette w-4 text-center"></i> Apparence
+                   class="nav-row {{ request()->routeIs('admin.administration.appearance', 'admin.administration.social', 'admin.administration.media') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-palette"></i></span>
+                    <span>Apparence</span>
                 </a>
                 <a href="{{ route('admin.administration.contact-messages.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.administration.contacts*', 'admin.administration.contact-messages*') ? 'active' : '' }}">
-                    <i class="fas fa-address-book w-4 text-center"></i> Contacts
+                   class="nav-row {{ request()->routeIs('admin.administration.contacts*', 'admin.administration.contact-messages*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-address-book"></i></span>
+                    <span>Contacts</span>
                 </a>
                 <a href="{{ route('admin.administration.settings') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.administration.settings*') ? 'active' : '' }}">
-                    <i class="fas fa-gear w-4 text-center"></i> Paramètres
+                   class="nav-row {{ request()->routeIs('admin.administration.settings*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-gear"></i></span>
+                    <span>Paramètres</span>
                 </a>
                 <a href="{{ route('admin.administration.partners') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.administration.partners') ? 'active' : '' }}">
-                    <i class="fas fa-handshake w-4 text-center"></i> Partenaires
+                   class="nav-row {{ request()->routeIs('admin.administration.partners*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-handshake"></i></span>
+                    <span>Partenaires</span>
                 </a>
                 <a href="{{ route('admin.administration.info-center') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.administration.info-center') ? 'active' : '' }}">
-                    <i class="fas fa-circle-info w-4 text-center"></i> Centre d'information
+                   class="nav-row {{ request()->routeIs('admin.administration.info-center*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-circle-info"></i></span>
+                    <span>Centre d'information</span>
                 </a>
-                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Finance</p>
+                <p class="nav-section-title"><span>Finance</span></p>
                 <a href="{{ route('admin.plans.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.plans.*') || request()->routeIs('admin.promo-codes.*') ? 'active' : '' }}">
-                    <i class="fas fa-gem w-4 text-center"></i> Forfaits
+                   class="nav-row {{ request()->routeIs('admin.plans.*') || request()->routeIs('admin.promo-codes.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-gem"></i></span>
+                    <span>Forfaits</span>
                 </a>
                 <a href="{{ route('admin.payments.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
-                    <i class="fas fa-credit-card w-4 text-center"></i> Paiements
+                   class="nav-row {{ request()->routeIs('admin.payments.index', 'admin.payments.show') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-credit-card"></i></span>
+                    <span>Paiements</span>
                 </a>
                 <a href="{{ route('admin.subscriptions.index') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.subscriptions.*') ? 'active' : '' }}">
-                    <i class="fas fa-file-invoice w-4 text-center"></i> Abonnements
+                   class="nav-row {{ request()->routeIs('admin.subscriptions.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-file-invoice"></i></span>
+                    <span>Abonnements</span>
                 </a>
                 <a href="{{ route('admin.payments.settings') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.payments.settings*') ? 'active' : '' }}">
-                    <i class="fas fa-sliders w-4 text-center"></i> Config paiement
+                   class="nav-row {{ request()->routeIs('admin.payments.settings*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-sliders"></i></span>
+                    <span>Config paiement</span>
                 </a>
-                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Contenu</p>
-                <a href="#" class="sidebar-link">
-                    <i class="fas fa-envelope-open-text w-4 text-center"></i> Newsletter
+                <p class="nav-section-title"><span>Contenu</span></p>
+                <a href="{{ route('admin.newsletter.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.newsletter.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-envelope-open-text"></i></span>
+                    <span>Newsletter</span>
                 </a>
-                <a href="#" class="sidebar-link">
-                    <i class="fas fa-tags w-4 text-center"></i> Catégories &amp; Tags
+                <a href="#" class="nav-row opacity-70 hover:opacity-100">
+                    <span class="nav-row-icon"><i class="fas fa-tags"></i></span>
+                    <span>Catégories &amp; tags</span>
                 </a>
-                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Sécurité</p>
+                <p class="nav-section-title"><span>Sécurité</span></p>
                 <a href="{{ route('admin.permissions') }}"
-                   class="sidebar-link {{ request()->routeIs('admin.permissions') ? 'active' : '' }}">
-                    <i class="fas fa-key w-4 text-center"></i> Rôles &amp; Permissions
+                   class="nav-row {{ request()->routeIs('admin.permissions') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-key"></i></span>
+                    <span>Rôles &amp; permissions</span>
                 </a>
 
             @elseif($role === 'editor')
@@ -222,9 +354,9 @@
         </nav>
 
         {{-- User footer --}}
-        <div class="border-t border-slate-800 p-4">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+        <div class="border-t border-slate-800 p-4 {{ $role === 'admin' ? 'admin-sidebar-footer' : '' }}">
+            <div class="flex items-center gap-3 {{ $role === 'admin' ? 'user-card' : '' }}">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xs font-bold shrink-0 {{ $role === 'admin' ? 'user-avatar' : '' }}">
                     {{ auth()->user()->initials }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -234,7 +366,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" title="Déconnexion"
-                        class="text-slate-500 hover:text-red-400 transition text-sm">
+                        class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 hover:bg-red-500/15 hover:text-red-400 transition text-sm {{ $role === 'admin' ? 'border border-slate-700/60 hover:border-red-500/30' : '' }}">
                         <i class="fas fa-right-from-bracket"></i>
                     </button>
                 </form>
@@ -248,7 +380,7 @@
         onclick="toggleSidebar()"></div>
 
     {{-- ══════════════ MAIN ══════════════ --}}
-    <div class="flex-1 flex flex-col min-h-screen lg:ml-64">
+    <div class="flex-1 flex flex-col min-h-screen {{ $role === 'admin' ? 'lg:ml-[18rem]' : 'lg:ml-64' }}">
 
         {{-- Top bar --}}
         <header class="sticky top-0 z-30 bg-slate-900/80 backdrop-blur border-b border-slate-800 flex items-center justify-between px-4 sm:px-6 h-14">

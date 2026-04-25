@@ -27,7 +27,14 @@ class VisitorDashboardController extends Controller
             ->take(4)
             ->get();
 
-        $newsletter = NewsletterSubscriber::where('user_id', Auth::id())->first();
+        $user = Auth::user();
+        $newsletter = NewsletterSubscriber::query()
+            ->where('status', 'active')
+            ->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhereRaw('LOWER(email) = ?', [mb_strtolower((string) $user->email)]);
+            })
+            ->first();
 
         $my_reviews = Review::where('user_id', Auth::id())
             ->with('provider')

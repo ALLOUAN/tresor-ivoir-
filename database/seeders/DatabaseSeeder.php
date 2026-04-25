@@ -24,6 +24,9 @@ class DatabaseSeeder extends Seeder
             ArticleSeeder::class,
             EventSeeder::class,
             ReviewSeeder::class,
+
+            // Pages centre d'information (légal, FAQ, etc.)
+            InformationPageSeeder::class,
         ]);
     }
 }

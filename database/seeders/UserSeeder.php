@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
@@ -15,7 +14,7 @@ class UserSeeder extends Seeder
             [
                 'uuid' => (string) Str::uuid(),
                 'email' => 'admin@tresorsdivoire.ci',
-                'password_hash' => Hash::make('Admin@2025!'),
+                'password_hash' => 'Admin@2025!',
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
                 'role' => 'admin',
@@ -27,7 +26,7 @@ class UserSeeder extends Seeder
             [
                 'uuid' => (string) Str::uuid(),
                 'email' => 'editeur@tresorsdivoire.ci',
-                'password_hash' => Hash::make('Editor@2025!'),
+                'password_hash' => 'Editor@2025!',
                 'first_name' => 'Aminata',
                 'last_name' => 'Koné',
                 'role' => 'editor',
@@ -39,7 +38,7 @@ class UserSeeder extends Seeder
             [
                 'uuid' => (string) Str::uuid(),
                 'email' => 'prestataire@example.ci',
-                'password_hash' => Hash::make('Provider@2025!'),
+                'password_hash' => 'Provider@2025!',
                 'first_name' => 'Kouassi',
                 'last_name' => 'Brou',
                 'phone' => '+22507000001',
@@ -52,7 +51,7 @@ class UserSeeder extends Seeder
             [
                 'uuid' => (string) Str::uuid(),
                 'email' => 'visiteur@example.ci',
-                'password_hash' => Hash::make('Visitor@2025!'),
+                'password_hash' => 'Visitor@2025!',
                 'first_name' => 'Marie',
                 'last_name' => 'Diouf',
                 'role' => 'visitor',
