@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan *)",
+      "Bash(php -l app/Http/Controllers/AuthController.php)",
+      "Bash(php -l app/Http/Middleware/SetLocaleMiddleware.php)",
+      "Bash(php -l routes/web.php)",
+      "Bash(python -c ' *)",
+      "Bash(php -l app/Http/Controllers/Provider/PaymentController.php)",
+      "Bash(php -l app/Http/Controllers/Provider/BillingController.php)",
+      "Bash(php -l app/Services/CynetPayService.php)",
+      "Bash(php -l bootstrap/app.php)"
+    ]
+  }
+}

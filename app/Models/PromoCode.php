@@ -33,4 +33,46 @@ class PromoCode extends Model
     {
         return $this->belongsTo(SubscriptionPlan::class, 'plan_id');
     }
+
+    public function isValid(?int $planId = null): bool
+    {
+        if (! $this->is_active) {
+            return false;
+        }
+        if ($this->starts_at && $this->starts_at->isFuture()) {
+            return false;
+        }
+        if ($this->ends_at && $this->ends_at->isPast()) {
+            return false;
+        }
+        if ($this->max_uses !== null && $this->used_count >= $this->max_uses) {
+            return false;
+        }
+        if ($this->plan_id && $planId && $this->plan_id !== $planId) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function applyDiscount(float $amount): float
+    {
+        $discount = $this->discount_type === 'percent'
+            ? round($amount * ((float) $this->discount_value / 100))
+            : min((float) $this->discount_value, $amount);
+
+        return max(0.0, $amount - $discount);
+    }
+
+    public function discountAmount(float $amount): float
+    {
+        return $this->discount_type === 'percent'
+            ? round($amount * ((float) $this->discount_value / 100))
+            : min((float) $this->discount_value, $amount);
+    }
+
+    public function incrementUsage(): void
+    {
+        $this->increment('used_count');
+    }
 }

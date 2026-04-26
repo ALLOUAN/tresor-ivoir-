@@ -21,12 +21,19 @@ class SiteSetting extends Model
         'timezone',
         'default_language',
         'maintenance_mode',
+        'maintenance_message',
+        'maintenance_allowed_ips',
+        'maintenance_progress',
+        'maintenance_eta',
+        'home_destination_article_id',
     ];
 
     protected function casts(): array
     {
         return [
             'maintenance_mode' => 'boolean',
+            'maintenance_progress' => 'integer',
+            'home_destination_article_id' => 'integer',
         ];
     }
 
@@ -41,6 +48,10 @@ class SiteSetting extends Model
                 'primary_color' => '#7c3aed',
                 'secondary_color' => '#0ea5e9',
                 'maintenance_mode' => false,
+                'maintenance_message' => null,
+                'maintenance_allowed_ips' => null,
+                'maintenance_progress' => null,
+                'maintenance_eta' => null,
             ]
         );
 
@@ -77,6 +88,7 @@ class SiteSetting extends Model
                 'site_description' => $s?->site_description,
                 'logo_url' => $s?->logo_url,
                 'favicon_url' => $s?->favicon_url,
+                'maintenance_mode' => (bool) ($s?->maintenance_mode ?? false),
             ], static::contactAndSocialPayload());
         });
     }
@@ -105,6 +117,7 @@ class SiteSetting extends Model
             'site_description' => null,
             'logo_url' => null,
             'favicon_url' => null,
+            'maintenance_mode' => false,
         ], static::contactAndSocialPayload());
     }
 
@@ -154,5 +167,20 @@ class SiteSetting extends Model
         }
 
         return 'https://wa.me/'.$digits;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function allowedIpsList(): array
+    {
+        $raw = (string) ($this->maintenance_allowed_ips ?? '');
+        if ($raw === '') {
+            return [];
+        }
+
+        $parts = preg_split('/[\s,;]+/', $raw) ?: [];
+
+        return array_values(array_filter(array_map(static fn ($ip) => trim($ip), $parts), static fn ($ip) => $ip !== ''));
     }
 }

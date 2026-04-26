@@ -27,14 +27,17 @@ class StoreArticleRequest extends FormRequest
             'content_fr' => ['nullable', 'string'],
             'content_en' => ['nullable', 'string'],
             'cover_url' => ['nullable', 'url', 'max:500'],
+            'cover_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
             'cover_alt' => ['nullable', 'string', 'max:300'],
             'reading_time' => ['nullable', 'integer', 'min:1', 'max:120'],
             'is_featured' => ['boolean'],
             'is_destination' => ['boolean'],
             'is_sponsored' => ['boolean'],
+            'sponsor_id' => ['nullable', 'required_if:is_sponsored,1', 'exists:providers,id'],
             'status' => ['required', 'in:draft,review,published,archived'],
             'published_at' => ['nullable', 'date'],
-            'scheduled_at' => ['nullable', 'date'],
+            'scheduled_at' => ['nullable', 'date', 'required_if:publication_mode,schedule'],
+            'publication_mode' => ['nullable', 'in:now,schedule'],
             'meta_title_fr' => ['nullable', 'string', 'max:70'],
             'meta_desc_fr' => ['nullable', 'string', 'max:165'],
             'meta_title_en' => ['nullable', 'string', 'max:70'],
@@ -59,6 +62,21 @@ class StoreArticleRequest extends FormRequest
             'is_sponsored' => $this->boolean('is_sponsored'),
         ]);
 
+        if (! $this->boolean('is_sponsored')) {
+            $this->merge(['sponsor_id' => null]);
+        }
+
+        if (
+            $this->input('publication_mode') === 'schedule'
+            && $this->filled('scheduled_at')
+            && $this->input('status') !== 'draft'
+        ) {
+            $this->merge([
+                'status' => 'published',
+                'published_at' => $this->input('scheduled_at'),
+            ]);
+        }
+
         if ($this->status === 'published' && empty($this->published_at)) {
             $this->merge(['published_at' => now()]);
         }
@@ -71,6 +89,12 @@ class StoreArticleRequest extends FormRequest
             'category_id.required' => 'Veuillez sélectionner une rubrique.',
             'category_id.exists' => 'La rubrique sélectionnée est invalide.',
             'slug_fr.unique' => 'Ce slug est déjà utilisé par un autre article.',
+            'cover_image.image' => 'Le fichier de couverture doit être une image valide.',
+            'cover_image.mimes' => 'Le format de l’image doit être jpeg, jpg, png ou webp.',
+            'cover_image.max' => 'L’image de couverture ne doit pas dépasser 4 Mo.',
+            'sponsor_id.required_if' => 'Veuillez sélectionner un sponsor pour un article sponsorisé.',
+            'sponsor_id.exists' => 'Le sponsor sélectionné est invalide.',
+            'scheduled_at.required_if' => 'Veuillez renseigner la date de planification.',
         ];
     }
 }

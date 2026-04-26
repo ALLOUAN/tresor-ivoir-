@@ -65,6 +65,21 @@
     @endif
 </div>
 
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <a href="{{ route('visitor.profile.edit') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
+        <p class="text-slate-400 text-xs uppercase">Profil</p>
+        <p class="text-white font-semibold mt-1">Modifier mes informations</p>
+    </a>
+    <a href="{{ route('visitor.favorites.index') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
+        <p class="text-slate-400 text-xs uppercase">Wishlist</p>
+        <p class="text-white font-semibold mt-1">{{ number_format($favorites_count ?? 0) }} favoris enregistrés</p>
+    </a>
+    <a href="{{ route('visitor.notifications.index') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
+        <p class="text-slate-400 text-xs uppercase">Notifications</p>
+        <p class="text-white font-semibold mt-1">{{ number_format($unread_notifications ?? 0) }} non lues</p>
+    </a>
+</div>
+
 {{-- ── Two columns ─────────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
 

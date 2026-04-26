@@ -8,10 +8,11 @@ use App\Models\Event;
 use App\Models\NewsletterSubscriber;
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class VisitorDashboardController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $featured_articles = Article::where('status', 'published')
             ->where('is_featured', true)
@@ -42,11 +43,16 @@ class VisitorDashboardController extends Controller
             ->take(3)
             ->get();
 
+        $favorites_count = $user->favorites()->count();
+        $unread_notifications = $user->unreadNotifications()->count();
+
         return view('dashboards.visitor', compact(
             'featured_articles',
             'upcoming_events',
             'newsletter',
             'my_reviews',
+            'favorites_count',
+            'unread_notifications',
         ));
     }
 }

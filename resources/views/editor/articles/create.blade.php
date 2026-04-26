@@ -4,15 +4,21 @@
 @section('page-title', 'Nouvel article')
 
 @section('header-actions')
-<a href="{{ route('editor.articles.index') }}"
-   class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
-    <i class="fas fa-arrow-left"></i> Retour
-</a>
+<div class="flex items-center gap-2">
+    <button type="button" onclick="openArticlePreviewModal()"
+            class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
+        <i class="fas fa-eye"></i> Prévisualiser
+    </button>
+    <a href="{{ route('editor.articles.index') }}"
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
 @endsection
 
 @section('content')
 
-<form method="POST" action="{{ route('editor.articles.store') }}" id="articleForm">
+<form method="POST" action="{{ route('editor.articles.store') }}" id="articleForm" enctype="multipart/form-data">
 @csrf
 
 {{-- Lang tabs --}}
@@ -59,7 +65,7 @@
             {{-- Excerpt FR --}}
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                 <label class="block text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Résumé (FR)</label>
-                <textarea name="excerpt_fr" rows="3" placeholder="Un court résumé accrocheur…"
+                <textarea name="excerpt_fr" id="excerpt_fr" rows="3" placeholder="Un court résumé accrocheur…"
                     class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y">{{ old('excerpt_fr') }}</textarea>
                 @error('excerpt_fr') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
@@ -72,8 +78,7 @@
                 </div>
                 <textarea name="content_fr" id="content_fr" rows="20"
                     placeholder="Rédigez votre article ici…"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y font-mono leading-relaxed"
-                    oninput="countWords(this, 'wordCount-fr')">{{ old('content_fr') }}</textarea>
+                    class="rich-editor w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y leading-relaxed">{{ old('content_fr') }}</textarea>
                 @error('content_fr') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -131,8 +136,7 @@
                 </div>
                 <textarea name="content_en" id="content_en" rows="20"
                     placeholder="Write your article here…"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y font-mono leading-relaxed"
-                    oninput="countWords(this, 'wordCount-en')">{{ old('content_en') }}</textarea>
+                    class="rich-editor w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y leading-relaxed">{{ old('content_en') }}</textarea>
             </div>
 
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
@@ -174,7 +178,17 @@
                         <option value="review" {{ old('status')==='review' ? 'selected':'' }}>Soumettre pour révision</option>
                         @if(auth()->user()->isAdmin())
                         <option value="published" {{ old('status')==='published' ? 'selected':'' }}>Publier directement</option>
+                        <option value="archived" {{ old('status')==='archived' ? 'selected':'' }}>Archiver</option>
                         @endif
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1.5">Mode de publication</label>
+                    <select name="publication_mode" id="publication_mode"
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition"
+                        onchange="togglePublicationMode()">
+                        <option value="now" {{ old('publication_mode', 'now') === 'now' ? 'selected' : '' }}>Publier / soumettre maintenant</option>
+                        <option value="schedule" {{ old('publication_mode') === 'schedule' ? 'selected' : '' }}>Planifier la publication</option>
                     </select>
                 </div>
                 <div>
@@ -182,10 +196,11 @@
                     <input type="datetime-local" name="published_at" value="{{ old('published_at') }}"
                         class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
                 </div>
-                <div>
+                <div id="scheduled_at_group">
                     <label class="block text-xs text-slate-500 mb-1.5">Publication planifiée</label>
                     <input type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at') }}"
                         class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
+                    @error('scheduled_at') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
             <div class="flex gap-2 mt-5">
@@ -193,11 +208,16 @@
                     class="flex-1 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium rounded-lg transition">
                     <i class="fas fa-floppy-disk mr-1"></i> Brouillon
                 </button>
-                <button type="submit"
+                <button type="submit" name="status" value="review"
                     class="flex-1 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-black text-xs font-semibold rounded-lg transition">
                     <i class="fas fa-paper-plane mr-1"></i> Soumettre
                 </button>
             </div>
+            <p id="autosaveStatus" class="text-xs text-slate-600 mt-2 min-h-[1.25rem]" aria-live="polite"></p>
+            <button type="button" class="text-[11px] text-slate-500 hover:text-amber-400/90 mt-1 underline"
+                    onclick="try { localStorage.removeItem('tresor_editor_article_draft_v1'); document.getElementById('autosaveStatus').textContent='Brouillon local effacé'; } catch(e) {}">
+                Effacer le brouillon local
+            </button>
         </div>
 
         {{-- Category --}}
@@ -229,6 +249,13 @@
                         placeholder="https://…"
                         class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600"
                         oninput="previewCover(this.value)">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1.5">Ou importer un fichier</label>
+                    <input type="file" name="cover_image" id="cover_image" accept="image/jpeg,image/png,image/webp"
+                        class="w-full bg-slate-800 border border-slate-700 file:border-0 file:bg-slate-700 file:text-slate-300 file:px-3 file:py-2 file:mr-3 rounded-lg px-3 py-2 text-slate-400 text-xs outline-none transition">
+                    <p class="text-[11px] text-slate-600 mt-1">JPG, PNG ou WEBP (max 4 Mo). Le fichier remplace l'URL si les deux sont remplis.</p>
+                    @error('cover_image') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div id="coverPreview" class="hidden rounded-lg overflow-hidden h-32 bg-slate-800">
                     <img id="coverImg" src="" alt="" class="w-full h-full object-cover">
@@ -302,13 +329,26 @@
                     </div>
                     <div class="relative">
                         <input type="hidden" name="is_sponsored" value="0">
-                        <input type="checkbox" name="is_sponsored" value="1" {{ old('is_sponsored') ? 'checked':'' }}
-                            class="sr-only peer" id="toggle-spons">
+                        <input type="checkbox" name="is_sponsored" id="is_sponsored" value="1" {{ old('is_sponsored') ? 'checked':'' }}
+                            class="sr-only peer">
                         <div class="w-9 h-5 bg-slate-700 peer-checked:bg-purple-500 rounded-full transition cursor-pointer"
-                             onclick="document.getElementById('toggle-spons').click()"></div>
+                             onclick="document.getElementById('is_sponsored').click()"></div>
                         <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4 pointer-events-none"></div>
                     </div>
                 </label>
+            </div>
+            <div id="sponsor_group" class="mt-4 {{ old('is_sponsored') ? '' : 'hidden' }}">
+                <label class="block text-xs text-slate-500 mb-1.5">Sponsor <span class="text-red-400">*</span></label>
+                <select name="sponsor_id"
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-purple-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
+                    <option value="">— Choisir un sponsor —</option>
+                    @foreach(($sponsors ?? collect()) as $sponsor)
+                    <option value="{{ $sponsor->id }}" {{ (string) old('sponsor_id') === (string) $sponsor->id ? 'selected' : '' }}>
+                        {{ $sponsor->name }}
+                    </option>
+                    @endforeach
+                </select>
+                @error('sponsor_id') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 
@@ -369,6 +409,31 @@ function previewCover(url) {
     }
 }
 
+function previewCoverFile(fileInputId) {
+    const input = document.getElementById(fileInputId);
+    const preview = document.getElementById('coverPreview');
+    const img = document.getElementById('coverImg');
+    if (!input || !input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    img.src = URL.createObjectURL(file);
+    preview.classList.remove('hidden');
+}
+
+function toggleSponsoredFields() {
+    const sponsorToggle = document.getElementById('is_sponsored');
+    const sponsorGroup = document.getElementById('sponsor_group');
+    if (!sponsorToggle || !sponsorGroup) return;
+    sponsorGroup.classList.toggle('hidden', !sponsorToggle.checked);
+}
+
+function togglePublicationMode() {
+    const publicationMode = document.getElementById('publication_mode');
+    const scheduledGroup = document.getElementById('scheduled_at_group');
+    if (!publicationMode || !scheduledGroup) return;
+    scheduledGroup.classList.toggle('hidden', publicationMode.value !== 'schedule');
+}
+
 // Init word count if content already present
 document.addEventListener('DOMContentLoaded', () => {
     const fr = document.getElementById('content_fr');
@@ -377,8 +442,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (en && en.value) countWords(en, 'wordCount-en');
     const url = document.getElementById('cover_url');
     if (url && url.value) previewCover(url.value);
+    const file = document.getElementById('cover_image');
+    if (file) {
+        file.addEventListener('change', () => previewCoverFile('cover_image'));
+    }
+    const sponsorToggle = document.getElementById('is_sponsored');
+    if (sponsorToggle) {
+        sponsorToggle.addEventListener('change', toggleSponsoredFields);
+        toggleSponsoredFields();
+    }
+    togglePublicationMode();
 });
 </script>
+@include('editor.partials.article-rich-tools', ['article' => null, 'errorsPresent' => $errors->any()])
 @endpush
 
 @endsection

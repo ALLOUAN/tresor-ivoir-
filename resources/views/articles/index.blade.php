@@ -6,42 +6,36 @@
     <title>Articles — {{ $siteBrand['site_name'] }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif:   ['Playfair Display', 'Georgia', 'serif'],
+                        elegant: ['Cormorant Garamond', 'Georgia', 'serif'],
+                    },
+                    colors: {
+                        gold: { 300:'#fcd68a', 400:'#f5b942', 500:'#e8a020', 600:'#c4811a' },
+                        dark: { 500:'#2e2e26', 600:'#252520', 700:'#1c1c16', 800:'#141410', 900:'#0d0d0b' },
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-serif   { font-family: 'Playfair Display', Georgia, serif; }
+        .font-elegant { font-family: 'Cormorant Garamond', Georgia, serif; }
         .article-card:hover .card-img { transform: scale(1.05); }
         .card-img { transition: transform .5s ease; }
+        .reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body class="bg-[#0d0d0b] text-white min-h-screen">
-
-{{-- ── Mini header ──────────────────────────────────────────────── --}}
-<header class="bg-[#0d0d0b]/95 backdrop-blur border-b border-white/8 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        <a href="/" class="flex items-center gap-2.5 shrink-0">
-            <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
-                <i class="fas fa-gem text-black text-sm"></i>
-            </div>
-            <span class="font-serif font-bold text-amber-400 hidden sm:block">{{ $siteBrand['site_name'] }}</span>
-        </a>
-        <nav class="hidden md:flex items-center gap-1 text-sm">
-            <a href="/" class="px-3 py-2 text-gray-400 hover:text-white transition">Accueil</a>
-            <a href="{{ route('articles.index') }}" class="px-3 py-2 text-amber-400 font-medium">Articles</a>
-            <a href="#" class="px-3 py-2 text-gray-400 hover:text-white transition">Découvertes</a>
-            <a href="#" class="px-3 py-2 text-gray-400 hover:text-white transition">Annuaire</a>
-        </nav>
-        <div class="flex items-center gap-2">
-            @auth
-            <a href="{{ route('dashboard') }}" class="px-3 py-1.5 border border-amber-500/40 text-amber-400 text-xs rounded-lg hover:border-amber-400 transition">
-                <i class="fas fa-gauge-high mr-1"></i>Dashboard
-            </a>
-            @else
-            <a href="{{ route('login') }}" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold rounded-lg transition">Connexion</a>
-            @endauth
-        </div>
-    </div>
-</header>
+@include('partials.public-top-nav')
 
 {{-- ── Page header ──────────────────────────────────────────────── --}}
 <div class="bg-[#141410] border-b border-white/5">
@@ -135,48 +129,36 @@
     @endif
 
     {{-- ── Article grid ──────────────────────────────────────────── --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         @forelse($articles as $article)
         <a href="{{ route('articles.show', $article->slug_fr) }}"
-           class="article-card group bg-[#141410] border border-white/5 hover:border-amber-500/25 rounded-2xl overflow-hidden transition-all duration-300">
-            <div class="h-44 overflow-hidden relative">
+           class="article-card group bg-dark-700/40 hover:bg-dark-700 border border-white/5 hover:border-gold-500/20 rounded-xl overflow-hidden transition-all duration-300 reveal">
+            <div class="h-32 bg-dark-600 relative overflow-hidden">
                 @if($article->cover_url)
-                <img src="{{ $article->cover_url }}" alt="{{ $article->cover_alt }}"
-                     class="card-img w-full h-full object-cover">
+                    <img src="{{ $article->cover_url }}" alt="{{ $article->cover_alt ?? $article->title_fr }}"
+                         class="card-img absolute inset-0 w-full h-full object-cover">
                 @else
-                <div class="card-img w-full h-full bg-[#1c1c16] flex items-center justify-center">
-                    <i class="fas fa-image text-[#2a2a24] text-2xl"></i>
-                </div>
+                    <div class="card-img absolute inset-0 bg-gradient-to-br from-dark-700 to-dark-500 flex items-center justify-center">
+                        <i class="fas fa-image text-dark-400 text-lg"></i>
+                    </div>
                 @endif
                 @if($article->is_featured)
-                <span class="absolute top-2 left-2 bg-amber-500 text-black text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">À la une</span>
+                <span class="absolute top-2 left-2 bg-gold-500 text-dark-900 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">À la une</span>
                 @endif
                 @if($article->is_sponsored)
-                <span class="absolute top-2 right-2 bg-white/10 backdrop-blur text-white text-[9px] px-2 py-0.5 rounded-full">Sponsorisé</span>
+                <span class="absolute top-2 right-2 bg-white/10 backdrop-blur-sm text-white text-[9px] px-2 py-0.5 rounded-full">Sponsorisé</span>
                 @endif
             </div>
-            <div class="p-4">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-amber-400/80 text-[11px] uppercase tracking-wider font-medium">{{ $article->category->name_fr ?? '—' }}</span>
-                    @if($article->reading_time)
-                    <span class="text-gray-600 text-[11px]"><i class="fas fa-clock mr-0.5"></i>{{ $article->reading_time }} min</span>
-                    @endif
-                </div>
-                <h3 class="font-serif text-sm font-semibold line-clamp-2 group-hover:text-amber-300 transition leading-snug">
+            <div class="p-3">
+                <span class="text-gold-400/70 text-[10px] uppercase tracking-wider font-elegant">{{ $article->category?->name_fr ?? '—' }}</span>
+                <h3 class="font-serif text-xs font-semibold mt-1 line-clamp-2 group-hover:text-gold-300 transition leading-snug">
                     {{ $article->title_fr }}
                 </h3>
-                @if($article->excerpt_fr)
-                <p class="text-gray-500 text-xs mt-2 line-clamp-2 leading-relaxed">{{ $article->excerpt_fr }}</p>
-                @endif
-                <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-                    <span class="text-gray-600 text-xs">{{ $article->published_at?->format('d M Y') }}</span>
-                    <span class="text-gray-600 text-xs"><i class="fas fa-eye mr-0.5"></i>{{ number_format($article->views_count) }}</span>
-                </div>
             </div>
         </a>
         @empty
         <div class="col-span-full py-20 text-center text-gray-600">
-            <i class="fas fa-newspaper text-4xl mb-3 block text-[#1c1c16]"></i>
+            <i class="fas fa-newspaper text-4xl mb-3 block opacity-20"></i>
             <p class="text-lg font-serif">Aucun article trouvé</p>
             <p class="text-sm mt-1">Essayez une autre recherche ou catégorie.</p>
         </div>
@@ -225,5 +207,17 @@
     </div>
 </footer>
 
+<script>
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObs = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('visible'), i * 60);
+                revealObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.06 });
+    revealEls.forEach(el => revealObs.observe(el));
+</script>
 </body>
 </html>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppearanceSlide;
+use App\Models\Article;
 use App\Models\SiteContactSetting;
 use App\Models\SiteMediaItem;
 use App\Models\SiteSetting;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -20,11 +22,68 @@ class AdministrationController extends Controller
 {
     public function maintenance(): View
     {
-        return view('admin.system.page', [
-            'title' => 'Maintenance',
-            'description' => 'Gérez les opérations de maintenance de la plateforme.',
-            'icon' => 'fa-screwdriver-wrench',
+        $settings = SiteSetting::singleton();
+
+        return view('admin.system.maintenance', compact('settings'));
+    }
+
+    public function maintenancePreview(): View
+    {
+        $settings = SiteSetting::singleton();
+        $message = trim((string) ($settings->maintenance_message ?? ''));
+
+        return view('errors.maintenance-site', [
+            'maintenanceMessage' => $message !== ''
+                ? $message
+                : 'Nous effectuons une mise à jour. Merci de revenir un peu plus tard.',
         ]);
+    }
+
+    public function updateMaintenance(Request $request): RedirectResponse
+    {
+        $settings = SiteSetting::singleton();
+
+        $request->merge([
+            'maintenance_progress' => $request->input('maintenance_progress') === '' || $request->input('maintenance_progress') === null
+                ? null
+                : $request->input('maintenance_progress'),
+            'maintenance_eta' => (($eta = trim((string) $request->input('maintenance_eta', ''))) !== '') ? $eta : null,
+        ]);
+
+        $validated = $request->validate([
+            'maintenance_mode' => ['nullable', 'boolean'],
+            'maintenance_message' => ['nullable', 'string', 'max:2000'],
+            'maintenance_allowed_ips' => ['nullable', 'string', 'max:2000'],
+            'maintenance_progress' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'maintenance_eta' => ['nullable', 'string', 'max:120'],
+        ]);
+
+        $settings->maintenance_mode = $request->boolean('maintenance_mode');
+        $settings->maintenance_message = $validated['maintenance_message'] ?? null;
+        $settings->maintenance_allowed_ips = $validated['maintenance_allowed_ips'] ?? null;
+        $settings->maintenance_progress = $validated['maintenance_progress'] ?? null;
+        $settings->maintenance_eta = $validated['maintenance_eta'] ?? null;
+        $settings->save();
+
+        SiteSetting::forgetBrandCache();
+
+        return back()->with('success', 'Paramètres de maintenance enregistrés.');
+    }
+
+    public function toggleMaintenance(): RedirectResponse
+    {
+        $settings = SiteSetting::singleton();
+        $settings->maintenance_mode = ! $settings->maintenance_mode;
+        $settings->save();
+
+        SiteSetting::forgetBrandCache();
+
+        return back()->with(
+            'success',
+            $settings->maintenance_mode
+                ? 'Mode maintenance activé.'
+                : 'Mode maintenance désactivé.'
+        );
     }
 
     public function appearance(): View
@@ -337,6 +396,52 @@ class AdministrationController extends Controller
         $settings = SiteSetting::singleton();
 
         return view('admin.system.general-settings', compact('settings'));
+    }
+
+    public function homepage(): View
+    {
+        $settings = SiteSetting::singleton();
+        $publishedArticles = Article::query()
+            ->where('status', 'published')
+            ->where('published_at', '<=', now())
+            ->orderByDesc('published_at')
+            ->limit(100)
+            ->get(['id', 'title_fr', 'published_at']);
+
+        $hasHomeDestinationColumn = Schema::hasTable('site_settings')
+            && Schema::hasColumn('site_settings', 'home_destination_article_id');
+
+        return view('admin.system.homepage-settings', compact('settings', 'publishedArticles', 'hasHomeDestinationColumn'));
+    }
+
+    public function updateHomepage(Request $request): RedirectResponse
+    {
+        if (! Schema::hasTable('site_settings') || ! Schema::hasColumn('site_settings', 'home_destination_article_id')) {
+            return back()->with('error', "Configuration indisponible: lancez la migration pour activer ce réglage d'accueil.");
+        }
+
+        $settings = SiteSetting::singleton();
+
+        $validated = $request->validate([
+            'home_destination_article_id' => ['nullable', 'integer'],
+        ]);
+
+        $selectedHomeValue = $validated['home_destination_article_id'] ?? null;
+        if ($selectedHomeValue !== null && (int) $selectedHomeValue !== 0) {
+            $exists = Article::query()->whereKey((int) $selectedHomeValue)->exists();
+            if (! $exists) {
+                return back()
+                    ->withErrors(['home_destination_article_id' => 'L’article sélectionné est introuvable.'])
+                    ->withInput();
+            }
+        }
+
+        $settings->home_destination_article_id = $selectedHomeValue !== null
+            ? (int) $selectedHomeValue
+            : null;
+        $settings->save();
+
+        return back()->with('success', "Paramètres d'accueil enregistrés.");
     }
 
     public function updateSiteSettings(Request $request): RedirectResponse

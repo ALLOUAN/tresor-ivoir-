@@ -274,6 +274,16 @@
                     <span>Catégories &amp; tags</span>
                 </a>
                 <p class="nav-section-title"><span>Sécurité</span></p>
+                <a href="{{ route('admin.analytics.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.analytics.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-chart-line"></i></span>
+                    <span>Analytics</span>
+                </a>
+                <a href="{{ route('admin.audit.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.audit.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-clipboard-list"></i></span>
+                    <span>Journal d'audit</span>
+                </a>
                 <a href="{{ route('admin.permissions') }}"
                    class="nav-row {{ request()->routeIs('admin.permissions') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-key"></i></span>
@@ -316,6 +326,10 @@
                    class="sidebar-link {{ request()->routeIs('provider.reviews.*') ? 'active' : '' }}">
                     <i class="fas fa-star w-4 text-center"></i> Mes avis
                 </a>
+                <a href="{{ route('provider.analytics') }}"
+                   class="sidebar-link {{ request()->routeIs('provider.analytics') ? 'active' : '' }}">
+                    <i class="fas fa-chart-line w-4 text-center"></i> Statistiques
+                </a>
                 <a href="#" class="sidebar-link">
                     <i class="fas fa-images w-4 text-center"></i> Médias
                 </a>
@@ -335,20 +349,26 @@
                    class="sidebar-link {{ request()->routeIs('visitor.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-gauge-high w-4 text-center"></i> Tableau de bord
                 </a>
-                <a href="#" class="sidebar-link">
+                <a href="{{ route('visitor.profile.edit') }}"
+                   class="sidebar-link {{ request()->routeIs('visitor.profile.*') ? 'active' : '' }}">
+                    <i class="fas fa-user-pen w-4 text-center"></i> Mon profil
+                </a>
+                <a href="{{ route('visitor.favorites.index') }}"
+                   class="sidebar-link {{ request()->routeIs('visitor.favorites.*') ? 'active' : '' }}">
+                    <i class="fas fa-heart w-4 text-center"></i> Mes favoris
+                </a>
+                <a href="{{ route('visitor.notifications.index') }}"
+                   class="sidebar-link {{ request()->routeIs('visitor.notifications.*') ? 'active' : '' }}">
+                    <i class="fas fa-bell w-4 text-center"></i> Notifications
+                </a>
+                <a href="{{ route('articles.index') }}" class="sidebar-link">
                     <i class="fas fa-newspaper w-4 text-center"></i> Articles
                 </a>
-                <a href="#" class="sidebar-link">
+                <a href="{{ route('events.index') }}" class="sidebar-link">
                     <i class="fas fa-calendar-days w-4 text-center"></i> Événements
                 </a>
-                <a href="#" class="sidebar-link">
+                <a href="{{ route('providers.index') }}" class="sidebar-link">
                     <i class="fas fa-compass w-4 text-center"></i> Annuaire
-                </a>
-                <a href="#" class="sidebar-link">
-                    <i class="fas fa-star w-4 text-center"></i> Mes avis
-                </a>
-                <a href="#" class="sidebar-link">
-                    <i class="fas fa-envelope w-4 text-center"></i> Newsletter
                 </a>
             @endif
         </nav>
@@ -392,6 +412,35 @@
             </div>
             <div class="flex items-center gap-3">
                 @yield('header-actions')
+                @php
+                    $notificationRouteByRole = [
+                        'visitor' => 'visitor.notifications.index',
+                        'editor' => 'editor.notifications.index',
+                        'provider' => 'provider.notifications.index',
+                        'admin' => 'admin.notifications.index',
+                    ];
+                    $notificationRoute = $notificationRouteByRole[$role] ?? null;
+                @endphp
+                @if($notificationRoute && \Illuminate\Support\Facades\Route::has($notificationRoute))
+                    @php $globalUnreadNotifications = auth()->user()->unreadNotifications()->count(); @endphp
+                    <a href="{{ route($notificationRoute) }}"
+                       class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/70 bg-slate-800/70 text-slate-300 hover:text-white hover:bg-slate-700/70 transition"
+                       title="Notifications">
+                        <i class="fas fa-bell text-sm"></i>
+                        @if($globalUnreadNotifications > 0)
+                            <span class="absolute -top-1 -right-1 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-amber-500 text-black text-[10px] font-bold leading-[1.1rem] text-center">
+                                {{ $globalUnreadNotifications > 99 ? '99+' : $globalUnreadNotifications }}
+                            </span>
+                        @endif
+                    </a>
+                @endif
+                @if($role === 'admin' && !empty($siteBrand['maintenance_mode']))
+                    <a href="{{ route('admin.administration.maintenance') }}"
+                       class="inline-flex items-center gap-1.5 rounded-full border border-rose-500/50 bg-rose-600/20 px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-rose-200 hover:bg-rose-600/30 transition shrink-0 max-w-[9rem] sm:max-w-none truncate">
+                        <span class="h-1.5 w-1.5 rounded-full bg-rose-400 animate-pulse"></span>
+                        Maintenance active
+                    </a>
+                @endif
                 <span class="text-slate-500 text-xs hidden sm:block">
                     {{ now()->isoFormat('dddd D MMMM YYYY') }}
                 </span>

@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\PermissionMiddleware;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\SetLocaleMiddleware;
 use App\Http\Middleware\SiteMaintenanceMiddleware;
 use App\Http\Middleware\SubscriptionActiveMiddleware;
 use Illuminate\Foundation\Application;
@@ -22,7 +23,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->web(append: [
+            SetLocaleMiddleware::class,
             SiteMaintenanceMiddleware::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            '/webhook/cynetpay',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

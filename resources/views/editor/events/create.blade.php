@@ -3,11 +3,24 @@
 @section('title', 'Créer un événement')
 @section('page-title', 'Nouvel événement')
 
+@section('header-actions')
+<div class="flex items-center gap-2">
+    <button type="button" onclick="openEventPreviewModal()"
+            class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
+        <i class="fas fa-eye"></i> Prévisualiser
+    </button>
+    <a href="{{ route('editor.events.index') }}"
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+@endsection
+
 @section('content')
 <div class="max-w-5xl mx-auto bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
         <h2 class="text-white font-semibold">Créer un événement</h2>
-        <a href="{{ route('admin.events.index') }}" class="text-slate-300 hover:text-white text-sm">
+        <a href="{{ route('editor.events.index') }}" class="text-slate-300 hover:text-white text-sm">
             Retour aux événements
         </a>
     </div>
@@ -23,8 +36,17 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('editor.events.store') }}" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form id="eventEditorForm" method="POST" action="{{ route('editor.events.store') }}" enctype="multipart/form-data" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
         @csrf
+
+        <div class="md:col-span-2 flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800/60">
+            <p id="autosaveStatus" class="text-xs text-slate-600 min-h-[1.25rem]" aria-live="polite"></p>
+            <button type="button"
+                    class="text-xs text-slate-500 hover:text-slate-300"
+                    onclick="try { localStorage.removeItem('tresor_editor_event_draft_v1'); var s=document.getElementById('autosaveStatus'); if(s) s.textContent='Brouillon local effacé'; } catch(e) {}">
+                Effacer le brouillon local
+            </button>
+        </div>
 
         <div>
             <label class="block text-sm text-slate-300 mb-1">Titre (FR) *</label>
@@ -60,20 +82,41 @@
 
         <div class="md:col-span-2">
             <label class="block text-sm text-slate-300 mb-1">Description (FR)</label>
-            <textarea name="description_fr" rows="4"
+            <textarea name="description_fr" id="description_fr" rows="6"
                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ old('description_fr') }}</textarea>
         </div>
 
         <div class="md:col-span-2">
             <label class="block text-sm text-slate-300 mb-1">Description (EN)</label>
-            <textarea name="description_en" rows="3"
+            <textarea name="description_en" id="description_en" rows="5"
                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ old('description_en') }}</textarea>
         </div>
 
         <div>
             <label class="block text-sm text-slate-300 mb-1">Image (URL)</label>
-            <input type="url" name="cover_url" value="{{ old('cover_url') }}"
+            <input type="url" name="cover_url" id="cover_url" value="{{ old('cover_url') }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Image depuis mon ordinateur</label>
+            <input type="file" name="cover_image" id="cover_image" accept="image/jpeg,image/png,image/webp"
+                   class="w-full bg-slate-800 border border-slate-700 file:border-0 file:bg-slate-700 file:text-slate-300 file:px-3 file:py-2 file:mr-3 rounded-lg px-3 py-2 text-slate-400 text-xs">
+            <p class="text-[11px] text-slate-500 mt-1">JPG, PNG ou WEBP (max 4 Mo). Le fichier remplace l'URL si les deux sont remplis.</p>
+            @error('cover_image') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+        </div>
+
+        <div id="cover_preview_wrapper" class="md:col-span-2 hidden">
+            <div class="rounded-lg overflow-hidden h-44 bg-slate-800 border border-slate-700">
+                <img id="cover_preview_img" src="" alt="Aperçu couverture" class="w-full h-full object-cover">
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="block text-sm text-slate-300 mb-1">Texte alternatif image</label>
+            <input type="text" name="cover_alt" value="{{ old('cover_alt') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Description de l'image pour l'accessibilité">
         </div>
 
         <div>
@@ -113,6 +156,31 @@
         </div>
 
         <div>
+            <label class="block text-sm text-slate-300 mb-1">Latitude</label>
+            <input type="number" step="0.00000001" name="latitude" value="{{ old('latitude') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Ex: 5.33640000">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Longitude</label>
+            <input type="number" step="0.00000001" name="longitude" value="{{ old('longitude') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Ex: -4.02670000">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Prestataire lié (optionnel)</label>
+            <select name="provider_id"
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                <option value="">Aucun</option>
+                @foreach(($providers ?? collect()) as $provider)
+                    <option value="{{ $provider->id }}" @selected((string) old('provider_id') === (string) $provider->id)>{{ $provider->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
             <label class="block text-sm text-slate-300 mb-1">Organisateur</label>
             <input type="text" name="organizer_name" value="{{ old('organizer_name') }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
@@ -121,6 +189,12 @@
         <div>
             <label class="block text-sm text-slate-300 mb-1">Téléphone organisateur</label>
             <input type="text" name="organizer_phone" value="{{ old('organizer_phone') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Email organisateur</label>
+            <input type="email" name="organizer_email" value="{{ old('organizer_email') }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
         </div>
 
@@ -149,6 +223,42 @@
         </div>
 
         <div>
+            <label class="block text-sm text-slate-300 mb-1">Capacité</label>
+            <input type="number" min="1" max="1000000" name="capacity" value="{{ old('capacity') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Nombre max de participants">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Date limite d'inscription</label>
+            <input type="datetime-local" name="registration_deadline" value="{{ old('registration_deadline') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Fuseau horaire</label>
+            <input type="text" name="timezone" value="{{ old('timezone', 'Africa/Abidjan') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="inline-flex items-center gap-2 text-sm text-slate-300">
+                <input type="hidden" name="is_recurring" value="0">
+                <input type="checkbox" name="is_recurring" id="is_recurring" value="1" @checked(old('is_recurring'))
+                       class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                Événement récurrent
+            </label>
+        </div>
+
+        <div class="md:col-span-2 {{ old('is_recurring') ? '' : 'hidden' }}" id="recurrence_group">
+            <label class="block text-sm text-slate-300 mb-1">Règle de récurrence</label>
+            <input type="text" name="recurrence_rule" value="{{ old('recurrence_rule') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Ex: weekly, every_2_weeks, monthly">
+            @error('recurrence_rule') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+        </div>
+
+        <div>
             <label class="block text-sm text-slate-300 mb-1">Meta titre (FR)</label>
             <input type="text" name="meta_title_fr" maxlength="70" value="{{ old('meta_title_fr') }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
@@ -160,8 +270,20 @@
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
         </div>
 
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Meta titre (EN)</label>
+            <input type="text" name="meta_title_en" maxlength="70" value="{{ old('meta_title_en') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Meta description (EN)</label>
+            <input type="text" name="meta_desc_en" maxlength="165" value="{{ old('meta_desc_en') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
         <div class="md:col-span-2 flex justify-end gap-2 pt-2">
-            <a href="{{ route('admin.events.index') }}"
+            <a href="{{ route('editor.events.index') }}"
                class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
                 Annuler
             </a>
@@ -172,4 +294,57 @@
         </div>
     </form>
 </div>
+
+@push('scripts')
+<script>
+function previewEventCoverFromUrl(url) {
+    const wrapper = document.getElementById('cover_preview_wrapper');
+    const img = document.getElementById('cover_preview_img');
+    if (!wrapper || !img) return;
+
+    if (url && url.startsWith('http')) {
+        img.src = url;
+        wrapper.classList.remove('hidden');
+    } else {
+        wrapper.classList.add('hidden');
+    }
+}
+
+function previewEventCoverFromFile(fileInputId) {
+    const input = document.getElementById(fileInputId);
+    const wrapper = document.getElementById('cover_preview_wrapper');
+    const img = document.getElementById('cover_preview_img');
+    if (!input || !input.files || !input.files[0] || !wrapper || !img) return;
+
+    img.src = URL.createObjectURL(input.files[0]);
+    wrapper.classList.remove('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const coverUrl = document.getElementById('cover_url');
+    const coverFile = document.getElementById('cover_image');
+
+    if (coverUrl && coverUrl.value) {
+        previewEventCoverFromUrl(coverUrl.value);
+    }
+
+    if (coverUrl) {
+        coverUrl.addEventListener('input', (e) => previewEventCoverFromUrl(e.target.value));
+    }
+
+    if (coverFile) {
+        coverFile.addEventListener('change', () => previewEventCoverFromFile('cover_image'));
+    }
+
+    const recurring = document.getElementById('is_recurring');
+    const recurringGroup = document.getElementById('recurrence_group');
+    if (recurring && recurringGroup) {
+        recurring.addEventListener('change', () => {
+            recurringGroup.classList.toggle('hidden', !recurring.checked);
+        });
+    }
+});
+</script>
+@include('editor.partials.event-rich-tools', ['event' => null, 'errorsPresent' => $errors->any()])
+@endpush
 @endsection

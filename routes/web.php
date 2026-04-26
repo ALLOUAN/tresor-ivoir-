@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAnalyticsController;
+use App\Http\Controllers\Admin\AdminAuditLogController;
 use App\Http\Controllers\Admin\AdministrationController;
 use App\Http\Controllers\Admin\ArticleManagementController;
 use App\Http\Controllers\Admin\ContactMessageController;
@@ -13,8 +15,10 @@ use App\Http\Controllers\Admin\PlanManagementController;
 use App\Http\Controllers\Admin\ProviderManagementController;
 use App\Http\Controllers\Admin\ReviewManagementController;
 use App\Http\Controllers\Admin\UserRoleManagementController;
+use App\Http\Controllers\ArticleCommentController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Dashboard\AdminDashboardController;
 use App\Http\Controllers\Dashboard\EditorDashboardController;
 use App\Http\Controllers\Dashboard\ProviderDashboardController;
@@ -24,17 +28,29 @@ use App\Http\Controllers\Editor\EventController as EditorEventController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InformationPageController;
 use App\Http\Controllers\Provider\BillingController;
+use App\Http\Controllers\Provider\PaymentController;
 use App\Http\Controllers\Provider\ProfileController as ProviderProfileController;
+use App\Http\Controllers\Provider\ProviderAnalyticsController;
 use App\Http\Controllers\Provider\ReviewController as ProviderReviewController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicContactController;
 use App\Http\Controllers\PublicNewsletterController;
+use App\Http\Controllers\PublicSubscriptionController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\VisitorFavoriteController;
+use App\Http\Controllers\VisitorNotificationController;
+use App\Http\Controllers\VisitorProfileController;
+use App\Http\Middleware\LogAdminActions;
 use App\Models\AppearanceSlide;
+use App\Models\Article;
+use App\Models\ArticleCategory;
 use App\Models\Event;
 use App\Models\InformationPage;
 use App\Models\Partner;
 use App\Models\Provider;
+use App\Models\ProviderCategory;
+use App\Models\SiteSetting;
+use App\Models\SubscriptionPlan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -80,7 +96,57 @@ Route::get('/', function () {
         ? InformationPage::query()->orderBy('sort_order')->orderBy('id')->get()
         : collect();
 
-    return view('welcome', compact('homeEvents', 'homeProviders', 'heroSlides', 'homePartners', 'informationPages'));
+    $homeDestinationArticleId = null;
+    $hideHomeHeroArticle = false;
+    if (Schema::hasTable('site_settings') && Schema::hasColumn('site_settings', 'home_destination_article_id')) {
+        $homeDestinationArticleId = SiteSetting::query()->value('home_destination_article_id');
+        $hideHomeHeroArticle = $homeDestinationArticleId !== null && (int) $homeDestinationArticleId === 0;
+    }
+
+    $homeArticles = Schema::hasTable('articles')
+        ? Article::where('status', 'published')
+            ->where('published_at', '<=', now())
+            ->with(['category', 'author'])
+            ->latest('published_at')
+            ->limit(15)
+            ->get()
+        : collect();
+
+    $homeDestinationArticle = null;
+    if (! $hideHomeHeroArticle && $homeDestinationArticleId && Schema::hasTable('articles')) {
+        $homeDestinationArticle = Article::query()
+            ->whereKey($homeDestinationArticleId)
+            ->where('status', 'published')
+            ->where('published_at', '<=', now())
+            ->with(['category', 'author'])
+            ->first();
+
+        if ($homeDestinationArticle && ! $homeArticles->contains('id', $homeDestinationArticle->id)) {
+            $homeArticles = $homeArticles->prepend($homeDestinationArticle)->take(8)->values();
+        }
+    }
+
+    $homeCategories = Schema::hasTable('article_categories')
+        ? ArticleCategory::where('is_active', true)
+            ->withCount(['articles as articles_count' => fn ($q) => $q
+                ->where('status', 'published')
+                ->where('published_at', '<=', now())])
+            ->orderBy('sort_order')
+            ->get()
+        : collect();
+
+    $homeProviderCategories = Schema::hasTable('provider_categories')
+        ? ProviderCategory::where('is_active', true)
+            ->whereNull('parent_id')
+            ->orderBy('sort_order')
+            ->limit(6)
+            ->get()
+        : collect();
+
+    return view('welcome', compact(
+        'homeEvents', 'homeProviders', 'heroSlides', 'homePartners',
+        'informationPages', 'homeArticles', 'homeCategories', 'homeProviderCategories', 'homeDestinationArticle', 'hideHomeHeroArticle'
+    ));
 })->name('home');
 
 Route::post('/contact', [PublicContactController::class, 'store'])
@@ -99,13 +165,83 @@ Route::get('/newsletter/desabonnement/{subscriber}', [PublicNewsletterController
 Route::get('/information/{informationPage}', [InformationPageController::class, 'show'])
     ->name('information.show');
 
+// ── RECHERCHE GLOBALE ─────────────────────────────────────────────────────
+Route::get('/recherche', [SearchController::class, 'index'])->name('search');
+
+// ── SITEMAP & RSS ─────────────────────────────────────────────────────────
+Route::get('/sitemap.xml', function () {
+    $articles  = \App\Models\Article::where('status', 'published')->where('published_at', '<=', now())
+        ->select('slug_fr', 'published_at', 'updated_at')->latest('published_at')->limit(1000)->get();
+    $events    = \App\Models\Event::where('status', 'published')
+        ->select('slug', 'updated_at')->limit(500)->get();
+    $providers = \App\Models\Provider::where('status', 'active')
+        ->select('slug', 'updated_at')->limit(500)->get();
+    $pages     = \App\Models\InformationPage::select('id', 'updated_at')->get();
+
+    return response()->view('sitemap', compact('articles', 'events', 'providers', 'pages'))
+        ->header('Content-Type', 'application/xml');
+})->name('sitemap');
+
+Route::get('/rss.xml', function () {
+    $articles = \App\Models\Article::where('status', 'published')
+        ->where('published_at', '<=', now())
+        ->with(['category', 'author'])
+        ->latest('published_at')
+        ->limit(30)
+        ->get();
+
+    return response()->view('rss', compact('articles'))
+        ->header('Content-Type', 'application/rss+xml; charset=UTF-8');
+})->name('rss');
+
 // ── ARTICLES PUBLICS ──────────────────────────────────────────────────────
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
+Route::post('/articles/{article}/commentaires', [ArticleCommentController::class, 'store'])
+    ->name('articles.comments.store')
+    ->middleware('throttle:5,1');
+
+// ── DÉCOUVERTES PUBLIQUES ─────────────────────────────────────────────────
+Route::get('/decouvertes', function () {
+    $discoverCategories = Schema::hasTable('article_categories')
+        ? ArticleCategory::where('is_active', true)
+            ->withCount(['articles as articles_count' => fn ($q) => $q
+                ->where('status', 'published')
+                ->where('published_at', '<=', now())])
+            ->orderBy('sort_order')
+            ->get()
+        : collect();
+
+    $discoverArticles = Schema::hasTable('articles')
+        ? Article::where('status', 'published')
+            ->where('published_at', '<=', now())
+            ->with(['category', 'author'])
+            ->latest('published_at')
+            ->limit(9)
+            ->get()
+        : collect();
+
+    return view('discoveries.index', compact('discoverCategories', 'discoverArticles'));
+})->name('discoveries.index');
 
 // ── ÉVÉNEMENTS PUBLICS ────────────────────────────────────────────────────
 Route::get('/evenements', [EventController::class, 'index'])->name('events.index');
 Route::get('/evenements/{slug}', [EventController::class, 'show'])->name('events.show');
+
+// ── PLANS D'ABONNEMENT PUBLICS ────────────────────────────────────────────
+Route::get('/abonnements', function () {
+    $plans = SubscriptionPlan::where('is_active', true)
+        ->orderBy('sort_order')
+        ->get();
+
+    return view('public.plans', compact('plans'));
+})->name('plans.public');
+
+Route::get('/abonnements/{plan}/paiement', [PublicSubscriptionController::class, 'checkout'])
+    ->name('subscriptions.checkout');
+Route::post('/abonnements/{plan}/traiter', [PublicSubscriptionController::class, 'processOffline'])
+    ->middleware('auth')
+    ->name('subscriptions.process-offline');
 
 // ── ANNUAIRE PRESTATAIRES PUBLIC ──────────────────────────────────────────
 Route::get('/annuaire', [ProviderController::class, 'index'])->name('providers.index');
@@ -120,10 +256,46 @@ Route::post('/annuaire/{provider}/avis', [ReviewController::class, 'store'])
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+    // Mot de passe oublié / réinitialisation
+    Route::get('/mot-de-passe-oublie', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/mot-de-passe-oublie', [AuthController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reinitialiser/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+    Route::post('/reinitialiser', [AuthController::class, 'resetPassword'])->name('password.update');
 });
+
+// Vérification e-mail (utilisateur connecté)
+Route::middleware('auth')->group(function () {
+    Route::get('/verification-email', [AuthController::class, 'showVerifyEmail'])->name('verification.notice');
+    Route::get('/verification-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+        ->name('verification.verify')
+        ->middleware('signed');
+    Route::post('/verification-email/renvoyer', [AuthController::class, 'resendVerification'])
+        ->name('verification.send')
+        ->middleware('throttle:6,1');
+});
+
+// ── CHANGEMENT DE LANGUE ──────────────────────────────────────────────────
+Route::get('/lang/{locale}', function (string $locale) {
+    if (in_array($locale, ['fr', 'en'])) {
+        session(['locale' => $locale]);
+    }
+
+    return redirect()->back();
+})->name('lang.switch');
 
 Route::get('/billing/callback', [BillingController::class, 'callback'])->name('provider.billing.callback');
 Route::post('/billing/webhook/{gateway}', [BillingController::class, 'webhook'])->name('provider.billing.webhook');
+
+// ── CYNETPAY — RETOUR NAVIGATEUR (public, sans auth) ─────────────────────
+Route::get('/paiement/cynetpay/retour', [PaymentController::class, 'cynetPayReturn'])
+    ->name('payment.cynetpay.return');
+
+// ── CYNETPAY — WEBHOOK SERVEUR (public, sans CSRF) ───────────────────────
+Route::post('/webhook/cynetpay', [PaymentController::class, 'webhook'])
+    ->name('webhook.cynetpay');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
@@ -143,13 +315,18 @@ Route::get('/dashboard', function () {
 })->middleware('auth')->name('dashboard');
 
 // ── ADMIN ─────────────────────────────────────────────────────────────────
-Route::middleware(['auth', 'role:admin'])
+Route::middleware(['auth', 'role:admin', LogAdminActions::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/audit', [AdminAuditLogController::class, 'index'])->name('audit.index');
         Route::get('/permissions', [PermissionManagementController::class, 'index'])->name('permissions');
         Route::get('/administration/maintenance', [AdministrationController::class, 'maintenance'])->name('administration.maintenance');
+        Route::get('/administration/maintenance/preview', [AdministrationController::class, 'maintenancePreview'])->name('administration.maintenance.preview');
+        Route::put('/administration/maintenance', [AdministrationController::class, 'updateMaintenance'])->name('administration.maintenance.update');
+        Route::patch('/administration/maintenance/toggle', [AdministrationController::class, 'toggleMaintenance'])->name('administration.maintenance.toggle');
         Route::get('/administration/apparence', [AdministrationController::class, 'appearance'])->name('administration.appearance');
         Route::post('/administration/apparence/slides', [AdministrationController::class, 'storeSlide'])->name('administration.appearance.slides.store');
         Route::patch('/administration/apparence/slides/{slide}', [AdministrationController::class, 'updateSlide'])->name('administration.appearance.slides.update');
@@ -169,6 +346,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/administration/medias/{siteMediaItem}', [AdministrationController::class, 'destroySiteMedia'])->name('administration.media.destroy');
         Route::get('/administration/parametres', [AdministrationController::class, 'settings'])->name('administration.settings');
         Route::put('/administration/parametres', [AdministrationController::class, 'updateSiteSettings'])->name('administration.settings.update');
+        Route::get('/administration/accueil', [AdministrationController::class, 'homepage'])->name('administration.homepage');
+        Route::put('/administration/accueil', [AdministrationController::class, 'updateHomepage'])->name('administration.homepage.update');
         Route::get('/administration/partenaires', [PartnerController::class, 'index'])->name('administration.partners');
         Route::get('/administration/partenaires/creer', [PartnerController::class, 'create'])->name('administration.partners.create');
         Route::post('/administration/partenaires', [PartnerController::class, 'store'])->name('administration.partners.store');
@@ -261,12 +440,20 @@ Route::middleware(['auth', 'role:admin,editor'])
         Route::put('/articles/{article}', [EditorArticleController::class, 'update'])->name('articles.update');
         Route::delete('/articles/{article}', [EditorArticleController::class, 'destroy'])->name('articles.destroy');
         Route::patch('/articles/{article}/status', [EditorArticleController::class, 'updateStatus'])->name('articles.status');
+        Route::get('/articles/{article}/preview', [EditorArticleController::class, 'preview'])->name('articles.preview');
+        Route::patch('/articles/{article}/autosave', [EditorArticleController::class, 'autosave'])
+            ->name('articles.autosave')
+            ->middleware('throttle:45,1');
 
         // Événements
         Route::get('/evenements', [EditorEventController::class, 'index'])->name('events.index');
         Route::get('/evenements/create', [EditorEventController::class, 'create'])->name('events.create');
         Route::post('/evenements', [EditorEventController::class, 'store'])->name('events.store');
         Route::get('/evenements/{event}/edit', [EditorEventController::class, 'edit'])->name('events.edit');
+        Route::get('/evenements/{event}/preview', [EditorEventController::class, 'preview'])->name('events.preview');
+        Route::patch('/evenements/{event}/autosave', [EditorEventController::class, 'autosave'])
+            ->name('events.autosave')
+            ->middleware('throttle:45,1');
         Route::put('/evenements/{event}', [EditorEventController::class, 'update'])->name('events.update');
         Route::delete('/evenements/{event}', [EditorEventController::class, 'destroy'])->name('events.destroy');
         Route::patch('/evenements/{event}/status', [EditorEventController::class, 'updateStatus'])->name('events.status');
@@ -289,12 +476,24 @@ Route::middleware(['auth', 'role:provider'])
         Route::post('/avis/{review}/repondre', [ProviderReviewController::class, 'reply'])->name('reviews.reply');
         Route::delete('/avis/{review}/reponse', [ProviderReviewController::class, 'destroyReply'])->name('reviews.reply.destroy');
 
+        // Analytics
+        Route::get('/analytics', [ProviderAnalyticsController::class, 'index'])->name('analytics');
+
         // Billing
         Route::get('/billing/plans', [BillingController::class, 'plans'])->name('billing.plans');
         Route::get('/billing/checkout/{plan}', [BillingController::class, 'checkout'])->name('billing.checkout');
         Route::post('/billing/checkout/{plan}/pay', [BillingController::class, 'initiate'])->name('billing.pay');
+        Route::post('/billing/promo/validate', [BillingController::class, 'validatePromo'])->name('billing.promo.validate')->middleware('throttle:20,1');
         Route::get('/billing/confirmation/{payment}', [BillingController::class, 'confirmation'])->name('billing.confirmation');
         Route::get('/billing/factures', [BillingController::class, 'invoices'])->name('billing.invoices');
+
+        // CynetPay AJAX initiation + status check
+        Route::post('/billing/cynetpay/initier', [PaymentController::class, 'initiateCynetPayPayment'])
+            ->name('payment.cynetpay.initiate')
+            ->middleware('throttle:10,1');
+        Route::post('/paiements/{payment}/verifier-statut', [PaymentController::class, 'checkStatus'])
+            ->name('payment.check-status')
+            ->middleware('throttle:30,1');
         Route::get('/premium-content', fn () => view('provider.premium-content'))
             ->middleware('subscription.active')
             ->name('premium-content');
@@ -306,4 +505,13 @@ Route::middleware(['auth', 'role:visitor'])
     ->name('visitor.')
     ->group(function () {
         Route::get('/dashboard', [VisitorDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/profil', [VisitorProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profil', [VisitorProfileController::class, 'update'])->name('profile.update');
+
+        Route::get('/favoris', [VisitorFavoriteController::class, 'index'])->name('favorites.index');
+        Route::post('/favoris', [VisitorFavoriteController::class, 'store'])->name('favorites.store');
+        Route::delete('/favoris/{favorite}', [VisitorFavoriteController::class, 'destroy'])->name('favorites.destroy');
+
+        Route::get('/notifications', [VisitorNotificationController::class, 'index'])->name('notifications.index');
+        Route::patch('/notifications/read-all', [VisitorNotificationController::class, 'markAllRead'])->name('notifications.read-all');
     });

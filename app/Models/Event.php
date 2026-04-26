@@ -10,12 +10,13 @@ class Event extends Model
     protected $fillable = [
         'uuid', 'category_id', 'created_by', 'provider_id',
         'title_fr', 'title_en', 'slug', 'description_fr', 'description_en',
-        'cover_url', 'starts_at', 'ends_at',
+        'cover_url', 'cover_alt', 'starts_at', 'ends_at',
         'is_recurring', 'recurrence_rule',
         'location_name', 'address', 'city', 'latitude', 'longitude',
         'price', 'is_free', 'ticket_url',
-        'organizer_name', 'organizer_phone',
-        'status', 'meta_title_fr', 'meta_desc_fr', 'published_at',
+        'organizer_name', 'organizer_phone', 'organizer_email',
+        'capacity', 'registration_deadline', 'timezone',
+        'status', 'meta_title_fr', 'meta_desc_fr', 'meta_title_en', 'meta_desc_en', 'published_at',
     ];
 
     protected function casts(): array
@@ -23,9 +24,11 @@ class Event extends Model
         return [
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
+            'registration_deadline' => 'datetime',
             'published_at' => 'datetime',
             'is_recurring' => 'boolean',
             'is_free' => 'boolean',
+            'capacity' => 'integer',
             'price' => 'decimal:2',
             'latitude' => 'decimal:8',
             'longitude' => 'decimal:8',

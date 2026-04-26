@@ -25,28 +25,7 @@
     </style>
 </head>
 <body class="bg-[#0d0d0b] text-white min-h-screen">
-
-{{-- Header --}}
-<header class="bg-[#0d0d0b]/95 backdrop-blur border-b border-white/8 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-        <a href="/" class="flex items-center gap-2 shrink-0">
-            <div class="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center">
-                <i class="fas fa-gem text-black text-xs"></i>
-            </div>
-            <span class="font-serif font-bold text-amber-400 text-sm hidden sm:block">{{ $siteBrand['site_name'] }}</span>
-        </a>
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-            <a href="{{ route('articles.index') }}" class="hover:text-amber-400 transition">Articles</a>
-            <i class="fas fa-chevron-right text-[9px]"></i>
-            <span class="text-gray-400 truncate max-w-[200px]">{{ $article->category->name_fr ?? '—' }}</span>
-        </div>
-        @auth
-        <a href="{{ route('dashboard') }}" class="shrink-0 px-3 py-1.5 border border-amber-500/40 text-amber-400 text-xs rounded-lg hover:border-amber-400 transition">Dashboard</a>
-        @else
-        <a href="{{ route('login') }}" class="shrink-0 px-3 py-1.5 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-400 transition">Connexion</a>
-        @endauth
-    </div>
-</header>
+@include('partials.public-top-nav')
 
 <article class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
 
@@ -121,6 +100,24 @@
 
         {{-- Share --}}
         <div class="ml-auto flex items-center gap-2">
+            @auth
+                @if(auth()->user()->role === 'visitor')
+                    @if(!($isFavorited ?? false))
+                        <form method="POST" action="{{ route('visitor.favorites.store') }}">
+                            @csrf
+                            <input type="hidden" name="type" value="article">
+                            <input type="hidden" name="id" value="{{ $article->id }}">
+                            <button type="submit" class="w-7 h-7 rounded-full bg-amber-900/30 hover:bg-amber-900/50 flex items-center justify-center text-amber-300 transition text-xs" title="Ajouter aux favoris">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </form>
+                    @else
+                        <span class="w-7 h-7 rounded-full bg-emerald-900/30 flex items-center justify-center text-emerald-300 text-xs" title="Déjà favori">
+                            <i class="fas fa-heart-circle-check"></i>
+                        </span>
+                    @endif
+                @endif
+            @endauth
             <span class="text-gray-600 text-xs">Partager :</span>
             <a href="#" class="w-7 h-7 rounded-full bg-[#1c1c16] hover:bg-blue-900/50 flex items-center justify-center text-gray-400 hover:text-blue-300 transition text-xs">
                 <i class="fab fa-facebook-f"></i>
@@ -153,7 +150,7 @@
     {{-- Content --}}
     @if($article->content_fr)
     <div class="prose-content max-w-none">
-        {!! nl2br(e($article->content_fr)) !!}
+        {!! \App\Support\HtmlSanitizer::articleBody($article->content_fr) !!}
     </div>
     @endif
 
@@ -181,6 +178,97 @@
             <p class="text-gray-500 text-sm">Passionné de culture et de tourisme ivoirien, notre équipe éditoriale explore et documente les richesses de la Côte d'Ivoire.</p>
         </div>
     </div>
+
+    {{-- ── COMMENTAIRES ─────────────────────────────────────────────── --}}
+    <section class="mt-14 pt-10 border-t border-white/8" id="commentaires">
+        <h2 class="font-serif text-2xl font-bold mb-8">
+            Commentaires
+            @if($comments->isNotEmpty())
+            <span class="text-base font-normal text-gray-500 ml-2">({{ $comments->count() }})</span>
+            @endif
+        </h2>
+
+        {{-- Flash message --}}
+        @if(session('comment_sent'))
+        <div class="mb-6 flex items-start gap-3 px-4 py-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-sm">
+            <i class="fas fa-circle-check mt-0.5 shrink-0"></i>
+            <p>{{ session('comment_sent') }}</p>
+        </div>
+        @endif
+
+        {{-- Existing comments --}}
+        @if($comments->isNotEmpty())
+        <div class="space-y-5 mb-10">
+            @foreach($comments as $comment)
+            <div class="flex gap-3">
+                <div class="w-9 h-9 rounded-full bg-[#252520] border border-white/8 flex items-center justify-center text-sm font-bold text-amber-400 shrink-0 mt-0.5">
+                    {{ strtoupper(substr($comment->display_name, 0, 1)) }}
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="text-white font-semibold text-sm">{{ $comment->display_name }}</span>
+                        <span class="text-gray-600 text-xs">·</span>
+                        <span class="text-gray-600 text-xs">{{ $comment->created_at->diffForHumans() }}</span>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed">{{ $comment->content }}</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <p class="text-gray-600 text-sm mb-8">Aucun commentaire pour l'instant. Soyez le premier !</p>
+        @endif
+
+        {{-- Comment form --}}
+        <div class="bg-[#141410] border border-white/8 rounded-2xl p-5">
+            <h3 class="font-serif font-semibold mb-4">Laisser un commentaire</h3>
+
+            @if($errors->has('content') || $errors->has('author_name') || $errors->has('author_email'))
+            <div class="mb-4 px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-sm">
+                @foreach($errors->all() as $error)
+                <p>{{ $error }}</p>
+                @endforeach
+            </div>
+            @endif
+
+            <form method="POST" action="{{ route('articles.comments.store', $article) }}" class="space-y-4">
+                @csrf
+
+                @guest
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-400 text-xs mb-1.5">Nom <span class="text-amber-500">*</span></label>
+                        <input type="text" name="author_name" value="{{ old('author_name') }}" required
+                               class="w-full bg-[#0d0d0b] border border-white/10 focus:border-amber-500/40 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition"
+                               placeholder="Votre nom">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-xs mb-1.5">E-mail <span class="text-amber-500">*</span></label>
+                        <input type="email" name="author_email" value="{{ old('author_email') }}" required
+                               class="w-full bg-[#0d0d0b] border border-white/10 focus:border-amber-500/40 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition"
+                               placeholder="Non publié">
+                    </div>
+                </div>
+                @else
+                <p class="text-gray-500 text-xs">Connecté en tant que <span class="text-amber-400">{{ auth()->user()->full_name }}</span></p>
+                @endguest
+
+                <div>
+                    <label class="block text-gray-400 text-xs mb-1.5">Commentaire <span class="text-amber-500">*</span></label>
+                    <textarea name="content" rows="4" required minlength="10" maxlength="2000"
+                              class="w-full bg-[#0d0d0b] border border-white/10 focus:border-amber-500/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition resize-none"
+                              placeholder="Partagez votre avis sur cet article…">{{ old('content') }}</textarea>
+                    <p class="text-gray-700 text-xs mt-1">Votre commentaire sera publié après modération.</p>
+                </div>
+
+                <button type="submit"
+                        class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-black font-bold px-5 py-2.5 rounded-xl text-sm transition">
+                    <i class="fas fa-paper-plane text-xs"></i>
+                    Envoyer le commentaire
+                </button>
+            </form>
+        </div>
+    </section>
 </article>
 
 {{-- Related articles --}}

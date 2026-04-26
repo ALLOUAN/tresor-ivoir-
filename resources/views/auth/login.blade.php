@@ -88,9 +88,14 @@
 
                 {{-- Password --}}
                 <div>
-                    <label for="password" class="block text-slate-300 text-sm font-medium mb-1.5">
-                        Mot de passe
-                    </label>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label for="password" class="block text-slate-300 text-sm font-medium">
+                            Mot de passe
+                        </label>
+                        <a href="{{ route('password.request') }}" class="text-xs text-amber-400 hover:text-amber-300 transition">
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-3 flex items-center text-slate-500">
                             <i class="fas fa-lock text-sm"></i>

@@ -37,6 +37,8 @@
                             800: '#141410',
                             700: '#1c1c16',
                             600: '#252520',
+                            500: '#2e2e26',
+                            400: '#3a3a30',
                         }
                     },
                     animation: {
@@ -316,6 +318,37 @@
         #mobile-menu { display: none; }
         #mobile-menu.open { display: block; animation: slideDown .3s ease; }
 
+        /* ── Partners horizontal carousel ────────────────────── */
+        .partners-marquee {
+            position: relative;
+            overflow: hidden;
+            mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+        }
+        .partners-track {
+            display: flex;
+            width: max-content;
+            gap: 1rem;
+            animation: partnersScroll 28s linear infinite;
+            will-change: transform;
+        }
+        .partners-marquee:hover .partners-track {
+            animation-play-state: paused;
+        }
+        .partner-card {
+            width: 240px;
+            min-height: 220px;
+            flex-shrink: 0;
+        }
+        @keyframes partnersScroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        @media (max-width: 640px) {
+            .partners-track { animation-duration: 20s; }
+            .partner-card { width: 210px; min-height: 210px; }
+        }
+
     </style>
 </head>
 <body class="bg-dark-900 text-white antialiased font-sans">
@@ -390,13 +423,13 @@
         <a href="/" class="flex items-center gap-3 sm:gap-3.5 shrink-0 group">
             @if(!empty($siteBrand['logo_url']))
                 <div class="logo-ring shrink-0">
-                    <div class="logo-ring-inner w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] flex items-center justify-center">
+                    <div class="logo-ring-inner w-12 h-12 md:w-[4rem] md:h-[4rem] flex items-center justify-center">
                         <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain p-0.5">
                     </div>
                 </div>
             @else
                 <div class="logo-ring shrink-0">
-                    <div class="logo-ring-inner w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] flex items-center justify-center bg-linear-to-br from-gold-400 to-gold-600">
+                    <div class="logo-ring-inner w-12 h-12 md:w-[4rem] md:h-[4rem] flex items-center justify-center bg-linear-to-br from-gold-400 to-gold-600">
                         <i class="fas fa-gem text-dark-900 text-sm md:text-base drop-shadow-sm"></i>
                     </div>
                 </div>
@@ -414,11 +447,11 @@
         {{-- Nav desktop --}}
         <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1">
             @php $navItems = [
-                ['label' => 'Accueil',              'href' => '/'],
-                ['label' => 'Articles',             'href' => '#articles'],
-                ['label' => 'Découvertes',          'href' => '#decouvertes'],
+                ['label' => 'Magazine Premium',     'href' => route('home')],
+                ['label' => 'Articles',             'href' => route('articles.index')],
+                ['label' => 'Découvertes',          'href' => route('discoveries.index')],
                 ['label' => 'Annuaire Prestataires','href' => route('providers.index')],
-                ['label' => 'Événements',           'href' => '#evenements'],
+                ['label' => 'Événements',           'href' => route('events.index')],
             ]; @endphp
             @foreach($navItems as $item)
             <a href="{{ $item['href'] }}"
@@ -435,8 +468,10 @@
         {{-- Right actions --}}
         <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <div class="lang-switch-ultra hidden sm:inline-flex">
-                <button type="button" class="bg-gold-500 text-dark-900 shadow-sm">FR</button>
-                <button type="button" class="text-gray-400 hover:text-white">EN</button>
+                <a href="{{ route('lang.switch', 'fr') }}"
+                   class="{{ session('locale', app()->getLocale()) === 'fr' ? 'bg-gold-500 text-dark-900 shadow-sm' : 'text-gray-400 hover:text-white' }}">FR</a>
+                <a href="{{ route('lang.switch', 'en') }}"
+                   class="{{ session('locale', app()->getLocale()) === 'en' ? 'bg-gold-500 text-dark-900 shadow-sm' : 'text-gray-400 hover:text-white' }}">EN</a>
             </div>
 
             @auth
@@ -450,7 +485,7 @@
                class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-200 btn-ghost-header">
                 Connexion
             </a>
-            <a href="#newsletter-footer"
+            <a href="{{ route('plans.public') }}"
                class="inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 text-dark-900 text-xs sm:text-sm font-bold btn-gold-header">
                 <i class="fas fa-star text-[10px] sm:text-xs opacity-90 hidden sm:inline"></i>
                 <span>S’abonner</span>
@@ -478,7 +513,7 @@
             </button>
             <div class="pt-4 mt-2 border-t border-white/10 flex flex-col gap-2">
                 <a href="{{ route('login') }}" class="text-center py-3 text-sm font-semibold text-gray-200 btn-ghost-header">Connexion</a>
-                <a href="#newsletter-footer" class="text-center py-3 text-sm font-bold text-dark-900 btn-gold-header">S’abonner à la newsletter</a>
+                <a href="{{ route('plans.public') }}" class="text-center py-3 text-sm font-bold text-dark-900 btn-gold-header">S’abonner</a>
             </div>
         </div>
     </div>
@@ -562,117 +597,117 @@
     <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-1/3 left-1/6 w-64 h-64 bg-green-900/10 rounded-full blur-3xl pointer-events-none"></div>
 
-    {{-- Content : accroche + carrousel slides (images responsives) --}}
-    <div class="flex-1 flex items-center relative z-10 pt-32 md:pt-36 pb-24 md:pb-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-            <div class="@if($heroSlides->isNotEmpty()) grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-center @endif">
-                <div class="@if($heroSlides->isNotEmpty()) lg:col-span-5 @else max-w-2xl xl:max-w-3xl @endif">
-
-                    {{-- Brand tag --}}
-                    <div class="inline-flex items-center gap-2 mb-5 animate-fade-in">
-                        <div class="h-px w-8 bg-gold-400"></div>
-                        <span class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant">{{ $siteBrand['site_name'] }}</span>
-                    </div>
-
-                    {{-- Main title --}}
-                    <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.1] mb-6 animate-fade-up" style="animation-delay:.1s">
-                        Découvrez la magie<br>
-                        <span class="text-transparent bg-clip-text bg-linear-to-r from-gold-400 via-gold-300 to-gold-500">
-                            de la Côte d'Ivoire
-                        </span>
-                    </h1>
-
-                    {{-- Subtitle --}}
-                    <p class="font-elegant text-gray-300 text-lg sm:text-xl md:text-2xl leading-relaxed mb-8 max-w-xl animate-fade-up" style="animation-delay:.2s; font-weight:300">
-                        Grand reportage, adresses choisies et récits d'exception pour explorer les paysages, les cultures et l'art de vivre ivoiriens.
-                    </p>
-
-                    {{-- CTAs --}}
-                    <div class="flex flex-wrap items-center gap-3 sm:gap-4 animate-fade-up" style="animation-delay:.3s">
-                        <a href="#articles"
-                           class="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm sm:text-base rounded-xl transition-all duration-300 shadow-xl shadow-gold-500/25 hover:shadow-gold-400/30 hover:-translate-y-0.5">
-                            <i class="fas fa-book-open"></i>
-                            Explorer le magazine
-                        </a>
-                        <a href="#decouvertes"
-                           class="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 border border-white/20 hover:border-gold-400/50 text-white hover:text-gold-300 font-semibold text-sm sm:text-base rounded-xl transition-all duration-300 backdrop-blur-sm bg-white/5 hover:bg-white/8">
-                            <i class="fas fa-compass text-sm"></i>
-                            Découvrir
-                        </a>
-                    </div>
-
-                    {{-- Stats --}}
-                    <div class="flex flex-wrap gap-6 sm:gap-10 mt-12 sm:mt-16 pt-8 border-t border-white/8 animate-fade-up" style="animation-delay:.4s">
-                        @php $stats = [
-                            ['n' => '350+',  'label' => 'Articles & reportages'],
-                            ['n' => '120+',  'label' => 'Prestataires référencés'],
-                            ['n' => '18',    'label' => 'Régions couvertes'],
-                            ['n' => '45K+',  'label' => 'Lecteurs mensuels'],
-                        ]; @endphp
-                        @foreach($stats as $s)
-                        <div>
-                            <p class="font-serif text-2xl sm:text-3xl font-bold text-gold-400">{{ $s['n'] }}</p>
-                            <p class="text-gray-500 text-xs mt-0.5 tracking-wide">{{ $s['label'] }}</p>
+    {{-- Content : carousel plein écran (slides responsives) --}}
+    <div class="relative z-10 flex w-full flex-1 flex-col min-h-[100svh] sm:min-h-[min(100svh,900px)]">
+        @if($heroSlides->isNotEmpty())
+            <div id="hero-bg-carousel" class="pointer-events-none absolute inset-0 z-0 h-full min-h-[100svh] w-full overflow-hidden" aria-hidden="true">
+                @foreach($heroSlides as $idx => $slide)
+                    @php
+                        $desktop = trim((string) $slide->desktop_image_url);
+                        $tablet = trim((string) ($slide->tablet_image_url ?: $slide->desktop_image_url));
+                        $mobile = trim((string) ($slide->mobile_image_url ?: $slide->tablet_image_url ?: $slide->desktop_image_url));
+                        $src = $desktop !== '' ? $desktop : ($tablet !== '' ? $tablet : $mobile);
+                    @endphp
+                    @if($src !== '')
+                        <div class="hero-bg-layer absolute inset-0 transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}" data-hero-bg-layer="{{ $idx }}">
+                            <picture class="absolute inset-0 block h-full w-full">
+                                @if($desktop !== '')
+                                    <source media="(min-width: 1024px)" srcset="{{ $desktop }}">
+                                @endif
+                                @if($tablet !== '')
+                                    <source media="(min-width: 640px)" srcset="{{ $tablet }}">
+                                @endif
+                                <img
+                                    src="{{ $src }}"
+                                    alt=""
+                                    @if($idx > 0) loading="lazy" @endif
+                                    @if($idx === 0) fetchpriority="high" @endif
+                                    decoding="async"
+                                    class="h-full w-full object-cover object-[65%_center] sm:object-[58%_center] lg:object-center"
+                                />
+                            </picture>
                         </div>
+                    @endif
+                @endforeach
+                <div class="absolute inset-0 z-20 bg-linear-to-r from-black/92 via-black/65 to-black/35 sm:from-black/88 sm:via-black/55 sm:to-black/25"></div>
+                <div class="absolute inset-0 z-20 bg-linear-to-t from-black/80 via-black/15 to-black/50"></div>
+            </div>
+            @if($heroSlides->count() > 1)
+                <div class="absolute inset-x-0 bottom-24 sm:bottom-28 z-30 flex items-center justify-center gap-3 pointer-events-none">
+                    <button type="button" id="hero-bg-prev" class="pointer-events-auto w-9 h-9 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center" aria-label="Slide précédent">
+                        <i class="fas fa-chevron-left text-xs"></i>
+                    </button>
+                    <div class="flex items-center gap-2 pointer-events-auto" id="hero-bg-dots" role="tablist" aria-label="Choisir un slide">
+                        @foreach($heroSlides as $idx => $slide)
+                            <button type="button"
+                                    class="hero-bg-dot h-2 rounded-full transition-all {{ $idx === 0 ? 'w-6 bg-gold-400' : 'w-2 bg-white/35 hover:bg-white/60' }}"
+                                    data-hero-bg-dot="{{ $idx }}"
+                                    aria-label="Slide {{ $idx + 1 }}"
+                                    aria-selected="{{ $idx === 0 ? 'true' : 'false' }}"></button>
                         @endforeach
                     </div>
+                    <button type="button" id="hero-bg-next" class="pointer-events-auto w-9 h-9 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center" aria-label="Slide suivant">
+                        <i class="fas fa-chevron-right text-xs"></i>
+                    </button>
                 </div>
+            @endif
+        @endif
 
-                @if($heroSlides->isNotEmpty())
-                    <div class="lg:col-span-7 w-full max-w-xl mx-auto lg:max-w-none animate-fade-up" style="animation-delay:.25s">
-                        <p class="text-gold-400/90 text-[10px] tracking-[.2em] uppercase font-elegant mb-3 text-center lg:text-left">
-                            <i class="fas fa-images mr-1.5 opacity-70"></i> Images responsives
+        {{-- Contenu éditorial hero --}}
+        @php
+            $heroArticle = ($hideHomeHeroArticle ?? false)
+                ? null
+                : ($homeDestinationArticle ?? (($homeArticles ?? collect())->where('is_featured', true)->first() ?? ($homeArticles ?? collect())->first()));
+        @endphp
+        <div class="relative z-10 flex w-full flex-1 items-center">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+                <div class="max-w-xl pt-28 sm:pt-32 pb-10">
+                    @if($heroArticle)
+                        <span class="inline-flex items-center gap-1.5 text-gold-400 text-xs uppercase tracking-[.2em] font-elegant mb-4 animate-fade-in">
+                            <i class="fas fa-star text-[10px]"></i>
+                            {{ $heroArticle->category?->name_fr ?? 'Sélection de la rédaction' }}
+                        </span>
+                        <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 text-white animate-fade-up">
+                            {{ $heroArticle->title_fr }}
+                        </h1>
+                        @if($heroArticle->excerpt_fr)
+                        <p class="text-gray-300 font-elegant text-lg font-light leading-relaxed mb-6 line-clamp-2 animate-fade-up">
+                            {{ $heroArticle->excerpt_fr }}
                         </p>
-                        <div id="hero-slides-carousel" class="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/40 bg-dark-800 aspect-[16/10] max-h-[min(380px,42vh)] sm:max-h-[min(440px,48vh)] lg:max-h-[min(520px,58vh)]">
-                            @foreach($heroSlides as $idx => $slide)
-                                @php
-                                    $tabletSrc = $slide->tablet_image_url ?: $slide->desktop_image_url;
-                                    $mobileSrc = $slide->mobile_image_url ?: $tabletSrc;
-                                @endphp
-                                <div class="hero-slide-layer absolute inset-0 transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none' }}"
-                                     data-hero-slide="{{ $idx }}"
-                                     aria-hidden="{{ $idx === 0 ? 'false' : 'true' }}">
-                                    <picture class="block w-full h-full">
-                                        <source media="(min-width: 1024px)" srcset="{{ $slide->desktop_image_url }}">
-                                        <source media="(min-width: 640px)" srcset="{{ $tabletSrc }}">
-                                        <img src="{{ $mobileSrc }}" alt="{{ $slide->title }}"
-                                             class="w-full h-full object-cover"
-                                             @if($idx > 0) loading="lazy" @endif>
-                                    </picture>
-                                    <div class="absolute inset-0 bg-linear-to-t from-black/85 via-black/20 to-transparent pointer-events-none"></div>
-                                    @if($slide->title || $slide->subtitle || $slide->description)
-                                        <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-20">
-                                            @if($slide->title)
-                                                <p class="font-serif text-lg sm:text-xl font-bold text-white leading-tight">{{ $slide->title }}</p>
-                                            @endif
-                                            @if($slide->subtitle)
-                                                <p class="text-gold-300/95 text-sm mt-1 font-elegant font-light">{{ $slide->subtitle }}</p>
-                                            @endif
-                                            @if($slide->description)
-                                                <p class="text-gray-300/90 text-xs sm:text-sm mt-2 line-clamp-2">{{ $slide->description }}</p>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
-                            @endforeach
-
-                            @if($heroSlides->count() > 1)
-                                <button type="button" id="hero-slide-prev" class="absolute left-2 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-black/50 border border-white/15 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center" aria-label="Slide précédent">
-                                    <i class="fas fa-chevron-left text-xs"></i>
-                                </button>
-                                <button type="button" id="hero-slide-next" class="absolute right-2 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-black/50 border border-white/15 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center" aria-label="Slide suivant">
-                                    <i class="fas fa-chevron-right text-xs"></i>
-                                </button>
-                                <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-2 z-30" id="hero-slide-dots" role="tablist" aria-label="Choisir un slide">
-                                    @foreach($heroSlides as $idx => $slide)
-                                        <button type="button" class="hero-slide-dot h-2 rounded-full transition-all {{ $idx === 0 ? 'w-6 bg-gold-400' : 'w-2 bg-white/35 hover:bg-white/60' }}"
-                                                data-hero-dot="{{ $idx }}" aria-label="Slide {{ $idx + 1 }}" aria-selected="{{ $idx === 0 ? 'true' : 'false' }}"></button>
-                                    @endforeach
-                                </div>
+                        @endif
+                        <div class="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-8 animate-fade-in">
+                            @if($heroArticle->author)
+                            <span><i class="fas fa-user-pen mr-1 text-gold-500/60"></i>{{ $heroArticle->author->full_name }}</span>
+                            <span class="text-gray-600">·</span>
                             @endif
+                            @if($heroArticle->reading_time)
+                            <span><i class="fas fa-clock mr-1 text-gold-500/60"></i>{{ $heroArticle->reading_time }} min de lecture</span>
+                            <span class="text-gray-600">·</span>
+                            @endif
+                            <span><i class="fas fa-calendar mr-1 text-gold-500/60"></i>{{ $heroArticle->published_at?->translatedFormat('d M Y') }}</span>
                         </div>
-                    </div>
-                @endif
+                        <a href="{{ route('articles.show', $heroArticle->slug_fr) }}"
+                           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm transition-all duration-300 shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:-translate-y-0.5 animate-fade-up">
+                            <i class="fas fa-book-open text-xs"></i>
+                            Lire le reportage
+                        </a>
+                    @elseif(!($hideHomeHeroArticle ?? false))
+                        <span class="inline-flex items-center gap-1.5 text-gold-400 text-xs uppercase tracking-[.2em] font-elegant mb-4">
+                            <i class="fas fa-star text-[10px]"></i>Magazine Premium
+                        </span>
+                        <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 text-white">
+                            Découvrez la Côte d'Ivoire<br class="hidden sm:block">à travers sa culture
+                        </h1>
+                        <p class="text-gray-300 font-elegant text-lg font-light leading-relaxed mb-8">
+                            Patrimoine, art de vivre, gastronomie et destinations d'exception — le magazine de référence.
+                        </p>
+                        <a href="{{ route('articles.index') }}"
+                           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm transition-all duration-300 shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:-translate-y-0.5">
+                            <i class="fas fa-newspaper text-xs"></i>
+                            Explorer le magazine
+                        </a>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -681,18 +716,17 @@
     <div class="relative z-10 border-t border-white/8 bg-dark-900/60 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex items-center overflow-x-auto gap-0 scrollbar-none py-1">
-                @php $cats = [
-                    'Magazine Culturel & Touristique',
-                    'Patrimoine & Élégance',
-                    'Regards Contemporains',
-                    'Culture & Traditions',
-                    'Destination du Mois',
-                    'Art de Vivre',
-                    'Gastronomie',
-                ]; @endphp
-                @foreach($cats as $cat)
-                <a href="#" class="shrink-0 px-4 py-4 text-xs text-gray-400 hover:text-gold-400 tracking-wider uppercase font-medium transition border-b-2 border-transparent hover:border-gold-400/50 whitespace-nowrap">
-                    {{ $cat }}
+                <a href="{{ route('articles.index') }}"
+                   class="shrink-0 px-4 py-4 text-xs {{ !request('categorie') && request()->routeIs('home') ? 'text-gold-400 border-gold-400/50' : 'text-gray-400 border-transparent' }} hover:text-gold-400 tracking-wider uppercase font-medium transition border-b-2 hover:border-gold-400/50 whitespace-nowrap">
+                    Tout voir
+                </a>
+                @foreach($homeCategories as $cat)
+                <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}"
+                   class="shrink-0 px-4 py-4 text-xs text-gray-400 hover:text-gold-400 tracking-wider uppercase font-medium transition border-b-2 border-transparent hover:border-gold-400/50 whitespace-nowrap">
+                    {{ $cat->name_fr }}
+                    @if($cat->articles_count > 0)
+                    <span class="ml-1 text-gray-600">({{ $cat->articles_count }})</span>
+                    @endif
                 </a>
                 @endforeach
             </div>
@@ -709,99 +743,184 @@
 {{-- ══════════════════════════════════════════════════════════
      SECTION: À LA UNE
 ══════════════════════════════════════════════════════════ --}}
-<section id="articles" class="py-16 sm:py-24 bg-dark-900">
+<section id="articles" class="py-16 sm:py-20 bg-dark-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
-        {{-- Section header --}}
-        <div class="flex items-end justify-between mb-10 sm:mb-14">
-            <div class="reveal">
-                <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-2">Sélection de la rédaction</p>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Articles à la une</h2>
+        {{-- ── En-tête centré style presse ── --}}
+        <div class="flex items-center gap-4 mb-10 sm:mb-12 reveal">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent to-gold-500/40"></div>
+            <div class="flex items-center gap-3 shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-gold-400"></span>
+                <span class="font-elegant text-xs sm:text-sm font-bold uppercase tracking-[0.28em] text-gold-300 border border-gold-500/30 px-5 py-2 rounded-full bg-dark-800/80">
+                    À la une
+                </span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gold-400"></span>
             </div>
-            <a href="#" class="hidden sm:inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gold-400 transition font-medium">
-                Voir tous les articles <i class="fas fa-arrow-right text-xs"></i>
+            <div class="flex-1 h-px bg-gradient-to-l from-transparent to-gold-500/40"></div>
+        </div>
+
+        @if(($homeArticles ?? collect())->isNotEmpty())
+        @php
+            $mainArt   = $homeArticles->first();
+            $leftArts  = $homeArticles->slice(1, 2)->values();
+            $rightArts = $homeArticles->slice(3)->values();
+        @endphp
+
+        {{-- ── Grille 3 colonnes ── --}}
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+
+            {{-- ──────────────────────────────────────────
+                 COLONNE GAUCHE (25%) — 2 articles empilés
+            ────────────────────────────────────────── --}}
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                @forelse($leftArts as $art)
+                <a href="{{ route('articles.show', $art->slug_fr) }}"
+                   class="article-card group block reveal">
+                    {{-- Image --}}
+                    <div class="relative overflow-hidden rounded-xl h-40 bg-dark-700 mb-3">
+                        @if($art->cover_url)
+                            <img src="{{ $art->cover_url }}" alt="{{ $art->title_fr }}"
+                                 class="article-img absolute inset-0 w-full h-full object-cover">
+                        @else
+                            <div class="article-img absolute inset-0 bg-gradient-to-br from-dark-700 to-dark-600 flex items-center justify-center">
+                                <i class="fas fa-image text-dark-500 text-2xl"></i>
+                            </div>
+                        @endif
+                    </div>
+                    {{-- Catégorie --}}
+                    @if($art->category)
+                    <div class="flex flex-wrap gap-1.5 mb-2">
+                        <span class="text-gold-400 text-[10px] font-semibold uppercase tracking-wider font-elegant">{{ $art->category->name_fr }}</span>
+                    </div>
+                    @endif
+                    {{-- Titre --}}
+                    <h3 class="font-serif text-sm font-bold leading-snug line-clamp-3 group-hover:text-gold-300 transition mb-2">
+                        {{ $art->title_fr }}
+                    </h3>
+                    {{-- Auteur + date --}}
+                    <div class="flex items-center gap-1.5 text-[11px] text-gray-500 flex-wrap">
+                        @if($art->author)
+                        <span class="font-semibold text-gray-400 uppercase">{{ $art->author->full_name }}</span>
+                        <span>·</span>
+                        @endif
+                        <span>{{ $art->published_at?->translatedFormat('d M Y') }}</span>
+                    </div>
+                </a>
+                @empty
+                <div class="text-gray-700 text-sm py-4">—</div>
+                @endforelse
+            </div>
+
+            {{-- ──────────────────────────────────────────
+                 COLONNE CENTRALE (50%) — article principal
+            ────────────────────────────────────────── --}}
+            <div class="lg:col-span-2 reveal">
+                @if($mainArt)
+                <a href="{{ route('articles.show', $mainArt->slug_fr) }}" class="article-card group block">
+                    {{-- Grande image --}}
+                    <div class="relative overflow-hidden rounded-2xl h-64 sm:h-80 bg-dark-700 mb-4">
+                        @if($mainArt->cover_url)
+                            <img src="{{ $mainArt->cover_url }}" alt="{{ $mainArt->title_fr }}"
+                                 class="article-img absolute inset-0 w-full h-full object-cover">
+                        @else
+                            <div class="article-img absolute inset-0 bg-gradient-to-br from-dark-700 via-dark-800 to-dark-600 flex items-center justify-center">
+                                <i class="fas fa-image text-dark-500 text-4xl"></i>
+                            </div>
+                        @endif
+                        {{-- Overlay dégradé bas --}}
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-900/60 via-transparent to-transparent pointer-events-none"></div>
+                        {{-- Badge dernier paru --}}
+                        <span class="absolute top-4 left-4 bg-gold-500 text-dark-900 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                            <i class="fas fa-star text-[9px] mr-1"></i>Dernier paru
+                        </span>
+                    </div>
+                    {{-- Catégorie --}}
+                    @if($mainArt->category)
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="text-gold-400 text-[11px] font-semibold uppercase tracking-wider font-elegant">{{ $mainArt->category->name_fr }}</span>
+                    </div>
+                    @endif
+                    {{-- Grand titre --}}
+                    <h2 class="font-serif text-xl sm:text-2xl lg:text-[1.6rem] font-bold leading-snug group-hover:text-gold-300 transition mb-3">
+                        {{ $mainArt->title_fr }}
+                    </h2>
+                    {{-- Extrait --}}
+                    @if($mainArt->excerpt_fr)
+                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4 font-elegant text-base">
+                        {{ $mainArt->excerpt_fr }}
+                    </p>
+                    @endif
+                    {{-- Auteur + date + lecture --}}
+                    <div class="flex items-center gap-2 text-xs text-gray-500 pt-3 border-t border-white/5 flex-wrap">
+                        @if($mainArt->author)
+                        <span class="font-semibold text-gray-300 uppercase text-[11px]">{{ $mainArt->author->full_name }}</span>
+                        <span class="text-gray-600">·</span>
+                        @endif
+                        <span>{{ $mainArt->published_at?->translatedFormat('d M Y') }}</span>
+                        @if($mainArt->reading_time)
+                        <span class="text-gray-600">·</span>
+                        <span><i class="fas fa-clock mr-1 text-gold-500/50"></i>{{ $mainArt->reading_time }} min</span>
+                        @endif
+                    </div>
+                </a>
+                @endif
+            </div>
+
+            {{-- ──────────────────────────────────────────
+                 COLONNE DROITE (25%) — liste mini-cards
+            ────────────────────────────────────────── --}}
+            <div class="lg:col-span-1">
+                <div class="flex flex-col divide-y divide-white/5">
+                    @forelse($rightArts as $art)
+                    <a href="{{ route('articles.show', $art->slug_fr) }}"
+                       class="group flex items-start gap-3 py-3 first:pt-0 hover:bg-dark-800/50 -mx-2 px-2 rounded-lg transition-all duration-200 reveal">
+                        {{-- Texte --}}
+                        <div class="flex-1 min-w-0">
+                            @if($art->category)
+                            <span class="text-gold-400/60 text-[9px] uppercase tracking-wider font-elegant block mb-0.5">{{ $art->category->name_fr }}</span>
+                            @endif
+                            <h4 class="font-serif text-[11px] sm:text-xs font-semibold line-clamp-2 group-hover:text-gold-300 transition leading-snug">
+                                {{ $art->title_fr }}
+                            </h4>
+                            <p class="text-gray-600 text-[10px] mt-1">{{ $art->published_at?->translatedFormat('d M Y') }}</p>
+                        </div>
+                        {{-- Miniature --}}
+                        <div class="w-16 h-14 shrink-0 rounded-lg overflow-hidden bg-dark-700 relative">
+                            @if($art->cover_url)
+                                <img src="{{ $art->cover_url }}" alt="{{ $art->title_fr }}"
+                                     class="article-img absolute inset-0 w-full h-full object-cover">
+                            @else
+                                <div class="article-img absolute inset-0 bg-gradient-to-br from-dark-700 to-dark-600 flex items-center justify-center">
+                                    <i class="fas fa-image text-dark-500 text-[10px]"></i>
+                                </div>
+                            @endif
+                        </div>
+                    </a>
+                    @empty
+                    <p class="text-gray-700 text-sm py-4">Aucun article supplémentaire.</p>
+                    @endforelse
+                </div>
+
+                {{-- Lien "Voir tous" mobile --}}
+                <a href="{{ route('articles.index') }}"
+                   class="mt-5 flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-gold-500/20 text-gold-400 text-xs font-semibold hover:bg-gold-500/5 hover:border-gold-500/40 transition">
+                    Voir tous les articles <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+
+        </div>{{-- /grid --}}
+
+        @else
+        {{-- Fallback : aucun article --}}
+        <div class="text-center py-16 rounded-2xl border border-dashed border-white/10 bg-dark-800/40">
+            <i class="fas fa-newspaper text-dark-600 text-5xl mb-4"></i>
+            <p class="text-gray-500 font-elegant text-lg mb-4">Aucun article publié pour le moment.</p>
+            <a href="{{ route('login') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm transition">
+                <i class="fas fa-plus text-xs"></i> Publier le premier article
             </a>
         </div>
+        @endif
 
-        {{-- Grid --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-
-            {{-- Featured article (large) --}}
-            <div class="md:col-span-2 article-card group cursor-pointer reveal">
-                <div class="relative overflow-hidden rounded-2xl aspect-video bg-dark-700">
-                    <div class="article-img absolute inset-0 bg-linear-to-br from-green-900/40 via-dark-800 to-amber-900/30 flex items-center justify-center">
-                        <div class="text-center">
-                            <i class="fas fa-image text-5xl text-dark-600 mb-3"></i>
-                            <p class="text-dark-500 text-sm">Remplacer avec votre image</p>
-                        </div>
-                    </div>
-                    <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent"></div>
-                    <span class="absolute top-4 left-4 bg-gold-500 text-dark-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                        <i class="fas fa-star mr-1 text-[10px]"></i>À la une
-                    </span>
-                    <div class="absolute bottom-0 left-0 right-0 p-6">
-                        <span class="text-gold-400 text-xs uppercase tracking-widest font-elegant">Patrimoine</span>
-                        <h3 class="font-serif text-xl sm:text-2xl font-bold mt-1 mb-3 group-hover:text-gold-300 transition leading-snug">
-                            Grand-Bassam, joyau colonial classé au patrimoine mondial
-                        </h3>
-                        <div class="flex items-center gap-3 text-xs text-gray-400">
-                            <span><i class="fas fa-user-pen mr-1"></i>Marie Kouassi</span>
-                            <span>·</span>
-                            <span><i class="fas fa-calendar mr-1"></i>15 avril 2026</span>
-                            <span>·</span>
-                            <span><i class="fas fa-eye mr-1"></i>2 840 vues</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Side articles --}}
-            <div class="flex flex-col gap-6">
-                @php $sideArticles = [
-                    ['title' => 'Les masques sacrés du peuple Wê, gardiens d\'une tradition millénaire', 'cat' => 'Culture', 'date' => '12 avr. 2026', 'views' => '1 240'],
-                    ['title' => 'Parc National de Taï : dernier sanctuaire de la forêt primaire ouest-africaine', 'cat' => 'Nature', 'date' => '8 avr. 2026', 'views' => '980'],
-                ]; @endphp
-                @foreach($sideArticles as $art)
-                <div class="article-card group cursor-pointer flex gap-4 reveal bg-dark-700/50 hover:bg-dark-700 border border-white/5 hover:border-gold-500/20 rounded-xl p-4 transition-all duration-300">
-                    <div class="w-24 h-20 sm:w-28 rounded-xl bg-dark-600 overflow-hidden shrink-0 relative">
-                        <div class="article-img absolute inset-0 bg-linear-to-br from-dark-700 to-dark-600 flex items-center justify-center">
-                            <i class="fas fa-image text-dark-500"></i>
-                        </div>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <span class="text-gold-400/80 text-[11px] uppercase tracking-wider font-elegant">{{ $art['cat'] }}</span>
-                        <h3 class="font-serif text-sm font-semibold mt-1 line-clamp-3 group-hover:text-gold-300 transition leading-snug">
-                            {{ $art['title'] }}
-                        </h3>
-                        <p class="text-gray-500 text-xs mt-2">{{ $art['date'] }} · {{ $art['views'] }} vues</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-
-        {{-- More articles row --}}
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-            @php $moreArts = [
-                ['title' => 'Le Kédjénou, recette emblématique de la Côte d\'Ivoire', 'cat' => 'Gastronomie'],
-                ['title' => 'Abidjan by night : les adresses incontournables', 'cat' => 'Art de vivre'],
-                ['title' => 'Tissage de Korhogo, l\'art ancestral des tisserands sénoufo', 'cat' => 'Artisanat'],
-                ['title' => 'Les lagunes d\'Assinie, perle du tourisme ivoirien', 'cat' => 'Destinations'],
-            ]; @endphp
-            @foreach($moreArts as $art)
-            <a href="#" class="article-card group bg-dark-700/40 hover:bg-dark-700 border border-white/5 hover:border-gold-500/20 rounded-xl overflow-hidden transition-all duration-300 reveal">
-                <div class="h-32 bg-dark-600 relative overflow-hidden">
-                    <div class="article-img absolute inset-0 bg-linear-to-br from-dark-700 to-dark-500 flex items-center justify-center">
-                        <i class="fas fa-image text-dark-400 text-lg"></i>
-                    </div>
-                </div>
-                <div class="p-3">
-                    <span class="text-gold-400/70 text-[10px] uppercase tracking-wider font-elegant">{{ $art['cat'] }}</span>
-                    <h3 class="font-serif text-xs font-semibold mt-1 line-clamp-2 group-hover:text-gold-300 transition leading-snug">{{ $art['title'] }}</h3>
-                </div>
-            </a>
-            @endforeach
-        </div>
     </div>
 </section>
 
@@ -817,25 +936,53 @@
             <p class="text-gray-400 font-elegant text-lg font-light">Plongez dans la richesse et la diversité de la Côte d'Ivoire à travers nos sélections thématiques.</p>
         </div>
 
+        @php
+            $defaultCatIcons = ['fa-landmark','fa-palette','fa-leaf','fa-utensils','fa-map-location-dot','fa-gem','fa-camera','fa-music','fa-heart','fa-star'];
+            $defaultCatColors = [
+                'from-amber-900/40 to-amber-800/10 border-amber-700/20',
+                'from-rose-900/30 to-rose-800/10 border-rose-700/20',
+                'from-green-900/40 to-green-800/10 border-green-700/20',
+                'from-orange-900/30 to-orange-800/10 border-orange-700/20',
+                'from-blue-900/30 to-blue-800/10 border-blue-700/20',
+                'from-violet-900/30 to-violet-800/10 border-violet-700/20',
+                'from-teal-900/30 to-teal-800/10 border-teal-700/20',
+                'from-pink-900/30 to-pink-800/10 border-pink-700/20',
+            ];
+        @endphp
+
+        @if(($homeCategories ?? collect())->isNotEmpty())
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            @php $rubriques = [
-                ['icon' => 'fa-landmark',       'label' => 'Patrimoine',     'count' => '48 articles',  'color' => 'from-amber-900/40 to-amber-800/10',     'border' => 'border-amber-700/20'],
-                ['icon' => 'fa-palette',        'label' => 'Art & Culture',  'count' => '63 articles',  'color' => 'from-rose-900/30 to-rose-800/10',        'border' => 'border-rose-700/20'],
-                ['icon' => 'fa-leaf',           'label' => 'Nature',         'count' => '37 articles',  'color' => 'from-green-900/40 to-green-800/10',      'border' => 'border-green-700/20'],
-                ['icon' => 'fa-utensils',       'label' => 'Gastronomie',    'count' => '29 articles',  'color' => 'from-orange-900/30 to-orange-800/10',    'border' => 'border-orange-700/20'],
-                ['icon' => 'fa-map-location-dot','label' => 'Destinations',  'count' => '52 articles',  'color' => 'from-blue-900/30 to-blue-800/10',        'border' => 'border-blue-700/20'],
-                ['icon' => 'fa-gem',            'label' => 'Art de vivre',   'count' => '41 articles',  'color' => 'from-violet-900/30 to-violet-800/10',    'border' => 'border-violet-700/20'],
-            ]; @endphp
-            @foreach($rubriques as $r)
-            <a href="#" class="group bg-linear-to-b {{ $r['color'] }} border {{ $r['border'] }} rounded-2xl p-5 text-center hover:scale-105 transition-all duration-300 reveal">
+            @foreach($homeCategories->take(6) as $i => $cat)
+            @php
+                $catIcon  = $cat->icon ?: ($defaultCatIcons[$i % count($defaultCatIcons)]);
+                $catColor = $defaultCatColors[$i % count($defaultCatColors)];
+            @endphp
+            <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}"
+               class="group bg-linear-to-b {{ $catColor }} border rounded-2xl p-5 text-center hover:scale-105 transition-all duration-300 reveal">
                 <div class="w-12 h-12 rounded-xl bg-white/5 group-hover:bg-gold-500/15 flex items-center justify-center mx-auto mb-3 transition">
-                    <i class="fas {{ $r['icon'] }} text-gold-400 text-lg group-hover:scale-110 transition-transform"></i>
+                    <i class="fas {{ $catIcon }} text-gold-400 text-lg group-hover:scale-110 transition-transform"></i>
                 </div>
-                <p class="text-white text-sm font-semibold font-serif">{{ $r['label'] }}</p>
-                <p class="text-gray-500 text-xs mt-1">{{ $r['count'] }}</p>
+                <p class="text-white text-sm font-semibold font-serif">{{ $cat->name_fr }}</p>
+                <p class="text-gray-500 text-xs mt-1">
+                    {{ $cat->articles_count > 0 ? $cat->articles_count.' article'.($cat->articles_count > 1 ? 's' : '') : 'Bientôt' }}
+                </p>
             </a>
             @endforeach
         </div>
+        @else
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            @foreach(['Patrimoine','Art & Culture','Nature','Gastronomie','Destinations','Art de vivre'] as $i => $label)
+            @php $colors = ['from-amber-900/40 to-amber-800/10 border-amber-700/20','from-rose-900/30 to-rose-800/10 border-rose-700/20','from-green-900/40 to-green-800/10 border-green-700/20','from-orange-900/30 to-orange-800/10 border-orange-700/20','from-blue-900/30 to-blue-800/10 border-blue-700/20','from-violet-900/30 to-violet-800/10 border-violet-700/20']; $icons = ['fa-landmark','fa-palette','fa-leaf','fa-utensils','fa-map-location-dot','fa-gem']; @endphp
+            <a href="{{ route('articles.index') }}" class="group bg-linear-to-b {{ $colors[$i] }} border rounded-2xl p-5 text-center hover:scale-105 transition-all duration-300 reveal">
+                <div class="w-12 h-12 rounded-xl bg-white/5 group-hover:bg-gold-500/15 flex items-center justify-center mx-auto mb-3 transition">
+                    <i class="fas {{ $icons[$i] }} text-gold-400 text-lg group-hover:scale-110 transition-transform"></i>
+                </div>
+                <p class="text-white text-sm font-semibold font-serif">{{ $label }}</p>
+                <p class="text-gray-500 text-xs mt-1">Bientôt</p>
+            </a>
+            @endforeach
+        </div>
+        @endif
     </div>
 </section>
 
@@ -849,8 +996,10 @@
                 <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-2">Agenda culturel</p>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Événements à venir</h2>
             </div>
-            <a href="{{ route('events.index') }}" class="hidden sm:inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gold-400 transition">
-                Voir l'agenda complet <i class="fas fa-arrow-right text-xs"></i>
+            <a href="{{ route('events.index') }}"
+               class="hidden sm:inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-gold-500/25 bg-dark-800/70 text-base text-gold-300 hover:text-gold-200 hover:border-gold-400/50 hover:bg-dark-700/80 shadow-lg shadow-black/20 hover:shadow-gold-500/10 transition-all duration-300 font-semibold tracking-wide group hover:-translate-y-0.5">
+                <span>Voir l'agenda complet</span>
+                <i class="fas fa-arrow-right text-sm transition-transform duration-300 group-hover:translate-x-1 group-hover:scale-110"></i>
             </a>
         </div>
 
@@ -930,10 +1079,21 @@
                     Hôtels, restaurants, guides touristiques, artisans… Découvrez notre sélection premium d'établissements vérifiés et notés par notre équipe.
                 </p>
                 <div class="flex flex-wrap gap-3 mb-8">
-                    @php $cats2 = ['Hôtellerie', 'Gastronomie', 'Guides', 'Artisanat', 'Loisirs', 'Bien-être']; @endphp
-                    @foreach($cats2 as $c)
-                    <span class="px-3 py-1.5 bg-dark-700 border border-white/8 text-gray-300 text-xs rounded-full hover:border-gold-400/40 hover:text-gold-400 cursor-pointer transition">{{ $c }}</span>
-                    @endforeach
+                    @if(($homeProviderCategories ?? collect())->isNotEmpty())
+                        @foreach($homeProviderCategories as $pc)
+                        <a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}"
+                           class="px-3 py-1.5 bg-dark-700 border border-white/8 text-gray-300 text-xs rounded-full hover:border-gold-400/40 hover:text-gold-400 transition">
+                            {{ $pc->name_fr }}
+                        </a>
+                        @endforeach
+                    @else
+                        @foreach(['Hôtellerie', 'Gastronomie', 'Guides', 'Artisanat', 'Loisirs', 'Bien-être'] as $c)
+                        <a href="{{ route('providers.index') }}"
+                           class="px-3 py-1.5 bg-dark-700 border border-white/8 text-gray-300 text-xs rounded-full hover:border-gold-400/40 hover:text-gold-400 transition">
+                            {{ $c }}
+                        </a>
+                        @endforeach
+                    @endif
                 </div>
                 <a href="{{ route('providers.index') }}"
                    class="inline-flex items-center gap-2 px-6 py-3 bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm rounded-xl transition shadow-lg shadow-gold-500/20">
@@ -985,43 +1145,49 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            @forelse(($homePartners ?? collect()) as $partner)
-                @php $ptype = $partner->typeEnum(); @endphp
-                <article class="reveal bg-dark-800/80 border border-white/8 rounded-2xl p-5 sm:p-6 flex flex-col items-center text-center hover:border-gold-500/25 hover:bg-dark-800 transition-all duration-300 group">
-                    @if($partner->logo_url)
-                        <div class="w-full max-w-[140px] h-20 sm:h-24 mb-4 flex items-center justify-center mx-auto">
-                            @if($partner->website_url)
-                                <a href="{{ $partner->website_url }}" target="_blank" rel="noopener noreferrer" class="flex h-full w-full items-center justify-center">
-                                    <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="max-h-full max-w-full object-contain opacity-90 group-hover:opacity-100 transition">
-                                </a>
-                            @else
-                                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="max-h-full max-w-full object-contain opacity-90 group-hover:opacity-100 transition">
-                            @endif
-                        </div>
-                    @else
-                        <div class="w-14 h-14 rounded-xl bg-dark-700 border border-white/10 flex items-center justify-center mb-4 group-hover:border-gold-500/30 transition">
-                            <i class="fas fa-handshake text-gold-400/70 text-xl"></i>
-                        </div>
-                    @endif
-                    <h3 class="font-serif text-sm sm:text-base font-semibold text-white leading-snug line-clamp-2 mb-1">{{ $partner->name }}</h3>
-                    @if($ptype)
-                        <span class="text-[10px] sm:text-xs text-gold-400/80 uppercase tracking-wider mb-3">{{ $ptype->label() }}</span>
-                    @endif
-                    @if($partner->website_url)
-                        <a href="{{ $partner->website_url }}" target="_blank" rel="noopener noreferrer"
-                            class="mt-auto inline-flex items-center gap-1.5 text-xs text-gold-400 hover:text-gold-300 font-medium transition">
-                            <span>Visiter le site</span>
-                            <i class="fas fa-arrow-up-right-from-square text-[10px]"></i>
-                        </a>
-                    @endif
-                </article>
-            @empty
-                <div class="col-span-full text-center text-gray-500 text-sm py-8 rounded-2xl border border-dashed border-white/10 bg-dark-800/40">
-                    Les logos de nos partenaires seront affichés ici dès leur publication dans l’administration.
+        @if(($homePartners ?? collect())->isNotEmpty())
+            <div class="partners-marquee reveal py-1">
+                <div class="partners-track">
+                    @foreach([1, 2] as $loopIndex)
+                        @foreach(($homePartners ?? collect()) as $partner)
+                            @php $ptype = $partner->typeEnum(); @endphp
+                            <article class="partner-card bg-dark-800/80 border border-white/8 rounded-2xl p-5 sm:p-6 flex flex-col items-center text-center hover:border-gold-500/25 hover:bg-dark-800 transition-all duration-300 group">
+                                @if($partner->logo_url)
+                                    <div class="w-full max-w-[140px] h-20 sm:h-24 mb-4 flex items-center justify-center mx-auto">
+                                        @if($partner->website_url)
+                                            <a href="{{ $partner->website_url }}" target="_blank" rel="noopener noreferrer" class="flex h-full w-full items-center justify-center">
+                                                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="max-h-full max-w-full object-contain opacity-90 group-hover:opacity-100 transition">
+                                            </a>
+                                        @else
+                                            <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="max-h-full max-w-full object-contain opacity-90 group-hover:opacity-100 transition">
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="w-14 h-14 rounded-xl bg-dark-700 border border-white/10 flex items-center justify-center mb-4 group-hover:border-gold-500/30 transition">
+                                        <i class="fas fa-handshake text-gold-400/70 text-xl"></i>
+                                    </div>
+                                @endif
+                                <h3 class="font-serif text-sm sm:text-base font-semibold text-white leading-snug line-clamp-2 mb-1">{{ $partner->name }}</h3>
+                                @if($ptype)
+                                    <span class="text-[10px] sm:text-xs text-gold-400/80 uppercase tracking-wider mb-3">{{ $ptype->label() }}</span>
+                                @endif
+                                @if($partner->website_url)
+                                    <a href="{{ $partner->website_url }}" target="_blank" rel="noopener noreferrer"
+                                        class="mt-auto inline-flex items-center gap-1.5 text-xs text-gold-400 hover:text-gold-300 font-medium transition">
+                                        <span>Visiter le site</span>
+                                        <i class="fas fa-arrow-up-right-from-square text-[10px]"></i>
+                                    </a>
+                                @endif
+                            </article>
+                        @endforeach
+                    @endforeach
                 </div>
-            @endforelse
-        </div>
+            </div>
+        @else
+            <div class="col-span-full text-center text-gray-500 text-sm py-8 rounded-2xl border border-dashed border-white/10 bg-dark-800/40">
+                Les logos de nos partenaires seront affichés ici dès leur publication dans l’administration.
+            </div>
+        @endif
     </div>
 </section>
 
@@ -1146,8 +1312,11 @@
             <div>
                 <h4 class="text-white font-semibold text-sm mb-4">Magazine</h4>
                 <ul class="space-y-2.5 text-sm text-gray-500">
-                    @foreach(['Articles', 'Découvertes', 'Événements', 'Destinations', 'Gastronomie', 'Artisanat'] as $l)
-                    <li><a href="#" class="hover:text-gold-400 transition">{{ $l }}</a></li>
+                    <li><a href="{{ route('articles.index') }}" class="hover:text-gold-400 transition">Tous les articles</a></li>
+                    <li><a href="{{ route('discoveries.index') }}" class="hover:text-gold-400 transition">Découvertes</a></li>
+                    <li><a href="{{ route('events.index') }}" class="hover:text-gold-400 transition">Événements</a></li>
+                    @foreach($homeCategories->take(3) as $cat)
+                    <li><a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}" class="hover:text-gold-400 transition">{{ $cat->name_fr }}</a></li>
                     @endforeach
                 </ul>
             </div>
@@ -1156,9 +1325,11 @@
             <div>
                 <h4 class="text-white font-semibold text-sm mb-4">Annuaire</h4>
                 <ul class="space-y-2.5 text-sm text-gray-500">
-                    @foreach(['Hôtellerie', 'Restaurants', 'Guides touristiques', 'Artisans', 'Bien-être', 'Devenir prestataire'] as $l)
-                    <li><a href="#" class="hover:text-gold-400 transition">{{ $l }}</a></li>
+                    <li><a href="{{ route('providers.index') }}" class="hover:text-gold-400 transition">Tous les prestataires</a></li>
+                    @foreach($homeProviderCategories->take(4) as $pc)
+                    <li><a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}" class="hover:text-gold-400 transition">{{ $pc->name_fr }}</a></li>
                     @endforeach
+                    <li><a href="{{ route('register') }}" class="hover:text-gold-400 transition">Devenir prestataire</a></li>
                 </ul>
             </div>
 
@@ -1323,59 +1494,82 @@
         });
     });
 
-    // Hero : carrousel des slides (images responsives)
+    // Hero background carousel
     (function () {
-        const layers = document.querySelectorAll('.hero-slide-layer');
-        if (!layers.length) return;
+        const layers = document.querySelectorAll('[data-hero-bg-layer]');
+        if (!layers.length || layers.length < 2) return;
+        const dots = document.querySelectorAll('[data-hero-bg-dot]');
+        const prevBtn = document.getElementById('hero-bg-prev');
+        const nextBtn = document.getElementById('hero-bg-next');
 
         let index = 0;
-        const dots = document.querySelectorAll('.hero-slide-dot');
-        const prev = document.getElementById('hero-slide-prev');
-        const next = document.getElementById('hero-slide-next');
-
-        function apply() {
-            layers.forEach((el, j) => {
-                const on = j === index;
-                el.classList.toggle('opacity-100', on);
-                el.classList.toggle('z-10', on);
-                el.classList.toggle('opacity-0', !on);
-                el.classList.toggle('z-0', !on);
-                el.classList.toggle('pointer-events-none', !on);
-                el.setAttribute('aria-hidden', on ? 'false' : 'true');
-            });
-            dots.forEach((d, j) => {
-                const on = j === index;
-                d.classList.toggle('w-6', on);
-                d.classList.toggle('bg-gold-400', on);
-                d.classList.toggle('w-2', !on);
-                d.classList.toggle('bg-white/35', !on);
-                d.classList.toggle('hover:bg-white/60', !on);
-                d.setAttribute('aria-selected', on ? 'true' : 'false');
-            });
-        }
-
-        function go(delta) {
-            index = (index + delta + layers.length) % layers.length;
-            apply();
-        }
-
-        if (prev) prev.addEventListener('click', () => go(-1));
-        if (next) next.addEventListener('click', () => go(1));
-        dots.forEach((d, j) => d.addEventListener('click', () => { index = j; apply(); }));
-
         let timer = null;
-        function armAutoplay() {
-            if (layers.length < 2) return;
-            clearInterval(timer);
-            timer = setInterval(() => go(1), 7000);
+
+        function render() {
+            layers.forEach((el, i) => {
+                const active = i === index;
+                el.classList.toggle('opacity-100', active);
+                el.classList.toggle('z-10', active);
+                el.classList.toggle('opacity-0', !active);
+                el.classList.toggle('z-0', !active);
+            });
+            dots.forEach((dot, i) => {
+                const active = i === index;
+                dot.classList.toggle('w-6', active);
+                dot.classList.toggle('bg-gold-400', active);
+                dot.classList.toggle('w-2', !active);
+                dot.classList.toggle('bg-white/35', !active);
+                dot.classList.toggle('hover:bg-white/60', !active);
+                dot.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
         }
-        armAutoplay();
-        const root = document.getElementById('hero-slides-carousel');
+
+        function next() {
+            index = (index + 1) % layers.length;
+            render();
+        }
+        function prev() {
+            index = (index - 1 + layers.length) % layers.length;
+            render();
+        }
+
+        function start() {
+            stop();
+            timer = setInterval(next, 7000);
+        }
+
+        function stop() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        render();
+        start();
+
+        const root = document.getElementById('hero-bg-carousel');
         if (root) {
-            root.addEventListener('mouseenter', () => clearInterval(timer));
-            root.addEventListener('mouseleave', armAutoplay);
+            root.addEventListener('mouseenter', stop);
+            root.addEventListener('mouseleave', start);
         }
+        if (prevBtn) prevBtn.addEventListener('click', () => { prev(); start(); });
+        if (nextBtn) nextBtn.addEventListener('click', () => { next(); start(); });
+        dots.forEach((dot, i) => dot.addEventListener('click', () => {
+            index = i;
+            render();
+            start();
+        }));
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stop();
+            } else {
+                start();
+            }
+        });
     })();
+
 </script>
 
 </body>

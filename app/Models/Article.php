@@ -67,6 +67,11 @@ class Article extends Model
         return $this->hasMany(ArticleAnalytic::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(ArticleComment::class);
+    }
+
     public function isPublished(): bool
     {
         return $this->status === 'published' && $this->published_at?->isPast();

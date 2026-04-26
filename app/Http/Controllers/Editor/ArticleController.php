@@ -3,12 +3,19 @@
 namespace App\Http\Controllers\Editor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AutosaveArticleRequest;
 use App\Http\Requests\StoreArticleRequest;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\Provider;
 use App\Models\Tag;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class ArticleController extends Controller
 {
@@ -45,15 +52,22 @@ class ArticleController extends Controller
     {
         $categories = ArticleCategory::where('is_active', true)->orderBy('sort_order')->get();
         $tags = Tag::whereIn('type', ['article', 'shared'])->orderBy('name_fr')->get();
+        $sponsors = Provider::where('status', 'active')->orderBy('name')->get(['id', 'name']);
 
-        return view('editor.articles.create', compact('categories', 'tags'));
+        return view('editor.articles.create', compact('categories', 'tags', 'sponsors'));
     }
 
     public function store(StoreArticleRequest $request)
     {
         $data = $request->validated();
         $tags = $data['tags'] ?? [];
+        unset($data['cover_image']);
+        unset($data['publication_mode']);
         unset($data['tags']);
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_url'] = $this->storeArticleCover($request->file('cover_image'));
+        }
 
         $data['author_id'] = Auth::id();
         $data['word_count'] = $data['content_fr'] ? str_word_count(strip_tags($data['content_fr'])) : 0;
@@ -83,9 +97,10 @@ class ArticleController extends Controller
 
         $categories = ArticleCategory::where('is_active', true)->orderBy('sort_order')->get();
         $tags = Tag::whereIn('type', ['article', 'shared'])->orderBy('name_fr')->get();
+        $sponsors = Provider::where('status', 'active')->orderBy('name')->get(['id', 'name']);
         $selectedTags = $article->tags->pluck('id')->toArray();
 
-        return view('editor.articles.edit', compact('article', 'categories', 'tags', 'selectedTags'));
+        return view('editor.articles.edit', compact('article', 'categories', 'tags', 'selectedTags', 'sponsors'));
     }
 
     public function update(StoreArticleRequest $request, Article $article)
@@ -94,7 +109,14 @@ class ArticleController extends Controller
 
         $data = $request->validated();
         $tags = $data['tags'] ?? [];
+        unset($data['cover_image']);
+        unset($data['publication_mode']);
         unset($data['tags']);
+
+        if ($request->hasFile('cover_image')) {
+            $this->deleteStoredPublicFile($article->cover_url);
+            $data['cover_url'] = $this->storeArticleCover($request->file('cover_image'));
+        }
 
         $data['word_count'] = $data['content_fr'] ? str_word_count(strip_tags($data['content_fr'])) : 0;
         if (empty($data['reading_time']) && $data['word_count']) {
@@ -132,6 +154,85 @@ class ArticleController extends Controller
         return back()->with('success', 'Statut mis à jour.');
     }
 
+    public function preview(Article $article): View
+    {
+        $this->authorizeEdit($article);
+        $article->load(['category', 'author', 'tags']);
+
+        return view('editor.articles.preview', compact('article'));
+    }
+
+    public function autosave(AutosaveArticleRequest $request, Article $article): JsonResponse
+    {
+        $this->authorizeEdit($article);
+
+        $validated = $request->validated();
+        $tags = $validated['tags'] ?? null;
+        unset($validated['tags']);
+
+        $patch = [];
+        foreach ($validated as $key => $value) {
+            if (! $request->exists($key)) {
+                continue;
+            }
+            if (in_array($key, ['title_fr', 'title_en'], true) && is_string($value) && trim($value) === '') {
+                continue;
+            }
+            $patch[$key] = $value;
+        }
+
+        if (isset($patch['slug_fr']) && trim((string) $patch['slug_fr']) === '') {
+            unset($patch['slug_fr']);
+        }
+        if (isset($patch['slug_en']) && trim((string) $patch['slug_en']) === '') {
+            unset($patch['slug_en']);
+        }
+
+        if (isset($patch['slug_fr'])) {
+            $patch['slug_fr'] = $this->ensureUniqueArticleSlug((string) $patch['slug_fr'], 'slug_fr', $article->id);
+        }
+        if (isset($patch['slug_en'])) {
+            $patch['slug_en'] = $this->ensureUniqueArticleSlug((string) $patch['slug_en'], 'slug_en', $article->id);
+        }
+
+        if ($patch !== []) {
+            $article->fill($patch);
+        }
+
+        $contentForCount = (string) ($article->content_fr ?? '');
+        $article->word_count = $contentForCount !== '' ? str_word_count(strip_tags($contentForCount)) : 0;
+        if (! $article->reading_time && $article->word_count > 0) {
+            $article->reading_time = max(1, (int) round($article->word_count / 200));
+        }
+
+        $article->save();
+
+        if (is_array($tags)) {
+            $article->tags()->sync($tags);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'saved_at' => $article->fresh()->updated_at?->toIso8601String(),
+        ]);
+    }
+
+    private function ensureUniqueArticleSlug(string $slug, string $column, int $ignoreId): string
+    {
+        $slug = trim(Str::slug($slug));
+        if ($slug === '') {
+            $slug = 'article-'.Str::lower(Str::random(6));
+        }
+
+        $base = $slug;
+        $n = 1;
+        while (Article::query()->where($column, $slug)->where('id', '!=', $ignoreId)->exists()) {
+            $slug = $base.'-'.$n++;
+        }
+
+        return $slug;
+    }
+
     private function baseQuery()
     {
         $user = Auth::user();
@@ -146,6 +247,25 @@ class ArticleController extends Controller
         $user = Auth::user();
         if (! $user->isAdmin() && $article->author_id !== $user->id) {
             abort(403, 'Vous ne pouvez pas modifier cet article.');
+        }
+    }
+
+    private function storeArticleCover(UploadedFile $file): string
+    {
+        $path = $file->store('articles/covers', 'public');
+
+        return '/storage/'.$path;
+    }
+
+    private function deleteStoredPublicFile(?string $storedUrl): void
+    {
+        if (! $storedUrl || ! str_starts_with($storedUrl, '/storage/')) {
+            return;
+        }
+
+        $relative = ltrim(substr($storedUrl, strlen('/storage/')), '/');
+        if ($relative !== '') {
+            Storage::disk('public')->delete($relative);
         }
     }
 }

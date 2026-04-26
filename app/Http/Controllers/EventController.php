@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\EventCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
@@ -80,6 +81,13 @@ class EventController extends Controller
             ->limit(3)
             ->get();
 
-        return view('events.show', compact('event', 'related'));
+        $isFavorited = Auth::check() && Auth::user()->role === 'visitor'
+            ? Auth::user()->favorites()
+                ->where('favoritable_type', Event::class)
+                ->where('favoritable_id', $event->id)
+                ->exists()
+            : false;
+
+        return view('events.show', compact('event', 'related', 'isFavorited'));
     }
 }

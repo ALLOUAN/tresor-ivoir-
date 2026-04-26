@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\ArticleComment;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -68,6 +70,19 @@ class ArticleController extends Controller
             ->take(3)
             ->get();
 
-        return view('articles.show', compact('article', 'related'));
+        $isFavorited = Auth::check() && Auth::user()->role === 'visitor'
+            ? Auth::user()->favorites()
+                ->where('favoritable_type', Article::class)
+                ->where('favoritable_id', $article->id)
+                ->exists()
+            : false;
+
+        $comments = $article->comments()
+            ->where('is_approved', true)
+            ->with('user')
+            ->latest()
+            ->get();
+
+        return view('articles.show', compact('article', 'related', 'isFavorited', 'comments'));
     }
 }

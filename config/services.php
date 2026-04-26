@@ -36,9 +36,10 @@ return [
     ],
 
     'cinetpay' => [
-        'api_key' => env('CINETPAY_API_KEY'),
-        'site_id' => env('CINETPAY_SITE_ID'),
-        'endpoint' => env('CINETPAY_ENDPOINT', 'https://api-checkout.cinetpay.com/v2/payment'),
+        'api_key'        => env('CINETPAY_API_KEY', ''),
+        'site_id'        => env('CINETPAY_SITE_ID', ''),
+        'endpoint'       => env('CINETPAY_ENDPOINT', 'https://api-checkout.cinetpay.com/v2/payment'),
+        'check_endpoint' => env('CINETPAY_CHECK_ENDPOINT', 'https://api-checkout.cinetpay.com/v2/payment/check'),
     ],
 
     'stripe' => [

@@ -5,10 +5,14 @@
 
 @section('header-actions')
 <div class="flex items-center gap-2">
+    <button type="button" onclick="openArticlePreviewTab()"
+            class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
+        <i class="fas fa-eye"></i> Prévisualiser
+    </button>
     @if($article->status === 'published')
     <a href="{{ route('articles.show', $article->slug_fr) }}" target="_blank"
        class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
-        <i class="fas fa-eye"></i> Voir
+        <i class="fas fa-external-link-alt"></i> Voir en ligne
     </a>
     @endif
     <a href="{{ route('editor.articles.index') }}"
@@ -35,7 +39,7 @@
     @endif
 </div>
 
-<form method="POST" action="{{ route('editor.articles.update', $article) }}" id="articleForm">
+<form method="POST" action="{{ route('editor.articles.update', $article) }}" id="articleForm" enctype="multipart/form-data">
 @csrf
 @method('PUT')
 
@@ -78,7 +82,7 @@
 
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                 <label class="block text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Résumé (FR)</label>
-                <textarea name="excerpt_fr" rows="3"
+                <textarea name="excerpt_fr" id="excerpt_fr" rows="3"
                     class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition resize-y">{{ old('excerpt_fr', $article->excerpt_fr) }}</textarea>
                 @error('excerpt_fr') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
@@ -89,8 +93,7 @@
                     <span id="wordCount-fr" class="text-slate-600 text-xs">0 mots</span>
                 </div>
                 <textarea name="content_fr" id="content_fr" rows="20"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition resize-y font-mono leading-relaxed"
-                    oninput="countWords(this, 'wordCount-fr')">{{ old('content_fr', $article->content_fr) }}</textarea>
+                    class="rich-editor w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition resize-y leading-relaxed">{{ old('content_fr', $article->content_fr) }}</textarea>
                 @error('content_fr') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -144,8 +147,7 @@
                     <span id="wordCount-en" class="text-slate-600 text-xs">0 words</span>
                 </div>
                 <textarea name="content_en" id="content_en" rows="20"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition resize-y font-mono leading-relaxed"
-                    oninput="countWords(this, 'wordCount-en')">{{ old('content_en', $article->content_en) }}</textarea>
+                    class="rich-editor w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition resize-y leading-relaxed">{{ old('content_en', $article->content_en) }}</textarea>
             </div>
 
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
@@ -210,6 +212,7 @@
                     <i class="fas fa-floppy-disk mr-1"></i> Enregistrer
                 </button>
             </div>
+            <p id="autosaveStatus" class="text-xs text-slate-600 mt-2 min-h-[1.25rem]" aria-live="polite"></p>
         </div>
 
         {{-- Quick status actions --}}
@@ -286,6 +289,13 @@
                         class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600"
                         oninput="previewCover(this.value)">
                 </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1.5">Ou importer un fichier</label>
+                    <input type="file" name="cover_image" id="cover_image" accept="image/jpeg,image/png,image/webp"
+                        class="w-full bg-slate-800 border border-slate-700 file:border-0 file:bg-slate-700 file:text-slate-300 file:px-3 file:py-2 file:mr-3 rounded-lg px-3 py-2 text-slate-400 text-xs outline-none transition">
+                    <p class="text-[11px] text-slate-600 mt-1">JPG, PNG ou WEBP (max 4 Mo). Le fichier remplace l'URL si les deux sont remplis.</p>
+                    @error('cover_image') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
                 <div id="coverPreview" class="{{ $article->cover_url ? '' : 'hidden' }} rounded-lg overflow-hidden h-32 bg-slate-800">
                     <img id="coverImg" src="{{ $article->cover_url }}" alt="" class="w-full h-full object-cover">
                 </div>
@@ -345,6 +355,19 @@
                     </div>
                 </label>
                 @endforeach
+            </div>
+            <div id="sponsor_group" class="mt-4 {{ old('is_sponsored', $article->is_sponsored) ? '' : 'hidden' }}">
+                <label class="block text-xs text-slate-500 mb-1.5">Sponsor <span class="text-red-400">*</span></label>
+                <select name="sponsor_id"
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-purple-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
+                    <option value="">— Choisir un sponsor —</option>
+                    @foreach(($sponsors ?? collect()) as $sponsor)
+                    <option value="{{ $sponsor->id }}" {{ (string) old('sponsor_id', $article->sponsor_id) === (string) $sponsor->id ? 'selected' : '' }}>
+                        {{ $sponsor->name }}
+                    </option>
+                    @endforeach
+                </select>
+                @error('sponsor_id') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 
@@ -411,13 +434,41 @@ function previewCover(url) {
     }
 }
 
+function previewCoverFile(fileInputId) {
+    const input = document.getElementById(fileInputId);
+    const preview = document.getElementById('coverPreview');
+    const img = document.getElementById('coverImg');
+    if (!input || !input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    img.src = URL.createObjectURL(file);
+    preview.classList.remove('hidden');
+}
+
+function toggleSponsoredFields() {
+    const sponsorToggle = document.getElementById('toggle-spons');
+    const sponsorGroup = document.getElementById('sponsor_group');
+    if (!sponsorToggle || !sponsorGroup) return;
+    sponsorGroup.classList.toggle('hidden', !sponsorToggle.checked);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const fr = document.getElementById('content_fr');
     if (fr && fr.value) countWords(fr, 'wordCount-fr');
     const en = document.getElementById('content_en');
     if (en && en.value) countWords(en, 'wordCount-en');
+    const file = document.getElementById('cover_image');
+    if (file) {
+        file.addEventListener('change', () => previewCoverFile('cover_image'));
+    }
+    const sponsorToggle = document.getElementById('toggle-spons');
+    if (sponsorToggle) {
+        sponsorToggle.addEventListener('change', toggleSponsoredFields);
+        toggleSponsoredFields();
+    }
 });
 </script>
+@include('editor.partials.article-rich-tools', ['article' => $article, 'errorsPresent' => $errors->any()])
 @endpush
 
 @endsection

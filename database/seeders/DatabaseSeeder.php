@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
 
             // Utilisateurs
             UserSeeder::class,
+            PartnerSeeder::class,
 
             // Contenu métier (dépend des référentiels et users)
             ProviderSeeder::class,

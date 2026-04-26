@@ -91,6 +91,12 @@ class ProviderController extends Controller
         $canReview = Auth::check()
             && Auth::user()->role !== 'admin'
             && ! Review::where('provider_id', $provider->id)->where('user_id', Auth::id())->exists();
+        $isFavorited = Auth::check() && Auth::user()->role === 'visitor'
+            ? Auth::user()->favorites()
+                ->where('favoritable_type', Provider::class)
+                ->where('favoritable_id', $provider->id)
+                ->exists()
+            : false;
 
         $approvedReviews = $provider->approvedReviews;
         $ratingBreakdown = [
@@ -107,6 +113,6 @@ class ProviderController extends Controller
             'clean' => $approvedReviews->whereNotNull('rating_clean')->count(),
         ];
 
-        return view('providers.show', compact('provider', 'related', 'canReview', 'ratingBreakdown', 'ratingBreakdownCounts'));
+        return view('providers.show', compact('provider', 'related', 'canReview', 'ratingBreakdown', 'ratingBreakdownCounts', 'isFavorited'));
     }
 }
