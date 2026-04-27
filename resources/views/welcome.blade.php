@@ -423,6 +423,36 @@
             .partner-card { width: 210px; min-height: 210px; }
         }
 
+        /* ── Footer ultra-moderne ─────────────────────────────── */
+        .footer-ultra {
+            position: relative;
+            isolation: isolate;
+            background-color: #060504;
+            background-image:
+                radial-gradient(ellipse 90% 50% at 50% -20%, rgba(232, 160, 32, 0.09), transparent 55%),
+                radial-gradient(ellipse 50% 40% at 100% 100%, rgba(99, 102, 241, 0.05), transparent 45%);
+        }
+        .footer-ultra::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='fn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23fn)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            opacity: 0.9;
+        }
+        .footer-ultra-inner { position: relative; z-index: 1; }
+        .footer-v2-link {
+            display: block;
+            padding: 0.32rem 0;
+            font-size: 0.8125rem;
+            color: rgba(163, 163, 163, 0.92);
+            transition: color .18s ease, padding-left .18s ease;
+        }
+        .footer-v2-link:hover {
+            color: #fde68a;
+            padding-left: 0.35rem;
+        }
+
     </style>
 </head>
 <body class="bg-dark-900 text-white antialiased font-sans">
@@ -1311,7 +1341,7 @@
 {{-- ══════════════════════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════════════════════ --}}
-<footer class="bg-dark-800 border-t border-white/5">
+<footer class="footer-ultra border-t border-white/[0.07]">
     @php
         $c = $siteBrand['contact'] ?? [];
         $s = $siteBrand['social'] ?? [];
@@ -1330,94 +1360,98 @@
             ? \Illuminate\Support\Str::limit(strip_tags($siteBrand['site_description']), 220)
             : 'Le magazine de référence pour explorer la culture, l\'art de vivre et le tourisme en Côte d\'Ivoire.';
     @endphp
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        {{-- Newsletter (pied de page) --}}
-        <div id="newsletter-footer" class="mb-10 sm:mb-12 scroll-mt-28">
-            <div class="rounded-2xl border border-gold-500/20 bg-linear-to-br from-dark-700/80 to-dark-800/80 p-6 sm:p-8 lg:flex lg:items-center lg:justify-between lg:gap-10 reveal">
-                <div class="lg:max-w-md mb-6 lg:mb-0">
-                    <div class="inline-flex items-center gap-2 mb-3">
-                        <span class="w-10 h-10 rounded-xl bg-gold-500/15 border border-gold-500/25 flex items-center justify-center">
-                            <i class="fas fa-envelope-open-text text-gold-400"></i>
-                        </span>
-                        <span class="text-gold-400/90 text-[10px] tracking-[.2em] uppercase font-elegant">Newsletter</span>
+    <div class="footer-ultra-inner max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        {{-- Newsletter : variante bento (deux panneaux + accent) --}}
+        <div id="newsletter-footer" class="mb-12 sm:mb-14 scroll-mt-28">
+            <div class="overflow-hidden rounded-2xl border border-white/[0.09] bg-[#080706] shadow-2xl shadow-black/50 reveal">
+                <div class="grid lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/10">
+                    <div class="relative p-6 sm:p-8 lg:p-10">
+                        <div class="absolute left-0 top-8 bottom-8 w-1 rounded-full bg-gradient-to-b from-emerald-400/70 via-amber-400/50 to-amber-600/30 pointer-events-none" aria-hidden="true"></div>
+                        <div class="pl-5 sm:pl-6">
+                            <p class="text-[10px] font-plus font-bold uppercase tracking-[0.28em] text-emerald-400/85 mb-4">Inscription</p>
+                            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-white mb-3 leading-tight tracking-tight">
+                                Ne manquez rien de l’Ivoire
+                            </h2>
+                            <p class="text-gray-500 text-sm sm:text-[0.9375rem] font-plus leading-relaxed max-w-md">
+                                Articles, adresses et événements sélectionnés pour vous, directement dans votre boîte mail.
+                            </p>
+                        </div>
                     </div>
-                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-white mb-2">Ne manquez rien de l’Ivoire</h2>
-                    <p class="text-gray-400 text-sm sm:text-base font-elegant font-light leading-relaxed">
-                        Articles, adresses et événements sélectionnés pour vous, directement dans votre boîte mail.
-                    </p>
-                </div>
-                <div class="w-full lg:max-w-md shrink-0">
-                    @if (session('newsletter_success'))
-                        <div class="rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200 mb-4">
-                            {{ session('newsletter_success') }}
-                        </div>
-                    @endif
-                    @if (session('newsletter_info'))
-                        <div class="rounded-xl border border-amber-500/35 bg-amber-500/10 px-4 py-3 text-sm text-amber-100 mb-4">
-                            {{ session('newsletter_info') }}
-                        </div>
-                    @endif
-                    @if (session('newsletter_error'))
-                        <div class="rounded-xl border border-rose-500/35 bg-rose-500/10 px-4 py-3 text-sm text-rose-200 mb-4">
-                            {{ session('newsletter_error') }}
-                        </div>
-                    @endif
-                    <form method="post" action="{{ route('newsletter.subscribe') }}" class="flex flex-col sm:flex-row gap-3">
-                        @csrf
-                        <label for="newsletter-email" class="sr-only">Adresse e-mail</label>
-                        <input type="email" name="newsletter_email" id="newsletter-email" required maxlength="255"
-                               value="{{ old('newsletter_email') }}"
-                               placeholder="Votre adresse e-mail"
-                               autocomplete="email"
-                               class="flex-1 bg-dark-900 border border-white/10 focus:border-gold-400/50 focus:ring-1 focus:ring-gold-500/30 text-white placeholder-gray-600 rounded-xl px-4 py-3 text-sm outline-none transition">
-                        <button type="submit"
-                                class="shrink-0 inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold px-6 py-3 rounded-xl text-sm transition shadow-lg shadow-gold-500/20">
-                            <i class="fas fa-paper-plane text-xs"></i>
-                            S’abonner
-                        </button>
-                    </form>
-                    @error('newsletter_email')
-                        <p class="text-rose-400 text-xs mt-2">{{ $message }}</p>
-                    @enderror
-                    <p class="text-gray-600 text-[11px] mt-3">Aucun spam. Désabonnement possible à tout moment.</p>
+                    <div class="p-6 sm:p-8 lg:p-10 bg-white/[0.02] flex flex-col justify-center">
+                        @if (session('newsletter_success'))
+                            <div class="rounded-lg border border-emerald-500/35 bg-emerald-500/[0.08] px-4 py-3 text-sm text-emerald-100 mb-4 font-plus">
+                                {{ session('newsletter_success') }}
+                            </div>
+                        @endif
+                        @if (session('newsletter_info'))
+                            <div class="rounded-lg border border-amber-500/35 bg-amber-500/[0.08] px-4 py-3 text-sm text-amber-50 mb-4 font-plus">
+                                {{ session('newsletter_info') }}
+                            </div>
+                        @endif
+                        @if (session('newsletter_error'))
+                            <div class="rounded-lg border border-rose-500/35 bg-rose-500/[0.08] px-4 py-3 text-sm text-rose-100 mb-4 font-plus">
+                                {{ session('newsletter_error') }}
+                            </div>
+                        @endif
+                        <form method="post" action="{{ route('newsletter.subscribe') }}" class="space-y-3">
+                            @csrf
+                            <label for="newsletter-email" class="sr-only">Adresse e-mail</label>
+                            <input type="email" name="newsletter_email" id="newsletter-email" required maxlength="255"
+                                   value="{{ old('newsletter_email') }}"
+                                   placeholder="votre@email.com"
+                                   autocomplete="email"
+                                   class="w-full rounded-lg border border-white/12 bg-black/50 px-4 py-3.5 text-sm text-white placeholder:text-gray-600 outline-none transition focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-500/25 font-plus">
+                            <button type="submit"
+                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-gray-100 transition font-plus">
+                                <i class="fas fa-arrow-right text-xs"></i>
+                                S’abonner
+                            </button>
+                        </form>
+                        @error('newsletter_email')
+                            <p class="text-rose-400 text-xs mt-2 font-plus">{{ $message }}</p>
+                        @enderror
+                        <p class="text-gray-600 text-[11px] mt-4 font-plus leading-relaxed">
+                            Pas de spam — désinscription en un clic à tout moment.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        {{-- Colonnes : séparateurs verticaux, style magazine --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-0 mb-12 pt-2 border-t border-white/5">
 
-            {{-- Brand + réseaux --}}
-            <div class="lg:col-span-1">
-                <div class="flex items-center gap-3 mb-4">
+            <div class="lg:col-span-3 lg:pr-8 lg:border-r border-white/5">
+                <div class="flex items-start gap-3 mb-4">
                     @if(!empty($siteBrand['logo_url']))
-                        <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden p-0.5 shrink-0">
+                        <div class="h-10 w-10 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center overflow-hidden p-0.5 shrink-0">
                             <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
                         </div>
                     @else
-                        <div class="w-10 h-10 rounded-lg bg-gold-500 flex items-center justify-center shrink-0">
-                            <i class="fas fa-gem text-dark-900"></i>
+                        <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-emerald-400 to-amber-500 flex items-center justify-center shrink-0">
+                            <i class="fas fa-gem text-black text-sm"></i>
                         </div>
                     @endif
                     <div class="min-w-0">
-                        <p class="text-gold-400 font-serif font-bold leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
-                        <p class="text-gray-500 text-[10px] tracking-widest uppercase truncate">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
+                        <p class="text-white font-serif font-semibold leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
+                        <p class="text-gray-600 text-[10px] tracking-[0.16em] uppercase truncate font-plus mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
                     </div>
                 </div>
-                <p class="text-gray-500 text-sm leading-relaxed mb-5">
+                <p class="text-gray-500 text-xs leading-relaxed mb-5 font-plus">
                     {{ $footerBlurb }}
                 </p>
                 @if(count($socialRows) > 0 || $waHref)
-                    <p class="text-gray-600 text-[10px] uppercase tracking-wider mb-2">Suivez-nous</p>
-                    <div class="flex flex-wrap items-center gap-2">
+                    <p class="text-gray-600 text-[9px] uppercase tracking-[0.18em] mb-2.5 font-plus font-semibold">Réseaux</p>
+                    <div class="flex flex-wrap gap-2">
                         @foreach($socialRows as $row)
                             <a href="{{ $row['url'] }}" target="_blank" rel="noopener noreferrer" title="{{ $row['label'] }}"
-                               class="w-9 h-9 rounded-lg bg-dark-700 border border-white/8 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-500/30 transition text-xs">
+                               class="h-8 w-8 rounded-md border border-white/10 bg-white/[0.03] flex items-center justify-center text-gray-500 hover:text-white hover:border-white/25 hover:bg-white/[0.06] transition text-xs">
                                 <i class="fab {{ $row['icon'] }}"></i>
                             </a>
                         @endforeach
                         @if($waHref)
                             <a href="{{ $waHref }}" target="_blank" rel="noopener noreferrer" title="WhatsApp"
-                               class="w-9 h-9 rounded-lg bg-dark-700 border border-white/8 flex items-center justify-center text-emerald-400/90 hover:text-emerald-300 hover:border-emerald-500/30 transition text-xs">
+                               class="h-8 w-8 rounded-md border border-emerald-500/25 bg-emerald-500/[0.07] flex items-center justify-center text-emerald-400/90 hover:text-emerald-300 transition text-xs">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
                         @endif
@@ -1425,109 +1459,84 @@
                 @endif
             </div>
 
-            {{-- Magazine --}}
-            <div>
-                <h4 class="text-white font-semibold text-sm mb-4">Magazine</h4>
-                <ul class="space-y-2.5 text-sm text-gray-500">
-                    <li><a href="{{ route('articles.index') }}" class="hover:text-gold-400 transition">Tous les articles</a></li>
-                    <li><a href="{{ route('discoveries.index') }}" class="hover:text-gold-400 transition">Découvertes</a></li>
-                    <li><a href="{{ route('events.index') }}" class="hover:text-gold-400 transition">Événements</a></li>
+            <div class="lg:col-span-3 lg:px-8 lg:border-r border-white/5">
+                <h4 class="text-white font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400/90 mb-4">Magazine</h4>
+                <ul class="space-y-0.5 font-plus">
+                    <li><a href="{{ route('articles.index') }}" class="footer-v2-link">Tous les articles</a></li>
+                    <li><a href="{{ route('discoveries.index') }}" class="footer-v2-link">Découvertes</a></li>
+                    <li><a href="{{ route('events.index') }}" class="footer-v2-link">Événements</a></li>
                     @foreach($homeCategories->take(3) as $cat)
-                    <li><a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}" class="hover:text-gold-400 transition">{{ $cat->name_fr }}</a></li>
+                    <li><a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}" class="footer-v2-link">{{ $cat->name_fr }}</a></li>
                     @endforeach
                 </ul>
             </div>
 
-            {{-- Annuaire --}}
-            <div>
-                <h4 class="text-white font-semibold text-sm mb-4">Annuaire</h4>
-                <ul class="space-y-2.5 text-sm text-gray-500">
-                    <li><a href="{{ route('providers.index') }}" class="hover:text-gold-400 transition">Tous les prestataires</a></li>
+            <div class="lg:col-span-3 lg:px-8 lg:border-r border-white/5">
+                <h4 class="text-white font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400/90 mb-4">Annuaire</h4>
+                <ul class="space-y-0.5 font-plus">
+                    <li><a href="{{ route('providers.index') }}" class="footer-v2-link">Tous les prestataires</a></li>
                     @foreach($homeProviderCategories->take(4) as $pc)
-                    <li><a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}" class="hover:text-gold-400 transition">{{ $pc->name_fr }}</a></li>
+                    <li><a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}" class="footer-v2-link">{{ $pc->name_fr }}</a></li>
                     @endforeach
-                    <li><a href="{{ route('register') }}" class="hover:text-gold-400 transition">Devenir prestataire</a></li>
+                    <li><a href="{{ route('register') }}" class="footer-v2-link">Devenir prestataire</a></li>
                 </ul>
             </div>
 
-            {{-- Contact (admin) --}}
-            <div>
-                <h4 class="text-white font-semibold text-sm mb-4">Contact</h4>
-                <ul class="space-y-2.5 text-sm text-gray-500 mb-5">
+            <div class="lg:col-span-3 lg:pl-8">
+                <h4 class="text-white font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400/90 mb-4">Contact</h4>
+                <ul class="space-y-0.5 font-plus mb-5">
                     @forelse($infoPages as $infoPage)
-                    <li>
-                        <a href="{{ route('information.show', $infoPage) }}" class="hover:text-gold-400 transition">{{ $infoPage->title_fr }}</a>
-                    </li>
+                    <li><a href="{{ route('information.show', $infoPage) }}" class="footer-v2-link">{{ $infoPage->title_fr }}</a></li>
                     @empty
-                    <li class="text-gray-600 italic text-xs">Pages d’information à configurer dans l’administration.</li>
+                    <li class="text-gray-600 italic text-xs py-1">Pages d’information à configurer.</li>
                     @endforelse
                 </ul>
-                <div class="space-y-3 text-xs text-gray-500">
+                <div class="space-y-2.5 text-[11px] text-gray-500 font-plus border-t border-white/5 pt-4">
                     @if(!empty($c['phone_1']))
-                        <p class="flex items-start gap-2">
-                            <i class="fas fa-phone text-gold-500/50 w-4 mt-0.5 shrink-0"></i>
-                            <a href="tel:{{ preg_replace('/\s+/', '', $c['phone_1']) }}" class="hover:text-gold-400 transition break-all">{{ $c['phone_1'] }}</a>
-                        </p>
+                        <p><span class="text-gray-600">Tél.</span> <a href="tel:{{ preg_replace('/\s+/', '', $c['phone_1']) }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['phone_1'] }}</a></p>
                     @endif
                     @if(!empty($c['phone_2']))
-                        <p class="flex items-start gap-2">
-                            <i class="fas fa-phone-volume text-gold-500/50 w-4 mt-0.5 shrink-0"></i>
-                            <a href="tel:{{ preg_replace('/\s+/', '', $c['phone_2']) }}" class="hover:text-gold-400 transition break-all">{{ $c['phone_2'] }}</a>
-                        </p>
+                        <p><span class="text-gray-600">Tél. 2</span> <a href="tel:{{ preg_replace('/\s+/', '', $c['phone_2']) }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['phone_2'] }}</a></p>
                     @endif
                     @if(!empty($c['email_primary']))
-                        <p class="flex items-start gap-2">
-                            <i class="fas fa-envelope text-gold-500/50 w-4 mt-0.5 shrink-0"></i>
-                            <a href="mailto:{{ $c['email_primary'] }}" class="hover:text-gold-400 transition break-all">{{ $c['email_primary'] }}</a>
-                        </p>
+                        <p><a href="mailto:{{ $c['email_primary'] }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['email_primary'] }}</a></p>
                     @endif
                     @if(!empty($c['email_secondary']))
-                        <p class="flex items-start gap-2">
-                            <i class="fas fa-envelope-open text-gold-500/50 w-4 mt-0.5 shrink-0"></i>
-                            <a href="mailto:{{ $c['email_secondary'] }}" class="hover:text-gold-400 transition break-all">{{ $c['email_secondary'] }}</a>
-                        </p>
+                        <p><a href="mailto:{{ $c['email_secondary'] }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['email_secondary'] }}</a></p>
                     @endif
                     @if(!empty($c['contact_form_email']))
-                        <p class="flex items-start gap-2">
-                            <i class="fas fa-paper-plane text-gold-500/50 w-4 mt-0.5 shrink-0"></i>
-                            <span class="text-gray-600">Formulaire&nbsp;:</span>
-                            <a href="mailto:{{ $c['contact_form_email'] }}" class="hover:text-gold-400 transition break-all">{{ $c['contact_form_email'] }}</a>
-                        </p>
+                        <p><span class="text-gray-600">Formulaire</span> <a href="mailto:{{ $c['contact_form_email'] }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['contact_form_email'] }}</a></p>
                     @endif
                     @if(!empty($c['address']))
-                        <p class="flex items-start gap-2">
-                            <i class="fas fa-location-dot text-gold-500/50 w-4 mt-0.5 shrink-0"></i>
+                        <p class="text-gray-400 leading-snug">
                             @if($mapHref)
-                                <a href="{{ $mapHref }}" target="_blank" rel="noopener noreferrer" class="hover:text-gold-400 transition">{{ $c['address'] }}</a>
+                                <a href="{{ $mapHref }}" target="_blank" rel="noopener noreferrer" class="hover:text-amber-300 transition">{{ $c['address'] }}</a>
                             @else
-                                <span>{{ $c['address'] }}</span>
+                                {{ $c['address'] }}
                             @endif
                         </p>
                     @endif
                     @if(!empty($c['opening_hours']))
-                        <p class="flex items-start gap-2">
-                            <i class="fas fa-clock text-gold-500/50 w-4 mt-0.5 shrink-0"></i>
-                            <span class="whitespace-pre-line text-gray-400">{{ $c['opening_hours'] }}</span>
-                        </p>
+                        <p class="whitespace-pre-line text-gray-500 leading-relaxed">{{ $c['opening_hours'] }}</p>
                     @endif
                     @if(empty($c['phone_1']) && empty($c['phone_2']) && empty($c['email_primary']) && empty($c['email_secondary']) && empty($c['contact_form_email']) && empty($c['address']) && empty($c['opening_hours']))
-                        <p class="text-gray-600 italic">Les coordonnées seront affichées ici une fois renseignées dans l’administration.</p>
+                        <p class="text-gray-600 italic text-xs">Coordonnées à renseigner dans l’administration.</p>
                     @endif
                 </div>
             </div>
         </div>
 
-        <div class="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
-            <p>&copy; {{ date('Y') }} {{ $siteBrand['site_name'] }} — Tous droits réservés</p>
-            <div class="flex items-center gap-4">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10">
+            <p class="text-[11px] text-gray-600 font-plus tracking-wide text-center sm:text-left">&copy; {{ date('Y') }} {{ $siteBrand['site_name'] }} — Tous droits réservés</p>
+            <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-plus">
                 @if($infoLegal)
-                <a href="{{ route('information.show', $infoLegal) }}" class="hover:text-gray-400 transition">Mentions légales</a>
+                <a href="{{ route('information.show', $infoLegal) }}" class="text-gray-500 hover:text-white transition underline-offset-4 hover:underline">Mentions légales</a>
                 @endif
                 @if($infoGuide)
-                <a href="{{ route('information.show', $infoGuide) }}" class="hover:text-gray-400 transition">CGU</a>
+                <a href="{{ route('information.show', $infoGuide) }}" class="text-gray-500 hover:text-white transition underline-offset-4 hover:underline">CGU</a>
                 @endif
-                <a href="{{ route('login') }}" class="hover:text-gold-400 transition flex items-center gap-1">
-                    <i class="fas fa-lock text-[10px]"></i>Espace membres
+                <a href="{{ route('login') }}" class="text-amber-400/90 hover:text-amber-300 font-semibold transition">
+                    Espace membres →
                 </a>
             </div>
         </div>

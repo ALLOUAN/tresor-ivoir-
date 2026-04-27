@@ -68,6 +68,29 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0d0d0b; }
         ::-webkit-scrollbar-thumb { background: #e8a020; border-radius: 3px; }
+        .detail-mesh {
+            background-color: #050403;
+            background-image:
+                radial-gradient(ellipse 100% 70% at 50% -15%, rgba(232, 160, 32, 0.12), transparent 55%),
+                radial-gradient(ellipse 60% 40% at 100% 50%, rgba(99, 102, 241, 0.05), transparent 50%),
+                radial-gradient(ellipse 50% 45% at 0% 100%, rgba(232, 160, 32, 0.04), transparent 50%);
+        }
+        .detail-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        }
+        .detail-viewer-frame {
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.06) inset,
+                0 32px 64px -12px rgba(0,0,0,0.65),
+                0 0 80px -20px rgba(232, 160, 32, 0.08);
+        }
+        .detail-spec-tile {
+            transition: border-color .25s ease, background-color .25s ease, transform .25s ease;
+        }
+        .detail-spec-tile:hover {
+            border-color: rgba(232, 160, 32, 0.22);
+            background-color: rgba(255,255,255,0.045);
+        }
     </style>
 </head>
 <body class="bg-dark-900 text-white antialiased font-sans">
@@ -90,100 +113,134 @@
     </div>
 </section>
 
-<section class="py-8 sm:py-12 bg-dark-900">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
-        <div class="rounded-2xl border border-white/10 bg-black/40 overflow-hidden shadow-2xl shadow-black/40">
-            <div class="bg-black/40 flex items-center justify-center p-4 sm:p-8 min-h-[200px]">
-                <img src="{{ url($media->url) }}" alt="{{ $imgAlt }}"
-                     class="max-w-full w-auto max-h-[min(72vh,820px)] h-auto object-contain rounded-lg">
+<section class="relative isolate py-12 sm:py-20 detail-mesh border-t border-white/[0.05] overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 detail-noise opacity-80"></div>
+    <div class="pointer-events-none absolute top-0 left-1/2 h-72 w-[min(100%,48rem)] -translate-x-1/2 rounded-full bg-gradient-to-b from-amber-500/12 via-transparent to-transparent blur-3xl"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-10">
+        {{-- Visionneuse --}}
+        <div class="relative rounded-[1.35rem] p-[1px] bg-gradient-to-br from-white/15 via-white/[0.04] to-amber-500/20 detail-viewer-frame">
+            <div class="rounded-[1.3rem] border border-white/[0.06] bg-zinc-950/90 backdrop-blur-xl overflow-hidden">
+                <div class="relative flex items-center justify-center p-4 sm:p-10 md:p-12 min-h-[220px] bg-zinc-950"
+                     style="background-image: radial-gradient(ellipse 80% 70% at 50% 45%, rgba(55,55,62,0.45) 0%, #090807 68%);">
+                    <div class="pointer-events-none absolute inset-0 opacity-[0.15]" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 48px 48px;"></div>
+                    <img src="{{ url($media->url) }}" alt="{{ $imgAlt }}"
+                         class="relative z-[1] max-w-full w-auto max-h-[min(70vh,800px)] h-auto object-contain rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] ring-1 ring-black/40">
+                </div>
             </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row flex-wrap gap-3">
+        {{-- Actions --}}
+        <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
             <a href="{{ url($media->url) }}" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm transition shadow-lg shadow-gold-500/20">
-                <i class="fas fa-up-right-from-square text-xs"></i>
+               class="group inline-flex flex-1 sm:flex-initial min-w-0 items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black text-sm font-bold shadow-lg shadow-amber-900/35 hover:from-amber-300 hover:via-amber-400 hover:to-amber-500 transition-all duration-300 font-plus">
+                <i class="fas fa-up-right-from-square text-xs opacity-90 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
                 Ouvrir le fichier en grand
             </a>
             <a href="{{ route('gallery.public') }}"
-               class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-white/15 text-gray-200 hover:bg-white/5 hover:border-gold-500/30 text-sm font-medium transition">
-                <i class="fas fa-arrow-left text-xs"></i>
+               class="inline-flex flex-1 sm:flex-initial items-center justify-center gap-2.5 px-6 py-3.5 rounded-full border border-white/12 bg-white/[0.04] backdrop-blur-md text-gray-100 text-sm font-semibold hover:bg-white/[0.08] hover:border-amber-400/30 transition-all duration-300 font-plus">
+                <i class="fas fa-arrow-left text-xs text-amber-400/80"></i>
                 Retour à la galerie
             </a>
         </div>
 
-        <div class="rounded-2xl border border-white/10 bg-dark-800/60 p-5 sm:p-8">
-            <h2 class="font-serif text-lg sm:text-xl font-semibold text-gold-200 mb-6 flex items-center gap-2">
-                <i class="fas fa-circle-info text-gold-500/80 text-sm"></i>
-                Informations sur l’image
-            </h2>
-            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
+        {{-- Métadonnées --}}
+        <div class="rounded-[1.35rem] border border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.05)] p-6 sm:p-8 md:p-10">
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 pb-6 border-b border-white/[0.06]">
+                <div>
+                    <p class="text-[10px] font-plus font-bold uppercase tracking-[0.22em] text-amber-500/80 mb-2">Fiche technique</p>
+                    <h2 class="font-serif text-xl sm:text-2xl font-semibold tracking-tight text-white flex items-center gap-3">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/25 bg-gradient-to-br from-amber-500/15 to-transparent text-amber-400">
+                            <i class="fas fa-layer-group text-sm"></i>
+                        </span>
+                        Informations sur l’image
+                    </h2>
+                </div>
+                <span class="inline-flex items-center gap-2 self-start rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-[11px] text-gray-500 font-plus">
+                    <i class="fas fa-fingerprint text-amber-500/50 text-[10px]"></i>
+                    Média sécurisé
+                </span>
+            </div>
+
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                 @if(trim((string) ($media->title ?? '')) !== '')
-                    <div class="sm:col-span-2">
-                        <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Titre</dt>
-                        <dd class="text-white font-medium">{{ $media->title }}</dd>
+                    <div class="detail-spec-tile sm:col-span-2 rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Titre</dt>
+                        <dd class="text-white font-serif text-base sm:text-lg font-medium leading-snug">{{ $media->title }}</dd>
                     </div>
                 @endif
                 @if(trim((string) ($media->alt_text ?? '')) !== '')
-                    <div class="sm:col-span-2">
-                        <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Texte alternatif</dt>
-                        <dd class="text-gray-300">{{ $media->alt_text }}</dd>
+                    <div class="detail-spec-tile sm:col-span-2 rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Texte alternatif</dt>
+                        <dd class="text-gray-300 leading-relaxed text-[13px] sm:text-sm">{{ $media->alt_text }}</dd>
                     </div>
                 @endif
                 @if(trim((string) ($media->credit ?? '')) !== '')
-                    <div>
-                        <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Crédit photo</dt>
-                        <dd class="text-gray-200"><i class="fas fa-camera text-gold-500/60 mr-1.5"></i>{{ $media->credit }}</dd>
+                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Crédit photo</dt>
+                        <dd class="text-gray-100 flex items-center gap-2 text-[13px] sm:text-sm">
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400/90"><i class="fas fa-camera text-xs"></i></span>
+                            <span class="break-words">{{ $media->credit }}</span>
+                        </dd>
                     </div>
                 @endif
                 @if($priceLabel)
-                    <div>
-                        <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Prix</dt>
-                        <dd><span class="inline-flex rounded-lg px-2.5 py-1 bg-emerald-950/70 border border-emerald-500/25 text-emerald-200 font-semibold">{{ $priceLabel }}</span></dd>
+                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Prix</dt>
+                        <dd><span class="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-emerald-200 text-sm font-bold tracking-tight font-plus">{{ $priceLabel }}</span></dd>
                     </div>
                 @endif
-                <div>
-                    <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Section</dt>
-                    <dd class="text-gray-300">{{ $sectionLabel }}</dd>
+                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Section</dt>
+                    <dd class="text-gray-100 font-medium font-plus text-[13px]">{{ $sectionLabel }}</dd>
                 </div>
-                <div>
-                    <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Fichier</dt>
-                    <dd class="text-gray-300 break-all">{{ $media->original_name }}</dd>
+                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Fichier</dt>
+                    <dd class="text-gray-300 break-all text-xs sm:text-sm font-mono leading-relaxed">{{ $media->original_name }}</dd>
                 </div>
-                <div>
-                    <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Type MIME</dt>
-                    <dd class="text-gray-400 font-mono text-xs">{{ $media->mime_type }}</dd>
+                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Type MIME</dt>
+                    <dd class="text-amber-200/70 font-mono text-xs tracking-wide">{{ $media->mime_type }}</dd>
                 </div>
-                <div>
-                    <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Taille</dt>
-                    <dd class="text-gray-300">{{ $sizeHuman }}</dd>
+                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Taille</dt>
+                    <dd class="text-white tabular-nums font-semibold font-plus">{{ $sizeHuman }}</dd>
                 </div>
                 @if($media->published_at)
-                    <div>
-                        <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Date de publication</dt>
-                        <dd class="text-gray-300">{{ $media->published_at->translatedFormat('d F Y, H:i') }}</dd>
+                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Date de publication</dt>
+                        <dd class="text-gray-200 text-[13px] sm:text-sm">{{ $media->published_at->translatedFormat('d F Y, H:i') }}</dd>
                     </div>
                 @endif
-                <div>
-                    <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Ajouté le</dt>
-                    <dd class="text-gray-300">{{ $media->created_at?->translatedFormat('d F Y, H:i') ?? '—' }}</dd>
+                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Ajouté le</dt>
+                    <dd class="text-gray-200 text-[13px] sm:text-sm">{{ $media->created_at?->translatedFormat('d F Y, H:i') ?? '—' }}</dd>
                 </div>
                 @if($hasDisplayOrderColumn)
-                    <div>
-                        <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Ordre d’affichage</dt>
-                        <dd class="text-gray-300 tabular-nums">{{ (int) ($media->display_order ?? 0) }}</dd>
+                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Ordre d’affichage</dt>
+                        <dd class="text-white tabular-nums text-lg font-bold font-plus">{{ (int) ($media->display_order ?? 0) }}</dd>
                     </div>
                 @endif
                 @if($hasFeaturedColumn)
-                    <div>
-                        <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Vedette</dt>
-                        <dd class="text-gray-300">{{ ($media->is_featured ?? false) ? 'Oui' : 'Non' }}</dd>
+                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Vedette</dt>
+                        <dd>
+                            @if($media->is_featured ?? false)
+                                <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/35 bg-amber-500/15 px-2.5 py-1 text-amber-200 text-xs font-bold font-plus">Oui</span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-gray-400 text-xs font-semibold font-plus">Non</span>
+                            @endif
+                        </dd>
                     </div>
                 @endif
                 @if($uploaderName !== null && $uploaderName !== '')
-                    <div class="sm:col-span-2">
-                        <dt class="text-gray-500 text-xs uppercase tracking-wider mb-1">Téléversé par</dt>
-                        <dd class="text-gray-300">{{ $uploaderName }}</dd>
+                    <div class="detail-spec-tile sm:col-span-2 rounded-xl border border-white/[0.06] bg-gradient-to-r from-black/30 via-black/20 to-amber-950/10 p-4 sm:p-5">
+                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Téléversé par</dt>
+                        <dd class="text-gray-100 flex items-center gap-3 text-sm font-plus font-medium">
+                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-amber-400/90 text-xs"><i class="fas fa-user"></i></span>
+                            {{ $uploaderName }}
+                        </dd>
                     </div>
                 @endif
             </dl>
