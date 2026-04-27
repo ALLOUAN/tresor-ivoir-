@@ -88,6 +88,27 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
     @endforeach
 </div>
 
+{{-- ── Modern charts ───────────────────────────────────────────────────── --}}
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+    <div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-fuchsia-500/20 rounded-xl p-5 shadow-lg shadow-fuchsia-900/20">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-white font-semibold text-sm">Répartition des interactions</h3>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-400/20">Doughnut</span>
+        </div>
+        <div class="max-w-[340px] mx-auto">
+            <canvas id="providerDashboardInteractions" height="220"></canvas>
+        </div>
+    </div>
+
+    <div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-blue-500/20 rounded-xl p-5 shadow-lg shadow-blue-900/20">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-white font-semibold text-sm">Vue globale performance</h3>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-400/20">Snapshot</span>
+        </div>
+        <canvas id="providerDashboardOverview" height="220"></canvas>
+    </div>
+</div>
+
 {{-- ── Two columns ─────────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
 
@@ -203,3 +224,114 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 
 @endif
 @endsection
+
+@push('scripts')
+@if($provider)
+@php
+    $dashboardInteractionsData = [
+        (int) $stats['views'],
+        (int) $stats['clicks_phone'],
+        (int) $stats['clicks_website'],
+    ];
+    $dashboardOverviewData = [
+        (int) $stats['views'],
+        (int) $stats['clicks_phone'],
+        (int) $stats['clicks_website'],
+        (int) $stats['rating_count'],
+        (int) round(((float) $stats['rating_avg']) * 10),
+    ];
+@endphp
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(() => {
+    const interactionsEl = document.getElementById('providerDashboardInteractions');
+    const overviewEl = document.getElementById('providerDashboardOverview');
+    if (!interactionsEl || !overviewEl || typeof Chart === 'undefined') return;
+
+    const surface = '#0f172a';
+    const baseTooltip = {
+        backgroundColor: surface,
+        titleColor: '#f8fafc',
+        bodyColor: '#cbd5e1',
+        borderColor: 'rgba(148,163,184,0.25)',
+        borderWidth: 1,
+        padding: 10,
+    };
+
+    new Chart(interactionsEl, {
+        type: 'doughnut',
+        data: {
+            labels: ['Vues', 'Clics téléphone', 'Clics site web'],
+            datasets: [{
+                data: @json($dashboardInteractionsData),
+                backgroundColor: [
+                    'rgba(59,130,246,0.92)',
+                    'rgba(16,185,129,0.92)',
+                    'rgba(168,85,247,0.92)',
+                ],
+                borderColor: 'rgba(15,23,42,0.9)',
+                borderWidth: 3,
+                hoverOffset: 8,
+                cutout: '66%',
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#cbd5e1', usePointStyle: true, boxWidth: 8, boxHeight: 8 },
+                },
+                tooltip: baseTooltip,
+            },
+        },
+    });
+
+    const overviewCtx = overviewEl.getContext('2d');
+    const gradBlue = overviewCtx.createLinearGradient(0, 0, 0, 220);
+    gradBlue.addColorStop(0, 'rgba(59,130,246,0.9)');
+    gradBlue.addColorStop(1, 'rgba(59,130,246,0.45)');
+
+    const gradAmber = overviewCtx.createLinearGradient(0, 0, 0, 220);
+    gradAmber.addColorStop(0, 'rgba(245,158,11,0.95)');
+    gradAmber.addColorStop(1, 'rgba(245,158,11,0.5)');
+
+    new Chart(overviewEl, {
+        type: 'bar',
+        data: {
+            labels: ['Vues', 'Tel.', 'Web', 'Avis', 'Note x10'],
+            datasets: [{
+                data: @json($dashboardOverviewData),
+                backgroundColor: [gradBlue, gradBlue, gradBlue, gradAmber, gradAmber],
+                borderRadius: 8,
+                borderSkipped: false,
+                maxBarThickness: 30,
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: baseTooltip,
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#94a3b8', font: { size: 10 } },
+                    border: { display: false },
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(148,163,184,0.14)', drawBorder: false },
+                    ticks: { color: '#94a3b8', font: { size: 10 } },
+                    border: { display: false },
+                },
+            },
+        },
+    });
+})();
+</script>
+@endif
+@endpush

@@ -98,6 +98,80 @@
                 repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(232,160,32,.015) 80px, rgba(232,160,32,.015) 81px);
             pointer-events: none;
         }
+        .hero-viewport { min-height: auto; }
+        #hero.hero-bg-fallback,
+        #hero .hero-viewport {
+            min-height: auto !important;
+        }
+        #hero > .hero-viewport {
+            display: block;
+        }
+        #hero-bg-carousel.hero-viewport {
+            position: relative;
+            inset: auto;
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            aspect-ratio: 16 / 8.5;
+        }
+        #hero-bg-carousel .hero-bg-layer,
+        #hero-bg-carousel picture,
+        #hero-bg-carousel img {
+            height: 100%;
+            object-fit: cover;
+        }
+        #hero-bg-carousel img { object-position: 52% 42%; }
+        #hero-bg-carousel .hero-bg-layer { background: #000; }
+        #hero .hero-editorial-content {
+            display: block;
+            flex: none;
+            align-items: flex-start;
+        }
+        #hero .hero-editorial-copy {
+            max-width: 100%;
+            padding-top: 1.25rem;
+            padding-bottom: 2.25rem;
+        }
+        #hero .hero-bg-controls { bottom: 0.9rem; }
+        #hero .hero-scroll-indicator { display: none; }
+
+        @media (max-width: 639px) {
+            #hero { padding-top: 4.5rem; }
+            #hero-bg-carousel.hero-viewport { aspect-ratio: 16 / 8.5; }
+        }
+        @media (min-width: 640px) and (max-width: 1023px) {
+            #hero { padding-top: 8.25rem; }
+            #hero-bg-carousel.hero-viewport { aspect-ratio: 16 / 8; }
+            #hero-bg-carousel img { object-position: 54% 40%; }
+            #hero .hero-editorial-copy {
+                padding-top: 1.75rem;
+                padding-bottom: 2.75rem;
+                max-width: min(92%, 44rem);
+            }
+            #hero .hero-bg-controls { bottom: 1rem; }
+        }
+        @media (min-width: 1024px) and (max-width: 1439px) {
+            #hero { padding-top: 8.25rem; }
+            #hero-bg-carousel.hero-viewport { aspect-ratio: 16 / 7; }
+            #hero-bg-carousel img { object-position: 50% 42%; }
+            #hero .hero-editorial-copy {
+                max-width: min(92vw, 48rem);
+                padding-top: 2rem;
+                padding-bottom: 3.25rem;
+            }
+            #hero .hero-bg-controls { bottom: 1.25rem; }
+        }
+        @media (min-width: 1440px) {
+            #hero { padding-top: 8.25rem; }
+            #hero-bg-carousel.hero-viewport { aspect-ratio: 16 / 6.4; }
+            #hero-bg-carousel img { object-position: center center; }
+            #hero .hero-editorial-copy {
+                max-width: 52rem;
+                padding-top: 2.25rem;
+                padding-bottom: 3.5rem;
+            }
+            #hero .hero-bg-controls { bottom: 1.5rem; }
+        }
 
         /* ── Scrollbar ───────────────────────────────────────── */
         ::-webkit-scrollbar { width: 6px; }
@@ -459,10 +533,10 @@
                 {{ $item['label'] }}
             </a>
             @endforeach
-            <button type="button" onclick="openContactModal()"
-                class="nav-pill nav-pill-glow cursor-pointer whitespace-nowrap">
-                Contact
-            </button>
+            <a href="{{ route('gallery.public') }}"
+               class="nav-pill nav-pill-glow whitespace-nowrap">
+                Galerie Tresors d'Ivoire
+            </a>
         </nav>
 
         {{-- Right actions --}}
@@ -507,10 +581,11 @@
                 {{ $item['label'] }}
             </a>
             @endforeach
-            <button type="button" onclick="openContactModal(); document.getElementById('mobile-menu').classList.remove('open')"
-                class="w-full text-left block px-4 py-3 text-gray-200 font-medium text-sm tracking-wide">
-                Contact
-            </button>
+            <a href="{{ route('gallery.public') }}"
+               onclick="document.getElementById('mobile-menu')?.classList.remove('open')"
+               class="w-full text-left block px-4 py-3 text-gray-200 font-medium text-sm tracking-wide">
+                Galerie Tresors d'Ivoire
+            </a>
             <div class="pt-4 mt-2 border-t border-white/10 flex flex-col gap-2">
                 <a href="{{ route('login') }}" class="text-center py-3 text-sm font-semibold text-gray-200 btn-ghost-header">Connexion</a>
                 <a href="{{ route('plans.public') }}" class="text-center py-3 text-sm font-bold text-dark-900 btn-gold-header">S’abonner</a>
@@ -591,25 +666,25 @@
 {{-- ══════════════════════════════════════════════════════════
      HERO
 ══════════════════════════════════════════════════════════ --}}
-<section class="hero-bg-fallback relative min-h-screen flex flex-col" id="hero">
+<section class="hero-bg-fallback hero-viewport relative flex flex-col" id="hero">
 
     {{-- Decorative orbs --}}
     <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-1/3 left-1/6 w-64 h-64 bg-green-900/10 rounded-full blur-3xl pointer-events-none"></div>
 
     {{-- Content : carousel plein écran (slides responsives) --}}
-    <div class="relative z-10 flex w-full flex-1 flex-col min-h-[100svh] sm:min-h-[min(100svh,900px)]">
+    <div class="hero-viewport relative z-10 flex w-full flex-1 flex-col sm:min-h-[min(100svh,900px)]">
         @if($heroSlides->isNotEmpty())
-            <div id="hero-bg-carousel" class="pointer-events-none absolute inset-0 z-0 h-full min-h-[100svh] w-full overflow-hidden" aria-hidden="true">
+            <div id="hero-bg-carousel" class="hero-viewport pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden" aria-hidden="true">
                 @foreach($heroSlides as $idx => $slide)
                     @php
                         $desktop = trim((string) $slide->desktop_image_url);
                         $tablet = trim((string) ($slide->tablet_image_url ?: $slide->desktop_image_url));
                         $mobile = trim((string) ($slide->mobile_image_url ?: $slide->tablet_image_url ?: $slide->desktop_image_url));
-                        $src = $desktop !== '' ? $desktop : ($tablet !== '' ? $tablet : $mobile);
+                        $src = $mobile !== '' ? $mobile : ($tablet !== '' ? $tablet : $desktop);
                     @endphp
                     @if($src !== '')
-                        <div class="hero-bg-layer absolute inset-0 transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}" data-hero-bg-layer="{{ $idx }}">
+                        <div class="hero-bg-layer absolute inset-0 bg-black transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}" data-hero-bg-layer="{{ $idx }}">
                             <picture class="absolute inset-0 block h-full w-full">
                                 @if($desktop !== '')
                                     <source media="(min-width: 1024px)" srcset="{{ $desktop }}">
@@ -623,17 +698,17 @@
                                     @if($idx > 0) loading="lazy" @endif
                                     @if($idx === 0) fetchpriority="high" @endif
                                     decoding="async"
-                                    class="h-full w-full object-cover object-[65%_center] sm:object-[58%_center] lg:object-center"
+                                    class="h-full w-full object-cover object-center sm:object-[58%_center] lg:object-center"
                                 />
                             </picture>
                         </div>
                     @endif
                 @endforeach
-                <div class="absolute inset-0 z-20 bg-linear-to-r from-black/92 via-black/65 to-black/35 sm:from-black/88 sm:via-black/55 sm:to-black/25"></div>
-                <div class="absolute inset-0 z-20 bg-linear-to-t from-black/80 via-black/15 to-black/50"></div>
+                <div class="hero-overlay-primary absolute inset-0 z-20 bg-linear-to-r from-black/92 via-black/65 to-black/35 sm:from-black/88 sm:via-black/55 sm:to-black/25"></div>
+                <div class="hero-overlay-secondary absolute inset-0 z-20 bg-linear-to-t from-black/80 via-black/15 to-black/50"></div>
             </div>
             @if($heroSlides->count() > 1)
-                <div class="absolute inset-x-0 bottom-24 sm:bottom-28 z-30 flex items-center justify-center gap-3 pointer-events-none">
+                <div class="hero-bg-controls absolute inset-x-0 bottom-16 sm:bottom-28 z-30 flex items-center justify-center gap-2 sm:gap-3 pointer-events-none px-4">
                     <button type="button" id="hero-bg-prev" class="pointer-events-auto w-9 h-9 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center" aria-label="Slide précédent">
                         <i class="fas fa-chevron-left text-xs"></i>
                     </button>
@@ -658,10 +733,13 @@
             $heroArticle = ($hideHomeHeroArticle ?? false)
                 ? null
                 : ($homeDestinationArticle ?? (($homeArticles ?? collect())->where('is_featured', true)->first() ?? ($homeArticles ?? collect())->first()));
+            $heroContributors = $heroArticle
+                ? $heroArticle->display_uploaders
+                : collect();
         @endphp
-        <div class="relative z-10 flex w-full flex-1 items-center">
+        <div class="hero-editorial-content relative z-10 flex w-full flex-1 items-center">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-                <div class="max-w-xl pt-28 sm:pt-32 pb-10">
+                <div class="hero-editorial-copy max-w-xl pt-28 sm:pt-32 pb-10">
                     @if($heroArticle)
                         <span class="inline-flex items-center gap-1.5 text-gold-400 text-xs uppercase tracking-[.2em] font-elegant mb-4 animate-fade-in">
                             <i class="fas fa-star text-[10px]"></i>
@@ -686,6 +764,15 @@
                             @endif
                             <span><i class="fas fa-calendar mr-1 text-gold-500/60"></i>{{ $heroArticle->published_at?->translatedFormat('d M Y') }}</span>
                         </div>
+                        @if($heroContributors->isNotEmpty())
+                        <div class="mb-6 flex flex-wrap items-center gap-1.5">
+                            @foreach($heroContributors->take(4) as $contributor)
+                            <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-200">
+                                {{ $contributor->full_name }}
+                            </span>
+                            @endforeach
+                        </div>
+                        @endif
                         <a href="{{ route('articles.show', $heroArticle->slug_fr) }}"
                            class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm transition-all duration-300 shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:-translate-y-0.5 animate-fade-up">
                             <i class="fas fa-book-open text-xs"></i>
@@ -735,7 +822,7 @@
 
     {{-- Scroll indicator --}}
     <a href="#articles"
-       class="absolute bottom-28 md:bottom-36 right-6 sm:right-10 w-12 h-12 rounded-full border border-gold-400/30 bg-dark-800/60 backdrop-blur flex items-center justify-center text-gold-400 hover:bg-gold-500 hover:text-dark-900 hover:border-gold-500 transition-all duration-300 animate-bounce z-10">
+       class="hero-scroll-indicator absolute bottom-28 md:bottom-36 right-6 sm:right-10 w-12 h-12 rounded-full border border-gold-400/30 bg-dark-800/60 backdrop-blur flex items-center justify-center text-gold-400 hover:bg-gold-500 hover:text-dark-900 hover:border-gold-500 transition-all duration-300 animate-bounce z-10">
         <i class="fas fa-chevron-down text-sm"></i>
     </a>
 </section>
@@ -774,6 +861,7 @@
             ────────────────────────────────────────── --}}
             <div class="lg:col-span-1 flex flex-col gap-6">
                 @forelse($leftArts as $art)
+                @php $contributors = $art->display_uploaders; @endphp
                 <a href="{{ route('articles.show', $art->slug_fr) }}"
                    class="article-card group block reveal">
                     {{-- Image --}}
@@ -805,6 +893,15 @@
                         @endif
                         <span>{{ $art->published_at?->translatedFormat('d M Y') }}</span>
                     </div>
+                    @if($contributors->isNotEmpty())
+                    <div class="mt-2 flex flex-wrap gap-1">
+                        @foreach($contributors->take(2) as $contributor)
+                        <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-medium text-amber-200">
+                            {{ $contributor->first_name }}
+                        </span>
+                        @endforeach
+                    </div>
+                    @endif
                 </a>
                 @empty
                 <div class="text-gray-700 text-sm py-4">—</div>
@@ -816,6 +913,7 @@
             ────────────────────────────────────────── --}}
             <div class="lg:col-span-2 reveal">
                 @if($mainArt)
+                @php $mainContributors = $mainArt->display_uploaders; @endphp
                 <a href="{{ route('articles.show', $mainArt->slug_fr) }}" class="article-card group block">
                     {{-- Grande image --}}
                     <div class="relative overflow-hidden rounded-2xl h-64 sm:h-80 bg-dark-700 mb-4">
@@ -862,6 +960,15 @@
                         <span><i class="fas fa-clock mr-1 text-gold-500/50"></i>{{ $mainArt->reading_time }} min</span>
                         @endif
                     </div>
+                    @if($mainContributors->isNotEmpty())
+                    <div class="mt-3 flex flex-wrap gap-1.5">
+                        @foreach($mainContributors->take(4) as $contributor)
+                        <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-200">
+                            {{ $contributor->full_name }}
+                        </span>
+                        @endforeach
+                    </div>
+                    @endif
                 </a>
                 @endif
             </div>
@@ -872,6 +979,7 @@
             <div class="lg:col-span-1">
                 <div class="flex flex-col divide-y divide-white/5">
                     @forelse($rightArts as $art)
+                    @php $contributors = $art->display_uploaders; @endphp
                     <a href="{{ route('articles.show', $art->slug_fr) }}"
                        class="group flex items-start gap-3 py-3 first:pt-0 hover:bg-dark-800/50 -mx-2 px-2 rounded-lg transition-all duration-200 reveal">
                         {{-- Texte --}}
@@ -883,6 +991,15 @@
                                 {{ $art->title_fr }}
                             </h4>
                             <p class="text-gray-600 text-[10px] mt-1">{{ $art->published_at?->translatedFormat('d M Y') }}</p>
+                            @if($contributors->isNotEmpty())
+                            <div class="mt-1 flex flex-wrap gap-1">
+                                @foreach($contributors->take(2) as $contributor)
+                                <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-medium text-amber-200">
+                                    {{ $contributor->first_name }}
+                                </span>
+                                @endforeach
+                            </div>
+                            @endif
                         </div>
                         {{-- Miniature --}}
                         <div class="w-16 h-14 shrink-0 rounded-lg overflow-hidden bg-dark-700 relative">
@@ -1438,7 +1555,9 @@
     }
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeContactModal();
+        if (e.key === 'Escape') {
+            closeContactModal();
+        }
     });
 
     document.addEventListener('DOMContentLoaded', () => {

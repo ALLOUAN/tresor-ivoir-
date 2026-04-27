@@ -71,6 +71,9 @@
     @endif
 
     {{-- Meta --}}
+    @php
+        $contributors = $article->display_uploaders;
+    @endphp
     <div class="flex flex-wrap items-center gap-4 sm:gap-6 py-5 border-y border-white/8 mb-8 text-sm">
         <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-[#252520] flex items-center justify-center text-xs font-bold text-amber-400">
@@ -81,6 +84,16 @@
                 <p class="text-gray-600 text-xs">Auteur</p>
             </div>
         </div>
+        @if($contributors->isNotEmpty())
+        <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-gray-600 text-xs uppercase tracking-wider">Uploaders :</span>
+            @foreach($contributors as $contributor)
+            <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-200">
+                {{ $contributor->full_name }}
+            </span>
+            @endforeach
+        </div>
+        @endif
         @if($article->published_at)
         <div class="text-gray-500 text-sm">
             <i class="fas fa-calendar-days text-amber-500/50 mr-1.5"></i>
@@ -152,6 +165,26 @@
     <div class="prose-content max-w-none">
         {!! \App\Support\HtmlSanitizer::articleBody($article->content_fr) !!}
     </div>
+    @endif
+
+    {{-- Gallery --}}
+    @php
+        $galleryImages = $article->media
+            ->where('type', 'image')
+            ->filter(fn ($m) => ! empty($m->url) && $m->url !== $article->cover_url)
+            ->values();
+    @endphp
+    @if($galleryImages->isNotEmpty())
+    <section class="mt-10">
+        <h2 class="font-serif text-xl font-bold mb-4">Galerie photos</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            @foreach($galleryImages as $image)
+            <figure class="rounded-xl overflow-hidden border border-white/10 bg-[#141410]">
+                <img src="{{ $image->url }}" alt="{{ $image->alt_text ?: $article->title_fr }}" class="w-full h-32 sm:h-36 object-cover">
+            </figure>
+            @endforeach
+        </div>
+    </section>
     @endif
 
     {{-- Tags --}}

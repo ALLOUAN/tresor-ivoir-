@@ -2,7 +2,9 @@
     $topContact = $siteBrand['contact'] ?? [];
     $topPhoneDisplay = !empty($topContact['phone_1']) ? $topContact['phone_1'] : '+225 27 22 48 36 90';
     $topPhoneHref = 'tel:'.preg_replace('/[^\d+]/', '', $topPhoneDisplay);
-    $publicInfoPages = \App\Models\InformationPage::query()->orderBy('sort_order')->orderBy('id')->get();
+    $publicInfoPages = \Illuminate\Support\Facades\Schema::hasTable('information_pages')
+        ? \App\Models\InformationPage::query()->orderBy('sort_order')->orderBy('id')->get()
+        : collect();
     $publicInfoGuide = $publicInfoPages->firstWhere('slug', 'user-guide');
     $publicInfoFaq = $publicInfoPages->firstWhere('slug', 'faq');
 @endphp
@@ -143,6 +145,7 @@
             <a href="{{ route('discoveries.index') }}" class="public-nav-pill {{ request()->routeIs('discoveries.*') ? 'is-active' : '' }}">Découvertes</a>
             <a href="{{ route('providers.index') }}" class="public-nav-pill {{ request()->routeIs('providers.*') ? 'is-active' : '' }}">Annuaire Prestataires</a>
             <a href="{{ route('events.index') }}" class="public-nav-pill {{ request()->routeIs('events.*') ? 'is-active' : '' }}">Événements</a>
+            <a href="{{ route('gallery.public') }}" class="public-nav-pill {{ request()->routeIs('gallery.public') ? 'is-active' : '' }}">Galerie</a>
         </nav>
 
         <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
@@ -180,6 +183,7 @@
             <a href="{{ route('discoveries.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('discoveries.*') ? 'text-amber-300 bg-amber-500/10' : 'text-gray-300 hover:bg-white/5' }}">Découvertes</a>
             <a href="{{ route('providers.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('providers.*') ? 'text-amber-300 bg-amber-500/10' : 'text-gray-300 hover:bg-white/5' }}">Annuaire Prestataires</a>
             <a href="{{ route('events.index') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('events.*') ? 'text-amber-300 bg-amber-500/10' : 'text-gray-300 hover:bg-white/5' }}">Événements</a>
+            <a href="{{ route('gallery.public') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('gallery.public') ? 'text-amber-300 bg-amber-500/10' : 'text-gray-300 hover:bg-white/5' }}">Galerie Trésors d'Ivoire</a>
             <a href="{{ route('search') }}" class="block px-3 py-2 rounded-lg {{ request()->routeIs('search') ? 'text-amber-300 bg-amber-500/10' : 'text-gray-300 hover:bg-white/5' }}">
                 <i class="fas fa-magnifying-glass mr-2 text-xs"></i>Recherche
             </a>

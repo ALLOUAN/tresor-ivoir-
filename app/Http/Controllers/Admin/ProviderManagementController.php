@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
+use App\Models\Event;
+use App\Models\Media;
 use App\Models\Provider;
 use App\Models\ProviderCategory;
 use App\Models\User;
@@ -21,6 +24,7 @@ class ProviderManagementController extends Controller
 
         $query = Provider::query()
             ->with(['category', 'user'])
+            ->withCount(['sponsoredArticles', 'events', 'media'])
             ->latest();
 
         if ($status) {
@@ -174,5 +178,135 @@ class ProviderManagementController extends Controller
         $provider->update(['status' => 'suspended']);
 
         return back()->with('success', 'Prestataire suspendu avec succès.');
+    }
+
+    public function content(Provider $provider)
+    {
+        $provider->load(['category', 'user']);
+
+        $articles = Article::query()
+            ->where('sponsor_id', $provider->id)
+            ->latest('published_at')
+            ->latest('id')
+            ->get();
+
+        $events = Event::query()
+            ->where('provider_id', $provider->id)
+            ->latest('published_at')
+            ->latest('id')
+            ->get();
+
+        $mediaItems = Media::query()
+            ->where('mediable_type', Provider::class)
+            ->where('mediable_id', $provider->id)
+            ->latest('created_at')
+            ->latest('id')
+            ->get();
+
+        $providers = Provider::query()
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('admin.providers.content', compact('provider', 'articles', 'events', 'mediaItems', 'providers'));
+    }
+
+    public function reassignArticle(Request $request, Provider $provider, Article $article)
+    {
+        if ((int) $article->sponsor_id !== (int) $provider->id) {
+            abort(404);
+        }
+
+        $data = $request->validate([
+            'target_provider_id' => ['required', 'exists:providers,id'],
+        ]);
+
+        $article->update(['sponsor_id' => (int) $data['target_provider_id']]);
+
+        return back()->with('success', 'Article réattribué.');
+    }
+
+    public function reassignArticlesBulk(Request $request, Provider $provider)
+    {
+        $data = $request->validate([
+            'target_provider_id' => ['required', 'exists:providers,id'],
+            'article_ids' => ['required', 'array', 'min:1'],
+            'article_ids.*' => ['integer', 'exists:articles,id'],
+        ]);
+
+        Article::query()
+            ->where('sponsor_id', $provider->id)
+            ->whereIn('id', $data['article_ids'])
+            ->update(['sponsor_id' => (int) $data['target_provider_id']]);
+
+        return back()->with('success', 'Articles réattribués en masse.');
+    }
+
+    public function reassignEvent(Request $request, Provider $provider, Event $event)
+    {
+        if ((int) $event->provider_id !== (int) $provider->id) {
+            abort(404);
+        }
+
+        $data = $request->validate([
+            'target_provider_id' => ['required', 'exists:providers,id'],
+        ]);
+
+        $event->update(['provider_id' => (int) $data['target_provider_id']]);
+
+        return back()->with('success', 'Événement réattribué.');
+    }
+
+    public function reassignEventsBulk(Request $request, Provider $provider)
+    {
+        $data = $request->validate([
+            'target_provider_id' => ['required', 'exists:providers,id'],
+            'event_ids' => ['required', 'array', 'min:1'],
+            'event_ids.*' => ['integer', 'exists:events,id'],
+        ]);
+
+        Event::query()
+            ->where('provider_id', $provider->id)
+            ->whereIn('id', $data['event_ids'])
+            ->update(['provider_id' => (int) $data['target_provider_id']]);
+
+        return back()->with('success', 'Événements réattribués en masse.');
+    }
+
+    public function reassignMedia(Request $request, Provider $provider, Media $media)
+    {
+        if ($media->mediable_type !== Provider::class || (int) $media->mediable_id !== (int) $provider->id) {
+            abort(404);
+        }
+
+        $data = $request->validate([
+            'target_provider_id' => ['required', 'exists:providers,id'],
+        ]);
+
+        $media->update([
+            'mediable_type' => Provider::class,
+            'mediable_id' => (int) $data['target_provider_id'],
+        ]);
+
+        return back()->with('success', 'Photo/média réattribué.');
+    }
+
+    public function reassignMediaBulk(Request $request, Provider $provider)
+    {
+        $data = $request->validate([
+            'target_provider_id' => ['required', 'exists:providers,id'],
+            'media_ids' => ['required', 'array', 'min:1'],
+            'media_ids.*' => ['integer', 'exists:media,id'],
+        ]);
+
+        Media::query()
+            ->where('mediable_type', Provider::class)
+            ->where('mediable_id', $provider->id)
+            ->whereIn('id', $data['media_ids'])
+            ->update([
+                'mediable_type' => Provider::class,
+                'mediable_id' => (int) $data['target_provider_id'],
+            ]);
+
+        return back()->with('success', 'Médias réattribués en masse.');
     }
 }

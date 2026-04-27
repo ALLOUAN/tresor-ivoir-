@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleComment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class ArticleController extends Controller
 {
@@ -14,10 +15,14 @@ class ArticleController extends Controller
         $category_slug = request('categorie');
         $search = request('q');
         $tag_slug = request('tag');
+        $articleWith = ['category', 'author', 'tags'];
+        if (Schema::hasTable('article_uploader')) {
+            $articleWith[] = 'uploaders';
+        }
 
         $query = Article::where('status', 'published')
             ->where('published_at', '<=', now())
-            ->with(['category', 'author', 'tags'])
+            ->with($articleWith)
             ->latest('published_at');
 
         if ($category_slug) {
@@ -39,7 +44,7 @@ class ArticleController extends Controller
         $categories = ArticleCategory::where('is_active', true)->orderBy('sort_order')->get();
         $featured = Article::where('status', 'published')
             ->where('is_featured', true)
-            ->with(['category', 'author'])
+            ->with(array_values(array_intersect($articleWith, ['category', 'author', 'uploaders'])))
             ->latest('published_at')
             ->take(3)
             ->get();
@@ -55,9 +60,14 @@ class ArticleController extends Controller
 
     public function show(string $slug)
     {
+        $articleWith = ['category', 'author', 'tags', 'media'];
+        if (Schema::hasTable('article_uploader')) {
+            $articleWith[] = 'uploaders';
+        }
+
         $article = Article::where('slug_fr', $slug)
             ->where('status', 'published')
-            ->with(['category', 'author', 'tags', 'media'])
+            ->with($articleWith)
             ->firstOrFail();
 
         $article->increment('views_count');
@@ -65,7 +75,7 @@ class ArticleController extends Controller
         $related = Article::where('status', 'published')
             ->where('category_id', $article->category_id)
             ->where('id', '!=', $article->id)
-            ->with(['category', 'author'])
+            ->with(array_values(array_intersect($articleWith, ['category', 'author', 'uploaders'])))
             ->latest('published_at')
             ->take(3)
             ->get();

@@ -206,6 +206,11 @@
                     <span class="nav-row-icon"><i class="fas fa-calendar-days"></i></span>
                     <span>Événements</span>
                 </a>
+                <a href="{{ route('admin.administration.media') }}"
+                   class="nav-row {{ request()->routeIs('admin.administration.media*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-images"></i></span>
+                    <span>Gestion des galerie photo</span>
+                </a>
                 <a href="{{ route('admin.reviews.index') }}"
                    class="nav-row {{ request()->routeIs('admin.reviews.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-star"></i></span>
@@ -330,7 +335,8 @@
                    class="sidebar-link {{ request()->routeIs('provider.analytics') ? 'active' : '' }}">
                     <i class="fas fa-chart-line w-4 text-center"></i> Statistiques
                 </a>
-                <a href="#" class="sidebar-link">
+                <a href="{{ route('provider.media.index') }}"
+                   class="sidebar-link {{ request()->routeIs('provider.media.*') ? 'active' : '' }}">
                     <i class="fas fa-images w-4 text-center"></i> Médias
                 </a>
                 <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Abonnement</p>

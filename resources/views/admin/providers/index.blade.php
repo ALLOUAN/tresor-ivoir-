@@ -308,6 +308,7 @@
                     <th class="text-left px-5 py-3">Catégorie</th>
                     <th class="text-left px-5 py-3">Contact</th>
                     <th class="text-left px-5 py-3">Statut</th>
+                    <th class="text-left px-5 py-3">Contenus</th>
                     <th class="text-left px-5 py-3">Compte</th>
                     <th class="text-left px-5 py-3">Actions</th>
                 </tr>
@@ -335,9 +336,18 @@
                             @endphp
                             <span class="px-2.5 py-1 rounded-full text-xs {{ $statusClass }}">{{ $provider->status ?? '—' }}</span>
                         </td>
+                        <td class="px-5 py-3 text-slate-300">
+                            <p class="text-xs">Articles: <span class="text-white font-semibold">{{ $provider->sponsored_articles_count ?? 0 }}</span></p>
+                            <p class="text-xs mt-0.5">Événements: <span class="text-white font-semibold">{{ $provider->events_count ?? 0 }}</span></p>
+                            <p class="text-xs mt-0.5">Photos/Médias: <span class="text-white font-semibold">{{ $provider->media_count ?? 0 }}</span></p>
+                        </td>
                         <td class="px-5 py-3 text-slate-300">{{ $provider->user->email ?? 'Aucun utilisateur lié' }}</td>
                         <td class="px-5 py-3">
                             <div class="flex items-center gap-2">
+                                <a href="{{ route('admin.providers.content', $provider) }}"
+                                   class="bg-violet-600 hover:bg-violet-500 text-white text-xs px-3 py-1.5 rounded">
+                                    Gérer contenus
+                                </a>
                                 @if($provider->status !== 'active')
                                     <form method="POST" action="{{ route('admin.providers.validate', $provider) }}">
                                         @csrf
@@ -383,7 +393,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-5 py-8 text-center text-slate-500">Aucun prestataire trouvé.</td>
+                        <td colspan="7" class="px-5 py-8 text-center text-slate-500">Aucun prestataire trouvé.</td>
                     </tr>
                 @endforelse
             </tbody>

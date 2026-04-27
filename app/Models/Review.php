@@ -36,9 +36,19 @@ class Review extends Model
         return $this->belongsTo(User::class, 'moderated_by');
     }
 
+    public function replies()
+    {
+        return $this->hasMany(ReviewReply::class)->latest();
+    }
+
     public function reply()
     {
-        return $this->hasOne(ReviewReply::class);
+        return $this->hasOne(ReviewReply::class)->latestOfMany();
+    }
+
+    public function latestReply()
+    {
+        return $this->hasOne(ReviewReply::class)->latestOfMany();
     }
 
     public function isApproved(): bool

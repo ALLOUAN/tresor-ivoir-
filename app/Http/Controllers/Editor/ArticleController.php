@@ -7,12 +7,15 @@ use App\Http\Requests\AutosaveArticleRequest;
 use App\Http\Requests\StoreArticleRequest;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\Media;
 use App\Models\Provider;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -53,17 +56,27 @@ class ArticleController extends Controller
         $categories = ArticleCategory::where('is_active', true)->orderBy('sort_order')->get();
         $tags = Tag::whereIn('type', ['article', 'shared'])->orderBy('name_fr')->get();
         $sponsors = Provider::where('status', 'active')->orderBy('name')->get(['id', 'name']);
+        $uploaders = User::query()
+            ->where('is_active', true)
+            ->whereIn('role', ['admin', 'editor', 'provider'])
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get(['id', 'first_name', 'last_name', 'role']);
 
-        return view('editor.articles.create', compact('categories', 'tags', 'sponsors'));
+        return view('editor.articles.create', compact('categories', 'tags', 'sponsors', 'uploaders'));
     }
 
     public function store(StoreArticleRequest $request)
     {
         $data = $request->validated();
         $tags = $data['tags'] ?? [];
+        $uploaderIds = $data['uploader_ids'] ?? [];
+        $articleImages = $request->file('article_images', []);
         unset($data['cover_image']);
+        unset($data['article_images']);
         unset($data['publication_mode']);
         unset($data['tags']);
+        unset($data['uploader_ids']);
 
         if ($request->hasFile('cover_image')) {
             $data['cover_url'] = $this->storeArticleCover($request->file('cover_image'));
@@ -79,6 +92,10 @@ class ArticleController extends Controller
 
         if ($tags) {
             $article->tags()->sync($tags);
+        }
+        $this->syncUploaders($article, $uploaderIds);
+        if (is_array($articleImages) && $articleImages !== []) {
+            $this->storeArticleGalleryImages($article, $articleImages);
         }
 
         $msg = match ($article->status) {
@@ -99,8 +116,23 @@ class ArticleController extends Controller
         $tags = Tag::whereIn('type', ['article', 'shared'])->orderBy('name_fr')->get();
         $sponsors = Provider::where('status', 'active')->orderBy('name')->get(['id', 'name']);
         $selectedTags = $article->tags->pluck('id')->toArray();
+        $uploaders = User::query()
+            ->where('is_active', true)
+            ->whereIn('role', ['admin', 'editor', 'provider'])
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get(['id', 'first_name', 'last_name', 'role']);
+        $selectedUploaderIds = Schema::hasTable('article_uploader')
+            ? $article->uploaders()->pluck('users.id')->toArray()
+            : [];
+        $galleryImages = $article->media()
+            ->where('type', 'image')
+            ->where('collection', 'article-gallery')
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->get();
 
-        return view('editor.articles.edit', compact('article', 'categories', 'tags', 'selectedTags', 'sponsors'));
+        return view('editor.articles.create', compact('article', 'categories', 'tags', 'selectedTags', 'sponsors', 'uploaders', 'selectedUploaderIds', 'galleryImages'));
     }
 
     public function update(StoreArticleRequest $request, Article $article)
@@ -109,9 +141,15 @@ class ArticleController extends Controller
 
         $data = $request->validated();
         $tags = $data['tags'] ?? [];
+        $uploaderIds = $data['uploader_ids'] ?? [];
+        $removeMediaIds = $data['remove_media_ids'] ?? [];
+        $articleImages = $request->file('article_images', []);
         unset($data['cover_image']);
+        unset($data['article_images']);
         unset($data['publication_mode']);
         unset($data['tags']);
+        unset($data['uploader_ids']);
+        unset($data['remove_media_ids']);
 
         if ($request->hasFile('cover_image')) {
             $this->deleteStoredPublicFile($article->cover_url);
@@ -125,6 +163,11 @@ class ArticleController extends Controller
 
         $article->update($data);
         $article->tags()->sync($tags);
+        $this->syncUploaders($article, $uploaderIds);
+        $this->deleteArticleGalleryImages($article, $removeMediaIds);
+        if (is_array($articleImages) && $articleImages !== []) {
+            $this->storeArticleGalleryImages($article, $articleImages);
+        }
 
         return redirect()->route('editor.articles.index')
             ->with('success', 'Article mis à jour.');
@@ -267,5 +310,101 @@ class ArticleController extends Controller
         if ($relative !== '') {
             Storage::disk('public')->delete($relative);
         }
+    }
+
+    /**
+     * @param array<int, UploadedFile> $images
+     */
+    private function storeArticleGalleryImages(Article $article, array $images): void
+    {
+        $existingSortOrder = (int) $article->media()->max('sort_order');
+        $sort = max(0, $existingSortOrder);
+
+        foreach ($images as $image) {
+            if (! $image instanceof UploadedFile || ! str_starts_with((string) $image->getMimeType(), 'image/')) {
+                continue;
+            }
+
+            $path = $image->store('articles/gallery', 'public');
+            $absolutePath = Storage::disk('public')->path($path);
+            $width = null;
+            $height = null;
+            $dimensions = @getimagesize($absolutePath);
+            if (is_array($dimensions)) {
+                $width = isset($dimensions[0]) ? (int) $dimensions[0] : null;
+                $height = isset($dimensions[1]) ? (int) $dimensions[1] : null;
+            }
+
+            $sort++;
+            $article->media()->create([
+                'collection' => 'article-gallery',
+                'type' => 'image',
+                'mime_type' => (string) $image->getMimeType(),
+                'original_name' => (string) $image->getClientOriginalName(),
+                'file_path' => $path,
+                'url' => '/storage/'.$path,
+                'thumb_url' => null,
+                'size_bytes' => (int) $image->getSize(),
+                'width' => $width,
+                'height' => $height,
+                'duration_sec' => null,
+                'alt_text' => $article->title_fr,
+                'caption' => null,
+                'sort_order' => $sort,
+                'uploaded_by' => (int) Auth::id(),
+            ]);
+        }
+    }
+
+    /**
+     * @param array<int, int|string> $mediaIds
+     */
+    private function deleteArticleGalleryImages(Article $article, array $mediaIds): void
+    {
+        $ids = collect($mediaIds)
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->unique()
+            ->values();
+
+        if ($ids->isEmpty()) {
+            return;
+        }
+
+        $mediaItems = $article->media()
+            ->where('collection', 'article-gallery')
+            ->where('type', 'image')
+            ->whereIn('id', $ids->all())
+            ->get();
+
+        foreach ($mediaItems as $media) {
+            if (! empty($media->url) && str_starts_with((string) $media->url, '/storage/')) {
+                $this->deleteStoredPublicFile((string) $media->url);
+            }
+
+            $media->delete();
+        }
+    }
+
+    /**
+     * @param array<int, int|string> $uploaderIds
+     */
+    private function syncUploaders(Article $article, array $uploaderIds): void
+    {
+        if (! Schema::hasTable('article_uploader')) {
+            return;
+        }
+
+        $ids = collect($uploaderIds)
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->unique()
+            ->values();
+
+        if (! $ids->contains((int) $article->author_id)) {
+            $ids->push((int) $article->author_id);
+        }
+
+        $article->uploaders()->sync($ids->all());
     }
 }

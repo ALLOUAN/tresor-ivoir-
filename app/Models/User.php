@@ -64,6 +64,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Article::class, 'author_id');
     }
 
+    public function uploadedArticles()
+    {
+        return $this->belongsToMany(Article::class, 'article_uploader')
+            ->withTimestamps();
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);

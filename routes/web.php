@@ -28,12 +28,14 @@ use App\Http\Controllers\Editor\EventController as EditorEventController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InformationPageController;
 use App\Http\Controllers\Provider\BillingController;
+use App\Http\Controllers\Provider\MediaController as ProviderMediaController;
 use App\Http\Controllers\Provider\PaymentController;
 use App\Http\Controllers\Provider\ProfileController as ProviderProfileController;
 use App\Http\Controllers\Provider\ProviderAnalyticsController;
 use App\Http\Controllers\Provider\ReviewController as ProviderReviewController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicContactController;
+use App\Http\Controllers\PublicHomeGalleryController;
 use App\Http\Controllers\PublicNewsletterController;
 use App\Http\Controllers\PublicSubscriptionController;
 use App\Http\Controllers\ReviewController;
@@ -98,6 +100,10 @@ Route::get('/', function () {
 
     $homeDestinationArticleId = null;
     $hideHomeHeroArticle = false;
+    $articleWith = ['category', 'author'];
+    if (Schema::hasTable('article_uploader')) {
+        $articleWith[] = 'uploaders';
+    }
     if (Schema::hasTable('site_settings') && Schema::hasColumn('site_settings', 'home_destination_article_id')) {
         $homeDestinationArticleId = SiteSetting::query()->value('home_destination_article_id');
         $hideHomeHeroArticle = $homeDestinationArticleId !== null && (int) $homeDestinationArticleId === 0;
@@ -106,7 +112,7 @@ Route::get('/', function () {
     $homeArticles = Schema::hasTable('articles')
         ? Article::where('status', 'published')
             ->where('published_at', '<=', now())
-            ->with(['category', 'author'])
+            ->with($articleWith)
             ->latest('published_at')
             ->limit(15)
             ->get()
@@ -118,7 +124,7 @@ Route::get('/', function () {
             ->whereKey($homeDestinationArticleId)
             ->where('status', 'published')
             ->where('published_at', '<=', now())
-            ->with(['category', 'author'])
+            ->with($articleWith)
             ->first();
 
         if ($homeDestinationArticle && ! $homeArticles->contains('id', $homeDestinationArticle->id)) {
@@ -148,6 +154,11 @@ Route::get('/', function () {
         'informationPages', 'homeArticles', 'homeCategories', 'homeProviderCategories', 'homeDestinationArticle', 'hideHomeHeroArticle'
     ));
 })->name('home');
+
+Route::get('/galerie-tresors-ivoire/visuelle/{uuid}', [PublicHomeGalleryController::class, 'show'])
+    ->where('uuid', '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}')
+    ->name('gallery.public.show');
+Route::get('/galerie-tresors-ivoire', [PublicHomeGalleryController::class, 'index'])->name('gallery.public');
 
 Route::post('/contact', [PublicContactController::class, 'store'])
     ->name('contact.store')
@@ -374,6 +385,7 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
 
         // Articles
         Route::get('/articles', [ArticleManagementController::class, 'index'])->name('articles.index');
+        Route::put('/articles/{article}', [ArticleManagementController::class, 'update'])->name('articles.update');
         Route::patch('/articles/{article}/publish', [ArticleManagementController::class, 'publish'])->name('articles.publish');
         Route::patch('/articles/{article}/reject', [ArticleManagementController::class, 'reject'])->name('articles.reject');
         Route::patch('/articles/{article}/archive', [ArticleManagementController::class, 'archive'])->name('articles.archive');
@@ -394,6 +406,13 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/prestataires/{provider}', [ProviderManagementController::class, 'update'])->name('providers.update');
         Route::patch('/prestataires/{provider}/validate', [ProviderManagementController::class, 'validateProvider'])->name('providers.validate');
         Route::patch('/prestataires/{provider}/suspend', [ProviderManagementController::class, 'suspend'])->name('providers.suspend');
+        Route::get('/prestataires/{provider}/contenus', [ProviderManagementController::class, 'content'])->name('providers.content');
+        Route::patch('/prestataires/{provider}/contenus/articles/reassign-bulk', [ProviderManagementController::class, 'reassignArticlesBulk'])->name('providers.content.articles.reassign-bulk');
+        Route::patch('/prestataires/{provider}/contenus/articles/{article}', [ProviderManagementController::class, 'reassignArticle'])->name('providers.content.articles.reassign');
+        Route::patch('/prestataires/{provider}/contenus/evenements/reassign-bulk', [ProviderManagementController::class, 'reassignEventsBulk'])->name('providers.content.events.reassign-bulk');
+        Route::patch('/prestataires/{provider}/contenus/evenements/{event}', [ProviderManagementController::class, 'reassignEvent'])->name('providers.content.events.reassign');
+        Route::patch('/prestataires/{provider}/contenus/medias/reassign-bulk', [ProviderManagementController::class, 'reassignMediaBulk'])->name('providers.content.media.reassign-bulk');
+        Route::patch('/prestataires/{provider}/contenus/medias/{media}', [ProviderManagementController::class, 'reassignMedia'])->name('providers.content.media.reassign');
 
         // Avis
         Route::get('/avis', [ReviewManagementController::class, 'index'])->name('reviews.index');
@@ -474,10 +493,16 @@ Route::middleware(['auth', 'role:provider'])
         // Avis (réponses)
         Route::get('/avis', [ProviderReviewController::class, 'index'])->name('reviews.index');
         Route::post('/avis/{review}/repondre', [ProviderReviewController::class, 'reply'])->name('reviews.reply');
-        Route::delete('/avis/{review}/reponse', [ProviderReviewController::class, 'destroyReply'])->name('reviews.reply.destroy');
+        Route::delete('/avis/{review}/reponses/{reply}', [ProviderReviewController::class, 'destroyReply'])->name('reviews.reply.destroy');
+        Route::delete('/avis/{review}', [ProviderReviewController::class, 'destroy'])->name('reviews.destroy');
 
         // Analytics
         Route::get('/analytics', [ProviderAnalyticsController::class, 'index'])->name('analytics');
+
+        // Médias
+        Route::get('/medias', [ProviderMediaController::class, 'index'])->name('media.index');
+        Route::post('/medias', [ProviderMediaController::class, 'store'])->name('media.store');
+        Route::delete('/medias/{media}', [ProviderMediaController::class, 'destroy'])->name('media.destroy');
 
         // Billing
         Route::get('/billing/plans', [BillingController::class, 'plans'])->name('billing.plans');

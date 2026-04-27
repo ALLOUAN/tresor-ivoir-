@@ -24,7 +24,7 @@ class ReviewController extends Controller
 
         $reviews = Review::query()
             ->where('provider_id', $provider->id)
-            ->with(['user', 'reply'])
+            ->with(['user', 'replies'])
             ->latest()
             ->paginate(20);
 
@@ -48,22 +48,26 @@ class ReviewController extends Controller
             abort(403, 'Accès refusé.');
         }
 
-        $request->validate(['reply_text' => 'required|string|min:10|max:1000']);
+        if ($review->status === 'rejected') {
+            return back()->with('error', 'Vous ne pouvez pas répondre à un avis rejeté.');
+        }
 
-        ReviewReply::updateOrCreate(
-            ['review_id' => $review->id],
-            [
-                'provider_id' => $provider->id,
-                'replied_by' => Auth::id(),
-                'reply_text' => $request->reply_text,
-                'is_visible' => true,
-            ]
-        );
+        $validated = $request->validate([
+            'reply_text' => 'required|string|min:10|max:1000',
+        ]);
+
+        ReviewReply::create([
+            'review_id' => $review->id,
+            'provider_id' => $provider->id,
+            'replied_by' => Auth::id(),
+            'reply_text' => trim($validated['reply_text']),
+            'is_visible' => true,
+        ]);
 
         return back()->with('success', 'Votre réponse a été publiée.');
     }
 
-    public function destroyReply(Review $review)
+    public function destroyReply(Review $review, ReviewReply $reply)
     {
         /** @var User $user */
         $user = Auth::user();
@@ -73,8 +77,28 @@ class ReviewController extends Controller
             abort(403);
         }
 
-        $review->reply?->delete();
+        if ((int) $reply->review_id !== (int) $review->id || (int) $reply->provider_id !== (int) $provider->id) {
+            abort(403);
+        }
+
+        $reply->delete();
 
         return back()->with('success', 'Réponse supprimée.');
+    }
+
+    public function destroy(Review $review)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $provider = $user->providers()->first();
+
+        if (! $provider || $review->provider_id !== $provider->id) {
+            abort(403);
+        }
+
+        $review->replies()->delete();
+        $review->delete();
+
+        return back()->with('success', 'Avis supprimé.');
     }
 }

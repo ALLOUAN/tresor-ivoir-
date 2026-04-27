@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class Article extends Model
@@ -45,6 +48,34 @@ class Article extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function uploaders()
+    {
+        return $this->belongsToMany(User::class, 'article_uploader')
+            ->withTimestamps();
+    }
+
+    public function getDisplayUploadersAttribute(): EloquentCollection
+    {
+        $fallback = new EloquentCollection();
+        if ($this->author) {
+            $fallback->push($this->author);
+        }
+
+        if (! Schema::hasTable('article_uploader')) {
+            return $fallback;
+        }
+
+        try {
+            $uploaders = $this->relationLoaded('uploaders')
+                ? $this->getRelation('uploaders')
+                : $this->uploaders()->get();
+
+            return $uploaders->isNotEmpty() ? $uploaders : $fallback;
+        } catch (QueryException) {
+            return $fallback;
+        }
     }
 
     public function sponsor()

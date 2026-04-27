@@ -4,6 +4,32 @@
 @section('page-title', 'Statistiques de votre fiche')
 
 @section('content')
+<style>
+    .premium-shimmer-card {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+    }
+    .premium-shimmer-card::after {
+        content: '';
+        position: absolute;
+        top: -130%;
+        left: -45%;
+        width: 38%;
+        height: 360%;
+        transform: rotate(22deg) translateX(-180%);
+        background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 35%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.04) 65%, transparent 100%);
+        pointer-events: none;
+        transition: transform .85s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .premium-shimmer-card:hover::after {
+        transform: rotate(22deg) translateX(520%);
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .premium-shimmer-card::after { transition: none; }
+    }
+</style>
+
 @php
     $growth = function(int $current, int $prev): ?float {
         if ($prev === 0) return null;
@@ -50,9 +76,9 @@
     @endphp
 
     @foreach($kpis as $kpi)
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="premium-shimmer-card bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-700/70 rounded-xl p-4 shadow-lg shadow-black/20">
         <div class="flex items-start justify-between mb-3">
-            <div class="{{ $kpi['bg'] }} w-9 h-9 rounded-lg flex items-center justify-center">
+            <div class="{{ $kpi['bg'] }} w-10 h-10 rounded-xl flex items-center justify-center border border-white/5">
                 <i class="fas {{ $kpi['icon'] }} {{ $kpi['color'] }} text-sm"></i>
             </div>
             @if($kpi['growth'] !== null)
@@ -62,8 +88,8 @@
             </span>
             @endif
         </div>
-        <p class="text-2xl font-bold text-white">{{ number_format($kpi['value'], 0, ',', ' ') }}</p>
-        <p class="text-slate-400 text-xs mt-0.5">{{ $kpi['label'] }}</p>
+        <p class="text-2xl font-bold text-white tracking-tight">{{ number_format($kpi['value'], 0, ',', ' ') }}</p>
+        <p class="text-slate-400 text-xs mt-1">{{ $kpi['label'] }}</p>
         @if($kpi['growth'] !== null)
         <p class="text-slate-600 text-xs mt-1">vs période précédente</p>
         @endif
@@ -75,28 +101,39 @@
 @if(count($chartDates) > 0)
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
     {{-- Views chart --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-        <h3 class="text-white font-semibold text-sm mb-4">Vues de la fiche</h3>
+    <div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-blue-500/20 rounded-xl p-5 shadow-lg shadow-blue-900/20">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-white font-semibold text-sm">Vues de la fiche</h3>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-400/20">Tendance</span>
+        </div>
         <canvas id="chartViews" height="180"></canvas>
     </div>
     {{-- Clicks chart --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-        <h3 class="text-white font-semibold text-sm mb-4">Clics (téléphone + site + itinéraire)</h3>
+    <div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-amber-500/20 rounded-xl p-5 shadow-lg shadow-amber-900/20">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-white font-semibold text-sm">Clics (téléphone + site + itinéraire)</h3>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-400/20">Performance</span>
+        </div>
         <canvas id="chartClicks" height="180"></canvas>
     </div>
 </div>
 @else
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-10 text-center mb-8">
-    <i class="fas fa-chart-line text-slate-600 text-4xl mb-3"></i>
-    <p class="text-slate-400">Aucune donnée pour cette période.</p>
-    <p class="text-slate-600 text-xs mt-1">Les statistiques sont mises à jour quotidiennement.</p>
+<div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-700/70 rounded-xl p-10 text-center mb-8 shadow-lg shadow-black/20">
+    <div class="mx-auto w-14 h-14 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mb-4">
+        <i class="fas fa-chart-line text-slate-500 text-2xl"></i>
+    </div>
+    <p class="text-slate-200 font-medium">Aucune donnée pour cette période.</p>
+    <p class="text-slate-500 text-xs mt-1">Dès que votre fiche reçoit des interactions, les graphiques modernes apparaissent ici.</p>
 </div>
 @endif
 
 {{-- Clicks breakdown --}}
 @if($totals['clicks_phone'] + $totals['clicks_website'] + $totals['clicks_direction'] > 0)
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-    <h3 class="text-white font-semibold text-sm mb-4">Répartition des clics</h3>
+<div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-fuchsia-500/20 rounded-xl p-5 shadow-lg shadow-fuchsia-900/20">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-white font-semibold text-sm">Répartition des clics</h3>
+        <span class="text-[10px] px-2 py-1 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-400/20">Doughnut</span>
+    </div>
     @php
         $totalClicks = $totals['clicks_phone'] + $totals['clicks_website'] + $totals['clicks_direction'];
         $bars = [
@@ -105,19 +142,35 @@
             ['label' => 'Itinéraire',  'value' => $totals['clicks_direction'], 'color' => 'bg-amber-500'],
         ];
     @endphp
-    <div class="space-y-3">
-        @foreach($bars as $bar)
-        @php $pct = $totalClicks > 0 ? round($bar['value'] / $totalClicks * 100) : 0; @endphp
-        <div>
-            <div class="flex items-center justify-between text-xs mb-1">
-                <span class="text-slate-300">{{ $bar['label'] }}</span>
-                <span class="text-slate-400">{{ number_format($bar['value'], 0, ',', ' ') }} ({{ $pct }}%)</span>
-            </div>
-            <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div class="{{ $bar['color'] }} h-2 rounded-full transition-all" style="width: {{ $pct }}%"></div>
-            </div>
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-center">
+        <div class="lg:col-span-2">
+            <canvas id="chartClicksDoughnut" height="220"></canvas>
         </div>
-        @endforeach
+        <div class="lg:col-span-3 space-y-3">
+            @foreach($bars as $bar)
+            @php $pct = $totalClicks > 0 ? round($bar['value'] / $totalClicks * 100) : 0; @endphp
+            <div class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2">
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="w-2.5 h-2.5 rounded-full {{ $bar['color'] }}"></span>
+                    <span class="text-slate-300">{{ $bar['label'] }}</span>
+                </div>
+                <span class="text-slate-300 text-xs font-medium">{{ number_format($bar['value'], 0, ',', ' ') }} ({{ $pct }}%)</span>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+@endif
+
+@if(($totals['clicks_phone'] + $totals['clicks_website'] + $totals['clicks_direction']) === 0)
+<div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-700/70 rounded-xl p-5 shadow-lg shadow-black/20">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-white font-semibold text-sm">Répartition des clics</h3>
+        <span class="text-[10px] px-2 py-1 rounded-full bg-slate-700/70 text-slate-300 border border-slate-600">Doughnut</span>
+    </div>
+    <div class="text-center py-8">
+        <i class="fas fa-circle-notch text-slate-600 text-2xl mb-2"></i>
+        <p class="text-slate-400 text-sm">Pas encore de clics à répartir.</p>
     </div>
 </div>
 @endif
@@ -126,54 +179,145 @@
 
 @endsection
 
-@endsection
-
 @push('scripts')
 @if(count($chartDates) > 0)
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
+const chartSurface = '#0f172a';
+const gridColor = 'rgba(148,163,184,0.14)';
+const tickColor = '#94a3b8';
+
 const chartDefaults = {
     responsive: true,
     maintainAspectRatio: true,
-    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', titleColor: '#f1f5f9', bodyColor: '#94a3b8', borderColor: '#334155', borderWidth: 1 } },
+    interaction: {
+        mode: 'index',
+        intersect: false,
+    },
+    plugins: {
+        legend: { display: false },
+        tooltip: {
+            backgroundColor: chartSurface,
+            titleColor: '#f8fafc',
+            bodyColor: '#cbd5e1',
+            borderColor: 'rgba(148,163,184,0.25)',
+            borderWidth: 1,
+            padding: 10,
+            displayColors: false,
+            titleFont: { weight: '600' },
+        },
+    },
     scales: {
-        x: { grid: { color: 'rgba(51,65,85,0.5)' }, ticks: { color: '#64748b', font: { size: 10 } } },
-        y: { grid: { color: 'rgba(51,65,85,0.5)' }, ticks: { color: '#64748b', font: { size: 10 } }, beginAtZero: true }
-    }
+        x: {
+            grid: { color: 'rgba(30,41,59,0.35)', drawBorder: false },
+            ticks: { color: tickColor, font: { size: 10 } },
+            border: { display: false },
+        },
+        y: {
+            grid: { color: gridColor, drawBorder: false },
+            ticks: { color: tickColor, font: { size: 10 } },
+            border: { display: false },
+            beginAtZero: true,
+        },
+    },
 };
 
 const labels = @json($chartDates);
+const viewsCanvas = document.getElementById('chartViews');
+const clicksCanvas = document.getElementById('chartClicks');
+const clicksDoughnutCanvas = document.getElementById('chartClicksDoughnut');
 
-new Chart(document.getElementById('chartViews'), {
+const viewsCtx = viewsCanvas.getContext('2d');
+const viewsGradient = viewsCtx.createLinearGradient(0, 0, 0, 220);
+viewsGradient.addColorStop(0, 'rgba(59,130,246,0.45)');
+viewsGradient.addColorStop(1, 'rgba(59,130,246,0.03)');
+
+new Chart(viewsCanvas, {
     type: 'line',
     data: {
         labels,
         datasets: [{
             data: @json($chartViews),
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59,130,246,0.08)',
-            borderWidth: 2,
-            pointRadius: 3,
-            pointBackgroundColor: '#3b82f6',
+            borderColor: '#60a5fa',
+            backgroundColor: viewsGradient,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            pointBackgroundColor: '#93c5fd',
+            pointHoverBorderWidth: 2,
+            pointHoverBorderColor: '#0f172a',
             fill: true,
-            tension: 0.4,
+            tension: 0.38,
         }]
     },
     options: chartDefaults,
 });
 
-new Chart(document.getElementById('chartClicks'), {
+const clicksCtx = clicksCanvas.getContext('2d');
+const barGradient = clicksCtx.createLinearGradient(0, 0, 0, 220);
+barGradient.addColorStop(0, 'rgba(251,191,36,0.95)');
+barGradient.addColorStop(1, 'rgba(245,158,11,0.55)');
+
+new Chart(clicksCanvas, {
     type: 'bar',
     data: {
         labels,
         datasets: [{
             data: @json($chartClicks),
-            backgroundColor: 'rgba(245,158,11,0.7)',
-            borderRadius: 4,
+            backgroundColor: barGradient,
+            borderRadius: 8,
+            borderSkipped: false,
+            maxBarThickness: 28,
+            hoverBackgroundColor: 'rgba(251,191,36,0.9)',
         }]
     },
-    options: chartDefaults,
+    options: {
+        ...chartDefaults,
+        scales: {
+            ...chartDefaults.scales,
+            x: {
+                ...chartDefaults.scales.x,
+                grid: { display: false },
+            },
+        },
+    },
 });
+
+if (clicksDoughnutCanvas) {
+    new Chart(clicksDoughnutCanvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['Téléphone', 'Site web', 'Itinéraire'],
+            datasets: [{
+                data: @json([(int) $totals['clicks_phone'], (int) $totals['clicks_website'], (int) $totals['clicks_direction']]),
+                backgroundColor: [
+                    'rgba(16,185,129,0.92)',
+                    'rgba(168,85,247,0.92)',
+                    'rgba(245,158,11,0.92)',
+                ],
+                borderColor: 'rgba(15,23,42,0.9)',
+                borderWidth: 3,
+                hoverOffset: 8,
+                cutout: '68%',
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: chartSurface,
+                    titleColor: '#f8fafc',
+                    bodyColor: '#cbd5e1',
+                    borderColor: 'rgba(148,163,184,0.25)',
+                    borderWidth: 1,
+                    padding: 10,
+                },
+            },
+        },
+    });
+}
 </script>
 @endif
 @endpush

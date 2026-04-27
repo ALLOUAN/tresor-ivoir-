@@ -161,6 +161,13 @@
                             </a>
                             @endif
 
+                            {{-- Edit --}}
+                            <a href="{{ route('editor.articles.edit', $article) }}"
+                                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition"
+                                title="Modifier">
+                                <i class="fas fa-pen text-xs"></i>
+                            </a>
+
                             {{-- Publish (if review) --}}
                             @if($article->status === 'review')
                             <form method="POST" action="{{ route('admin.articles.publish', $article) }}" class="inline">
@@ -171,7 +178,10 @@
                             </form>
 
                             {{-- Reject modal trigger --}}
-                            <button onclick="openReject({{ $article->id }}, '{{ addslashes($article->title_fr) }}')"
+                            <button type="button"
+                                data-reject-id="{{ $article->id }}"
+                                data-reject-title="{{ $article->title_fr }}"
+                                onclick="openRejectButton(this)"
                                 class="w-7 h-7 rounded-lg bg-red-900/30 hover:bg-red-900/50 flex items-center justify-center text-red-400 transition" title="Rejeter">
                                 <i class="fas fa-xmark text-xs"></i>
                             </button>
@@ -226,6 +236,97 @@
     @endif
 </div>
 
+{{-- ── Edit article modal ───────────────────────────────────────────────── --}}
+<div id="editArticleModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeEditArticleModal()"></div>
+    <div class="relative bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
+        <h3 class="text-white font-semibold mb-4">Modifier l'article</h3>
+        <form method="POST" id="editArticleForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @csrf
+            @method('PUT')
+
+            <div class="md:col-span-2">
+                <label class="block text-xs text-slate-400 mb-1">Titre (FR)</label>
+                <input type="text" name="title_fr" id="edit_title_fr" required
+                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+            </div>
+
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Rubrique</label>
+                <select name="category_id" id="edit_category_id" required
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}">{{ $cat->name_fr }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Statut</label>
+                <select name="status" id="edit_status" required
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                    <option value="draft">Brouillon</option>
+                    <option value="review">En révision</option>
+                    <option value="published">Publié</option>
+                    <option value="archived">Archivé</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Temps de lecture (min)</label>
+                <input type="number" name="reading_time" id="edit_reading_time" min="1" max="240"
+                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+            </div>
+
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Date de publication</label>
+                <input type="datetime-local" name="published_at" id="edit_published_at"
+                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-xs text-slate-400 mb-1">URL image de couverture</label>
+                <input type="url" name="cover_url" id="edit_cover_url"
+                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-xs text-slate-400 mb-1">Extrait (FR)</label>
+                <textarea name="excerpt_fr" id="edit_excerpt_fr" rows="2"
+                          class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"></textarea>
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-xs text-slate-400 mb-1">Contenu (FR)</label>
+                <textarea name="content_fr" id="edit_content_fr" rows="6"
+                          class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"></textarea>
+            </div>
+
+            <div class="md:col-span-2 flex items-center gap-5">
+                <label class="inline-flex items-center gap-2 text-sm text-slate-300">
+                    <input type="checkbox" name="is_featured" id="edit_is_featured" value="1" class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                    Mettre à la une
+                </label>
+                <label class="inline-flex items-center gap-2 text-sm text-slate-300">
+                    <input type="checkbox" name="is_sponsored" id="edit_is_sponsored" value="1" class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                    Sponsorisé
+                </label>
+            </div>
+
+            <div class="md:col-span-2 flex justify-end gap-3">
+                <button type="button" onclick="closeEditArticleModal()"
+                        class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded-lg transition">
+                    Annuler
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black text-sm font-semibold rounded-lg transition">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {{-- ── Reject modal ──────────────────────────────────────────────────────── --}}
 <div id="rejectModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeReject()"></div>
@@ -255,7 +356,35 @@
 
 @push('scripts')
 <script>
-function openReject(id, title) {
+function openEditArticleModal(button) {
+    const form = document.getElementById('editArticleForm');
+    form.action = button.dataset.updateUrl;
+
+    document.getElementById('edit_title_fr').value = button.dataset.titleFr || '';
+    document.getElementById('edit_category_id').value = button.dataset.categoryId || '';
+    document.getElementById('edit_status').value = button.dataset.status || 'draft';
+    document.getElementById('edit_reading_time').value = button.dataset.readingTime || '';
+    document.getElementById('edit_cover_url').value = button.dataset.coverUrl || '';
+    document.getElementById('edit_excerpt_fr').value = button.dataset.excerptFr || '';
+    document.getElementById('edit_content_fr').value = button.dataset.contentFr || '';
+    document.getElementById('edit_published_at').value = button.dataset.publishedAt || '';
+    document.getElementById('edit_is_featured').checked = button.dataset.isFeatured === '1';
+    document.getElementById('edit_is_sponsored').checked = button.dataset.isSponsored === '1';
+
+    const modal = document.getElementById('editArticleModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeEditArticleModal() {
+    const modal = document.getElementById('editArticleModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+function openRejectButton(button) {
+    const id = button.dataset.rejectId;
+    const title = button.dataset.rejectTitle || '';
     document.getElementById('rejectTitle').textContent = title;
     document.getElementById('rejectForm').action = '/admin/articles/' + id + '/reject';
     document.getElementById('rejectModal').classList.remove('hidden');

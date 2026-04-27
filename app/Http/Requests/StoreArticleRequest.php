@@ -28,6 +28,10 @@ class StoreArticleRequest extends FormRequest
             'content_en' => ['nullable', 'string'],
             'cover_url' => ['nullable', 'url', 'max:500'],
             'cover_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+            'article_images' => ['nullable', 'array', 'max:20'],
+            'article_images.*' => ['image', 'mimes:jpeg,jpg,png,webp', 'max:6144'],
+            'remove_media_ids' => ['nullable', 'array'],
+            'remove_media_ids.*' => ['integer', 'exists:media,id'],
             'cover_alt' => ['nullable', 'string', 'max:300'],
             'reading_time' => ['nullable', 'integer', 'min:1', 'max:120'],
             'is_featured' => ['boolean'],
@@ -44,6 +48,8 @@ class StoreArticleRequest extends FormRequest
             'meta_desc_en' => ['nullable', 'string', 'max:165'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['exists:tags,id'],
+            'uploader_ids' => ['nullable', 'array'],
+            'uploader_ids.*' => ['integer', 'exists:users,id'],
         ];
     }
 
@@ -92,6 +98,11 @@ class StoreArticleRequest extends FormRequest
             'cover_image.image' => 'Le fichier de couverture doit être une image valide.',
             'cover_image.mimes' => 'Le format de l’image doit être jpeg, jpg, png ou webp.',
             'cover_image.max' => 'L’image de couverture ne doit pas dépasser 4 Mo.',
+            'article_images.array' => 'Le lot d’images est invalide.',
+            'article_images.max' => 'Vous pouvez ajouter au maximum 20 images.',
+            'article_images.*.image' => 'Chaque fichier de la galerie doit être une image valide.',
+            'article_images.*.mimes' => 'Les images de la galerie doivent être au format jpeg, jpg, png ou webp.',
+            'article_images.*.max' => 'Chaque image de la galerie ne doit pas dépasser 6 Mo.',
             'sponsor_id.required_if' => 'Veuillez sélectionner un sponsor pour un article sponsorisé.',
             'sponsor_id.exists' => 'Le sponsor sélectionné est invalide.',
             'scheduled_at.required_if' => 'Veuillez renseigner la date de planification.',

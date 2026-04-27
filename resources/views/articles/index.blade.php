@@ -90,6 +90,7 @@
         </h2>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             @foreach($featured as $i => $art)
+            @php $contributors = $art->display_uploaders; @endphp
             <a href="{{ route('articles.show', $art->slug_fr) }}"
                class="article-card group {{ $i === 0 ? 'lg:col-span-2 lg:row-span-2' : '' }} block relative overflow-hidden rounded-2xl bg-[#1c1c16]">
                 <div class="overflow-hidden {{ $i === 0 ? 'h-72 lg:h-full min-h-[280px]' : 'h-44' }}">
@@ -116,6 +117,15 @@
                         <span>· {{ $art->reading_time }} min</span>
                         @endif
                     </div>
+                    @if($contributors->isNotEmpty())
+                    <div class="mt-2 flex flex-wrap gap-1.5">
+                        @foreach($contributors->take(3) as $contributor)
+                        <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-200">
+                            {{ $contributor->full_name }}
+                        </span>
+                        @endforeach
+                    </div>
+                    @endif
                 </div>
                 @if($art->is_featured)
                 <span class="absolute top-3 left-3 bg-amber-500 text-black text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">
@@ -131,6 +141,7 @@
     {{-- ── Article grid ──────────────────────────────────────────── --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         @forelse($articles as $article)
+        @php $contributors = $article->display_uploaders; @endphp
         <a href="{{ route('articles.show', $article->slug_fr) }}"
            class="article-card group bg-dark-700/40 hover:bg-dark-700 border border-white/5 hover:border-gold-500/20 rounded-xl overflow-hidden transition-all duration-300 reveal">
             <div class="h-32 bg-dark-600 relative overflow-hidden">
@@ -154,6 +165,15 @@
                 <h3 class="font-serif text-xs font-semibold mt-1 line-clamp-2 group-hover:text-gold-300 transition leading-snug">
                     {{ $article->title_fr }}
                 </h3>
+                @if($contributors->isNotEmpty())
+                <div class="mt-2 flex flex-wrap gap-1">
+                    @foreach($contributors->take(2) as $contributor)
+                    <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-medium text-amber-200">
+                        {{ $contributor->first_name }}
+                    </span>
+                    @endforeach
+                </div>
+                @endif
             </div>
         </a>
         @empty

@@ -333,27 +333,78 @@ class AdministrationController extends Controller
     public function storeSiteMedia(Request $request): RedirectResponse
     {
         $request->validate([
-            'file' => ['required', 'file', 'max:51200'],
+            'file' => ['nullable', 'file', 'max:51200'],
+            'files' => ['nullable', 'array', 'max:30'],
+            'files.*' => ['file', 'mimes:jpeg,jpg,png,webp', 'max:8192'],
+            'title' => ['nullable', 'string', 'max:255'],
+            'alt_text' => ['nullable', 'string', 'max:300'],
+            'caption' => ['nullable', 'string', 'max:500'],
+            'credit' => ['nullable', 'string', 'max:255'],
+            'price' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
+            'section' => ['nullable', 'string', 'max:80'],
+            'display_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
+            'published_at' => ['nullable', 'date'],
+            'is_active' => ['nullable', 'boolean'],
+            'is_featured' => ['nullable', 'boolean'],
         ]);
 
-        $file = $request->file('file');
-        $mime = (string) $file->getMimeType();
-        $type = $this->resolveSiteMediaType($mime);
+        $files = [];
+        if ($request->hasFile('file')) {
+            $files[] = $request->file('file');
+        }
+        if ($request->hasFile('files')) {
+            foreach ((array) $request->file('files') as $multiFile) {
+                $files[] = $multiFile;
+            }
+        }
 
-        $path = $file->store('site/media-library', 'public');
-        $url = '/storage/'.$path;
+        if ($files === []) {
+            return back()->withErrors(['files' => 'Veuillez sélectionner au moins un fichier.'])->withInput();
+        }
 
-        SiteMediaItem::query()->create([
-            'type' => $type,
-            'mime_type' => $mime,
-            'original_name' => $file->getClientOriginalName(),
-            'file_path' => $path,
-            'url' => $url,
-            'size_bytes' => $file->getSize(),
-            'uploaded_by' => (int) Auth::id(),
-        ]);
+        $title = trim((string) $request->input('title', ''));
+        $altText = trim((string) $request->input('alt_text', ''));
+        $caption = trim((string) $request->input('caption', ''));
+        $credit = trim((string) $request->input('credit', ''));
+        $priceRaw = $request->input('price');
+        $price = $priceRaw === null || $priceRaw === '' ? null : (float) $priceRaw;
+        $section = trim((string) $request->input('section', 'home_gallery'));
+        $displayOrder = (int) $request->input('display_order', 0);
+        $isActive = $request->boolean('is_active', true);
+        $isFeatured = $request->boolean('is_featured', false);
+        $publishedAt = $request->filled('published_at') ? $request->date('published_at') : now();
 
-        return back()->with('success', 'Média téléversé.');
+        foreach ($files as $idx => $file) {
+            $mime = (string) $file->getMimeType();
+            $type = $this->resolveSiteMediaType($mime);
+
+            $path = $file->store('site/media-library', 'public');
+            $url = '/storage/'.$path;
+
+            SiteMediaItem::query()->create([
+                'type' => $type,
+                'mime_type' => $mime,
+                'original_name' => $file->getClientOriginalName(),
+                'title' => $title !== '' ? $title : null,
+                'alt_text' => $altText !== '' ? $altText : null,
+                'caption' => $caption !== '' ? $caption : null,
+                'credit' => $credit !== '' ? $credit : null,
+                'price' => $price,
+                'section' => $section !== '' ? $section : 'home_gallery',
+                'is_active' => $isActive,
+                'is_featured' => $isFeatured,
+                'display_order' => $displayOrder + $idx,
+                'published_at' => $publishedAt,
+                'file_path' => $path,
+                'url' => $url,
+                'size_bytes' => $file->getSize(),
+                'uploaded_by' => (int) Auth::id(),
+            ]);
+        }
+
+        $count = count($files);
+
+        return back()->with('success', $count > 1 ? "{$count} médias téléversés." : 'Média téléversé.');
     }
 
     public function destroySiteMedia(SiteMediaItem $siteMediaItem): RedirectResponse

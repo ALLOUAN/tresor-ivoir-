@@ -55,6 +55,37 @@ class ArticleManagementController extends Controller
         return back()->with('success', "\"$article->title_fr\" est maintenant publié.");
     }
 
+    public function update(Request $request, Article $article)
+    {
+        $data = $request->validate([
+            'category_id' => ['required', 'exists:article_categories,id'],
+            'title_fr' => ['required', 'string', 'max:255'],
+            'excerpt_fr' => ['nullable', 'string', 'max:800'],
+            'content_fr' => ['nullable', 'string'],
+            'cover_url' => ['nullable', 'url', 'max:500'],
+            'reading_time' => ['nullable', 'integer', 'min:1', 'max:240'],
+            'status' => ['required', 'in:draft,review,published,archived'],
+            'published_at' => ['nullable', 'date'],
+            'is_featured' => ['nullable', 'boolean'],
+            'is_sponsored' => ['nullable', 'boolean'],
+        ]);
+
+        $data['is_featured'] = $request->boolean('is_featured');
+        $data['is_sponsored'] = $request->boolean('is_sponsored');
+
+        if ($data['status'] === 'published' && empty($data['published_at'])) {
+            $data['published_at'] = $article->published_at ?? now();
+        }
+
+        if ($data['status'] !== 'published' && $data['status'] !== 'archived') {
+            $data['published_at'] = null;
+        }
+
+        $article->update($data);
+
+        return back()->with('success', 'Article modifié avec succès.');
+    }
+
     public function reject(Request $request, Article $article)
     {
         $request->validate(['reason' => 'nullable|string|max:500']);
