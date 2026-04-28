@@ -243,5 +243,6 @@
     reveals.forEach(el => obs.observe(el));
 </script>
 
+@include('partials.homepage-footer')
 </body>
 </html>

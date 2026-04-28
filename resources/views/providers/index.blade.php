@@ -123,5 +123,6 @@
             {{ $providers->links() }}
         </div>
     </div>
+@include('partials.homepage-footer')
 </body>
 </html>

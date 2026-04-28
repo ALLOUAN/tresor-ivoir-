@@ -13,6 +13,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -63,9 +64,9 @@ class EventController extends Controller
             'category_id' => 'required|exists:event_categories,id',
             'description_fr' => 'nullable|string',
             'description_en' => 'nullable|string',
-            'cover_url' => 'nullable|url|max:500',
+            'cover_url' => 'nullable|url|max:500|required_without:cover_image',
             'cover_alt' => 'nullable|string|max:300',
-            'cover_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:4096',
+            'cover_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:4096|required_without:cover_url',
             'starts_at' => 'required|date',
             'ends_at' => 'nullable|date|after_or_equal:starts_at',
             'provider_id' => 'nullable|exists:providers,id',
@@ -172,6 +173,11 @@ class EventController extends Controller
         if ($event->is_free) {
             $event->price = 0;
         }
+        if ($event->status === 'published' && empty($event->cover_url)) {
+            throw ValidationException::withMessages([
+                'cover_url' => 'Une image de couverture est obligatoire pour publier un événement.',
+            ]);
+        }
 
         if ($event->isDirty('status') && $event->status === 'published' && ! $event->published_at) {
             $event->published_at = now();
@@ -243,6 +249,13 @@ class EventController extends Controller
 
         unset($data['cover_image']);
 
+        $effectiveCoverUrl = $data['cover_url'] ?? $event->cover_url;
+        if (empty($effectiveCoverUrl)) {
+            throw ValidationException::withMessages([
+                'cover_url' => 'Une image de couverture est obligatoire pour enregistrer un événement.',
+            ]);
+        }
+
         if ($data['status'] === 'published' && ! $event->published_at) {
             $data['published_at'] = now();
         }
@@ -266,6 +279,11 @@ class EventController extends Controller
         $this->authorizeEdit($event);
 
         $data = ['status' => $request->status];
+        if ($request->status === 'published' && empty($event->cover_url)) {
+            throw ValidationException::withMessages([
+                'cover_url' => 'Ajoutez une image de couverture avant de publier cet événement.',
+            ]);
+        }
         if ($request->status === 'published' && ! $event->published_at) {
             $data['published_at'] = now();
         }

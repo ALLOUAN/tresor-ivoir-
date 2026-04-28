@@ -90,6 +90,57 @@
         background: rgba(232,160,32,0.10);
         box-shadow: inset 0 0 0 1px rgba(232,160,32,0.28);
     }
+    .logo-ring {
+        position: relative;
+        border-radius: 1rem;
+        padding: 2px;
+        background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.12), rgba(232,160,32,0.25));
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
+        transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .35s ease;
+        animation: logoFloat 5.4s ease-in-out infinite;
+    }
+    .logo-ring::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: inherit;
+        background: conic-gradient(from 180deg, rgba(232,160,32,0.0), rgba(232,160,32,0.5), rgba(255,255,255,0.08), rgba(232,160,32,0.0));
+        opacity: .45;
+        filter: blur(6px);
+        animation: logoHaloSpin 8s linear infinite;
+        pointer-events: none;
+    }
+    .logo-ring-inner {
+        border-radius: calc(1rem - 2px);
+        overflow: hidden;
+        background: rgba(13,13,11,0.9);
+        transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), filter .35s ease;
+    }
+    .group:hover .logo-ring {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 14px 34px rgba(0,0,0,0.42), 0 0 26px rgba(232,160,32,0.26), 0 0 0 1px rgba(255,255,255,0.08) inset;
+    }
+    .group:hover .logo-ring::before {
+        opacity: .8;
+    }
+    .group:hover .logo-ring-inner {
+        transform: scale(1.04);
+        filter: brightness(1.08) saturate(1.08);
+    }
+    @keyframes logoFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+    }
+    @keyframes logoHaloSpin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .logo-ring,
+        .logo-ring::before {
+            animation: none;
+        }
+    }
 </style>
 
 <div class="public-topbar font-plus text-gray-300 hidden md:block">
@@ -126,9 +177,19 @@
 <header class="public-header font-plus sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[4.25rem] md:h-[5.25rem] flex items-center justify-between gap-4 md:gap-8">
         <a href="{{ route('home') }}" class="flex items-center gap-3 sm:gap-3.5 shrink-0 group">
-            <div class="w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-900/30">
-                <i class="fas fa-gem text-black text-sm md:text-base"></i>
-            </div>
+            @if(!empty($siteBrand['logo_url']))
+                <div class="logo-ring shrink-0">
+                    <div class="logo-ring-inner w-14 h-14 md:w-[4.25rem] md:h-[4.25rem] border border-white/10 bg-white/[0.04] flex items-center justify-center p-0.5">
+                        <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
+                    </div>
+                </div>
+            @else
+                <div class="logo-ring shrink-0">
+                    <div class="logo-ring-inner w-14 h-14 md:w-[4.25rem] md:h-[4.25rem] bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+                        <i class="fas fa-gem text-black text-base md:text-lg"></i>
+                    </div>
+                </div>
+            @endif
             <div class="hidden sm:block min-w-0">
                 <p class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 font-serif font-bold text-base md:text-lg leading-tight tracking-tight truncate">
                     {{ $siteBrand['site_name'] }}

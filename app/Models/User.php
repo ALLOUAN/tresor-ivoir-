@@ -95,6 +95,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(VisitorFavorite::class);
     }
 
+    public function sentProviderConversationMessages(): HasMany
+    {
+        return $this->hasMany(ProviderConversationMessage::class, 'sender_id');
+    }
+
     public function getFullNameAttribute(): string
     {
         return $this->first_name.' '.$this->last_name;

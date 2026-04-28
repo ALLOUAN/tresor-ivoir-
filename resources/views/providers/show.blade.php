@@ -10,6 +10,51 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
+        .provider-hero-panel {
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(135deg, rgba(24,24,20,0.9), rgba(14,14,12,0.96));
+            box-shadow: 0 24px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .provider-info-card {
+            border: 1px solid rgba(255,255,255,0.09);
+            background: linear-gradient(180deg, rgba(28,28,22,0.85), rgba(18,18,14,0.92));
+            backdrop-filter: blur(8px);
+        }
+        .provider-chip {
+            border: 1px solid rgba(255,255,255,0.11);
+            background: rgba(255,255,255,0.04);
+        }
+        .provider-book-btn {
+            background: linear-gradient(135deg, #f5b942 0%, #e8a020 60%, #c4811a 100%);
+            box-shadow: 0 12px 30px rgba(232,160,32,0.28);
+            transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+        }
+        .provider-book-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.04);
+            box-shadow: 0 16px 34px rgba(232,160,32,0.38);
+        }
+        .provider-similar-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(232,160,32,0.22);
+            background: linear-gradient(155deg, rgba(28,28,22,0.92), rgba(17,17,14,0.96));
+            box-shadow: 0 14px 30px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+            transition: transform .26s cubic-bezier(0.2, 0.8, 0.2, 1), border-color .22s ease, box-shadow .26s ease;
+        }
+        .provider-similar-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(232,160,32,0.14), transparent 40%, rgba(255,255,255,0.03));
+            opacity: .55;
+            pointer-events: none;
+        }
+        .provider-similar-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(232,160,32,0.52);
+            box-shadow: 0 20px 38px rgba(0,0,0,0.38), 0 0 22px rgba(232,160,32,0.14);
+        }
     </style>
 </head>
 <body class="bg-[#0d0d0b] text-white">
@@ -35,18 +80,20 @@
                 @endif
             </div>
 
-            <div class="p-6">
+            <div class="p-6 provider-hero-panel rounded-b-xl">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                        <h1 class="font-serif text-3xl sm:text-4xl font-bold">{{ $provider->name }}</h1>
-                        <p class="text-gray-500 text-sm mt-1">{{ $provider->category->name_fr ?? 'Catégorie' }} · {{ $provider->city ?: 'N/A' }}</p>
+                        <h1 class="font-serif text-3xl sm:text-4xl font-bold leading-tight">{{ $provider->name }}</h1>
+                        <p class="text-gray-400 text-sm mt-1.5">{{ $provider->category->name_fr ?? 'Catégorie' }} · {{ $provider->city ?: 'N/A' }}</p>
                         @if($provider->is_verified)
-                            <span class="inline-flex mt-2 bg-emerald-500/20 text-emerald-300 text-xs px-2.5 py-1 rounded-full">Prestataire vérifié</span>
+                            <span class="inline-flex mt-3 items-center gap-1.5 bg-emerald-500/18 border border-emerald-500/30 text-emerald-300 text-xs px-3 py-1.5 rounded-full">
+                                <i class="fas fa-badge-check"></i> Prestataire vérifié
+                            </span>
                         @endif
                     </div>
-                    <div class="text-right">
-                        <p class="text-amber-400 text-2xl font-semibold">{{ number_format((float) ($provider->rating_avg ?? 0), 1) }} ★</p>
-                        <p class="text-gray-500 text-xs">{{ $provider->approvedReviews->count() }} avis</p>
+                    <div class="provider-chip rounded-xl px-4 py-3 text-right">
+                        <p class="text-amber-300 text-2xl font-semibold leading-none">{{ number_format((float) ($provider->rating_avg ?? 0), 1) }} <span class="text-amber-400">★</span></p>
+                        <p class="text-gray-400 text-xs mt-1">{{ $provider->approvedReviews->count() }} avis</p>
                     </div>
                 </div>
                 @auth
@@ -70,18 +117,18 @@
                     @endif
                 @endauth
 
-                <p class="text-gray-300 mt-5 leading-relaxed">{{ $provider->description_fr ?: 'Description non disponible.' }}</p>
+                <p class="text-gray-200 mt-6 leading-relaxed text-[15px]">{{ $provider->description_fr ?: 'Description non disponible.' }}</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                    <div class="bg-[#1c1c16] border border-white/5 rounded-lg p-4 text-sm">
-                        <p><span class="text-gray-500">Adresse:</span> {{ $provider->address ?: 'N/A' }}</p>
-                        <p class="mt-1"><span class="text-gray-500">Ville:</span> {{ $provider->city ?: 'N/A' }}</p>
-                        <p class="mt-1"><span class="text-gray-500">Région:</span> {{ $provider->region ?: 'N/A' }}</p>
+                    <div class="provider-info-card rounded-xl p-4 text-sm">
+                        <p><span class="text-gray-500">Adresse :</span> {{ $provider->address ?: 'N/A' }}</p>
+                        <p class="mt-1.5"><span class="text-gray-500">Ville :</span> {{ $provider->city ?: 'N/A' }}</p>
+                        <p class="mt-1.5"><span class="text-gray-500">Région :</span> {{ $provider->region ?: 'N/A' }}</p>
                     </div>
-                    <div class="bg-[#1c1c16] border border-white/5 rounded-lg p-4 text-sm">
-                        <p><span class="text-gray-500">Téléphone:</span> {{ $provider->phone ?: 'N/A' }}</p>
-                        <p class="mt-1"><span class="text-gray-500">Email:</span> {{ $provider->email ?: 'N/A' }}</p>
-                        <p class="mt-1"><span class="text-gray-500">Site web:</span>
+                    <div class="provider-info-card rounded-xl p-4 text-sm">
+                        <p><span class="text-gray-500">Téléphone :</span> {{ $provider->phone ?: 'N/A' }}</p>
+                        <p class="mt-1.5"><span class="text-gray-500">Email :</span> {{ $provider->email ?: 'N/A' }}</p>
+                        <p class="mt-1.5"><span class="text-gray-500">Site web :</span>
                             @if($provider->website)
                                 <a href="{{ $provider->website }}" target="_blank" class="text-amber-400 hover:text-amber-300">{{ $provider->website }}</a>
                             @else
@@ -90,6 +137,16 @@
                         </p>
                     </div>
                 </div>
+                @if(!empty($provider->website))
+                    <div class="mt-5 flex justify-center">
+                        <a href="{{ $provider->website }}"
+                           target="_blank" rel="noopener noreferrer"
+                           class="provider-book-btn inline-flex items-center justify-center gap-2.5 rounded-xl text-black font-bold px-7 py-3.5 text-base">
+                            <i class="fas fa-hotel text-sm"></i>
+                            Effectuer une réservation d’hôtel
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -200,9 +257,10 @@
                 <h2 class="text-white font-semibold mb-3">Prestataires similaires</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach($related as $r)
-                        <a href="{{ route('providers.show', $r->slug) }}" class="bg-[#141410] border border-white/5 rounded-xl p-4 hover:border-amber-500/40 transition">
-                            <p class="text-white font-semibold">{{ $r->name }}</p>
-                            <p class="text-gray-500 text-sm mt-1">{{ $r->city ?: 'N/A' }}</p>
+                        <a href="{{ route('providers.show', $r->slug) }}" class="provider-similar-card rounded-xl p-4">
+                            <p class="text-amber-300 text-[11px] uppercase tracking-[0.16em] font-medium">{{ $r->category->name_fr ?? 'Prestataire' }}</p>
+                            <p class="text-white font-semibold mt-1.5 leading-snug">{{ $r->name }}</p>
+                            <p class="text-gray-400 text-sm mt-1.5">{{ $r->city ?: 'N/A' }}</p>
                         </a>
                     @endforeach
                 </div>
@@ -215,5 +273,6 @@
             <a href="{{ route('providers.index') }}" class="hover:text-amber-400 transition">← Retour à l'annuaire</a>
         </div>
     </footer>
+@include('partials.homepage-footer')
 </body>
 </html>

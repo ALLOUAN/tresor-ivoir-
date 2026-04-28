@@ -115,4 +115,9 @@ class Provider extends Model
     {
         return $this->hasMany(Article::class, 'sponsor_id');
     }
+
+    public function conversations()
+    {
+        return $this->hasMany(ProviderConversation::class);
+    }
 }

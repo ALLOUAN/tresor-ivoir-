@@ -63,5 +63,6 @@
     </div>
 </article>
 
+@include('partials.homepage-footer')
 </body>
 </html>

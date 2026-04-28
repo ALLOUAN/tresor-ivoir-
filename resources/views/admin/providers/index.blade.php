@@ -90,6 +90,12 @@
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                 </div>
                 <div>
+                    <label class="block text-sm text-slate-300 mb-1">Lien réservation / Site web</label>
+                    <input type="url" name="website" value="{{ old('website') }}"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                           placeholder="https://...">
+                </div>
+                <div>
                     <label class="block text-sm text-slate-300 mb-1">Ville</label>
                     <input type="text" name="city" value="{{ old('city') }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
@@ -209,6 +215,12 @@
                     <label class="block text-sm text-slate-300 mb-1">Téléphone</label>
                     <input type="text" name="phone" id="edit_phone" value="{{ old('phone') }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Lien réservation / Site web</label>
+                    <input type="url" name="website" id="edit_website" value="{{ old('website') }}"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                           placeholder="https://...">
                 </div>
                 <div>
                     <label class="block text-sm text-slate-300 mb-1">Ville</label>
@@ -369,6 +381,7 @@
                                         data-status="{{ $provider->status }}"
                                         data-provider-email="{{ $provider->email ?? '' }}"
                                         data-phone="{{ $provider->phone ?? '' }}"
+                                        data-website="{{ $provider->website ?? '' }}"
                                         data-city="{{ $provider->city ?? '' }}"
                                         data-address="{{ $provider->address ?? '' }}"
                                         data-description-fr="{{ $provider->description_fr ?? '' }}"
@@ -430,6 +443,7 @@
         document.getElementById('edit_status').value = button.dataset.status || 'pending';
         document.getElementById('edit_provider_email').value = button.dataset.providerEmail || '';
         document.getElementById('edit_phone').value = button.dataset.phone || '';
+        document.getElementById('edit_website').value = button.dataset.website || '';
         document.getElementById('edit_city').value = button.dataset.city || '';
         document.getElementById('edit_address').value = button.dataset.address || '';
         document.getElementById('edit_description_fr').value = button.dataset.descriptionFr || '';

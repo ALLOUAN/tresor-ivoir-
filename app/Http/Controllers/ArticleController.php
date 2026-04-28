@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleComment;
+use App\Models\Event;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
@@ -52,9 +53,18 @@ class ArticleController extends Controller
         $active_category = $category_slug
             ? $categories->firstWhere('slug', $category_slug)
             : null;
+        $agendaEvents = collect();
+        if ($category_slug === 'agenda') {
+            $agendaEvents = Event::query()
+                ->where('status', 'published')
+                ->whereNotNull('starts_at')
+                ->with('category')
+                ->orderBy('starts_at')
+                ->get();
+        }
 
         return view('articles.index', compact(
-            'articles', 'categories', 'featured', 'active_category', 'search', 'tag_slug'
+            'articles', 'categories', 'featured', 'active_category', 'search', 'tag_slug', 'agendaEvents'
         ));
     }
 

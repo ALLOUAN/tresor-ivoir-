@@ -128,7 +128,29 @@
     </style>
 </head>
 <body class="h-full bg-slate-950 text-white flex">
-    @php $role = auth()->user()->role; @endphp
+    @php
+        $role = auth()->user()->role;
+        $sidebarMessagingUnreadCount = 0;
+        if ($role === 'admin') {
+            $sidebarMessagingUnreadCount = \App\Models\ProviderConversation::query()
+                ->whereHas('messages', fn ($q) => $q
+                    ->whereNull('read_at')
+                    ->where('sender_id', '!=', auth()->id()))
+                ->count();
+        } elseif ($role === 'provider') {
+            /** @var \App\Models\User $authUser */
+            $authUser = auth()->user();
+            $provider = $authUser->providers()->first();
+            if ($provider) {
+                $sidebarMessagingUnreadCount = \App\Models\ProviderConversation::query()
+                    ->where('provider_id', $provider->id)
+                    ->whereHas('messages', fn ($q) => $q
+                        ->whereNull('read_at')
+                        ->where('sender_id', '!=', auth()->id()))
+                    ->count();
+            }
+        }
+    @endphp
     @if(session('success'))
         <div id="success-toast"
              class="fixed top-4 right-4 z-[80] max-w-sm w-[calc(100%-2rem)] sm:w-auto px-4 py-3 rounded-lg border border-emerald-400/40 bg-emerald-500/15 text-emerald-200 shadow-2xl shadow-emerald-900/30 flex items-start gap-2 transition-opacity duration-300">
@@ -195,6 +217,16 @@
                    class="nav-row {{ request()->routeIs('admin.providers.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-store"></i></span>
                     <span>Prestataires</span>
+                </a>
+                <a href="{{ route('admin.conversations.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.conversations.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-comments"></i></span>
+                    <span class="flex-1">Messagerie</span>
+                    @if($sidebarMessagingUnreadCount > 0)
+                        <span class="inline-flex min-w-[1.35rem] h-[1.35rem] px-1.5 items-center justify-center rounded-full bg-amber-500 text-black text-[10px] font-bold leading-none">
+                            {{ $sidebarMessagingUnreadCount > 99 ? '99+' : $sidebarMessagingUnreadCount }}
+                        </span>
+                    @endif
                 </a>
                 <a href="{{ route('admin.articles.index') }}"
                    class="nav-row {{ request()->routeIs('admin.articles.*') ? 'is-active' : '' }}">
@@ -338,6 +370,16 @@
                 <a href="{{ route('provider.media.index') }}"
                    class="sidebar-link {{ request()->routeIs('provider.media.*') ? 'active' : '' }}">
                     <i class="fas fa-images w-4 text-center"></i> Médias
+                </a>
+                <a href="{{ route('provider.conversations.index') }}"
+                   class="sidebar-link {{ request()->routeIs('provider.conversations.*') ? 'active' : '' }}">
+                    <i class="fas fa-comments w-4 text-center"></i>
+                    <span class="flex-1">Messagerie admin</span>
+                    @if($sidebarMessagingUnreadCount > 0)
+                        <span class="inline-flex min-w-[1.2rem] h-[1.2rem] px-1 items-center justify-center rounded-full bg-amber-500 text-black text-[10px] font-bold leading-none">
+                            {{ $sidebarMessagingUnreadCount > 99 ? '99+' : $sidebarMessagingUnreadCount }}
+                        </span>
+                    @endif
                 </a>
                 <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Abonnement</p>
                 <a href="{{ route('provider.billing.plans') }}"

@@ -28,40 +28,225 @@
     </script>
     <style>
         * { box-sizing: border-box; }
-        .role-card input[type="radio"]:checked + label {
-            border-color: rgba(232,160,32,0.6);
-            background: rgba(232,160,32,0.08);
-            color: #fde68a;
+        body {
+            background:
+                radial-gradient(900px 500px at 12% 8%, rgba(232,160,32,0.14), transparent 60%),
+                radial-gradient(700px 420px at 88% 90%, rgba(99,102,241,0.10), transparent 62%),
+                #0a0907;
         }
-        .role-card input[type="radio"]:checked + label .role-icon {
-            background: rgba(232,160,32,0.15);
+        .auth-shell {
+            position: relative;
+        }
+        .auth-shell::before {
+            content: "";
+            position: absolute;
+            inset: -14px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(232,160,32,0.18), rgba(255,255,255,0.03), rgba(232,160,32,0.08));
+            filter: blur(14px);
+            opacity: .45;
+            pointer-events: none;
+        }
+        .glass-panel {
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: linear-gradient(145deg, rgba(20,18,14,0.88), rgba(13,11,9,0.92));
+            backdrop-filter: blur(8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .aside-panel {
+            max-width: 100%;
+            justify-self: stretch;
+            background:
+                radial-gradient(120% 120% at 0% 0%, rgba(232,160,32,0.12), transparent 58%),
+                linear-gradient(155deg, rgba(25,22,18,0.9), rgba(12,10,8,0.9));
+        }
+        .aside-panel::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 30%);
+            opacity: .6;
+        }
+        .aside-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            border: 1px solid rgba(232,160,32,0.3);
+            background: rgba(232,160,32,0.09);
+            color: #f3d8a0;
+            border-radius: 999px;
+            padding: .28rem .62rem;
+            font-size: .67rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .aside-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .9rem;
+            margin-bottom: .75rem;
+        }
+        .aside-brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+        .aside-logo-wrap {
+            position: relative;
+            border-radius: .9rem;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.18), rgba(232,160,32,0.22));
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+        }
+        .aside-logo-inner {
+            border-radius: calc(.9rem - 2px);
+            overflow: hidden;
+        }
+        .aside-title {
+            margin: 0;
             color: #f5b942;
+            font-size: 1.06rem;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+        .aside-subtitle {
+            margin-top: .2rem;
+            font-size: .72rem;
+            color: #6b7280;
+        }
+        .aside-content {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: .8rem;
+            align-items: start;
+        }
+        .aside-summary {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            border-radius: .85rem;
+            padding: .65rem .8rem;
+        }
+        .aside-chip-list {
+            display: grid;
+            gap: .45rem;
+        }
+        .account-type-card {
+            border: 1px solid rgba(232,160,32,0.35);
+            background:
+                radial-gradient(120% 140% at 50% 0%, rgba(232,160,32,0.2), rgba(232,160,32,0.08) 45%, rgba(232,160,32,0.03) 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 12px 30px rgba(0,0,0,0.32);
+        }
+        .account-type-kicker {
+            font-size: .82rem;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            font-weight: 900;
+            color: #f8cf77;
+            text-shadow: 0 0 16px rgba(232,160,32,0.35);
+        }
+        .account-type-value {
+            margin-top: .35rem;
+            font-size: clamp(1.8rem, 3vw, 2.35rem);
+            line-height: 1.05;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 3px 18px rgba(0,0,0,0.35), 0 0 20px rgba(232,160,32,0.18);
+        }
+        .account-type-note {
+            margin-top: .4rem;
+            font-size: .74rem;
+            color: #d1a74d;
+            letter-spacing: .03em;
+        }
+        .stat-chip {
+            border: 1px solid rgba(232,160,32,0.25);
+            background: linear-gradient(135deg, rgba(232,160,32,0.16), rgba(232,160,32,0.06));
+            color: #f5d28e;
+            border-radius: .7rem;
+            font-size: .72rem;
+            padding: .45rem .6rem;
+            white-space: nowrap;
+        }
+        @media (max-width: 640px) {
+            .aside-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .aside-content {
+                grid-template-columns: 1fr;
+            }
+            .aside-chip-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        .field-input {
+            background: rgba(9,8,7,0.92);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .field-input:focus {
+            border-color: rgba(232,160,32,0.5);
+            box-shadow: 0 0 0 3px rgba(232,160,32,0.12);
+        }
+        .plan-card input[type="radio"]:checked + label {
+            border-color: rgba(232,160,32,0.62);
+            background: linear-gradient(140deg, rgba(232,160,32,0.18), rgba(232,160,32,0.06));
+            box-shadow: 0 10px 24px rgba(0,0,0,0.34), 0 0 0 1px rgba(232,160,32,0.2) inset;
         }
     </style>
 </head>
-<body class="min-h-screen bg-dark-900 flex items-center justify-center p-4 font-sans" style="background:#0d0d0b">
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 font-sans">
 
-    <div class="w-full max-w-lg py-8">
+    <div class="auth-shell w-full max-w-7xl py-4">
 
-        {{-- Logo --}}
-        <div class="text-center mb-8">
-            @if(!empty($siteBrand['logo_url']))
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/5 border border-white/10 mb-4 overflow-hidden p-1">
-                    <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
-                </div>
-            @else
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 mb-4">
-                    <i class="fas fa-gem text-black text-2xl"></i>
-                </div>
-            @endif
-            <h1 class="text-2xl font-bold font-serif" style="color:#f5b942">{{ $siteBrand['site_name'] }}</h1>
-            <p class="text-gray-500 text-sm mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}</p>
-        </div>
+        <div class="max-w-5xl mx-auto">
+            {{-- Card --}}
+            <div class="glass-panel rounded-3xl p-5 sm:p-6 lg:p-7">
+                <aside class="glass-panel aside-panel rounded-3xl p-4 sm:p-5 mb-5">
+                    <div class="aside-top">
+                        <span class="aside-badge"><i class="fas fa-star text-[10px]"></i>Espace pro</span>
+                        <p class="text-[11px] text-gray-500">Inscription prestataire</p>
+                    </div>
+                    <div class="aside-content">
+                        <div>
+                            <div class="aside-brand">
+                                @if(!empty($siteBrand['logo_url']))
+                                    <div class="aside-logo-wrap">
+                                        <div class="aside-logo-inner inline-flex items-center justify-center w-16 h-16 bg-white/5 border border-white/10 overflow-hidden p-1">
+                                            <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="aside-logo-wrap">
+                                        <div class="aside-logo-inner inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600">
+                                            <i class="fas fa-gem text-black text-xl"></i>
+                                        </div>
+                                    </div>
+                                @endif
+                                <div>
+                                    <h1 class="aside-title font-serif">{{ $siteBrand['site_name'] }}</h1>
+                                    <p class="aside-subtitle">{{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}</p>
+                                </div>
+                            </div>
+                            <div class="aside-summary mt-3">
+                                <p class="text-gray-200 text-xs font-semibold mb-1">Compte prestataire</p>
+                                <p class="text-gray-500 text-xs leading-relaxed">Publiez votre activité, choisissez votre forfait et activez votre présence en ligne rapidement.</p>
+                            </div>
+                        </div>
+                        <div class="aside-chip-list">
+                            <p class="stat-chip"><i class="fas fa-check text-amber-300 mr-2"></i>Création rapide</p>
+                            <p class="stat-chip"><i class="fas fa-check text-amber-300 mr-2"></i>Choix du forfait</p>
+                            <p class="stat-chip"><i class="fas fa-check text-amber-300 mr-2"></i>Activation immédiate</p>
+                        </div>
+                    </div>
+                </aside>
 
-        {{-- Card --}}
-        <div class="rounded-2xl border border-white/10 p-8 shadow-2xl" style="background:#141410">
-            <h2 class="text-white text-xl font-semibold mb-1">Créer votre compte</h2>
-            <p class="text-gray-500 text-sm mb-6">Rejoignez la communauté Trésor Ivoire.</p>
+                <h2 class="text-white text-xl font-semibold mb-1">Créer votre compte</h2>
+                <p class="text-gray-500 text-sm mb-6">Rejoignez la communauté Trésor Ivoire.</p>
 
             @if(session('info'))
                 <div class="mb-5 p-3 rounded-lg border border-sky-500/30 bg-sky-500/10 text-sky-200 text-sm">{{ session('info') }}</div>
@@ -79,46 +264,68 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('register.post') }}{{ request('plan') ? '?plan='.request('plan') : '' }}" class="space-y-5">
+                <form method="POST" action="{{ route('register.post') }}" class="space-y-4">
                 @csrf
 
-                {{-- Choix du type de compte --}}
-                <div>
-                    <p class="text-xs font-medium text-gray-400 mb-3">Type de compte <span class="text-red-400">*</span></p>
-                    <div class="grid grid-cols-2 gap-3">
-                        @foreach([
-                            ['value' => 'visitor',  'icon' => 'fa-user',  'label' => 'Visiteur',     'desc' => 'Parcourez et commentez'],
-                            ['value' => 'provider', 'icon' => 'fa-store', 'label' => 'Prestataire',  'desc' => 'Référencez votre activité'],
-                        ] as $opt)
-                        <div class="role-card">
-                            <input type="radio" name="role" id="role_{{ $opt['value'] }}" value="{{ $opt['value'] }}"
-                                   {{ old('role', request('role', 'visitor')) === $opt['value'] ? 'checked' : '' }} class="sr-only">
-                            <label for="role_{{ $opt['value'] }}"
-                                   class="flex flex-col items-center gap-2 p-4 rounded-xl border border-white/10 cursor-pointer transition-all duration-200 text-gray-400 hover:border-white/20">
-                                <div class="role-icon w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center transition-all">
-                                    <i class="fas {{ $opt['icon'] }} text-sm"></i>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-sm font-semibold">{{ $opt['label'] }}</p>
-                                    <p class="text-xs text-gray-600 mt-0.5">{{ $opt['desc'] }}</p>
-                                </div>
-                            </label>
-                        </div>
-                        @endforeach
+                <div class="grid lg:grid-cols-2 gap-3">
+                    <input type="hidden" name="role" value="provider">
+                    <div class="account-type-card rounded-xl px-4 py-4 text-center">
+                        <p class="account-type-kicker">Type de compte</p>
+                        <p class="account-type-value">Prestataire</p>
+                        <p class="account-type-note">Espace professionnel activé</p>
                     </div>
-                    @error('role')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+
+                @php
+                    $resolvedPlanId = (int) old('plan_id', $selectedPlanId ?? request('plan'));
+                    if ($resolvedPlanId <= 0 && isset($plans) && $plans->isNotEmpty()) {
+                        $resolvedPlanId = (int) $plans->first()->id;
+                    }
+                @endphp
+                @if(isset($plans) && $plans->isNotEmpty())
+                    <div id="provider-plan-picker">
+                        <p class="text-xs font-medium text-gray-400 mb-3">Type de compte prestataire</p>
+                        <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                            @foreach($plans as $plan)
+                                <div class="plan-card">
+                                    <input
+                                        type="radio"
+                                        name="plan_id"
+                                        id="plan_{{ $plan->id }}"
+                                        value="{{ $plan->id }}"
+                                        class="sr-only"
+                                        {{ $resolvedPlanId === (int) $plan->id ? 'checked' : '' }}
+                                    >
+                                    <label
+                                        for="plan_{{ $plan->id }}"
+                                        class="h-full flex flex-col items-start justify-between gap-2 p-3 rounded-xl border border-white/10 cursor-pointer transition-all duration-200 text-gray-300 hover:border-white/20"
+                                    >
+                                        <span class="min-w-0">
+                                            <span class="block text-sm font-semibold text-white truncate">{{ $plan->name_fr }}</span>
+                                            @if(!empty($plan->benefits_text))
+                                                <span class="block text-xs text-gray-500 truncate">{{ $plan->benefits_text }}</span>
+                                            @endif
+                                        </span>
+                                        <span class="shrink-0 text-xs font-semibold text-amber-300">
+                                            {{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA/mois
+                                        </span>
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        <p class="text-[11px] text-gray-600 mt-2">Le forfait choisi sera utilisé pour finaliser l’abonnement après création du compte.</p>
+                    </div>
+                @endif
                 </div>
 
                 {{-- Prénom + Nom --}}
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid lg:grid-cols-2 gap-4">
                     <div>
                         <label for="first_name" class="block text-xs font-medium text-gray-400 mb-1.5">Prénom <span class="text-red-400">*</span></label>
                         <div class="relative">
                             <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
                             <input id="first_name" name="first_name" type="text" required maxlength="80"
                                    value="{{ old('first_name') }}" autocomplete="given-name" placeholder="Jean"
-                                   class="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-500/30 @error('first_name') border-red-500/60 @enderror"
-                                   style="background:#0d0d0b; border: 1px solid rgba(255,255,255,0.1)">
+                                   class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('first_name') border-red-500/60 @enderror">
                         </div>
                         @error('first_name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
@@ -128,22 +335,21 @@
                             <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
                             <input id="last_name" name="last_name" type="text" required maxlength="80"
                                    value="{{ old('last_name') }}" autocomplete="family-name" placeholder="Kouassi"
-                                   class="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-500/30 @error('last_name') border-red-500/60 @enderror"
-                                   style="background:#0d0d0b; border: 1px solid rgba(255,255,255,0.1)">
+                                   class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('last_name') border-red-500/60 @enderror">
                         </div>
                         @error('last_name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                 </div>
 
                 {{-- E-mail --}}
+                <div class="grid lg:grid-cols-2 gap-4">
                 <div>
                     <label for="email" class="block text-xs font-medium text-gray-400 mb-1.5">Adresse e-mail <span class="text-red-400">*</span></label>
                     <div class="relative">
                         <i class="fas fa-at absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
                         <input id="email" name="email" type="email" required maxlength="255"
                                value="{{ old('email') }}" autocomplete="email" placeholder="vous@exemple.ci"
-                               class="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-500/30 @error('email') border-red-500/60 @enderror"
-                               style="background:#0d0d0b; border: 1px solid rgba(255,255,255,0.1)">
+                               class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('email') border-red-500/60 @enderror">
                     </div>
                     @error('email')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
@@ -155,21 +361,21 @@
                         <i class="fas fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
                         <input id="phone" name="phone" type="tel" maxlength="20"
                                value="{{ old('phone') }}" autocomplete="tel" placeholder="+225 07 00 00 00 00"
-                               class="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-500/30 @error('phone') border-red-500/60 @enderror"
-                               style="background:#0d0d0b; border: 1px solid rgba(255,255,255,0.1)">
+                               class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('phone') border-red-500/60 @enderror">
                     </div>
                     @error('phone')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
+                </div>
 
                 {{-- Mot de passe --}}
+                <div class="grid lg:grid-cols-2 gap-4">
                 <div>
                     <label for="password" class="block text-xs font-medium text-gray-400 mb-1.5">Mot de passe <span class="text-red-400">*</span></label>
                     <div class="relative">
                         <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
                         <input id="password" name="password" type="password" required
                                autocomplete="new-password" placeholder="8 caractères minimum"
-                               class="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-500/30 @error('password') border-red-500/60 @enderror"
-                               style="background:#0d0d0b; border: 1px solid rgba(255,255,255,0.1)">
+                               class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('password') border-red-500/60 @enderror">
                     </div>
                     @error('password')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
@@ -181,19 +387,20 @@
                         <i class="fas fa-lock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
                         <input id="password_confirmation" name="password_confirmation" type="password" required
                                autocomplete="new-password" placeholder="Répétez le mot de passe"
-                               class="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-500/30"
-                               style="background:#0d0d0b; border: 1px solid rgba(255,255,255,0.1)">
+                               class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none">
                     </div>
+                </div>
                 </div>
 
                 {{-- Submit --}}
-                <button type="submit"
-                        class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2 mt-2"
-                        style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
-                    <i class="fas fa-user-plus text-xs"></i>
-                    Créer mon compte
-                </button>
-            </form>
+                    <button type="submit"
+                            class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2 mt-2"
+                            style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
+                        <i class="fas fa-user-plus text-xs"></i>
+                        Créer mon compte
+                    </button>
+                </form>
+            </div>
         </div>
 
         {{-- Lien connexion --}}
@@ -206,15 +413,5 @@
         </p>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var params = new URLSearchParams(window.location.search);
-            if (params.get('role') === 'provider') {
-                var r = document.getElementById('role_provider');
-                var v = document.getElementById('role_visitor');
-                if (r && v) { r.checked = true; v.checked = false; }
-            }
-        });
-    </script>
 </body>
 </html>

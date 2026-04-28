@@ -20,9 +20,18 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function showRegister()
+    public function showRegister(Request $request)
     {
-        return view('auth.register');
+        $plans = SubscriptionPlan::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        return view('auth.register', [
+            'plans' => $plans,
+            'selectedPlanId' => (int) ($request->query('plan', 0)),
+        ]);
     }
 
     public function register(Request $request)
@@ -66,7 +75,7 @@ class AuthController extends Controller
 
         $user->sendEmailVerificationNotification();
 
-        $planId = $request->query('plan') ?? session()->pull('selected_plan_id');
+        $planId = $request->input('plan_id') ?: ($request->query('plan') ?? session()->pull('selected_plan_id'));
         if ($planId && $user->role === 'provider') {
             $plan = SubscriptionPlan::query()
                 ->whereKey($planId)
@@ -106,9 +115,11 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        Auth::user()->update(['last_login_at' => now()]);
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->update(['last_login_at' => now()]);
 
-        return redirect()->intended(match (Auth::user()->role) {
+        return redirect()->intended(match ($user->role) {
             'admin' => route('admin.dashboard'),
             'editor' => route('editor.dashboard'),
             'provider' => route('provider.dashboard'),

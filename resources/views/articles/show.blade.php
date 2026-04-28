@@ -339,5 +339,6 @@
     </div>
 </footer>
 
+@include('partials.homepage-footer')
 </body>
 </html>

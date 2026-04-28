@@ -184,5 +184,6 @@
         &copy; {{ date('Y') }} {{ $siteBrand['site_name'] }}
     </div>
 </footer>
+@include('partials.homepage-footer')
 </body>
 </html>

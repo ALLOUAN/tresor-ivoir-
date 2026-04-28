@@ -132,11 +132,11 @@
 
         {{-- Actions --}}
         <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
-            <a href="{{ url($media->url) }}" target="_blank" rel="noopener noreferrer"
-               class="group inline-flex flex-1 sm:flex-initial min-w-0 items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black text-sm font-bold shadow-lg shadow-amber-900/35 hover:from-amber-300 hover:via-amber-400 hover:to-amber-500 transition-all duration-300 font-plus">
-                <i class="fas fa-up-right-from-square text-xs opacity-90 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
-                Ouvrir le fichier en grand
-            </a>
+            <button type="button"
+                    class="group inline-flex flex-1 sm:flex-initial min-w-0 items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black text-sm font-bold shadow-lg shadow-amber-900/35 hover:from-amber-300 hover:via-amber-400 hover:to-amber-500 transition-all duration-300 font-plus">
+                <i class="fas fa-cart-shopping text-xs opacity-90 group-hover:scale-110 transition-transform"></i>
+                Acheter
+            </button>
             <a href="{{ route('gallery.public') }}"
                class="inline-flex flex-1 sm:flex-initial items-center justify-center gap-2.5 px-6 py-3.5 rounded-full border border-white/12 bg-white/[0.04] backdrop-blur-md text-gray-100 text-sm font-semibold hover:bg-white/[0.08] hover:border-amber-400/30 transition-all duration-300 font-plus">
                 <i class="fas fa-arrow-left text-xs text-amber-400/80"></i>
@@ -190,59 +190,6 @@
                         <dd><span class="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-emerald-200 text-sm font-bold tracking-tight font-plus">{{ $priceLabel }}</span></dd>
                     </div>
                 @endif
-                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
-                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Section</dt>
-                    <dd class="text-gray-100 font-medium font-plus text-[13px]">{{ $sectionLabel }}</dd>
-                </div>
-                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
-                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Fichier</dt>
-                    <dd class="text-gray-300 break-all text-xs sm:text-sm font-mono leading-relaxed">{{ $media->original_name }}</dd>
-                </div>
-                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
-                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Type MIME</dt>
-                    <dd class="text-amber-200/70 font-mono text-xs tracking-wide">{{ $media->mime_type }}</dd>
-                </div>
-                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
-                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Taille</dt>
-                    <dd class="text-white tabular-nums font-semibold font-plus">{{ $sizeHuman }}</dd>
-                </div>
-                @if($media->published_at)
-                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
-                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Date de publication</dt>
-                        <dd class="text-gray-200 text-[13px] sm:text-sm">{{ $media->published_at->translatedFormat('d F Y, H:i') }}</dd>
-                    </div>
-                @endif
-                <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
-                    <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Ajouté le</dt>
-                    <dd class="text-gray-200 text-[13px] sm:text-sm">{{ $media->created_at?->translatedFormat('d F Y, H:i') ?? '—' }}</dd>
-                </div>
-                @if($hasDisplayOrderColumn)
-                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
-                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Ordre d’affichage</dt>
-                        <dd class="text-white tabular-nums text-lg font-bold font-plus">{{ (int) ($media->display_order ?? 0) }}</dd>
-                    </div>
-                @endif
-                @if($hasFeaturedColumn)
-                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
-                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Vedette</dt>
-                        <dd>
-                            @if($media->is_featured ?? false)
-                                <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/35 bg-amber-500/15 px-2.5 py-1 text-amber-200 text-xs font-bold font-plus">Oui</span>
-                            @else
-                                <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-gray-400 text-xs font-semibold font-plus">Non</span>
-                            @endif
-                        </dd>
-                    </div>
-                @endif
-                @if($uploaderName !== null && $uploaderName !== '')
-                    <div class="detail-spec-tile sm:col-span-2 rounded-xl border border-white/[0.06] bg-gradient-to-r from-black/30 via-black/20 to-amber-950/10 p-4 sm:p-5">
-                        <dt class="text-gray-500 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Téléversé par</dt>
-                        <dd class="text-gray-100 flex items-center gap-3 text-sm font-plus font-medium">
-                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-amber-400/90 text-xs"><i class="fas fa-user"></i></span>
-                            {{ $uploaderName }}
-                        </dd>
-                    </div>
-                @endif
             </dl>
         </div>
     </div>
@@ -258,5 +205,6 @@
     </div>
 </footer>
 
+@include('partials.homepage-footer')
 </body>
 </html>

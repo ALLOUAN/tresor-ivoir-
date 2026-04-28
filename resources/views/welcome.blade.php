@@ -186,6 +186,7 @@
             background: linear-gradient(105deg, #0c0b09 0%, #12100c 42%, #15120e 100%);
             border-bottom: 1px solid rgba(232, 160, 32, 0.14);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+            overflow: hidden;
         }
         #home-top-bar.topbar-ultra::before {
             content: '';
@@ -197,6 +198,16 @@
                 radial-gradient(80% 120% at 100% 100%, rgba(120, 90, 40, 0.08), transparent 50%);
             pointer-events: none;
         }
+        #home-top-bar.topbar-ultra::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(120deg, rgba(255,255,255,0.02), transparent 35%, rgba(255,255,255,0.01)),
+                repeating-linear-gradient(90deg, transparent 0, transparent 48px, rgba(232,160,32,0.02) 48px, rgba(232,160,32,0.02) 49px);
+            pointer-events: none;
+            opacity: 0.75;
+        }
         #home-top-bar.topbar-ultra > * { position: relative; z-index: 1; }
         .topbar-slogan-pill {
             display: inline-flex;
@@ -204,10 +215,16 @@
             gap: 0.5rem;
             padding: 0.35rem 0.85rem 0.35rem 0.65rem;
             border-radius: 9999px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.04);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 0 1px rgba(232,160,32,0.06), 0 4px 24px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.11);
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025));
+            backdrop-filter: blur(12px) saturate(130%);
+            box-shadow: 0 0 0 1px rgba(232,160,32,0.08), 0 6px 26px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+            transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+        }
+        .topbar-slogan-pill:hover {
+            transform: translateY(-1px);
+            border-color: rgba(232,160,32,0.35);
+            box-shadow: 0 0 0 1px rgba(232,160,32,0.14), 0 10px 28px rgba(0,0,0,0.3), 0 0 20px rgba(232,160,32,0.12);
         }
         .topbar-slogan-pill .pulse-dot {
             width: 6px; height: 6px; border-radius: 9999px;
@@ -223,23 +240,37 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.32rem 0.85rem;
+            padding: 0.36rem 0.9rem;
             border-radius: 9999px;
             font-size: 11px;
             font-weight: 500;
             letter-spacing: 0.02em;
-            color: rgba(226, 232, 240, 0.88);
-            border: 1px solid rgba(255,255,255,0.07);
-            background: rgba(255,255,255,0.035);
-            backdrop-filter: blur(10px);
+            color: rgba(226, 232, 240, 0.9);
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+            backdrop-filter: blur(11px) saturate(125%);
             transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease, box-shadow .2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .topbar-action::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.14), transparent);
+            transform: translateX(-130%);
+            transition: transform .45s ease;
+            pointer-events: none;
         }
         .topbar-action:hover {
             color: #fde68a;
             border-color: rgba(232,160,32,0.35);
-            background: rgba(232,160,32,0.08);
-            box-shadow: 0 0 20px rgba(232,160,32,0.12);
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, rgba(232,160,32,0.14), rgba(232,160,32,0.06));
+            box-shadow: 0 0 24px rgba(232,160,32,0.18);
+            transform: translateY(-1px) scale(1.02);
+        }
+        .topbar-action:hover::before {
+            transform: translateX(130%);
         }
         .topbar-action i { opacity: 0.75; }
 
@@ -298,11 +329,50 @@
             padding: 2px;
             background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.12), rgba(232,160,32,0.25));
             box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .35s ease;
+            animation: logoFloat 5.4s ease-in-out infinite;
+        }
+        .logo-ring::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: inherit;
+            background: conic-gradient(from 180deg, rgba(232,160,32,0.0), rgba(232,160,32,0.5), rgba(255,255,255,0.08), rgba(232,160,32,0.0));
+            opacity: .45;
+            filter: blur(6px);
+            animation: logoHaloSpin 8s linear infinite;
+            pointer-events: none;
         }
         .logo-ring-inner {
             border-radius: calc(1rem - 2px);
             overflow: hidden;
             background: rgba(13,13,11,0.9);
+            transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), filter .35s ease;
+        }
+        .group:hover .logo-ring {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 14px 34px rgba(0,0,0,0.42), 0 0 26px rgba(232,160,32,0.26), 0 0 0 1px rgba(255,255,255,0.08) inset;
+        }
+        .group:hover .logo-ring::before {
+            opacity: .8;
+        }
+        .group:hover .logo-ring-inner {
+            transform: scale(1.04);
+            filter: brightness(1.08) saturate(1.08);
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+        @keyframes logoHaloSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .logo-ring,
+            .logo-ring::before {
+                animation: none;
+            }
         }
         .lang-switch-ultra {
             display: inline-flex;
@@ -451,6 +521,128 @@
         .footer-v2-link:hover {
             color: #fde68a;
             padding-left: 0.35rem;
+        }
+        .social-links-wrap {
+            position: relative;
+        }
+        .social-icon-ultra {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.62rem;
+            backdrop-filter: blur(8px);
+            transition: transform .28s cubic-bezier(0.2, 0.8, 0.2, 1), color .25s ease, border-color .25s ease, box-shadow .3s ease, background-color .25s ease;
+            isolation: isolate;
+        }
+        .social-icon-ultra::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: conic-gradient(from 180deg, rgba(232,160,32,0.0), rgba(232,160,32,0.45), rgba(255,255,255,0.16), rgba(232,160,32,0.0));
+            opacity: 0;
+            transform: rotate(0deg);
+            transition: opacity .28s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .social-icon-ultra::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            border-radius: calc(0.62rem - 1px);
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
+            opacity: 0;
+            transition: opacity .25s ease;
+            z-index: 0;
+        }
+        .social-icon-ultra i {
+            position: relative;
+            z-index: 1;
+            transition: transform .25s ease;
+        }
+        .social-icon-ultra:hover {
+            transform: translateY(-3px) scale(1.06);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 0 18px rgba(232,160,32,0.22);
+        }
+        .social-icon-ultra:hover::before {
+            opacity: 0.9;
+            animation: socialRingSpin 1.2s linear infinite;
+        }
+        .social-icon-ultra:hover::after {
+            opacity: 1;
+        }
+        .social-icon-ultra:hover i {
+            transform: scale(1.1);
+        }
+        .social-icon-ultra.social-icon-wa:hover {
+            box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 0 18px rgba(16,185,129,0.28);
+        }
+        .social-icon-ultra.social-icon-wa::before {
+            background: conic-gradient(from 180deg, rgba(16,185,129,0), rgba(16,185,129,0.6), rgba(236,253,245,0.25), rgba(16,185,129,0));
+        }
+        .footer-logo-link {
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .footer-logo-ring {
+            position: relative;
+            border-radius: 0.7rem;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.14), rgba(232,160,32,0.25));
+            box-shadow: 0 8px 26px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            transition: transform .32s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .32s ease;
+            animation: footerLogoFloat 5.4s ease-in-out infinite;
+        }
+        .footer-logo-ring::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: inherit;
+            background: conic-gradient(from 180deg, rgba(232,160,32,0), rgba(232,160,32,0.45), rgba(255,255,255,0.1), rgba(232,160,32,0));
+            opacity: 0.4;
+            filter: blur(5px);
+            animation: footerLogoSpin 8s linear infinite;
+            pointer-events: none;
+        }
+        .footer-logo-inner {
+            border-radius: calc(0.7rem - 2px);
+            overflow: hidden;
+            background: rgba(13,13,11,0.9);
+            transition: transform .32s cubic-bezier(0.2, 0.8, 0.2, 1), filter .32s ease;
+        }
+        .footer-logo-link:hover .footer-logo-ring {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.42), 0 0 22px rgba(232,160,32,0.25), 0 0 0 1px rgba(255,255,255,0.08) inset;
+        }
+        .footer-logo-link:hover .footer-logo-ring::before {
+            opacity: 0.82;
+        }
+        .footer-logo-link:hover .footer-logo-inner {
+            transform: scale(1.04);
+            filter: brightness(1.08) saturate(1.08);
+        }
+        @keyframes footerLogoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+        @keyframes footerLogoSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes socialRingSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .social-icon-ultra,
+            .social-icon-ultra::before,
+            .social-icon-ultra i,
+            .footer-logo-ring,
+            .footer-logo-ring::before {
+                transition: none;
+                animation: none;
+            }
         }
 
     </style>
@@ -1422,36 +1614,40 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-0 mb-12 pt-2 border-t border-white/5">
 
             <div class="lg:col-span-3 lg:pr-8 lg:border-r border-white/5">
-                <div class="flex items-start gap-3 mb-4">
+                <a href="{{ route('home') }}" class="footer-logo-link mb-4 group">
                     @if(!empty($siteBrand['logo_url']))
-                        <div class="h-10 w-10 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center overflow-hidden p-0.5 shrink-0">
-                            <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
+                        <div class="footer-logo-ring shrink-0">
+                            <div class="footer-logo-inner h-16 w-16 border border-white/10 bg-white/[0.04] flex items-center justify-center p-0.5">
+                                <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
+                            </div>
                         </div>
                     @else
-                        <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-emerald-400 to-amber-500 flex items-center justify-center shrink-0">
-                            <i class="fas fa-gem text-black text-sm"></i>
+                        <div class="footer-logo-ring shrink-0">
+                            <div class="footer-logo-inner h-16 w-16 bg-gradient-to-br from-emerald-400 to-amber-500 flex items-center justify-center">
+                                <i class="fas fa-gem text-black text-sm"></i>
+                            </div>
                         </div>
                     @endif
                     <div class="min-w-0">
                         <p class="text-white font-serif font-semibold leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
                         <p class="text-gray-600 text-[10px] tracking-[0.16em] uppercase truncate font-plus mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
                     </div>
-                </div>
+                </a>
                 <p class="text-gray-500 text-xs leading-relaxed mb-5 font-plus">
                     {{ $footerBlurb }}
                 </p>
                 @if(count($socialRows) > 0 || $waHref)
                     <p class="text-gray-600 text-[9px] uppercase tracking-[0.18em] mb-2.5 font-plus font-semibold">Réseaux</p>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="social-links-wrap flex flex-wrap gap-2">
                         @foreach($socialRows as $row)
                             <a href="{{ $row['url'] }}" target="_blank" rel="noopener noreferrer" title="{{ $row['label'] }}"
-                               class="h-8 w-8 rounded-md border border-white/10 bg-white/[0.03] flex items-center justify-center text-gray-500 hover:text-white hover:border-white/25 hover:bg-white/[0.06] transition text-xs">
+                               class="social-icon-ultra h-10 w-10 rounded-md border border-white/10 bg-white/[0.03] flex items-center justify-center text-gray-500 hover:text-white hover:border-white/25 hover:bg-white/[0.06] transition text-sm">
                                 <i class="fab {{ $row['icon'] }}"></i>
                             </a>
                         @endforeach
                         @if($waHref)
                             <a href="{{ $waHref }}" target="_blank" rel="noopener noreferrer" title="WhatsApp"
-                               class="h-8 w-8 rounded-md border border-emerald-500/25 bg-emerald-500/[0.07] flex items-center justify-center text-emerald-400/90 hover:text-emerald-300 transition text-xs">
+                               class="social-icon-ultra social-icon-wa h-10 w-10 rounded-md border border-emerald-500/25 bg-emerald-500/[0.07] flex items-center justify-center text-emerald-400/90 hover:text-emerald-300 transition text-sm">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
                         @endif

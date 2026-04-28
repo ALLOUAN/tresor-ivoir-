@@ -243,5 +243,6 @@
     }
 </script>
 
+@include('partials.homepage-footer')
 </body>
 </html>
