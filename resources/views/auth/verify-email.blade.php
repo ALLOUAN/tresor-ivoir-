@@ -53,10 +53,10 @@
                 <i class="fas fa-envelope-circle-check text-gold-400 text-2xl"></i>
             </div>
 
-            <h2 class="text-white text-xl font-semibold mb-2">Vérifiez votre e-mail</h2>
+            <h2 class="text-white text-xl font-semibold mb-2">Vérification du code</h2>
             <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                Un lien de vérification a été envoyé à <span class="text-white font-medium">{{ auth()->user()->email }}</span>.
-                Cliquez sur ce lien pour activer votre compte.
+                Un code de vérification a été envoyé à <span class="text-white font-medium">{{ auth()->user()->email }}</span>.
+                Saisissez ce code pour activer votre compte.
             </p>
 
             {{-- Message succès renvoi --}}
@@ -67,15 +67,45 @@
                 </div>
             @endif
 
+            {{-- Saisie du code OTP --}}
+            <form method="POST" action="{{ route('verification.code') }}" class="mb-5 text-left">
+                @csrf
+                <label for="verification_code" class="block text-xs font-medium text-gray-400 mb-1.5">
+                    Entrez le code à 6 chiffres
+                </label>
+                <input
+                    id="verification_code"
+                    name="verification_code"
+                    type="text"
+                    inputmode="numeric"
+                    pattern="[0-9]{6}"
+                    maxlength="6"
+                    required
+                    value="{{ old('verification_code') }}"
+                    placeholder="000000"
+                    class="w-full px-3 py-2.5 rounded-xl border border-white/15 bg-black/25 text-white placeholder:text-gray-600 tracking-[0.35em] text-center text-lg focus:outline-none focus:border-gold-500/50"
+                >
+                @error('verification_code')
+                    <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                @enderror
+
+                <button type="submit"
+                        class="w-full py-2.5 rounded-xl mt-3 font-semibold text-sm text-black transition-all duration-200"
+                        style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
+                    <i class="fas fa-check mr-1.5 text-xs"></i>
+                    Vérifier le code
+                </button>
+            </form>
+
             {{-- Étapes --}}
             <div class="bg-white/3 rounded-xl p-4 mb-6 text-left space-y-3">
                 <div class="flex items-start gap-3">
                     <span class="w-5 h-5 rounded-full bg-gold-500/20 text-gold-400 text-xs flex items-center justify-center shrink-0 mt-0.5 font-bold">1</span>
-                    <p class="text-gray-400 text-xs leading-relaxed">Ouvrez votre boîte e-mail et cherchez un message de <span class="text-gray-300">{{ $siteBrand['site_name'] }}</span>.</p>
+                    <p class="text-gray-400 text-xs leading-relaxed">Ouvrez votre boîte e-mail et cherchez le code envoyé par <span class="text-gray-300">{{ $siteBrand['site_name'] }}</span>.</p>
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="w-5 h-5 rounded-full bg-gold-500/20 text-gold-400 text-xs flex items-center justify-center shrink-0 mt-0.5 font-bold">2</span>
-                    <p class="text-gray-400 text-xs leading-relaxed">Cliquez sur le bouton <span class="text-gray-300">« Vérifier mon e-mail »</span> dans le message.</p>
+                    <p class="text-gray-400 text-xs leading-relaxed">Saisissez le code reçu dans le champ ci-dessus.</p>
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="w-5 h-5 rounded-full bg-gold-500/20 text-gold-400 text-xs flex items-center justify-center shrink-0 mt-0.5 font-bold">3</span>
@@ -83,13 +113,13 @@
                 </div>
             </div>
 
-            {{-- Renvoyer le lien --}}
+            {{-- Renvoyer le code --}}
             <form method="POST" action="{{ route('verification.send') }}">
                 @csrf
                 <button type="submit"
                         class="w-full py-2.5 rounded-xl border border-gold-500/30 text-gold-300 hover:text-gold-200 hover:border-gold-400/60 hover:bg-gold-500/5 transition text-sm font-medium mb-3">
                     <i class="fas fa-rotate-right mr-1.5 text-xs"></i>
-                    Renvoyer le lien de vérification
+                    Renvoyer le code de vérification
                 </button>
             </form>
 

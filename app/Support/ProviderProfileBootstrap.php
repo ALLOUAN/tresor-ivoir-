@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Models\Provider;
 use App\Models\ProviderCategory;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
 
 class ProviderProfileBootstrap
@@ -38,21 +39,38 @@ class ProviderProfileBootstrap
         }
 
         $slugRoot = Str::slug($baseName) ?: 'prestataire';
-        $slug = $slugRoot;
-        $i = 2;
-        while (Provider::where('slug', $slug)->exists()) {
-            $slug = $slugRoot.'-'.$i;
-            $i++;
+        $slugIndex = 1;
+        $maxAttempts = 25;
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            $slug = $slugIndex === 1 ? $slugRoot : $slugRoot.'-'.$slugIndex;
+
+            // Include soft-deleted rows because the DB unique index also blocks those slugs.
+            if (Provider::withTrashed()->where('slug', $slug)->exists()) {
+                $slugIndex++;
+                continue;
+            }
+
+            try {
+                return Provider::create([
+                    'user_id' => $user->id,
+                    'category_id' => $categoryId,
+                    'name' => $baseName,
+                    'slug' => $slug,
+                    'status' => 'pending',
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                ]);
+            } catch (QueryException $e) {
+                // Handle race condition: another process inserted the same slug simultaneously.
+                if ((string) $e->getCode() !== '23000' || ! str_contains($e->getMessage(), 'providers_slug_unique')) {
+                    throw $e;
+                }
+
+                $slugIndex++;
+            }
         }
 
-        return Provider::create([
-            'user_id' => $user->id,
-            'category_id' => $categoryId,
-            'name' => $baseName,
-            'slug' => $slug,
-            'status' => 'pending',
-            'email' => $user->email,
-            'phone' => $user->phone,
-        ]);
+        throw new \RuntimeException('Impossible de générer un slug unique pour ce prestataire.');
     }
 }

@@ -401,6 +401,15 @@
                                         </button>
                                     </form>
                                 @endif
+                                <form method="POST"
+                                      action="{{ route('admin.providers.destroy', $provider) }}"
+                                      onsubmit="return confirm('Confirmer la suppression de ce compte prestataire ? Cette action va désactiver son compte utilisateur et retirer son profil du module admin.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="bg-red-700 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded">
+                                        Supprimer
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

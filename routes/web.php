@@ -284,9 +284,9 @@ Route::middleware('guest')->group(function () {
 // Vérification e-mail (utilisateur connecté)
 Route::middleware('auth')->group(function () {
     Route::get('/verification-email', [AuthController::class, 'showVerifyEmail'])->name('verification.notice');
-    Route::get('/verification-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-        ->name('verification.verify')
-        ->middleware('signed');
+    Route::post('/verification-email/code', [AuthController::class, 'verifyEmailCode'])
+        ->name('verification.code')
+        ->middleware('throttle:10,1');
     Route::post('/verification-email/renvoyer', [AuthController::class, 'resendVerification'])
         ->name('verification.send')
         ->middleware('throttle:6,1');
@@ -316,9 +316,30 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 
 // ── DASHBOARD REDIRECT ────────────────────────────────────────────────────
 Route::get('/dashboard', function () {
+    /** @var \App\Models\User|null $user */
     $user = Auth::user();
     if (! $user) {
         abort(403);
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+        return redirect()->route('verification.notice')
+            ->with('status', 'Validez votre e-mail pour finaliser votre accès au tableau de bord.');
+    }
+
+    if ($user->role === 'provider') {
+        $provider = Provider::query()->where('user_id', $user->id)->first();
+        $hasActiveSubscription = $provider
+            ? $provider->subscriptions()
+                ->where('status', 'active')
+                ->where('ends_at', '>', now())
+                ->exists()
+            : false;
+
+        if (! $hasActiveSubscription) {
+            return redirect()->route('provider.billing.plans')
+                ->with('status', 'Finalisez votre abonnement pour accéder au tableau de bord.');
+        }
     }
 
     return redirect()->route(match ($user->role) {
@@ -422,6 +443,7 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::get('/prestataires', [ProviderManagementController::class, 'index'])->name('providers.index');
         Route::post('/prestataires', [ProviderManagementController::class, 'store'])->name('providers.store');
         Route::patch('/prestataires/{provider}', [ProviderManagementController::class, 'update'])->name('providers.update');
+        Route::delete('/prestataires/{provider}', [ProviderManagementController::class, 'destroy'])->name('providers.destroy');
         Route::patch('/prestataires/{provider}/validate', [ProviderManagementController::class, 'validateProvider'])->name('providers.validate');
         Route::patch('/prestataires/{provider}/suspend', [ProviderManagementController::class, 'suspend'])->name('providers.suspend');
         Route::get('/prestataires/{provider}/contenus', [ProviderManagementController::class, 'content'])->name('providers.content');
@@ -497,7 +519,7 @@ Route::middleware(['auth', 'role:admin,editor'])
     });
 
 // ── PRESTATAIRE ───────────────────────────────────────────────────────────
-Route::middleware(['auth', 'role:provider'])
+Route::middleware(['auth', 'verified', 'role:provider'])
     ->prefix('provider')
     ->name('provider.')
     ->group(function () {
@@ -555,7 +577,7 @@ Route::middleware(['auth', 'role:provider'])
     });
 
 // ── VISITEUR ──────────────────────────────────────────────────────────────
-Route::middleware(['auth', 'role:visitor'])
+Route::middleware(['auth', 'verified', 'role:visitor'])
     ->prefix('visitor')
     ->name('visitor.')
     ->group(function () {

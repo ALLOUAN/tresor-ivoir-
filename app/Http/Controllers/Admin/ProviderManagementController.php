@@ -9,6 +9,7 @@ use App\Models\Media;
 use App\Models\Provider;
 use App\Models\ProviderCategory;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -182,6 +183,26 @@ class ProviderManagementController extends Controller
         $provider->update(['status' => 'suspended']);
 
         return back()->with('success', 'Prestataire suspendu avec succès.');
+    }
+
+    public function destroy(Provider $provider): RedirectResponse
+    {
+        DB::transaction(function () use ($provider): void {
+            $provider->update([
+                'status' => 'deleted',
+                'is_featured' => false,
+            ]);
+
+            $provider->delete();
+
+            if ($provider->user) {
+                $provider->user->update([
+                    'is_active' => false,
+                ]);
+            }
+        });
+
+        return back()->with('success', 'Compte prestataire supprimé avec succès.');
     }
 
     public function content(Provider $provider)

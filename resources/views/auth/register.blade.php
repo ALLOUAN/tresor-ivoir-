@@ -197,6 +197,35 @@
             background: linear-gradient(140deg, rgba(232,160,32,0.18), rgba(232,160,32,0.06));
             box-shadow: 0 10px 24px rgba(0,0,0,0.34), 0 0 0 1px rgba(232,160,32,0.2) inset;
         }
+        .step-panel {
+            transition: opacity .35s ease, transform .35s ease;
+        }
+        .step-panel.is-hidden {
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+        }
+        .step-panel.is-active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .payment-card {
+            background: #fff;
+            border: .5px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+        .payment-field {
+            border: .5px solid #d1d5db;
+            border-radius: 10px;
+            background: #fff;
+            color: #111827;
+        }
+        .payment-field:focus {
+            border-color: #7F77DD;
+            box-shadow: 0 0 0 3px rgba(127,119,221,.18);
+            outline: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 sm:p-6 font-sans">
@@ -264,8 +293,9 @@
                 </div>
             @endif
 
-                <form method="POST" action="{{ route('register.post') }}" class="space-y-4">
+                <form method="POST" action="{{ route('register.post') }}" class="space-y-4" id="register-step-form">
                 @csrf
+                <div id="register-step-1" class="step-panel is-active space-y-4">
 
                 <div class="grid lg:grid-cols-2 gap-3">
                     <input type="hidden" name="role" value="provider">
@@ -393,12 +423,58 @@
                 </div>
 
                 {{-- Submit --}}
-                    <button type="submit"
+                    <button type="button" id="go-to-payment"
                             class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2 mt-2"
                             style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
                         <i class="fas fa-user-plus text-xs"></i>
                         Créer mon compte
                     </button>
+                </div>
+
+                <div id="register-step-2" class="step-panel is-hidden hidden space-y-4" aria-hidden="true">
+                    <div class="payment-card">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold" style="background:#7F77DD;">4</span>
+                            <h3 class="text-lg font-semibold" style="color:#7F77DD;">Paiement de l'abonnement</h3>
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label for="payment_method" class="block text-sm font-semibold text-gray-900 mb-2">Moyen de paiement <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <i class="fas fa-credit-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <select id="payment_method" name="payment_method" required class="payment-field w-full pl-10 pr-3 py-3 text-sm">
+                                        <option value="">Sélectionner un moyen de paiement</option>
+                                        <option value="mobile_money">Mobile Money</option>
+                                        <option value="card">Carte bancaire</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="payment_phone" class="block text-sm font-semibold text-gray-900 mb-2">Numéro pour le paiement <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <i class="fas fa-mobile-screen-button absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <input id="payment_phone" name="payment_phone" type="tel" required placeholder="Numéro Mobile Money" class="payment-field w-full pl-10 pr-3 py-3 text-sm">
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2">Numéro associé à votre compte Mobile Money</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button type="button" id="back-to-account"
+                                class="sm:w-auto w-full py-3 px-5 rounded-xl font-semibold text-sm text-gray-200 border border-white/20 hover:border-white/35 transition">
+                            Retour
+                        </button>
+                        <button type="submit"
+                                class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2"
+                                style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
+                            <i class="fas fa-check-circle text-xs"></i>
+                            Confirmer le paiement
+                        </button>
+                    </div>
+                </div>
                 </form>
             </div>
         </div>
@@ -413,5 +489,73 @@
         </p>
     </div>
 
+<script>
+    (function () {
+        const form = document.getElementById('register-step-form');
+        const step1 = document.getElementById('register-step-1');
+        const step2 = document.getElementById('register-step-2');
+        const goToPaymentBtn = document.getElementById('go-to-payment');
+        const backBtn = document.getElementById('back-to-account');
+
+        if (!form || !step1 || !step2 || !goToPaymentBtn || !backBtn) {
+            return;
+        }
+
+        const fieldsStep1 = Array.from(step1.querySelectorAll('input, select, textarea'))
+            .filter((el) => el.type !== 'hidden' && !el.disabled);
+        const fieldsStep2 = Array.from(step2.querySelectorAll('input, select, textarea'));
+
+        function hidePanel(panel) {
+            panel.classList.remove('is-active');
+            panel.classList.add('is-hidden');
+            window.setTimeout(function () {
+                if (panel.classList.contains('is-hidden')) {
+                    panel.classList.add('hidden');
+                }
+            }, 360);
+        }
+
+        function showPanel(panel) {
+            panel.classList.remove('hidden');
+            requestAnimationFrame(function () {
+                panel.classList.remove('is-hidden');
+                panel.classList.add('is-active');
+            });
+        }
+
+        function toggleStep(activeStep) {
+            const isStep2 = activeStep === 2;
+
+            if (isStep2) {
+                hidePanel(step1);
+                showPanel(step2);
+            } else {
+                hidePanel(step2);
+                showPanel(step1);
+            }
+
+            step1.setAttribute('aria-hidden', isStep2 ? 'true' : 'false');
+            step2.setAttribute('aria-hidden', isStep2 ? 'false' : 'true');
+        }
+
+        goToPaymentBtn.addEventListener('click', function () {
+            const invalidField = fieldsStep1.find((field) => !field.checkValidity());
+            if (invalidField) {
+                invalidField.reportValidity();
+                invalidField.focus();
+                return;
+            }
+            toggleStep(2);
+        });
+
+        backBtn.addEventListener('click', function () {
+            toggleStep(1);
+        });
+
+        if (fieldsStep2.some((field) => field.value)) {
+            toggleStep(2);
+        }
+    })();
+</script>
 </body>
 </html>
