@@ -163,6 +163,7 @@
                     <th class="text-left px-5 py-3 text-slate-500 font-medium uppercase tracking-wide text-xs">Role actuel</th>
                     <th class="text-left px-5 py-3 text-slate-500 font-medium uppercase tracking-wide text-xs">Changer role</th>
                     <th class="text-left px-5 py-3 text-slate-500 font-medium uppercase tracking-wide text-xs">Permissions utilisateur</th>
+                    <th class="text-left px-5 py-3 text-slate-500 font-medium uppercase tracking-wide text-xs">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-800/80">
@@ -243,10 +244,26 @@
                                 @endif
                             </form>
                         </td>
+                        <td class="px-5 py-3">
+                            @if(auth()->id() !== $u->id)
+                                <form method="POST"
+                                      action="{{ route('admin.users.destroy', $u) }}"
+                                      onsubmit="return confirm('Supprimer « {{ addslashes($u->full_name) }} » ? Cette action est irréversible.')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="inline-flex items-center gap-1.5 bg-red-700/90 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                        <i class="fas fa-trash-can text-[11px]"></i> Supprimer
+                                    </button>
+                                </form>
+                            @else
+                                <span class="text-slate-600 text-xs">—</span>
+                            @endif
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="px-5 py-6 text-center text-slate-500">Aucun utilisateur trouve.</td>
+                        <td colspan="5" class="px-5 py-6 text-center text-slate-500">Aucun utilisateur trouve.</td>
                     </tr>
                 @endforelse
             </tbody>

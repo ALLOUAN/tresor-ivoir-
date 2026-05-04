@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentSetting;
 use App\Models\PromoCode;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
@@ -39,12 +40,17 @@ class PlanManagementController extends Controller
             ->groupBy('subscription_plans.code')
             ->pluck('total', 'plan_code');
 
-        return view('admin.finance.plans', compact('plans', 'promoCodes', 'subscriptionsByPlan'));
+        $cycleSettings = Schema::hasTable('payment_settings')
+            ? PaymentSetting::query()->pluck('value', 'key')
+            : collect();
+
+        return view('admin.finance.plans', compact('plans', 'promoCodes', 'subscriptionsByPlan', 'cycleSettings'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validatePlan($request);
+        $data['features_json'] = $this->parseFeatures($request);
         SubscriptionPlan::create($data);
 
         return back()->with('success', 'Forfait créé avec succès.');
@@ -53,6 +59,7 @@ class PlanManagementController extends Controller
     public function update(Request $request, SubscriptionPlan $plan): RedirectResponse
     {
         $data = $this->validatePlan($request, $plan->id);
+        $data['features_json'] = $this->parseFeatures($request);
         $plan->update($data);
 
         return back()->with('success', 'Forfait mis à jour.');
@@ -98,6 +105,25 @@ class PlanManagementController extends Controller
         $promo->update(['is_active' => ! $promo->is_active]);
 
         return back()->with('success', 'Statut du code promo mis à jour.');
+    }
+
+    private function parseFeatures(Request $request): ?array
+    {
+        $raw = $request->input('features_json');
+        if (empty($raw)) {
+            return null;
+        }
+        $decoded = json_decode($raw, true);
+        if (! is_array($decoded)) {
+            return null;
+        }
+        return array_values(array_filter(
+            array_map(fn ($f) => [
+                'label'    => trim($f['label'] ?? ''),
+                'included' => (bool) ($f['included'] ?? false),
+            ], $decoded),
+            fn ($f) => $f['label'] !== ''
+        ));
     }
 
     private function validatePlan(Request $request, ?int $ignoreId = null): array

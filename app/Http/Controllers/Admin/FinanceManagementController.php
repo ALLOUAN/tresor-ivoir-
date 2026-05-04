@@ -262,6 +262,10 @@ class FinanceManagementController extends Controller
             'gateway_mtn_key' => ['nullable', 'string'],
             'gateway_wave_key' => ['nullable', 'string'],
             'gateway_paypal_key' => ['nullable', 'string'],
+            // Cycles de facturation
+            'cycle_monthly_active' => ['nullable', 'boolean'],
+            'cycle_yearly_active' => ['nullable', 'boolean'],
+            'cycle_yearly_savings_label' => ['nullable', 'string', 'max:20'],
         ]);
 
         $booleanKeys = [
@@ -272,6 +276,8 @@ class FinanceManagementController extends Controller
             'method_moov_money',
             'method_card',
             'method_paypal',
+            'cycle_monthly_active',
+            'cycle_yearly_active',
         ];
 
         foreach ($booleanKeys as $key) {

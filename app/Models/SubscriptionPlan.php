@@ -9,7 +9,7 @@ class SubscriptionPlan extends Model
     protected $fillable = [
         'code', 'name_fr', 'name_en',
         'price_monthly', 'price_quarterly', 'price_semiannual', 'price_yearly',
-        'benefits_text', 'covered_levels',
+        'benefits_text', 'features_json', 'covered_levels',
         'photos_limit', 'description_chars',
         'is_unlimited_features',
         'has_video', 'has_newsletter', 'has_homepage',
@@ -36,6 +36,7 @@ class SubscriptionPlan extends Model
             'price_yearly' => 'decimal:2',
             'promo_starts_at' => 'datetime',
             'promo_ends_at' => 'datetime',
+            'features_json' => 'array',
         ];
     }
 

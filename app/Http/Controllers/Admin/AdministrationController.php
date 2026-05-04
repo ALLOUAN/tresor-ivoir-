@@ -98,112 +98,144 @@ class AdministrationController extends Controller
 
     public function storeSlide(Request $request): RedirectResponse
     {
+        $isVideo = $request->input('media_type') === 'video';
+
         $request->validate([
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'desktop_image' => [
-                'required',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:8192',
+            'media_type'     => ['required', Rule::in(['image', 'video'])],
+            'title'          => 'required|string|max:255',
+            'subtitle'       => 'nullable|string|max:255',
+            'description'    => 'nullable|string',
+            'is_active'      => 'nullable|boolean',
+            'display_order'  => 'required|integer|min:1|max:9999',
+            // Image fields
+            'desktop_image'  => [
+                $isVideo ? 'nullable' : 'required',
+                'image', 'mimes:jpeg,jpg,png,webp', 'max:8192',
                 Rule::dimensions()->minWidth(1600)->minHeight(600)->maxWidth(4096)->maxHeight(2000),
             ],
-            'tablet_image' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:6144',
+            'tablet_image'   => [
+                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:6144',
                 Rule::dimensions()->minWidth(900)->minHeight(500)->maxWidth(2560)->maxHeight(1600),
             ],
-            'mobile_image' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:4096',
+            'mobile_image'   => [
+                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096',
                 Rule::dimensions()->minWidth(640)->minHeight(400)->maxWidth(1536)->maxHeight(1200),
             ],
-            'is_active' => 'nullable|boolean',
-            'display_order' => 'required|integer|min:1|max:9999',
+            // Video fields (Desktop 1920×800, Tablette 1024×600, Mobile 768×500)
+            'video_desktop'  => [
+                $isVideo ? 'required' : 'nullable',
+                'file', 'extensions:mp4,webm',
+            ],
+            'video_tablet'   => ['nullable', 'file', 'extensions:mp4,webm'],
+            'video_mobile'   => ['nullable', 'file', 'extensions:mp4,webm'],
         ]);
 
-        AppearanceSlide::create([
-            'title' => $request->input('title'),
-            'subtitle' => $request->input('subtitle'),
-            'description' => $request->input('description'),
-            'desktop_image_url' => $this->storeSlideImageFile($request->file('desktop_image')),
-            'tablet_image_url' => $request->hasFile('tablet_image')
-                ? $this->storeSlideImageFile($request->file('tablet_image'))
-                : null,
-            'mobile_image_url' => $request->hasFile('mobile_image')
-                ? $this->storeSlideImageFile($request->file('mobile_image'))
-                : null,
-            'is_active' => $request->boolean('is_active'),
+        $data = [
+            'media_type'   => $isVideo ? 'video' : 'image',
+            'title'        => $request->input('title'),
+            'subtitle'     => $request->input('subtitle'),
+            'description'  => $request->input('description'),
+            'is_active'    => $request->boolean('is_active'),
             'display_order' => (int) $request->input('display_order'),
-        ]);
+        ];
+
+        if ($isVideo) {
+            $data['video_desktop_url'] = $this->storeSlideVideoFile($request->file('video_desktop'));
+            $data['video_tablet_url']  = $request->hasFile('video_tablet')
+                ? $this->storeSlideVideoFile($request->file('video_tablet'))
+                : null;
+            $data['video_mobile_url']  = $request->hasFile('video_mobile')
+                ? $this->storeSlideVideoFile($request->file('video_mobile'))
+                : null;
+        } else {
+            $data['desktop_image_url'] = $this->storeSlideImageFile($request->file('desktop_image'));
+            $data['tablet_image_url']  = $request->hasFile('tablet_image')
+                ? $this->storeSlideImageFile($request->file('tablet_image'))
+                : null;
+            $data['mobile_image_url']  = $request->hasFile('mobile_image')
+                ? $this->storeSlideImageFile($request->file('mobile_image'))
+                : null;
+        }
+
+        AppearanceSlide::create($data);
 
         return back()->with('success', 'Slide ajouté avec succès.');
     }
 
     public function updateSlide(Request $request, AppearanceSlide $slide): RedirectResponse
     {
+        $isVideo = $request->input('media_type', $slide->media_type) === 'video';
+
         $request->validate([
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
+            'media_type'    => ['required', Rule::in(['image', 'video'])],
+            'title'         => 'required|string|max:255',
+            'subtitle'      => 'nullable|string|max:255',
+            'description'   => 'nullable|string',
+            'is_active'     => 'nullable|boolean',
+            'display_order' => 'required|integer|min:1|max:9999',
+            // Image
             'desktop_image' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:8192',
+                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:8192',
                 Rule::dimensions()->minWidth(1600)->minHeight(600)->maxWidth(4096)->maxHeight(2000),
             ],
-            'tablet_image' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:6144',
+            'tablet_image'  => [
+                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:6144',
                 Rule::dimensions()->minWidth(900)->minHeight(500)->maxWidth(2560)->maxHeight(1600),
             ],
-            'mobile_image' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:4096',
+            'mobile_image'  => [
+                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096',
                 Rule::dimensions()->minWidth(640)->minHeight(400)->maxWidth(1536)->maxHeight(1200),
             ],
-            'is_active' => 'nullable|boolean',
-            'display_order' => 'required|integer|min:1|max:9999',
+            // Vidéo
+            'video_desktop' => ['nullable', 'file', 'extensions:mp4,webm'],
+            'video_tablet'  => ['nullable', 'file', 'extensions:mp4,webm'],
+            'video_mobile'  => ['nullable', 'file', 'extensions:mp4,webm'],
         ]);
 
-        $desktopUrl = $slide->desktop_image_url;
+        $data = [
+            'media_type'    => $isVideo ? 'video' : 'image',
+            'title'         => $request->input('title'),
+            'subtitle'      => $request->input('subtitle'),
+            'description'   => $request->input('description'),
+            'is_active'     => $request->boolean('is_active'),
+            'display_order' => (int) $request->input('display_order'),
+        ];
+
+        // Images
+        $data['desktop_image_url'] = $slide->desktop_image_url;
         if ($request->hasFile('desktop_image')) {
             $this->deleteStoredPublicFile($slide->desktop_image_url);
-            $desktopUrl = $this->storeSlideImageFile($request->file('desktop_image'));
+            $data['desktop_image_url'] = $this->storeSlideImageFile($request->file('desktop_image'));
         }
-
-        $tabletUrl = $slide->tablet_image_url;
+        $data['tablet_image_url'] = $slide->tablet_image_url;
         if ($request->hasFile('tablet_image')) {
             $this->deleteStoredPublicFile($slide->tablet_image_url);
-            $tabletUrl = $this->storeSlideImageFile($request->file('tablet_image'));
+            $data['tablet_image_url'] = $this->storeSlideImageFile($request->file('tablet_image'));
         }
-
-        $mobileUrl = $slide->mobile_image_url;
+        $data['mobile_image_url'] = $slide->mobile_image_url;
         if ($request->hasFile('mobile_image')) {
             $this->deleteStoredPublicFile($slide->mobile_image_url);
-            $mobileUrl = $this->storeSlideImageFile($request->file('mobile_image'));
+            $data['mobile_image_url'] = $this->storeSlideImageFile($request->file('mobile_image'));
         }
 
-        $slide->update([
-            'title' => $request->input('title'),
-            'subtitle' => $request->input('subtitle'),
-            'description' => $request->input('description'),
-            'desktop_image_url' => $desktopUrl,
-            'tablet_image_url' => $tabletUrl,
-            'mobile_image_url' => $mobileUrl,
-            'is_active' => $request->boolean('is_active'),
-            'display_order' => (int) $request->input('display_order'),
-        ]);
+        // Vidéos
+        $data['video_desktop_url'] = $slide->video_desktop_url;
+        if ($request->hasFile('video_desktop')) {
+            $this->deleteStoredPublicFile($slide->video_desktop_url);
+            $data['video_desktop_url'] = $this->storeSlideVideoFile($request->file('video_desktop'));
+        }
+        $data['video_tablet_url'] = $slide->video_tablet_url;
+        if ($request->hasFile('video_tablet')) {
+            $this->deleteStoredPublicFile($slide->video_tablet_url);
+            $data['video_tablet_url'] = $this->storeSlideVideoFile($request->file('video_tablet'));
+        }
+        $data['video_mobile_url'] = $slide->video_mobile_url;
+        if ($request->hasFile('video_mobile')) {
+            $this->deleteStoredPublicFile($slide->video_mobile_url);
+            $data['video_mobile_url'] = $this->storeSlideVideoFile($request->file('video_mobile'));
+        }
+
+        $slide->update($data);
 
         return back()->with('success', 'Slide modifié avec succès.');
     }
@@ -220,6 +252,9 @@ class AdministrationController extends Controller
         $this->deleteStoredPublicFile($slide->desktop_image_url);
         $this->deleteStoredPublicFile($slide->tablet_image_url);
         $this->deleteStoredPublicFile($slide->mobile_image_url);
+        $this->deleteStoredPublicFile($slide->video_desktop_url);
+        $this->deleteStoredPublicFile($slide->video_tablet_url);
+        $this->deleteStoredPublicFile($slide->video_mobile_url);
 
         $slide->delete();
 
@@ -229,6 +264,13 @@ class AdministrationController extends Controller
     private function storeSlideImageFile(UploadedFile $file): string
     {
         $path = $file->store('appearance/slides', 'public');
+
+        return '/storage/'.$path;
+    }
+
+    private function storeSlideVideoFile(UploadedFile $file): string
+    {
+        $path = $file->store('appearance/slides/videos', 'public');
 
         return '/storage/'.$path;
     }

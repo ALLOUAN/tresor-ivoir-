@@ -116,11 +116,13 @@
         }
         #hero-bg-carousel .hero-bg-layer,
         #hero-bg-carousel picture,
-        #hero-bg-carousel img {
+        #hero-bg-carousel img,
+        #hero-bg-carousel video {
             height: 100%;
             object-fit: cover;
         }
-        #hero-bg-carousel img { object-position: 52% 42%; }
+        #hero-bg-carousel img   { object-position: 52% 42%; }
+        #hero-bg-carousel video { object-position: center center; }
         #hero-bg-carousel .hero-bg-layer { background: #000; }
         #hero .hero-editorial-content {
             display: block;
@@ -899,31 +901,57 @@
         @if($heroSlides->isNotEmpty())
             <div id="hero-bg-carousel" class="hero-viewport pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden" aria-hidden="true">
                 @foreach($heroSlides as $idx => $slide)
-                    @php
-                        $desktop = trim((string) $slide->desktop_image_url);
-                        $tablet = trim((string) ($slide->tablet_image_url ?: $slide->desktop_image_url));
-                        $mobile = trim((string) ($slide->mobile_image_url ?: $slide->tablet_image_url ?: $slide->desktop_image_url));
-                        $src = $mobile !== '' ? $mobile : ($tablet !== '' ? $tablet : $desktop);
-                    @endphp
-                    @if($src !== '')
-                        <div class="hero-bg-layer absolute inset-0 bg-black transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}" data-hero-bg-layer="{{ $idx }}">
-                            <picture class="absolute inset-0 block h-full w-full">
-                                @if($desktop !== '')
-                                    <source media="(min-width: 1024px)" srcset="{{ $desktop }}">
-                                @endif
-                                @if($tablet !== '')
-                                    <source media="(min-width: 640px)" srcset="{{ $tablet }}">
-                                @endif
-                                <img
-                                    src="{{ $src }}"
-                                    alt=""
-                                    @if($idx > 0) loading="lazy" @endif
-                                    @if($idx === 0) fetchpriority="high" @endif
-                                    decoding="async"
-                                    class="h-full w-full object-cover object-center sm:object-[58%_center] lg:object-center"
-                                />
-                            </picture>
-                        </div>
+                    @if($slide->isVideo())
+                        @php
+                            $vDesktop = trim((string) $slide->video_desktop_url);
+                            $vTablet  = trim((string) ($slide->video_tablet_url  ?: $slide->video_desktop_url));
+                            $vMobile  = trim((string) ($slide->video_mobile_url  ?: $slide->video_tablet_url ?: $slide->video_desktop_url));
+                        @endphp
+                        @if($vDesktop !== '')
+                            <div class="hero-bg-layer absolute inset-0 bg-black transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
+                                 data-hero-bg-layer="{{ $idx }}"
+                                 data-slide-type="video">
+                                <video
+                                    class="absolute inset-0 h-full w-full object-cover object-center"
+                                    autoplay muted playsinline
+                                    preload="{{ $idx === 0 ? 'auto' : 'none' }}"
+                                    @if($idx === 0) src="{{ $vDesktop }}" @endif
+                                    data-hero-video
+                                    data-src-desktop="{{ $vDesktop }}"
+                                    data-src-tablet="{{ $vTablet }}"
+                                    data-src-mobile="{{ $vMobile }}"
+                                ></video>
+                            </div>
+                        @endif
+                    @else
+                        @php
+                            $desktop = trim((string) $slide->desktop_image_url);
+                            $tablet  = trim((string) ($slide->tablet_image_url  ?: $slide->desktop_image_url));
+                            $mobile  = trim((string) ($slide->mobile_image_url  ?: $slide->tablet_image_url ?: $slide->desktop_image_url));
+                            $src     = $mobile !== '' ? $mobile : ($tablet !== '' ? $tablet : $desktop);
+                        @endphp
+                        @if($src !== '')
+                            <div class="hero-bg-layer absolute inset-0 bg-black transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
+                                 data-hero-bg-layer="{{ $idx }}"
+                                 data-slide-type="image">
+                                <picture class="absolute inset-0 block h-full w-full">
+                                    @if($desktop !== '')
+                                        <source media="(min-width: 1024px)" srcset="{{ $desktop }}">
+                                    @endif
+                                    @if($tablet !== '')
+                                        <source media="(min-width: 640px)" srcset="{{ $tablet }}">
+                                    @endif
+                                    <img
+                                        src="{{ $src }}"
+                                        alt=""
+                                        @if($idx > 0) loading="lazy" @endif
+                                        @if($idx === 0) fetchpriority="high" @endif
+                                        decoding="async"
+                                        class="h-full w-full object-cover object-center sm:object-[58%_center] lg:object-center"
+                                    />
+                                </picture>
+                            </div>
+                        @endif
                     @endif
                 @endforeach
                 <div class="hero-overlay-primary absolute inset-0 z-20 bg-linear-to-r from-black/92 via-black/65 to-black/35 sm:from-black/88 sm:via-black/55 sm:to-black/25"></div>
@@ -1818,78 +1846,179 @@
         });
     });
 
-    // Hero background carousel
+    // Hero background carousel (images + vidéos)
     (function () {
         const layers = document.querySelectorAll('[data-hero-bg-layer]');
-        if (!layers.length || layers.length < 2) return;
-        const dots = document.querySelectorAll('[data-hero-bg-dot]');
+        if (!layers.length) return;
+
+        // ── Source responsive selon la largeur d'écran ────────────────────
+        function resolveVideoSrc(video) {
+            const w = window.innerWidth;
+            if (w >= 1024) return video.dataset.srcDesktop || '';
+            if (w >= 640)  return video.dataset.srcTablet  || video.dataset.srcDesktop || '';
+            return              video.dataset.srcMobile    || video.dataset.srcTablet  || video.dataset.srcDesktop || '';
+        }
+
+        // ── Initialise/corrige la src de chaque vidéo ─────────────────────
+        document.querySelectorAll('[data-hero-video]').forEach(function (video) {
+            const src = resolveVideoSrc(video);
+            if (src && video.getAttribute('src') !== src) {
+                video.src = src;
+                video.load();
+            }
+        });
+
+        // ── Play robuste : retry sur canplay si la vidéo n'est pas prête ──
+        function tryPlay(video) {
+            if (!video.src) return;
+            var p = video.play();
+            if (p !== undefined) {
+                p.catch(function () {
+                    video.addEventListener('canplay', function handler() {
+                        video.removeEventListener('canplay', handler);
+                        video.play().catch(function () {});
+                    }, { once: true });
+                });
+            }
+        }
+
+        function getVideo(layer) {
+            return layer.querySelector('[data-hero-video]');
+        }
+
+        // Slide unique : juste démarrer la vidéo (avec ended → retour au début)
+        if (layers.length < 2) {
+            var v = getVideo(layers[0]);
+            if (v) {
+                tryPlay(v);
+                v.addEventListener('ended', function () { v.currentTime = 0; tryPlay(v); });
+            }
+            return;
+        }
+
+        const dots   = document.querySelectorAll('[data-hero-bg-dot]');
         const prevBtn = document.getElementById('hero-bg-prev');
         const nextBtn = document.getElementById('hero-bg-next');
 
         let index = 0;
         let timer = null;
 
-        function render() {
-            layers.forEach((el, i) => {
-                const active = i === index;
-                el.classList.toggle('opacity-100', active);
-                el.classList.toggle('z-10', active);
-                el.classList.toggle('opacity-0', !active);
-                el.classList.toggle('z-0', !active);
-            });
-            dots.forEach((dot, i) => {
-                const active = i === index;
-                dot.classList.toggle('w-6', active);
-                dot.classList.toggle('bg-gold-400', active);
-                dot.classList.toggle('w-2', !active);
-                dot.classList.toggle('bg-white/35', !active);
-                dot.classList.toggle('hover:bg-white/60', !active);
-                dot.setAttribute('aria-selected', active ? 'true' : 'false');
-            });
-        }
+        // ── Démarre le timer fixe (pour les slides image) ─────────────────
+        function start() { stop(); timer = setInterval(function () { next(); }, 7000); }
+        function stop()  { if (timer) { clearInterval(timer); timer = null; } }
 
-        function next() {
-            index = (index + 1) % layers.length;
-            render();
-        }
-        function prev() {
-            index = (index - 1 + layers.length) % layers.length;
-            render();
-        }
-
-        function start() {
-            stop();
-            timer = setInterval(next, 7000);
-        }
-
-        function stop() {
-            if (timer) {
-                clearInterval(timer);
-                timer = null;
+        // ── Adapte l'avancement au type du slide actif ────────────────────
+        function scheduleAfterCurrent() {
+            var layer = layers[index];
+            var video = getVideo(layer);
+            if (video) {
+                // Slide vidéo : le timer est suspendu, c'est ended qui avance
+                stop();
+                video.addEventListener('ended', onVideoEnded);
+            } else {
+                // Slide image : timer fixe de 7 s
+                start();
             }
         }
 
+        function onVideoEnded() {
+            this.removeEventListener('ended', onVideoEnded);
+            next();
+        }
+
+        // ── Rendu d'un slide ──────────────────────────────────────────────
+        function render() {
+            layers.forEach(function (el, i) {
+                const active = i === index;
+                el.classList.toggle('opacity-100', active);
+                el.classList.toggle('z-10',        active);
+                el.classList.toggle('opacity-0',   !active);
+                el.classList.toggle('z-0',         !active);
+
+                const video = getVideo(el);
+                if (video) {
+                    // Nettoyer l'écouteur ended au cas où
+                    video.removeEventListener('ended', onVideoEnded);
+                    if (active) {
+                        if (!video.src) {
+                            const src = resolveVideoSrc(video);
+                            if (src) { video.src = src; video.load(); }
+                        }
+                        video.currentTime = 0;
+                        tryPlay(video);
+                    } else {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+                }
+            });
+
+            dots.forEach(function (dot, i) {
+                const active = i === index;
+                dot.classList.toggle('w-6',               active);
+                dot.classList.toggle('bg-gold-400',       active);
+                dot.classList.toggle('w-2',               !active);
+                dot.classList.toggle('bg-white/35',       !active);
+                dot.classList.toggle('hover:bg-white/60', !active);
+                dot.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+
+            scheduleAfterCurrent();
+        }
+
+        function next() { index = (index + 1) % layers.length; render(); }
+        function prev() { index = (index - 1 + layers.length) % layers.length; render(); }
+
         render();
-        start();
 
         const root = document.getElementById('hero-bg-carousel');
         if (root) {
-            root.addEventListener('mouseenter', stop);
-            root.addEventListener('mouseleave', start);
+            // Survol : pause sur image, pause vidéo sur vidéo
+            root.addEventListener('mouseenter', function () {
+                stop();
+                var v = getVideo(layers[index]);
+                if (v) { v.removeEventListener('ended', onVideoEnded); v.pause(); }
+            });
+            root.addEventListener('mouseleave', function () {
+                var v = getVideo(layers[index]);
+                if (v) { tryPlay(v); v.addEventListener('ended', onVideoEnded); }
+                else   { start(); }
+            });
         }
-        if (prevBtn) prevBtn.addEventListener('click', () => { prev(); start(); });
-        if (nextBtn) nextBtn.addEventListener('click', () => { next(); start(); });
-        dots.forEach((dot, i) => dot.addEventListener('click', () => {
-            index = i;
-            render();
-            start();
-        }));
 
-        document.addEventListener('visibilitychange', () => {
+        if (prevBtn) prevBtn.addEventListener('click', function () {
+            var v = getVideo(layers[index]);
+            if (v) v.removeEventListener('ended', onVideoEnded);
+            prev();
+        });
+        if (nextBtn) nextBtn.addEventListener('click', function () {
+            var v = getVideo(layers[index]);
+            if (v) v.removeEventListener('ended', onVideoEnded);
+            next();
+        });
+        dots.forEach(function (dot, i) {
+            dot.addEventListener('click', function () {
+                var v = getVideo(layers[index]);
+                if (v) v.removeEventListener('ended', onVideoEnded);
+                index = i; render();
+            });
+        });
+
+        document.addEventListener('visibilitychange', function () {
             if (document.hidden) {
                 stop();
+                document.querySelectorAll('[data-hero-video]').forEach(function (v) {
+                    v.removeEventListener('ended', onVideoEnded);
+                    v.pause();
+                });
             } else {
-                start();
+                var activeVideo = getVideo(layers[index]);
+                if (activeVideo) {
+                    tryPlay(activeVideo);
+                    activeVideo.addEventListener('ended', onVideoEnded);
+                } else {
+                    start();
+                }
             }
         });
     })();

@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Event;
+use App\Models\Invoice;
 use App\Models\Media;
+use App\Models\Payment;
 use App\Models\Provider;
 use App\Models\ProviderCategory;
+use App\Models\ReviewReply;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -63,7 +66,7 @@ class ProviderManagementController extends Controller
         $data = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'user_email' => 'required|email|max:255|unique:users,email',
+            'user_email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')],
             'password' => 'required|string|min:8',
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:provider_categories,id',
@@ -79,6 +82,8 @@ class ProviderManagementController extends Controller
         ]);
 
         DB::transaction(function () use ($data) {
+            User::withTrashed()->where('email', $data['user_email'])->whereNotNull('deleted_at')->forceDelete();
+
             $user = User::create([
                 'email' => $data['user_email'],
                 'password_hash' => $data['password'],
@@ -188,12 +193,15 @@ class ProviderManagementController extends Controller
     public function destroy(Provider $provider): RedirectResponse
     {
         DB::transaction(function () use ($provider): void {
-            $provider->update([
-                'status' => 'deleted',
-                'is_featured' => false,
-            ]);
+            $provider->loadMissing('user');
 
-            $provider->delete();
+            // Purge explicit FK dependents that are not configured with cascade.
+            // Invoices référencent payments via payment_id → supprimer invoices en premier.
+            Invoice::query()->where('provider_id', $provider->id)->delete();
+            Payment::query()->where('provider_id', $provider->id)->delete();
+            ReviewReply::query()->where('provider_id', $provider->id)->delete();
+
+            $provider->forceDelete();
 
             if ($provider->user) {
                 $provider->user->update([

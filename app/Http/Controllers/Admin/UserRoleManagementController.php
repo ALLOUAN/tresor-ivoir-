@@ -68,12 +68,14 @@ class UserRoleManagementController extends Controller
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')],
             'password' => ['required', 'string', 'min:8', 'max:255'],
             'role' => ['required', Rule::in($allowedRoles)],
             'granted_permissions' => ['nullable', 'array'],
             'granted_permissions.*' => ['string', Rule::in($allowedPermissions)],
         ]);
+
+        User::withTrashed()->where('email', $validated['email'])->whereNotNull('deleted_at')->forceDelete();
 
         $user = User::create([
             'email' => $validated['email'],
@@ -89,6 +91,18 @@ class UserRoleManagementController extends Controller
         ]);
 
         return back()->with('success', "Utilisateur créé: {$user->full_name}.");
+    }
+
+    public function destroy(Request $request, User $user): RedirectResponse
+    {
+        if ((int) $request->user()->id === (int) $user->id) {
+            return back()->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+        }
+
+        $name = $user->full_name;
+        $user->delete();
+
+        return back()->with('success', "Utilisateur « {$name} » supprimé.");
     }
 
     public function updatePermissions(Request $request, User $user): RedirectResponse

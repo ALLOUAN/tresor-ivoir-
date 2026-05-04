@@ -55,6 +55,7 @@ use App\Models\InformationPage;
 use App\Models\Partner;
 use App\Models\Provider;
 use App\Models\ProviderCategory;
+use App\Models\PaymentSetting;
 use App\Models\SiteSetting;
 use App\Models\SubscriptionPlan;
 use Illuminate\Support\Facades\Auth;
@@ -82,7 +83,14 @@ Route::get('/', function () {
     $heroSlides = Schema::hasTable('appearance_slides')
         ? AppearanceSlide::query()
             ->where('is_active', true)
-            ->whereNotNull('desktop_image_url')
+            ->where(function ($q) {
+                // Slide image avec visuel desktop OU slide vidéo avec vidéo desktop
+                $q->where(function ($q2) {
+                    $q2->where('media_type', 'image')->whereNotNull('desktop_image_url');
+                })->orWhere(function ($q2) {
+                    $q2->where('media_type', 'video')->whereNotNull('video_desktop_url');
+                });
+            })
             ->orderBy('display_order')
             ->orderByDesc('id')
             ->get()
@@ -249,7 +257,12 @@ Route::get('/abonnements', function () {
         ->orderBy('sort_order')
         ->get();
 
-    return view('public.plans', compact('plans'));
+    $cycleSettings = PaymentSetting::query()->pluck('value', 'key');
+    $showMonthly = ($cycleSettings['cycle_monthly_active'] ?? '1') === '1';
+    $showYearly  = ($cycleSettings['cycle_yearly_active']  ?? '1') === '1';
+    $yearlySavingsLabel = $cycleSettings['cycle_yearly_savings_label'] ?? '-20%';
+
+    return view('public.plans', compact('plans', 'showMonthly', 'showYearly', 'yearlySavingsLabel'));
 })->name('plans.public');
 
 Route::get('/abonnements/{plan}/paiement', [PublicSubscriptionController::class, 'checkout'])
@@ -482,6 +495,7 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::post('/users', [UserRoleManagementController::class, 'store'])->name('users.store');
         Route::patch('/users/{user}/role', [UserRoleManagementController::class, 'update'])->name('users.role.update');
         Route::patch('/users/{user}/permissions', [UserRoleManagementController::class, 'updatePermissions'])->name('users.permissions.update');
+        Route::delete('/users/{user}', [UserRoleManagementController::class, 'destroy'])->name('users.destroy');
     });
 
 // ── ÉDITEUR ───────────────────────────────────────────────────────────────

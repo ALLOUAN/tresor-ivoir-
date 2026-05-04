@@ -27,8 +27,8 @@
 <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
     <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-violet-700 via-violet-600 to-indigo-600">
         <div>
-            <h2 class="text-white font-semibold text-lg tracking-tight">Gestion des Slides (Images Responsives)</h2>
-            <p class="text-violet-100/80 text-xs mt-0.5">Titre, visibilité, ordre et trois visuels par breakpoint.</p>
+            <h2 class="text-white font-semibold text-lg tracking-tight">Gestion des Slides (Images &amp; Vidéos)</h2>
+            <p class="text-violet-100/80 text-xs mt-0.5">Titre, visibilité, ordre — image ou vidéo responsive par breakpoint.</p>
         </div>
         <button type="button" onclick="openCreateSlideModal()"
                 class="inline-flex items-center justify-center gap-2 shrink-0 bg-white/15 hover:bg-white/25 border border-white/20 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
@@ -57,19 +57,42 @@
                 </div>
 
                 <div class="flex gap-2 shrink-0">
-                    @foreach([
-                        ['url' => $slide->desktop_image_url, 'label' => 'D'],
-                        ['url' => $slide->tablet_image_url, 'label' => 'T'],
-                        ['url' => $slide->mobile_image_url, 'label' => 'M'],
-                    ] as $thumb)
-                        <div class="relative w-[5.5rem] h-14 sm:w-24 sm:h-14 rounded-lg overflow-hidden bg-slate-800 border border-slate-700 shrink-0">
-                            @if(!empty($thumb['url']))
-                                <img src="{{ $thumb['url'] }}" alt="" class="w-full h-full object-cover">
-                            @else
-                                <div class="absolute inset-0 flex items-center justify-center text-slate-600 text-xs font-medium">{{ $thumb['label'] }}</div>
-                            @endif
+                    @if($slide->isVideo())
+                        {{-- Vignette vidéo --}}
+                        <div class="relative w-22 h-14 sm:w-24 sm:h-14 rounded-lg overflow-hidden bg-amber-900/30 border border-amber-500/30 shrink-0 flex flex-col items-center justify-center gap-1">
+                            <i class="fas fa-film text-amber-400 text-xl"></i>
+                            <span class="text-amber-300/80 text-[10px] font-medium uppercase tracking-wide">Vidéo</span>
                         </div>
-                    @endforeach
+                        @foreach([
+                            ['url' => $slide->video_desktop_url, 'label' => 'D'],
+                            ['url' => $slide->video_tablet_url,  'label' => 'T'],
+                            ['url' => $slide->video_mobile_url,  'label' => 'M'],
+                        ] as $vthumb)
+                            <div class="relative w-10 h-14 rounded-lg overflow-hidden bg-slate-800 border border-slate-700 shrink-0 flex flex-col items-center justify-center gap-0.5">
+                                @if(!empty($vthumb['url']))
+                                    <i class="fas fa-check text-emerald-400 text-xs"></i>
+                                @else
+                                    <i class="fas fa-xmark text-slate-600 text-xs"></i>
+                                @endif
+                                <span class="text-slate-500 text-[9px]">{{ $vthumb['label'] }}</span>
+                            </div>
+                        @endforeach
+                    @else
+                        {{-- Vignettes image --}}
+                        @foreach([
+                            ['url' => $slide->desktop_image_url, 'label' => 'D'],
+                            ['url' => $slide->tablet_image_url,  'label' => 'T'],
+                            ['url' => $slide->mobile_image_url,  'label' => 'M'],
+                        ] as $thumb)
+                            <div class="relative w-22 h-14 sm:w-24 sm:h-14 rounded-lg overflow-hidden bg-slate-800 border border-slate-700 shrink-0">
+                                @if(!empty($thumb['url']))
+                                    <img src="{{ $thumb['url'] }}" alt="" class="w-full h-full object-cover">
+                                @else
+                                    <div class="absolute inset-0 flex items-center justify-center text-slate-600 text-xs font-medium">{{ $thumb['label'] }}</div>
+                                @endif
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
 
                 <div class="flex-1 min-w-0">
@@ -84,6 +107,15 @@
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-600/25 text-sky-200 border border-sky-500/35">
                             Ordre : {{ $slide->display_order }}
                         </span>
+                        @if($slide->isVideo())
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                <i class="fas fa-film text-[10px]"></i> Vidéo
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                                <i class="fas fa-image text-[10px]"></i> Image
+                            </span>
+                        @endif
                     </div>
                 </div>
 
@@ -91,12 +123,16 @@
                     <button type="button"
                             onclick="openEditSlideModal(this)"
                             data-id="{{ $slide->id }}"
+                            data-media-type="{{ $slide->media_type ?? 'image' }}"
                             data-title="{{ e($slide->title) }}"
                             data-subtitle="{{ e($slide->subtitle ?? '') }}"
                             data-description="{{ e($slide->description ?? '') }}"
-                            data-desktop-url="{{ e($slide->desktop_image_url) }}"
+                            data-desktop-url="{{ e($slide->desktop_image_url ?? '') }}"
                             data-tablet-url="{{ e($slide->tablet_image_url ?? '') }}"
                             data-mobile-url="{{ e($slide->mobile_image_url ?? '') }}"
+                            data-video-desktop-url="{{ e($slide->video_desktop_url ?? '') }}"
+                            data-video-tablet-url="{{ e($slide->video_tablet_url ?? '') }}"
+                            data-video-mobile-url="{{ e($slide->video_mobile_url ?? '') }}"
                             data-display-order="{{ $slide->display_order }}"
                             data-is-active="{{ $slide->is_active ? '1' : '0' }}"
                             class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/90 hover:bg-blue-500 text-white transition"
@@ -202,20 +238,49 @@
         const base = "{{ route('admin.administration.appearance.slides.update', ['slide' => '__ID__']) }}";
         form.action = base.replace('__ID__', button.dataset.id);
 
-        document.getElementById('edit_title').value = button.dataset.title || '';
-        document.getElementById('edit_subtitle').value = button.dataset.subtitle || '';
-        document.getElementById('edit_description').value = button.dataset.description || '';
+        // Champs texte
+        document.getElementById('edit_title').value         = button.dataset.title        || '';
+        document.getElementById('edit_subtitle').value      = button.dataset.subtitle     || '';
+        document.getElementById('edit_description').value   = button.dataset.description  || '';
         document.getElementById('edit_display_order').value = button.dataset.displayOrder || '1';
-        document.getElementById('edit_is_active').checked = button.dataset.isActive === '1';
+        document.getElementById('edit_is_active').checked   = button.dataset.isActive === '1';
 
-        ['edit_desktop_image', 'edit_tablet_image', 'edit_mobile_image'].forEach(function (id) {
+        // Type de média — déclenche la bascule image ↔ vidéo via l'event change
+        const mediaType = button.dataset.mediaType || 'image';
+        const radioImage = document.getElementById('edit_type_image');
+        const radioVideo = document.getElementById('edit_type_video');
+        if (radioImage) radioImage.checked = mediaType === 'image';
+        if (radioVideo) radioVideo.checked = mediaType === 'video';
+        // Déclencher manuellement l'event pour activer le JS du partial
+        const checkedRadio = mediaType === 'video' ? radioVideo : radioImage;
+        if (checkedRadio) checkedRadio.dispatchEvent(new Event('change'));
+
+        // Réinitialiser les inputs fichier
+        ['edit_desktop_image','edit_tablet_image','edit_mobile_image',
+         'edit_video_desktop','edit_video_tablet','edit_video_mobile'].forEach(function(id) {
             const el = document.getElementById(id);
             if (el) el.value = '';
         });
 
+        // Aperçus images
         setSlidePreview('edit_preview_desktop', button.dataset.desktopUrl || '');
-        setSlidePreview('edit_preview_tablet', button.dataset.tabletUrl || '');
-        setSlidePreview('edit_preview_mobile', button.dataset.mobileUrl || '');
+        setSlidePreview('edit_preview_tablet',  button.dataset.tabletUrl  || '');
+        setSlidePreview('edit_preview_mobile',  button.dataset.mobileUrl  || '');
+
+        // Aperçus vidéos — affiche le nom de fichier s'il existe
+        ['desktop','tablet','mobile'].forEach(function(size) {
+            const url  = button.dataset['video' + size.charAt(0).toUpperCase() + size.slice(1) + 'Url'] || '';
+            const nameEl = document.getElementById('edit_preview_vid_' + size + '_name');
+            if (nameEl) {
+                if (url) {
+                    nameEl.textContent = url.split('/').pop();
+                    nameEl.classList.remove('hidden');
+                } else {
+                    nameEl.textContent = '';
+                    nameEl.classList.add('hidden');
+                }
+            }
+        });
 
         const hid = document.getElementById('edit_slide_id_hidden');
         if (hid) hid.value = button.dataset.id || '';

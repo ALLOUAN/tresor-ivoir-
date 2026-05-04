@@ -84,17 +84,25 @@
         </p>
 
         {{-- Toggle mensuel / annuel --}}
+        @if($showMonthly || $showYearly)
         <div class="inline-flex items-center gap-1 mt-8 p-1 rounded-xl border border-white/10 bg-dark-800">
+            @if($showMonthly)
             <button id="btn-monthly" onclick="setBilling('monthly')"
-                    class="toggle-btn active px-5 py-2 rounded-lg text-sm font-semibold">
+                    class="toggle-btn {{ !$showYearly || true ? 'active' : '' }} px-5 py-2 rounded-lg text-sm font-semibold">
                 Mensuel
             </button>
+            @endif
+            @if($showYearly)
             <button id="btn-yearly" onclick="setBilling('yearly')"
-                    class="toggle-btn px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white">
+                    class="toggle-btn {{ !$showMonthly ? 'active' : '' }} px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white">
                 Annuel
-                <span class="ml-1.5 text-[10px] bg-gold-500/20 text-gold-400 px-1.5 py-0.5 rounded-full font-medium">-20%</span>
+                @if($yearlySavingsLabel)
+                <span class="ml-1.5 text-[10px] bg-gold-500/20 text-gold-400 px-1.5 py-0.5 rounded-full font-medium">{{ $yearlySavingsLabel }}</span>
+                @endif
             </button>
+            @endif
         </div>
+        @endif
     </div>
 </section>
 
@@ -160,16 +168,25 @@
             {{-- Features --}}
             <ul class="space-y-2.5 mb-8 flex-1">
                 @php
-                    $features = [
-                        ['label' => 'Badge vérifié',           'ok' => $plan->has_verified_badge],
-                        ['label' => 'Photos ('.$plan->photos_limit.')',  'ok' => $plan->photos_limit > 0],
-                        ['label' => 'Vidéo de présentation',   'ok' => $plan->has_video],
-                        ['label' => 'Mise en avant accueil',   'ok' => $plan->has_homepage],
-                        ['label' => 'Campagne newsletter',     'ok' => $plan->has_newsletter],
-                        ['label' => 'Posts réseaux sociaux',   'ok' => $plan->has_social_posts],
-                        ['label' => 'Statistiques avancées',   'ok' => $plan->stats_level === 'advanced'],
-                        ['label' => 'Support prioritaire',     'ok' => $plan->support_level === 'priority'],
-                    ];
+                    if (!empty($plan->features_json)) {
+                        // Fonctionnalités définies depuis le back-office
+                        $features = array_map(fn($f) => [
+                            'label' => $f['label'] ?? '',
+                            'ok'    => (bool) ($f['included'] ?? false),
+                        ], $plan->features_json);
+                    } else {
+                        // Fallback sur les champs booléens du plan
+                        $features = [
+                            ['label' => 'Badge vérifié',           'ok' => $plan->has_verified_badge],
+                            ['label' => 'Photos ('.$plan->photos_limit.')', 'ok' => $plan->photos_limit > 0],
+                            ['label' => 'Vidéo de présentation',   'ok' => $plan->has_video],
+                            ['label' => 'Mise en avant accueil',   'ok' => $plan->has_homepage],
+                            ['label' => 'Campagne newsletter',     'ok' => $plan->has_newsletter],
+                            ['label' => 'Posts réseaux sociaux',   'ok' => $plan->has_social_posts],
+                            ['label' => 'Statistiques avancées',   'ok' => in_array($plan->stats_level, ['advanced', 'full'])],
+                            ['label' => 'Support prioritaire',     'ok' => in_array($plan->support_level, ['chat', 'dedicated'])],
+                        ];
+                    }
                 @endphp
                 @foreach($features as $feat)
                 <li class="flex items-center gap-2.5 text-sm {{ $feat['ok'] ? 'text-gray-200' : 'text-gray-600' }}">
@@ -226,21 +243,42 @@
 </footer>
 
 <script>
-    let billing = 'monthly';
+    const SHOW_MONTHLY = {{ $showMonthly ? 'true' : 'false' }};
+    const SHOW_YEARLY  = {{ $showYearly  ? 'true' : 'false' }};
+
+    // Cycle par défaut : mensuel si disponible, sinon annuel
+    let billing = SHOW_MONTHLY ? 'monthly' : 'yearly';
 
     function setBilling(type) {
         billing = type;
         const btnM = document.getElementById('btn-monthly');
         const btnY = document.getElementById('btn-yearly');
 
-        btnM.classList.toggle('active', type === 'monthly');
-        btnM.classList.toggle('text-gray-400', type !== 'monthly');
-        btnY.classList.toggle('active', type === 'yearly');
-        btnY.classList.toggle('text-gray-400', type !== 'yearly');
+        if (btnM) {
+            btnM.classList.toggle('active',      type === 'monthly');
+            btnM.classList.toggle('text-gray-400', type !== 'monthly');
+        }
+        if (btnY) {
+            btnY.classList.toggle('active',      type === 'yearly');
+            btnY.classList.toggle('text-gray-400', type !== 'yearly');
+        }
 
-        document.querySelectorAll('.price-monthly').forEach(el => el.classList.toggle('hidden', type === 'yearly'));
-        document.querySelectorAll('.price-yearly').forEach(el => el.classList.toggle('hidden', type === 'monthly'));
+        document.querySelectorAll('.price-monthly').forEach(el => el.classList.toggle('hidden', type !== 'monthly'));
+        document.querySelectorAll('.price-yearly').forEach(el  => el.classList.toggle('hidden', type !== 'yearly'));
     }
+
+    // Initialisation : afficher le bon prix au chargement
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!SHOW_MONTHLY && SHOW_YEARLY) {
+            // Seulement annuel : masquer les prix mensuels dès le départ
+            document.querySelectorAll('.price-monthly').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.price-yearly').forEach(el  => el.classList.remove('hidden'));
+        } else {
+            // Mensuel par défaut (ou les deux disponibles)
+            document.querySelectorAll('.price-monthly').forEach(el => el.classList.remove('hidden'));
+            document.querySelectorAll('.price-yearly').forEach(el  => el.classList.add('hidden'));
+        }
+    });
 </script>
 
 @include('partials.homepage-footer')

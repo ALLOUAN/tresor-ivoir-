@@ -59,6 +59,9 @@ class AuthController extends Controller
             'role.in' => 'Type de compte invalide.',
         ]);
 
+        // Libérer l'email s'il appartient à un compte soft-deleted
+        User::withTrashed()->where('email', $data['email'])->whereNotNull('deleted_at')->forceDelete();
+
         $user = User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],

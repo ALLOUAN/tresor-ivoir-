@@ -210,20 +210,43 @@
             transform: translateX(0);
         }
         .payment-card {
-            background: #fff;
-            border: .5px solid #e5e7eb;
-            border-radius: 12px;
+            border: 1px solid rgba(232,160,32,0.22);
+            background:
+                radial-gradient(110% 150% at 0% 0%, rgba(232,160,32,0.12), rgba(232,160,32,0.03) 42%, rgba(12,10,8,0.9) 100%),
+                linear-gradient(145deg, rgba(18,16,13,0.9), rgba(11,10,8,0.94));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+            border-radius: 14px;
             padding: 1.25rem;
         }
-        .payment-field {
-            border: .5px solid #d1d5db;
-            border-radius: 10px;
-            background: #fff;
+        .payment-step-badge {
+            background: linear-gradient(135deg, #f5b942, #e8a020);
             color: #111827;
+            box-shadow: 0 6px 18px rgba(232,160,32,0.28);
+        }
+        .payment-step-title {
+            color: #f5d28e;
+        }
+        .payment-label {
+            color: #e5e7eb;
+        }
+        .payment-note {
+            color: #9ca3af;
+        }
+        .payment-icon {
+            color: rgba(245,185,66,0.55);
+        }
+        .payment-field {
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 10px;
+            background: rgba(9,8,7,0.92);
+            color: #f9fafb;
+        }
+        .payment-field::placeholder {
+            color: #6b7280;
         }
         .payment-field:focus {
-            border-color: #7F77DD;
-            box-shadow: 0 0 0 3px rgba(127,119,221,.18);
+            border-color: rgba(232,160,32,0.5);
+            box-shadow: 0 0 0 3px rgba(232,160,32,0.14);
             outline: none;
         }
     </style>
@@ -434,15 +457,15 @@
                 <div id="register-step-2" class="step-panel is-hidden hidden space-y-4" aria-hidden="true">
                     <div class="payment-card">
                         <div class="flex items-center gap-3 mb-6">
-                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold" style="background:#7F77DD;">4</span>
-                            <h3 class="text-lg font-semibold" style="color:#7F77DD;">Paiement de l'abonnement</h3>
+                            <span class="payment-step-badge inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold">4</span>
+                            <h3 class="payment-step-title text-lg font-semibold">Paiement de l'abonnement</h3>
                         </div>
 
                         <div class="space-y-5">
                             <div>
-                                <label for="payment_method" class="block text-sm font-semibold text-gray-900 mb-2">Moyen de paiement <span class="text-red-500">*</span></label>
+                                <label for="payment_method" class="payment-label block text-sm font-semibold mb-2">Moyen de paiement <span class="text-red-400">*</span></label>
                                 <div class="relative">
-                                    <i class="fas fa-credit-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <i class="payment-icon fas fa-credit-card absolute left-3 top-1/2 -translate-y-1/2 text-sm"></i>
                                     <select id="payment_method" name="payment_method" required class="payment-field w-full pl-10 pr-3 py-3 text-sm">
                                         <option value="">Sélectionner un moyen de paiement</option>
                                         <option value="mobile_money">Mobile Money</option>
@@ -452,12 +475,12 @@
                             </div>
 
                             <div>
-                                <label for="payment_phone" class="block text-sm font-semibold text-gray-900 mb-2">Numéro pour le paiement <span class="text-red-500">*</span></label>
+                                <label for="payment_phone" class="payment-label block text-sm font-semibold mb-2">Numéro pour le paiement <span class="text-red-400">*</span></label>
                                 <div class="relative">
-                                    <i class="fas fa-mobile-screen-button absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <i class="payment-icon fas fa-mobile-screen-button absolute left-3 top-1/2 -translate-y-1/2 text-sm"></i>
                                     <input id="payment_phone" name="payment_phone" type="tel" required placeholder="Numéro Mobile Money" class="payment-field w-full pl-10 pr-3 py-3 text-sm">
                                 </div>
-                                <p class="text-sm text-gray-500 mt-2">Numéro associé à votre compte Mobile Money</p>
+                                <p class="payment-note text-sm mt-2">Numéro associé à votre compte Mobile Money</p>
                             </div>
                         </div>
                     </div>
