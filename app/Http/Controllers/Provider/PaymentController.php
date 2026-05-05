@@ -7,7 +7,7 @@ use App\Models\Payment;
 use App\Models\Provider;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
-use App\Services\CynetPayService;
+use App\Services\CinetPayService;
 use App\Services\PaymentLifecycleService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\JsonResponse;
@@ -18,11 +18,11 @@ use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
-    // ── ÉTAPE 1 : Initiation AJAX (CynetPay configuré) ───────────────────
+    // ── ÉTAPE 1 : Initiation AJAX ─────────────────────────────────────────
 
     public function initiateCynetPayPayment(
         Request $request,
-        CynetPayService $cynetPay,
+        CinetPayService $cinetPay,
         SubscriptionService $subscriptionService
     ): JsonResponse {
         $data = $request->validate([
@@ -34,12 +34,12 @@ class PaymentController extends Controller
             'customer_email'   => ['required', 'email', 'max:255'],
             'customer_phone'   => ['required', 'string', 'max:20'],
         ], [
-            'plan_id.exists'          => 'Forfait introuvable.',
-            'channel.in'              => 'Canal de paiement invalide.',
-            'customer_name.required'  => 'Le prénom est requis.',
-            'customer_surname.required' => 'Le nom est requis.',
-            'customer_email.required' => 'L\'adresse e-mail est requise.',
-            'customer_phone.required' => 'Le numéro de téléphone est requis.',
+            'plan_id.exists'              => 'Forfait introuvable.',
+            'channel.in'                  => 'Canal de paiement invalide.',
+            'customer_name.required'      => 'Le prénom est requis.',
+            'customer_surname.required'   => 'Le nom est requis.',
+            'customer_email.required'     => 'L\'adresse e-mail est requise.',
+            'customer_phone.required'     => 'Le numéro de téléphone est requis.',
         ]);
 
         $provider = Provider::where('user_id', Auth::id())->firstOrFail();
@@ -62,21 +62,16 @@ class PaymentController extends Controller
             ]);
         }
 
-        // Construction d'un identifiant de transaction unique
-        $transactionId = strtoupper($plan->code) . '-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(6));
-
-        $result = $cynetPay->initiatePayment([
-            'transaction_id'  => $transactionId,
-            'amount'          => $amount,
-            'currency'        => 'XOF',
-            'description'     => 'Abonnement ' . strtoupper($plan->code) . ' — ' . config('app.name'),
-            'return_url'      => route('payment.cynetpay.return'),
-            'notify_url'      => route('webhook.cynetpay'),
-            'channel'         => $data['channel'],
-            'customer_name'   => $data['customer_name'],
-            'customer_surname' => $data['customer_surname'],
-            'customer_email'  => $data['customer_email'],
-            'customer_phone'  => $data['customer_phone'],
+        $result = $cinetPay->initPayment([
+            'amount'              => $amount,
+            'designation'         => 'Abonnement ' . strtoupper($plan->code) . ' — ' . config('app.name'),
+            'client_first_name'   => $data['customer_name'],
+            'client_last_name'    => $data['customer_surname'],
+            'client_email'        => $data['customer_email'],
+            'client_phone_number' => $data['customer_phone'],
+            'success_url'         => route('payment.cynetpay.return'),
+            'failed_url'          => route('payment.cynetpay.return'),
+            'notify_url'          => route('webhook.cynetpay'),
         ]);
 
         if (! $result['success']) {
@@ -86,7 +81,9 @@ class PaymentController extends Controller
             ], 422);
         }
 
-        // Création de la souscription en statut "pending"
+        // On stocke le merchant_transaction_id comme gateway_txn_id pour le retrouver au retour
+        $transactionId = $result['merchant_transaction_id'];
+
         $months = $data['billing_cycle'] === 'yearly' ? 12 : 1;
 
         $subscription = Subscription::create([
@@ -94,7 +91,7 @@ class PaymentController extends Controller
             'plan_id'        => $plan->id,
             'status'         => 'pending',
             'billing_cycle'  => $data['billing_cycle'],
-            'payment_method' => 'cynetpay',
+            'payment_method' => 'cinetpay',
             'starts_at'      => now(),
             'ends_at'        => now()->addMonths($months),
             'auto_renew'     => true,
@@ -105,20 +102,19 @@ class PaymentController extends Controller
             'provider_id'     => $provider->id,
             'amount'          => $amount,
             'currency'        => 'XOF',
-            'method'          => 'cynetpay',
-            'gateway'         => 'cynetpay',
+            'method'          => 'cinetpay',
+            'gateway'         => 'cinetpay',
             'gateway_txn_id'  => $transactionId,
             'status'          => 'pending',
             'ip_address'      => $request->ip(),
             'metadata'        => [
-                'channel'           => $data['channel'],
-                'subscription_uuid' => $subscription->uuid,
-                'provider_uuid'     => $provider->uuid,
-                'plan_code'         => $plan->code,
+                'channel'       => $data['channel'],
+                'payment_token' => $result['payment_token'] ?? null,
+                'notify_token'  => $result['notify_token'] ?? null,
+                'plan_code'     => $plan->code,
             ],
         ]);
 
-        // Stockage en session pour le retour
         session([
             'pending_payment_id'    => $payment->id,
             'pending_plan_id'       => $plan->id,
@@ -131,27 +127,28 @@ class PaymentController extends Controller
         ]);
     }
 
-    // ── ÉTAPE 2A : Retour navigateur après paiement CynetPay ─────────────
+    // ── ÉTAPE 2A : Retour navigateur après paiement ───────────────────────
 
     public function cynetPayReturn(
         Request $request,
-        CynetPayService $cynetPay,
+        CinetPayService $cinetPay,
         PaymentLifecycleService $lifecycle,
         SubscriptionService $subscriptionService
     ): RedirectResponse {
-        // CinetPay renvoie cpm_trans_id ou transaction_id en query string
-        $transactionId = (string) ($request->query('transaction_id')
+        // CinetPay renvoie merchant_transaction_id (ou payment_token) en query string
+        $token = (string) ($request->query('merchant_transaction_id')
+            ?? $request->query('payment_token')
+            ?? $request->query('transaction_id')
             ?? $request->query('cpm_trans_id')
             ?? '');
 
-        $payment = $this->resolvePayment($transactionId);
+        $payment = $this->resolvePayment($token);
 
         if (! $payment) {
             return redirect()->route('provider.billing.plans')
                 ->with('error', 'Paiement introuvable. Contactez le support si vous avez été débité.');
         }
 
-        // Déjà traité (idempotence)
         if ($payment->status === 'completed') {
             session()->forget(['pending_payment_id', 'pending_plan_id', 'pending_billing_cycle']);
 
@@ -159,55 +156,58 @@ class PaymentController extends Controller
                 ->with('success', 'Votre abonnement est actif !');
         }
 
-        // Vérification du statut auprès de CinetPay
-        $statusResult = $cynetPay->checkPaymentStatus($payment->gateway_txn_id);
+        $statusResult = $cinetPay->checkPaymentStatus($payment->gateway_txn_id);
 
-        return match ($statusResult['status']) {
-            'PAYMENT_SUCCESS' => $this->processSuccessfulPayment($payment, $payment->gateway_txn_id, $lifecycle, $subscriptionService),
-            'PAYMENT_PENDING' => redirect()->route('provider.billing.plans')
-                ->with('info', 'Votre paiement est en cours de traitement. Vous serez notifié dès confirmation.'),
-            default => $this->handleFailedReturn($payment, $statusResult, $lifecycle),
-        };
+        if ($statusResult['success']) {
+            return $this->processSuccessfulPayment($payment, $payment->gateway_txn_id, $lifecycle, $subscriptionService);
+        }
+
+        if (($statusResult['status'] ?? '') === 'PENDING') {
+            return redirect()->route('provider.billing.plans')
+                ->with('info', 'Votre paiement est en cours de traitement. Vous serez notifié dès confirmation.');
+        }
+
+        return $this->handleFailedReturn($payment, $statusResult, $lifecycle);
     }
 
-    // ── ÉTAPE 2B : Webhook CinetPay (notification serveur automatique) ───
+    // ── ÉTAPE 2B : Webhook CinetPay ───────────────────────────────────────
 
     public function webhook(
         Request $request,
-        CynetPayService $cynetPay,
+        CinetPayService $cinetPay,
         PaymentLifecycleService $lifecycle,
         SubscriptionService $subscriptionService
     ): JsonResponse {
-        // CinetPay envoie cpm_trans_id dans le corps du webhook
-        $transactionId = (string) ($request->input('cpm_trans_id')
+        // CinetPay envoie merchant_transaction_id = notre gateway_txn_id en base
+        $token = (string) ($request->input('merchant_transaction_id')
+            ?? $request->input('cpm_trans_id')
             ?? $request->input('transaction_id')
+            ?? $request->input('payment_token')
             ?? '');
 
-        if ($transactionId === '') {
-            return response()->json(['ok' => false, 'message' => 'transaction_id manquant'], 400);
+        if ($token === '') {
+            return response()->json(['ok' => false, 'message' => 'token manquant'], 400);
         }
 
-        $payment = Payment::where('gateway_txn_id', $transactionId)->first();
+        $payment = Payment::where('gateway_txn_id', $token)->first();
 
         if (! $payment) {
             return response()->json(['ok' => false, 'message' => 'Paiement introuvable'], 404);
         }
 
-        // Idempotence
         if ($payment->status === 'completed') {
             return response()->json(['ok' => true, 'message' => 'Déjà traité']);
         }
 
-        // Vérification officielle du statut
-        $statusResult = $cynetPay->checkPaymentStatus($transactionId);
+        $statusResult = $cinetPay->checkPaymentStatus($payment->gateway_txn_id);
 
-        if ($statusResult['status'] === 'PAYMENT_SUCCESS') {
-            $this->doProcessSuccessfulPayment($payment, $transactionId, $lifecycle, $subscriptionService);
+        if ($statusResult['success']) {
+            $this->doProcessSuccessfulPayment($payment, $payment->gateway_txn_id, $lifecycle, $subscriptionService);
 
             return response()->json(['ok' => true]);
         }
 
-        $lifecycle->markAsFailed($payment, 'Webhook CinetPay : code ' . ($statusResult['code'] ?? '?'));
+        $lifecycle->markAsFailed($payment, 'Webhook CinetPay : statut ' . ($statusResult['status'] ?? '?'));
 
         return response()->json(['ok' => false, 'message' => 'Paiement non confirmé']);
     }
@@ -215,13 +215,11 @@ class PaymentController extends Controller
     // ── ÉTAPE 2C : Vérification manuelle du statut (polling) ─────────────
 
     public function checkStatus(
-        Request $request,
         Payment $payment,
-        CynetPayService $cynetPay,
+        CinetPayService $cinetPay,
         PaymentLifecycleService $lifecycle,
         SubscriptionService $subscriptionService
     ): JsonResponse {
-        // Vérifier que le paiement appartient bien au provider connecté
         $providerId = Provider::where('user_id', Auth::id())->value('id');
 
         if ((int) $payment->provider_id !== (int) $providerId) {
@@ -235,9 +233,9 @@ class PaymentController extends Controller
             ]);
         }
 
-        $statusResult = $cynetPay->checkPaymentStatus($payment->gateway_txn_id);
+        $statusResult = $cinetPay->checkPaymentStatus($payment->gateway_txn_id);
 
-        if ($statusResult['status'] === 'PAYMENT_SUCCESS') {
+        if ($statusResult['success']) {
             $this->doProcessSuccessfulPayment($payment, $payment->gateway_txn_id, $lifecycle, $subscriptionService);
 
             return response()->json([
@@ -247,23 +245,20 @@ class PaymentController extends Controller
         }
 
         return response()->json([
-            'status'  => strtolower($statusResult['status']),
+            'status'  => strtolower($statusResult['status'] ?? 'pending'),
             'message' => $statusResult['message'] ?? '',
         ]);
     }
 
-    // ── Traitement interne : paiement confirmé ────────────────────────────
+    // ── Traitement interne ────────────────────────────────────────────────
 
-    /**
-     * Utilisé par cynetPayReturn() — retourne une RedirectResponse.
-     */
     private function processSuccessfulPayment(
         Payment $payment,
-        string $transactionId,
+        string $token,
         PaymentLifecycleService $lifecycle,
         SubscriptionService $subscriptionService
     ): RedirectResponse {
-        $this->doProcessSuccessfulPayment($payment, $transactionId, $lifecycle, $subscriptionService);
+        $this->doProcessSuccessfulPayment($payment, $token, $lifecycle, $subscriptionService);
 
         session()->forget(['pending_payment_id', 'pending_plan_id', 'pending_billing_cycle']);
 
@@ -271,19 +266,14 @@ class PaymentController extends Controller
             ->with('success', 'Félicitations ! Votre abonnement est maintenant actif.');
     }
 
-    /**
-     * Logique de traitement partagée entre webhook et retour navigateur.
-     */
     private function doProcessSuccessfulPayment(
         Payment $payment,
-        string $transactionId,
+        string $token,
         PaymentLifecycleService $lifecycle,
         SubscriptionService $subscriptionService
     ): void {
-        // Marquer le paiement comme complété + créer facture + envoyer mail
-        $lifecycle->markAsCompleted($payment, $transactionId);
+        $lifecycle->markAsCompleted($payment, $token);
 
-        // Activer la souscription associée (et annuler les anciennes)
         $subscription = $payment->fresh()->subscription;
         if ($subscription) {
             $subscriptionService->activatePendingSubscription($subscription);
@@ -295,23 +285,21 @@ class PaymentController extends Controller
         array $statusResult,
         PaymentLifecycleService $lifecycle
     ): RedirectResponse {
-        $lifecycle->markAsFailed($payment, 'Retour CinetPay : code ' . ($statusResult['code'] ?? '?'));
+        $lifecycle->markAsFailed($payment, 'Retour CinetPay : statut ' . ($statusResult['status'] ?? '?'));
 
         return redirect()->route('provider.billing.plans')
-            ->with('error', 'Le paiement n\'a pas abouti (code ' . ($statusResult['code'] ?? '?') . '). Vous pouvez réessayer.');
+            ->with('error', 'Le paiement n\'a pas abouti. Vous pouvez réessayer.');
     }
 
-    private function resolvePayment(string $transactionId): ?Payment
+    private function resolvePayment(string $token): ?Payment
     {
-        // D'abord via transaction_id (retour CinetPay)
-        if ($transactionId !== '') {
-            $payment = Payment::where('gateway_txn_id', $transactionId)->first();
+        if ($token !== '') {
+            $payment = Payment::where('gateway_txn_id', $token)->first();
             if ($payment) {
                 return $payment;
             }
         }
 
-        // Fallback : via la session
         $paymentId = session('pending_payment_id');
         if ($paymentId) {
             return Payment::find($paymentId);

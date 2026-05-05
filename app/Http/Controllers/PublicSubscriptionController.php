@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\Provider;
 use App\Models\SubscriptionPlan;
-use App\Services\CynetPayService;
+use App\Services\CinetPayService;
 use App\Services\PaymentLifecycleService;
 use App\Services\SubscriptionService;
 use App\Support\ProviderProfileBootstrap;
@@ -21,7 +21,7 @@ class PublicSubscriptionController extends Controller
      * Point d’entrée public : équivalent de GET /abonnements/{plan}/paiement.
      * Invité → inscription prestataire avec plan ; connecté prestataire → page de paiement espace pro.
      */
-    public function checkout(SubscriptionPlan $plan, CynetPayService $cynetPay): View|RedirectResponse
+    public function checkout(SubscriptionPlan $plan, CinetPayService $cinetPay): View|RedirectResponse
     {
         abort_unless($plan->is_active, 404);
 
@@ -57,10 +57,10 @@ class PublicSubscriptionController extends Controller
                 ->with('error', 'Impossible de créer la fiche prestataire (aucune catégorie active). Contactez le support.');
         }
 
-        $cynetPayConfigured = $cynetPay->isConfigured();
-        $channels = $cynetPay->getAvailableChannels();
+        $cinetPayConfigured = $cinetPay->isConfigured();
+        $channels = $cinetPay->getAvailableChannels();
 
-        return view('billing.checkout', compact('plan', 'provider', 'cynetPayConfigured', 'channels'));
+        return view('billing.checkout', compact('plan', 'provider', 'cinetPayConfigured', 'channels'));
     }
 
     /**
@@ -69,13 +69,13 @@ class PublicSubscriptionController extends Controller
     public function processOffline(
         Request $request,
         SubscriptionPlan $plan,
-        CynetPayService $cynetPay,
+        CinetPayService $cinetPay,
         SubscriptionService $subscriptionService,
         PaymentLifecycleService $lifecycle
     ): RedirectResponse {
         abort_unless($plan->is_active, 404);
 
-        if ($cynetPay->isConfigured()) {
+        if ($cinetPay->isConfigured()) {
             return redirect()
                 ->route('subscriptions.checkout', $plan)
                 ->with('info', 'Utilisez le paiement en ligne depuis cette page.');

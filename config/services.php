@@ -34,12 +34,16 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
-    'cinetpay' => [
-        'api_key'        => env('CINETPAY_API_KEY', ''),
-        'site_id'        => env('CINETPAY_SITE_ID', ''),
-        'endpoint'       => env('CINETPAY_ENDPOINT', 'https://api-checkout.cinetpay.com/v2/payment'),
-        'check_endpoint' => env('CINETPAY_CHECK_ENDPOINT', 'https://api-checkout.cinetpay.com/v2/payment/check'),
+    
+    'cynetpay' => [
+        'api_key'      => env('CYNETPAY_API_KEY'),
+        'api_password' => env('CYNETPAY_API_PASSWORD'),
+        'base_url'     => env('CYNETPAY_BASE_URL', 'https://api.cinetpay.co/'),
+        'notify_url'   => env('CYNETPAY_NOTIFY_URL'),
+        'return_url'   => env('CYNETPAY_RETURN_URL'),
+        'cancel_url'   => env('CYNETPAY_CANCEL_URL'),
+        'currency'     => env('CYNETPAY_CURRENCY', 'XOF'),
+        'mode'         => env('CYNETPAY_MODE', 'PRODUCTION'),
     ],
 
     'stripe' => [

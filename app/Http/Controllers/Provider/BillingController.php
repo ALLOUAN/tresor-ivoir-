@@ -9,7 +9,7 @@ use App\Models\PromoCode;
 use App\Models\Provider;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
-use App\Services\CynetPayService;
+use App\Services\CinetPayService;
 use App\Services\PaymentGatewayService;
 use App\Services\PaymentLifecycleService;
 use Illuminate\Http\JsonResponse;
@@ -51,7 +51,7 @@ class BillingController extends Controller
         return view('billing.plans', compact('plans', 'currentSubscription', 'daysRemaining'));
     }
 
-    public function checkout(SubscriptionPlan $plan, CynetPayService $cynetPay): View|RedirectResponse
+    public function checkout(SubscriptionPlan $plan, CinetPayService $cinetPay): View|RedirectResponse
     {
         $provider = Provider::where('user_id', Auth::id())->first();
 
@@ -60,10 +60,10 @@ class BillingController extends Controller
                 ->with('error', 'Créez d\'abord votre fiche prestataire.');
         }
 
-        $cynetPayConfigured = $cynetPay->isConfigured();
-        $channels           = $cynetPay->getAvailableChannels();
+        $cinetPayConfigured = $cinetPay->isConfigured();
+        $channels           = $cinetPay->getAvailableChannels();
 
-        return view('billing.checkout', compact('plan', 'provider', 'cynetPayConfigured', 'channels'));
+        return view('billing.checkout', compact('plan', 'provider', 'cinetPayConfigured', 'channels'));
     }
 
     public function initiate(Request $request, SubscriptionPlan $plan, PaymentGatewayService $gatewayService): RedirectResponse

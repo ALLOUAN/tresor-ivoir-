@@ -18,7 +18,12 @@
       "Bash(php -r 'echo PHP_EOL; $f = new finfo\\(FILEINFO_MIME_TYPE\\); $tmp = tempnam\\(sys_get_temp_dir\\(\\), '\\\\''test'\\\\''\\); file_put_contents\\($tmp, '\\\\''test'\\\\''\\); echo '\\\\''finfo disponible: '\\\\'' . \\($f ? '\\\\''oui'\\\\'' : '\\\\''non'\\\\''\\) . PHP_EOL;')",
       "Bash(php -r \"echo 'upload_max_filesize: ' . ini_get\\('upload_max_filesize'\\) . PHP_EOL; echo 'post_max_size: ' . ini_get\\('post_max_size'\\) . PHP_EOL; echo 'max_file_uploads: ' . ini_get\\('max_file_uploads'\\) . PHP_EOL; echo 'memory_limit: ' . ini_get\\('memory_limit'\\) . PHP_EOL;\")",
       "Bash(php -r \"echo 'max_execution_time: ' . ini_get\\('max_execution_time'\\) . PHP_EOL; echo 'max_input_time: ' . ini_get\\('max_input_time'\\) . PHP_EOL; echo 'default_socket_timeout: ' . ini_get\\('default_socket_timeout'\\) . PHP_EOL;\")",
-      "Bash(Get-Content storage\\\\logs\\\\laravel.log -Tail 40)"
+      "Bash(Get-Content storage\\\\logs\\\\laravel.log -Tail 40)",
+      "Bash(mysql -u root -e \"CREATE DATABASE IF NOT EXISTS tresors_ivoire CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.0.30-winx64\\\\bin\\\\mysql.exe\" -u root -e \"CREATE DATABASE IF NOT EXISTS tresors_ivoire CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\" 2>&1)",
+      "PowerShell(cd C:\\\\laragon\\\\www\\\\tresorsIvoire; php artisan tinker --execute=\"use Illuminate\\\\Support\\\\Facades\\\\Auth; $result = Auth::attempt\\(['email' => 'admin@tresorsdivoire.ci', 'password' => 'Admin@2025!']\\); echo $result ? 'Auth::attempt OK' : 'Auth::attempt ECHEC';\" 2>&1)",
+      "PowerShell(netstat -an)",
+      "PowerShell(Start-Process \"C:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.0.30-winx64\\\\bin\\\\mysqld.exe\" --ArgumentList \"--defaults-file=C:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.0.30-winx64\\\\my.ini\" -WindowStyle Hidden)"
     ]
   }
 }

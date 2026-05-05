@@ -74,7 +74,7 @@
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 items-start">
         {{-- Colonne gauche : formulaire --}}
         <div class="lg:col-span-8 space-y-6">
-            @if($cynetPayConfigured)
+            @if($cinetPayConfigured)
                 <div class="checkout-glass rounded-2xl p-5 sm:p-6 space-y-6">
                     <div class="flex items-center gap-2 text-white font-bold text-lg">
                         <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500/15 text-gold-400"><i class="fas fa-users"></i></span>
@@ -382,7 +382,7 @@
             </div>
         </div>
 
-        @if($cynetPayConfigured)
+        @if($cinetPayConfigured)
             <div class="space-y-5 rounded-xl border border-slate-800 bg-slate-900 p-5">
                 <div>
                     <label class="mb-2 block text-xs font-medium text-slate-300">Cycle de facturation</label>
@@ -599,7 +599,7 @@
     const validateUrl = '{{ route('provider.billing.promo.validate') }}';
     const csrfEl = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfEl ? csrfEl.content : '';
-    const cynetConfigured = {{ $cynetPayConfigured ? 'true' : 'false' }};
+    const cynetConfigured = {{ $cinetPayConfigured ? 'true' : 'false' }};
 
     let discountAmount  = 0;
     let currentCycle    = 'monthly';

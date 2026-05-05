@@ -82,7 +82,10 @@ class ProviderManagementController extends Controller
         ]);
 
         DB::transaction(function () use ($data) {
-            User::withTrashed()->where('email', $data['user_email'])->whereNotNull('deleted_at')->forceDelete();
+            User::withTrashed()
+                ->where('email', $data['user_email'])
+                ->whereNotNull('deleted_at')
+                ->update(['email' => 'deleted_' . time() . '_' . $data['user_email']]);
 
             $user = User::create([
                 'email' => $data['user_email'],

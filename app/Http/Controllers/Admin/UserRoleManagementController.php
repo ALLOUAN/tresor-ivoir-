@@ -75,7 +75,10 @@ class UserRoleManagementController extends Controller
             'granted_permissions.*' => ['string', Rule::in($allowedPermissions)],
         ]);
 
-        User::withTrashed()->where('email', $validated['email'])->whereNotNull('deleted_at')->forceDelete();
+        User::withTrashed()
+            ->where('email', $validated['email'])
+            ->whereNotNull('deleted_at')
+            ->update(['email' => 'deleted_' . time() . '_' . $validated['email']]);
 
         $user = User::create([
             'email' => $validated['email'],
