@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" id="html-root" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
         <link rel="icon" href="{{ $siteBrand['favicon_url'] }}" type="image/png">
     @endif
     <title>Créer un compte — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -26,6 +27,7 @@
             }
         }
     </script>
+    @include('partials.theme-light-bridge')
     <style>
         * { box-sizing: border-box; }
         body {
@@ -248,6 +250,28 @@
             border-color: rgba(232,160,32,0.5);
             box-shadow: 0 0 0 3px rgba(232,160,32,0.14);
             outline: none;
+        }
+        html:not(.dark) body {
+            background:
+                radial-gradient(900px 500px at 12% 8%, rgba(232,160,32,0.08), transparent 60%),
+                radial-gradient(700px 420px at 88% 90%, rgba(99,102,241,0.06), transparent 62%),
+                #f8f5ee;
+        }
+        html:not(.dark) .glass-panel {
+            border-color: rgba(0,0,0,0.1);
+            background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(247,243,235,0.98));
+            box-shadow: 0 16px 36px rgba(0,0,0,0.08);
+        }
+        html:not(.dark) .aside-panel {
+            background:
+                radial-gradient(120% 120% at 0% 0%, rgba(232,160,32,0.08), transparent 58%),
+                linear-gradient(155deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98));
+        }
+        html:not(.dark) .field-input,
+        html:not(.dark) .payment-field {
+            background: #ffffff;
+            color: #1c1915;
+            border-color: rgba(0,0,0,0.16);
         }
     </style>
 </head>

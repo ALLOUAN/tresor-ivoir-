@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.visitor-public')
 
 @section('title', 'Mon Espace')
 @section('page-title', 'Mon espace visiteur')
@@ -65,10 +65,16 @@
     @endif
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
     <a href="{{ route('visitor.profile.edit') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
         <p class="text-slate-400 text-xs uppercase">Profil</p>
         <p class="text-white font-semibold mt-1">Modifier mes informations</p>
+    </a>
+    <a href="{{ route('visitor.purchases.index') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
+        <p class="text-slate-400 text-xs uppercase flex items-center gap-1.5">
+            <i class="fas fa-image text-amber-400/80 text-[10px]"></i> Mes achats
+        </p>
+        <p class="text-white font-semibold mt-1">{{ number_format($purchases_count ?? 0) }} image{{ ($purchases_count ?? 0) > 1 ? 's' : '' }} achetée{{ ($purchases_count ?? 0) > 1 ? 's' : '' }}</p>
     </a>
     <a href="{{ route('visitor.favorites.index') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
         <p class="text-slate-400 text-xs uppercase">Wishlist</p>
@@ -80,6 +86,42 @@
     </a>
 </div>
 
+{{-- ── Achats récents ───────────────────────────────────────────────────── --}}
+@if(($purchases_count ?? 0) > 0)
+<div class="mb-6">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-white font-semibold flex items-center gap-2">
+            <i class="fas fa-image text-amber-400"></i> Mes achats récents
+        </h2>
+        <a href="{{ route('visitor.purchases.index') }}" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir tout →</a>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
+        @foreach($recent_purchases as $purchase)
+            @php $media = $purchase->media; @endphp
+            <div class="flex items-center gap-4 px-5 py-3.5">
+                <a href="{{ route('gallery.public.show', $media->uuid) }}" class="shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-slate-800 border border-slate-700 hover:border-amber-500/50 transition">
+                    @if($media->url)
+                        <img src="{{ $media->url }}" alt="{{ $media->alt_text ?? $media->title }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center">
+                            <i class="fas fa-image text-slate-600"></i>
+                        </div>
+                    @endif
+                </a>
+                <div class="flex-1 min-w-0">
+                    <p class="text-white text-sm font-medium truncate">{{ $media->title ?? $media->original_name }}</p>
+                    <p class="text-slate-500 text-xs mt-0.5">{{ $purchase->paid_at->format('d/m/Y') }} · <span class="text-amber-400/80">{{ number_format((float) $purchase->amount, 0, ',', ' ') }} FCFA</span></p>
+                </div>
+                <a href="{{ route('gallery.public.show', $media->uuid) }}"
+                   class="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition">
+                    Voir
+                </a>
+            </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 {{-- ── Two columns ─────────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
 
@@ -89,7 +131,7 @@
             <h2 class="text-white font-semibold flex items-center gap-2">
                 <i class="fas fa-newspaper text-amber-400"></i> Articles à la une
             </h2>
-            <a href="#" class="text-amber-400 hover:text-amber-300 text-xs transition">Tous les articles →</a>
+            <a href="{{ route('articles.index') }}" class="text-amber-400 hover:text-amber-300 text-xs transition">Tous les articles →</a>
         </div>
 
         @if($featured_articles->isEmpty())
@@ -100,7 +142,7 @@
         @else
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             @foreach($featured_articles as $article)
-            <a href="#" class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-amber-700/50 transition">
+            <a href="{{ route('articles.show', $article->slug_fr) }}" class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-amber-700/50 transition">
                 {{-- Cover placeholder --}}
                 <div class="h-32 bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center relative overflow-hidden">
                     <i class="fas fa-image text-slate-600 text-3xl"></i>
@@ -135,12 +177,12 @@
             <h2 class="text-white font-semibold flex items-center gap-2">
                 <i class="fas fa-calendar-days text-violet-400"></i> Événements à venir
             </h2>
-            <a href="#" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir tout →</a>
+            <a href="{{ route('events.index') }}" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir tout →</a>
         </div>
 
         <div class="space-y-3">
             @forelse($upcoming_events as $event)
-            <a href="#" class="group flex items-start gap-3 bg-slate-900 border border-slate-800 hover:border-violet-700/40 rounded-xl p-4 transition">
+            <a href="{{ route('events.show', $event->slug) }}" class="group flex items-start gap-3 bg-slate-900 border border-slate-800 hover:border-violet-700/40 rounded-xl p-4 transition">
                 {{-- Date badge --}}
                 <div class="shrink-0 w-12 text-center bg-violet-900/30 border border-violet-800/40 rounded-lg py-1.5">
                     <p class="text-violet-300 text-xs font-bold uppercase">{{ $event->starts_at->format('M') }}</p>
@@ -206,7 +248,7 @@
         <div class="px-5 py-10 text-center text-slate-500 text-sm">
             <i class="fas fa-star text-slate-700 text-3xl mb-3 block"></i>
             <p class="mb-3">Vous n'avez pas encore rédigé d'avis.</p>
-            <a href="#" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium rounded-lg transition">
+            <a href="{{ route('providers.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium rounded-lg transition">
                 <i class="fas fa-compass"></i> Explorer les prestataires
             </a>
         </div>

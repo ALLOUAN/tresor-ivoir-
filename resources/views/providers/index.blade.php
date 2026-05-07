@@ -1,15 +1,40 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" id="html-root" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Annuaire des prestataires — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
+        .providers-filter-shell {
+            box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+        }
+        .provider-featured-card,
+        .provider-list-card {
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .provider-featured-card:hover,
+        .provider-list-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+        html:not(.dark) .providers-filter-shell {
+            background: #ffffff !important;
+            border-color: rgba(0,0,0,0.08) !important;
+            box-shadow: 0 12px 26px rgba(0,0,0,0.06);
+        }
+        html:not(.dark) .provider-featured-card,
+        html:not(.dark) .provider-list-card {
+            background: #ffffff !important;
+            border-color: rgba(0,0,0,0.08) !important;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body class="bg-[#0d0d0b] text-white">
@@ -29,7 +54,7 @@
                 <h2 class="text-white font-semibold mb-3">Prestataires mis en avant</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach($featured as $f)
-                        <a href="{{ route('providers.show', $f->slug) }}" class="bg-[#141410] border border-amber-500/20 rounded-xl p-4 hover:border-amber-500/50 transition">
+                        <a href="{{ route('providers.show', $f->slug) }}" class="provider-featured-card bg-[#141410] border border-amber-500/20 rounded-xl p-4 hover:border-amber-500/50 transition">
                             <p class="text-amber-400 text-xs uppercase">{{ $f->category->name_fr ?? 'Prestataire' }}</p>
                             <p class="text-white font-semibold mt-1">{{ $f->name }}</p>
                             <p class="text-gray-500 text-sm mt-1">{{ $f->city ?: 'Côte d\'Ivoire' }}</p>
@@ -39,7 +64,7 @@
             </div>
         @endif
 
-        <div class="bg-[#141410] border border-white/8 rounded-xl p-4 mb-6">
+        <div class="providers-filter-shell bg-[#141410] border border-white/8 rounded-xl p-4 mb-6">
             <form method="GET" action="{{ route('providers.index') }}" class="grid grid-cols-1 md:grid-cols-6 gap-3">
                 <input
                     type="text"
@@ -87,7 +112,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse($providers as $provider)
-                <a href="{{ route('providers.show', $provider->slug) }}" class="bg-[#141410] border border-white/5 rounded-xl overflow-hidden hover:border-amber-500/40 transition">
+                <a href="{{ route('providers.show', $provider->slug) }}" class="provider-list-card bg-[#141410] border border-white/5 rounded-xl overflow-hidden hover:border-amber-500/40 transition">
                     <div class="h-40 bg-[#1c1c16]">
                         @if($provider->cover_url)
                             <img src="{{ $provider->cover_url }}" alt="{{ $provider->name }}" class="w-full h-full object-cover">

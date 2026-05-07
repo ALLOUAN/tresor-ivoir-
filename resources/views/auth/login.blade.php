@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" id="html-root" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
         <link rel="icon" href="{{ $siteBrand['favicon_url'] }}" type="image/png">
     @endif
     <title>Connexion — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script>
@@ -24,10 +25,25 @@
             }
         }
     </script>
+    @include('partials.theme-light-bridge')
+    <style>
+        html:not(.dark) .bg-slate-800\/60 { background-color:rgba(0,0,0,0.04) !important; }
+        html:not(.dark) .border-slate-600 { border-color:#d6d0c5 !important; }
+        html:not(.dark) .placeholder-slate-500::placeholder { color:#9e9b90 !important; }
+    </style>
 </head>
 <body class="min-h-screen bg-slate-950 flex items-center justify-center p-4">
 
     <div class="w-full max-w-md">
+        {{-- Retour accueil --}}
+        <div class="mb-4">
+            <a href="{{ route('home') }}"
+               class="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:bg-slate-700 hover:text-white">
+                <i class="fas fa-arrow-left text-xs"></i>
+                Retour à l'accueil
+            </a>
+        </div>
+
         {{-- Logo / Brand --}}
         <div class="text-center mb-8">
             @if(!empty($siteBrand['logo_url']))

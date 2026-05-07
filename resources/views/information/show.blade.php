@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" id="html-root" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $page->title_fr }} — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -21,7 +22,13 @@
         .prose-info details { margin-bottom: 0.75rem; border: 1px solid rgba(255,255,255,.08); border-radius: 0.75rem; padding: 0.75rem 1rem; background: rgba(255,255,255,.02); }
         .prose-info summary { cursor: pointer; font-weight: 600; color: #e8e6df; }
         .prose-info aside { margin: 1.25rem 0; }
+        html:not(.dark) .prose-info { color:#44413a; }
+        html:not(.dark) .prose-info h2,
+        html:not(.dark) .prose-info strong { color:#1c1915; }
+        html:not(.dark) .prose-info details { border-color:rgba(0,0,0,.1); background:rgba(0,0,0,.02); }
+        html:not(.dark) .prose-info summary { color:#2d2a23; }
     </style>
+    @include('partials.theme-light-bridge')
 </head>
 <body class="bg-[#0d0d0b] text-white min-h-screen">
 

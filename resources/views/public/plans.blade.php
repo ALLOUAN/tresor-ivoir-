@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" id="html-root" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,7 @@
     @endif
     <title>Nos offres — {{ $siteBrand['site_name'] }}</title>
     <meta name="description" content="Choisissez le plan qui correspond à votre activité et boostez votre visibilité sur {{ $siteBrand['site_name'] }}.">
+    @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -243,8 +244,8 @@
 </footer>
 
 <script>
-    const SHOW_MONTHLY = {{ $showMonthly ? 'true' : 'false' }};
-    const SHOW_YEARLY  = {{ $showYearly  ? 'true' : 'false' }};
+    const SHOW_MONTHLY = @json((bool) $showMonthly);
+    const SHOW_YEARLY  = @json((bool) $showYearly);
 
     // Cycle par défaut : mensuel si disponible, sinon annuel
     let billing = SHOW_MONTHLY ? 'monthly' : 'yearly';

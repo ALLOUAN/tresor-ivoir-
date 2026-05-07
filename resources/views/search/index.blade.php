@@ -1,16 +1,48 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" id="html-root" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recherche{{ $q ? ' : ' . $q : '' }} — {{ $siteBrand['site_name'] }}</title>
     <meta name="robots" content="noindex">
+    @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
+        .search-form-shell {
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 1rem;
+            padding: 0.5rem;
+            background: rgba(20,20,16,0.72);
+            backdrop-filter: blur(8px);
+        }
+        .search-input {
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(232,160,32,0.14);
+        }
+        .result-card {
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .result-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.22);
+        }
+        html:not(.dark) .search-form-shell {
+            background: #ffffff;
+            border-color: rgba(0,0,0,0.08);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+        }
+        html:not(.dark) .result-card {
+            border-color: rgba(0,0,0,0.08) !important;
+            background: #ffffff !important;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body class="bg-[#0d0d0b] text-white min-h-screen">
@@ -20,12 +52,12 @@
 
     {{-- Search bar --}}
     <div class="mb-10">
-        <form action="{{ route('search') }}" method="GET" class="flex gap-2">
+        <form action="{{ route('search') }}" method="GET" class="search-form-shell flex gap-2">
             <div class="relative flex-1">
                 <i class="fas fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
                 <input type="text" name="q" value="{{ $q }}" placeholder="Rechercher articles, événements, prestataires…"
                        autofocus
-                       class="w-full bg-[#141410] border border-white/10 focus:border-amber-500/50 rounded-xl pl-10 pr-4 py-3.5 text-sm text-white placeholder-gray-500 outline-none transition">
+                       class="search-input w-full bg-[#141410] border border-white/10 focus:border-amber-500/50 rounded-xl pl-10 pr-4 py-3.5 text-sm text-white placeholder-gray-500 outline-none transition">
             </div>
             <button type="submit"
                     class="bg-amber-500 hover:bg-amber-600 text-black font-bold px-6 py-3.5 rounded-xl text-sm transition">
@@ -70,7 +102,7 @@
             <div class="space-y-3">
                 @foreach($articles as $article)
                 <a href="{{ route('articles.show', $article->slug_fr) }}"
-                   class="flex gap-4 p-4 bg-[#141410] border border-white/5 hover:border-amber-500/20 rounded-xl transition group">
+                   class="result-card flex gap-4 p-4 bg-[#141410] border border-white/5 hover:border-amber-500/20 rounded-xl transition group">
                     @if($article->cover_url)
                     <img src="{{ $article->cover_url }}" alt="" class="w-20 h-16 object-cover rounded-lg shrink-0">
                     @else
@@ -112,7 +144,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 @foreach($events as $event)
                 <a href="{{ route('events.show', $event->slug) }}"
-                   class="flex gap-3 p-4 bg-[#141410] border border-white/5 hover:border-amber-500/20 rounded-xl transition group">
+                   class="result-card flex gap-3 p-4 bg-[#141410] border border-white/5 hover:border-amber-500/20 rounded-xl transition group">
                     <div class="w-12 h-12 bg-amber-500/10 rounded-lg flex flex-col items-center justify-center shrink-0">
                         <span class="text-amber-400 font-bold text-sm leading-none">{{ $event->starts_at?->format('d') }}</span>
                         <span class="text-amber-400/60 text-[10px] uppercase">{{ $event->starts_at?->format('M') }}</span>
@@ -144,7 +176,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 @foreach($providers as $provider)
                 <a href="{{ route('providers.show', $provider->slug) }}"
-                   class="flex gap-3 p-4 bg-[#141410] border border-white/5 hover:border-amber-500/20 rounded-xl transition group">
+                   class="result-card flex gap-3 p-4 bg-[#141410] border border-white/5 hover:border-amber-500/20 rounded-xl transition group">
                     @if($provider->logo_url)
                     <img src="{{ $provider->logo_url }}" alt="" class="w-12 h-12 object-cover rounded-lg shrink-0">
                     @else

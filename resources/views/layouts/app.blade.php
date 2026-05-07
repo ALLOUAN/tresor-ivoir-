@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="h-full">
+<html lang="fr" id="html-root" class="dark h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,8 @@
         <link rel="icon" href="{{ $siteBrand['favicon_url'] }}" type="image/png">
     @endif
     <title>@yield('title', 'Tableau de bord') — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -125,6 +127,79 @@
         .admin-sidebar .user-avatar {
             box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
         }
+        /* ── Theme toggle ─────────────────────────────── */
+        .theme-toggle {
+            width:2.1rem; height:2.1rem; border-radius:9999px;
+            display:flex; align-items:center; justify-content:center;
+            border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04);
+            color:#94a3b8; cursor:pointer; transition:.2s ease; font-size:0.75rem; flex-shrink:0;
+        }
+        .theme-toggle:hover { color:#fde68a; border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); }
+        html:not(.dark) .theme-toggle { border-color:rgba(0,0,0,0.12); background:rgba(0,0,0,0.04); color:#6b6860; }
+        html:not(.dark) .theme-toggle:hover { color:#d97706; border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); }
+        .theme-toggle .icon-sun  { display:block; }
+        .theme-toggle .icon-moon { display:none; }
+        html:not(.dark) .theme-toggle .icon-sun  { display:none; }
+        html:not(.dark) .theme-toggle .icon-moon { display:block; }
+        /* ── Light mode: body & fond ──────────────────── */
+        html:not(.dark) body                    { background-color:#f4f1ec!important; color:#1c1915!important; }
+        html:not(.dark) .text-white             { color:#1c1915!important; }
+        html:not(.dark) .text-slate-100         { color:#1c1915!important; }
+        html:not(.dark) .text-slate-200         { color:#2d2a23!important; }
+        html:not(.dark) .text-slate-300         { color:#44413a!important; }
+        html:not(.dark) .text-slate-400         { color:#6b6860!important; }
+        html:not(.dark) .text-slate-500         { color:#9e9b90!important; }
+        html:not(.dark) .text-slate-600         { color:#7c796f!important; }
+        html:not(.dark) .bg-slate-950           { background-color:#f4f1ec!important; }
+        html:not(.dark) .bg-slate-900           { background-color:#ffffff!important; }
+        html:not(.dark) .bg-slate-800           { background-color:#f4f0e8!important; }
+        html:not(.dark) .bg-slate-700           { background-color:#e8e3da!important; }
+        html:not(.dark) .border-slate-800       { border-color:#e8e3da!important; }
+        html:not(.dark) .border-slate-700       { border-color:#d6d0c5!important; }
+        html:not(.dark) .border-slate-700\/70   { border-color:rgba(0,0,0,0.1)!important; }
+        html:not(.dark) .bg-slate-900\/80       { background-color:rgba(255,252,248,0.97)!important; }
+        html:not(.dark) .bg-slate-800\/70       { background-color:rgba(244,240,232,0.7)!important; }
+        html:not(.dark) .bg-slate-700\/70       { background-color:rgba(232,227,218,0.7)!important; }
+        html:not(.dark) .hover\:bg-slate-700\/70:hover { background-color:rgba(224,219,210,0.9)!important; }
+        /* ── Light mode: sidebar non-admin ──────────── */
+        html:not(.dark) .sidebar-link              { color:#6b6860; }
+        html:not(.dark) .sidebar-link:hover        { background:#eae6de; color:#1c1915; }
+        html:not(.dark) .sidebar-link.active       { background:rgba(245,158,11,0.1); color:#92400e; }
+        /* ── Light mode: sidebar admin ───────────────── */
+        html:not(.dark) .admin-sidebar {
+            background:linear-gradient(165deg,#ffffff 0%,#f9f7f3 55%,#f5f2ee 100%);
+            border-right-color:rgba(232,160,32,0.18);
+            box-shadow:4px 0 24px rgba(0,0,0,0.05);
+        }
+        html:not(.dark) .admin-sidebar-brand {
+            background:linear-gradient(135deg,rgba(245,158,11,0.05) 0%,transparent 55%);
+            border-bottom-color:rgba(0,0,0,0.07);
+        }
+        html:not(.dark) .admin-sidebar .nav-section-title { color:#9e9b90; }
+        html:not(.dark) .admin-sidebar .nav-section-title::after {
+            background:linear-gradient(90deg,rgba(0,0,0,0.1),transparent);
+        }
+        html:not(.dark) .admin-sidebar .nav-row                   { color:#6b6860; }
+        html:not(.dark) .admin-sidebar .nav-row:hover             { background:rgba(0,0,0,0.04); color:#1c1915; }
+        html:not(.dark) .admin-sidebar .nav-row.is-active         { background:linear-gradient(90deg,rgba(245,158,11,0.12) 0%,rgba(245,158,11,0.02) 100%); color:#92400e; box-shadow:inset 3px 0 0 #f59e0b; }
+        html:not(.dark) .admin-sidebar .nav-row-icon              { background:rgba(0,0,0,0.05); border-color:rgba(0,0,0,0.1); color:#6b6860; }
+        html:not(.dark) .admin-sidebar .nav-row:hover .nav-row-icon { background:rgba(0,0,0,0.08); border-color:rgba(0,0,0,0.14); color:#1c1915; }
+        html:not(.dark) .admin-sidebar .nav-row.is-active .nav-row-icon { background:rgba(245,158,11,0.14); border-color:rgba(245,158,11,0.3); color:#d97706; }
+        html:not(.dark) .admin-sidebar-footer { background:linear-gradient(180deg,transparent,rgba(249,247,243,0.9)); border-top-color:rgba(0,0,0,0.07); }
+        html:not(.dark) .admin-sidebar .user-card { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.1); }
+        html:not(.dark) .admin-sidebar .user-avatar { box-shadow:0 0 0 2px rgba(245,158,11,0.3),0 4px 12px rgba(0,0,0,0.08); }
+        html:not(.dark) .admin-sidebar .role-pill { background:linear-gradient(135deg,rgba(190,18,60,0.1),rgba(136,19,55,0.07)); border-color:rgba(251,113,133,0.2); box-shadow:none; }
+        html:not(.dark) .admin-sidebar .nav-scroll { scrollbar-color:rgba(245,158,11,0.2) transparent; }
+        /* ── Light mode: top bar ─────────────────────── */
+        html:not(.dark) header.sticky { border-bottom-color:#e8e3da!important; }
+        /* ── Light mode: content cards ───────────────── */
+        html:not(.dark) .bg-white\/5  { background-color:rgba(0,0,0,0.04)!important; }
+        html:not(.dark) .border-white\/10 { border-color:rgba(0,0,0,0.1)!important; }
+        html:not(.dark) .divide-slate-800>*+* { border-color:#e8e3da!important; }
+        /* ── Light mode: toast messages ──────────────── */
+        html:not(.dark) .bg-emerald-500\/15 { background-color:rgba(209,250,229,0.6)!important; }
+        html:not(.dark) .border-emerald-400\/40 { border-color:rgba(52,211,153,0.4)!important; }
+        html:not(.dark) .bg-red-900\/40 { background-color:rgba(255,228,228,0.6)!important; }
     </style>
 </head>
 <body class="h-full bg-slate-950 text-white flex">
@@ -489,6 +564,10 @@
                         Maintenance active
                     </a>
                 @endif
+                <button type="button" id="theme-toggle" class="theme-toggle" title="Changer le thème" aria-label="Basculer le thème">
+                    <i class="fas fa-sun icon-sun"></i>
+                    <i class="fas fa-moon icon-moon"></i>
+                </button>
                 <span class="text-slate-500 text-xs hidden sm:block">
                     {{ now()->isoFormat('dddd D MMMM YYYY') }}
                 </span>
@@ -523,6 +602,18 @@
                 setTimeout(() => successToast.remove(), 300);
             }, 3500);
         }
+
+        // ── Theme toggle ──────────────────────────────
+        (function () {
+            const btn = document.getElementById('theme-toggle');
+            if (!btn) return;
+            btn.addEventListener('click', () => {
+                const html = document.documentElement;
+                const going_light = html.classList.contains('dark');
+                html.classList.toggle('dark', !going_light);
+                localStorage.setItem('tiTheme', going_light ? 'light' : 'dark');
+            });
+        })();
     </script>
     @stack('scripts')
 </body>

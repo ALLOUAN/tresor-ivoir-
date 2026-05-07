@@ -15,7 +15,9 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AdministrationController extends Controller
@@ -98,7 +100,23 @@ class AdministrationController extends Controller
 
     public function storeSlide(Request $request): RedirectResponse
     {
+        $this->sanitizeEmptySlideUploads($request);
+
         $isVideo = $request->input('media_type') === 'video';
+
+        // Avoid framework ValueError on empty/invalid UploadedFile objects.
+        // We check required media upfront and only run file validators when present.
+        if (! $isVideo && ! $this->hasUsableUploadedFile($request, 'desktop_image')) {
+            return back()
+                ->withErrors(['desktop_image' => 'L’image desktop est obligatoire pour un slide image.'])
+                ->withInput();
+        }
+
+        if ($isVideo && ! $this->hasUsableUploadedFile($request, 'video_desktop')) {
+            return back()
+                ->withErrors(['video_desktop' => 'La vidéo desktop est obligatoire pour un slide vidéo.'])
+                ->withInput();
+        }
 
         $request->validate([
             'media_type'     => ['required', Rule::in(['image', 'video'])],
@@ -107,28 +125,17 @@ class AdministrationController extends Controller
             'description'    => 'nullable|string',
             'is_active'      => 'nullable|boolean',
             'display_order'  => 'required|integer|min:1|max:9999',
-            // Image fields
-            'desktop_image'  => [
-                $isVideo ? 'nullable' : 'required',
-                'image', 'mimes:jpeg,jpg,png,webp', 'max:8192',
-                Rule::dimensions()->minWidth(1600)->minHeight(600)->maxWidth(4096)->maxHeight(2000),
-            ],
-            'tablet_image'   => [
-                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:6144',
-                Rule::dimensions()->minWidth(900)->minHeight(500)->maxWidth(2560)->maxHeight(1600),
-            ],
-            'mobile_image'   => [
-                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096',
-                Rule::dimensions()->minWidth(640)->minHeight(400)->maxWidth(1536)->maxHeight(1200),
-            ],
-            // Video fields (Desktop 1920×800, Tablette 1024×600, Mobile 768×500)
-            'video_desktop'  => [
-                $isVideo ? 'required' : 'nullable',
-                'file', 'extensions:mp4,webm',
-            ],
-            'video_tablet'   => ['nullable', 'file', 'extensions:mp4,webm'],
-            'video_mobile'   => ['nullable', 'file', 'extensions:mp4,webm'],
+            // File fields are validated separately below (only when present)
+            // to avoid framework ValueError on empty temporary upload paths.
+            'desktop_image'  => ['nullable'],
+            'tablet_image'   => ['nullable'],
+            'mobile_image'   => ['nullable'],
+            'video_desktop'  => ['nullable'],
+            'video_tablet'   => ['nullable'],
+            'video_mobile'   => ['nullable'],
         ]);
+
+        $this->validateSlideFiles($request);
 
         $data = [
             'media_type'   => $isVideo ? 'video' : 'image',
@@ -140,20 +147,20 @@ class AdministrationController extends Controller
         ];
 
         if ($isVideo) {
-            $data['video_desktop_url'] = $this->storeSlideVideoFile($request->file('video_desktop'));
-            $data['video_tablet_url']  = $request->hasFile('video_tablet')
-                ? $this->storeSlideVideoFile($request->file('video_tablet'))
+            $data['video_desktop_url'] = $this->storeSlideVideoFile($request->file('video_desktop'), 'video_desktop');
+            $data['video_tablet_url']  = $this->hasUsableUploadedFile($request, 'video_tablet')
+                ? $this->storeSlideVideoFile($request->file('video_tablet'), 'video_tablet')
                 : null;
-            $data['video_mobile_url']  = $request->hasFile('video_mobile')
-                ? $this->storeSlideVideoFile($request->file('video_mobile'))
+            $data['video_mobile_url']  = $this->hasUsableUploadedFile($request, 'video_mobile')
+                ? $this->storeSlideVideoFile($request->file('video_mobile'), 'video_mobile')
                 : null;
         } else {
-            $data['desktop_image_url'] = $this->storeSlideImageFile($request->file('desktop_image'));
-            $data['tablet_image_url']  = $request->hasFile('tablet_image')
-                ? $this->storeSlideImageFile($request->file('tablet_image'))
+            $data['desktop_image_url'] = $this->storeSlideImageFile($request->file('desktop_image'), 'desktop_image');
+            $data['tablet_image_url']  = $this->hasUsableUploadedFile($request, 'tablet_image')
+                ? $this->storeSlideImageFile($request->file('tablet_image'), 'tablet_image')
                 : null;
-            $data['mobile_image_url']  = $request->hasFile('mobile_image')
-                ? $this->storeSlideImageFile($request->file('mobile_image'))
+            $data['mobile_image_url']  = $this->hasUsableUploadedFile($request, 'mobile_image')
+                ? $this->storeSlideImageFile($request->file('mobile_image'), 'mobile_image')
                 : null;
         }
 
@@ -164,6 +171,8 @@ class AdministrationController extends Controller
 
     public function updateSlide(Request $request, AppearanceSlide $slide): RedirectResponse
     {
+        $this->sanitizeEmptySlideUploads($request);
+
         $isVideo = $request->input('media_type', $slide->media_type) === 'video';
 
         $request->validate([
@@ -173,24 +182,16 @@ class AdministrationController extends Controller
             'description'   => 'nullable|string',
             'is_active'     => 'nullable|boolean',
             'display_order' => 'required|integer|min:1|max:9999',
-            // Image
-            'desktop_image' => [
-                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:8192',
-                Rule::dimensions()->minWidth(1600)->minHeight(600)->maxWidth(4096)->maxHeight(2000),
-            ],
-            'tablet_image'  => [
-                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:6144',
-                Rule::dimensions()->minWidth(900)->minHeight(500)->maxWidth(2560)->maxHeight(1600),
-            ],
-            'mobile_image'  => [
-                'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096',
-                Rule::dimensions()->minWidth(640)->minHeight(400)->maxWidth(1536)->maxHeight(1200),
-            ],
-            // Vidéo
-            'video_desktop' => ['nullable', 'file', 'extensions:mp4,webm'],
-            'video_tablet'  => ['nullable', 'file', 'extensions:mp4,webm'],
-            'video_mobile'  => ['nullable', 'file', 'extensions:mp4,webm'],
+            // File fields are validated separately below (only when present).
+            'desktop_image' => ['nullable'],
+            'tablet_image'  => ['nullable'],
+            'mobile_image'  => ['nullable'],
+            'video_desktop' => ['nullable'],
+            'video_tablet'  => ['nullable'],
+            'video_mobile'  => ['nullable'],
         ]);
+
+        $this->validateSlideFiles($request);
 
         $data = [
             'media_type'    => $isVideo ? 'video' : 'image',
@@ -203,36 +204,36 @@ class AdministrationController extends Controller
 
         // Images
         $data['desktop_image_url'] = $slide->desktop_image_url;
-        if ($request->hasFile('desktop_image')) {
+        if ($this->hasUsableUploadedFile($request, 'desktop_image')) {
             $this->deleteStoredPublicFile($slide->desktop_image_url);
-            $data['desktop_image_url'] = $this->storeSlideImageFile($request->file('desktop_image'));
+            $data['desktop_image_url'] = $this->storeSlideImageFile($request->file('desktop_image'), 'desktop_image');
         }
         $data['tablet_image_url'] = $slide->tablet_image_url;
-        if ($request->hasFile('tablet_image')) {
+        if ($this->hasUsableUploadedFile($request, 'tablet_image')) {
             $this->deleteStoredPublicFile($slide->tablet_image_url);
-            $data['tablet_image_url'] = $this->storeSlideImageFile($request->file('tablet_image'));
+            $data['tablet_image_url'] = $this->storeSlideImageFile($request->file('tablet_image'), 'tablet_image');
         }
         $data['mobile_image_url'] = $slide->mobile_image_url;
-        if ($request->hasFile('mobile_image')) {
+        if ($this->hasUsableUploadedFile($request, 'mobile_image')) {
             $this->deleteStoredPublicFile($slide->mobile_image_url);
-            $data['mobile_image_url'] = $this->storeSlideImageFile($request->file('mobile_image'));
+            $data['mobile_image_url'] = $this->storeSlideImageFile($request->file('mobile_image'), 'mobile_image');
         }
 
         // Vidéos
         $data['video_desktop_url'] = $slide->video_desktop_url;
-        if ($request->hasFile('video_desktop')) {
+        if ($this->hasUsableUploadedFile($request, 'video_desktop')) {
             $this->deleteStoredPublicFile($slide->video_desktop_url);
-            $data['video_desktop_url'] = $this->storeSlideVideoFile($request->file('video_desktop'));
+            $data['video_desktop_url'] = $this->storeSlideVideoFile($request->file('video_desktop'), 'video_desktop');
         }
         $data['video_tablet_url'] = $slide->video_tablet_url;
-        if ($request->hasFile('video_tablet')) {
+        if ($this->hasUsableUploadedFile($request, 'video_tablet')) {
             $this->deleteStoredPublicFile($slide->video_tablet_url);
-            $data['video_tablet_url'] = $this->storeSlideVideoFile($request->file('video_tablet'));
+            $data['video_tablet_url'] = $this->storeSlideVideoFile($request->file('video_tablet'), 'video_tablet');
         }
         $data['video_mobile_url'] = $slide->video_mobile_url;
-        if ($request->hasFile('video_mobile')) {
+        if ($this->hasUsableUploadedFile($request, 'video_mobile')) {
             $this->deleteStoredPublicFile($slide->video_mobile_url);
-            $data['video_mobile_url'] = $this->storeSlideVideoFile($request->file('video_mobile'));
+            $data['video_mobile_url'] = $this->storeSlideVideoFile($request->file('video_mobile'), 'video_mobile');
         }
 
         $slide->update($data);
@@ -261,18 +262,71 @@ class AdministrationController extends Controller
         return back()->with('success', 'Slide supprimé avec succès.');
     }
 
-    private function storeSlideImageFile(UploadedFile $file): string
+    private function storeSlideImageFile(UploadedFile $file, string $field): string
     {
-        $path = $file->store('appearance/slides', 'public');
+        $this->assertUploadedFileIsUsable($field, $file);
 
-        return '/storage/'.$path;
+        // On Windows, UploadedFile::store() calls getRealPath() (via realpath()) which can
+        // return false when the PHP temp dir uses 8.3 short names that are disabled on the
+        // volume, causing fopen("", 'r') → ValueError. We bypass this by opening the file
+        // directly via getPathname(), which always holds the raw path PHP used for the upload.
+        $pathname = $file->getPathname();
+        $handle = (is_string($pathname) && $pathname !== '') ? @fopen($pathname, 'r') : false;
+
+        if (! is_resource($handle)) {
+            throw ValidationException::withMessages([
+                $field => 'Le fichier image téléversé est invalide. Veuillez le sélectionner à nouveau.',
+            ]);
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+        $relativePath = 'appearance/slides/' . Str::random(40) . '.' . $extension;
+
+        try {
+            $stored = Storage::disk('public')->put($relativePath, $handle);
+        } finally {
+            is_resource($handle) && fclose($handle);
+        }
+
+        if (! $stored) {
+            throw ValidationException::withMessages([
+                $field => 'Le fichier image téléversé est invalide. Veuillez le sélectionner à nouveau.',
+            ]);
+        }
+
+        return '/storage/' . $relativePath;
     }
 
-    private function storeSlideVideoFile(UploadedFile $file): string
+    private function storeSlideVideoFile(UploadedFile $file, string $field): string
     {
-        $path = $file->store('appearance/slides/videos', 'public');
+        $this->assertUploadedFileIsUsable($field, $file);
 
-        return '/storage/'.$path;
+        // Same Windows/short-name workaround as storeSlideImageFile above.
+        $pathname = $file->getPathname();
+        $handle = (is_string($pathname) && $pathname !== '') ? @fopen($pathname, 'r') : false;
+
+        if (! is_resource($handle)) {
+            throw ValidationException::withMessages([
+                $field => 'Le fichier vidéo téléversé est invalide. Veuillez le sélectionner à nouveau.',
+            ]);
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+        $relativePath = 'appearance/slides/videos/' . Str::random(40) . '.' . $extension;
+
+        try {
+            $stored = Storage::disk('public')->put($relativePath, $handle);
+        } finally {
+            is_resource($handle) && fclose($handle);
+        }
+
+        if (! $stored) {
+            throw ValidationException::withMessages([
+                $field => 'Le fichier vidéo téléversé est invalide. Veuillez le sélectionner à nouveau.',
+            ]);
+        }
+
+        return '/storage/' . $relativePath;
     }
 
     private function deleteStoredPublicFile(?string $storedUrl): void
@@ -285,6 +339,169 @@ class AdministrationController extends Controller
         if ($relative !== '') {
             Storage::disk('public')->delete($relative);
         }
+    }
+
+    /**
+     * Some browsers/framework edge cases can send an "empty" UploadedFile object
+     * (no real temp path). Validation image/file rules then trigger ValueError
+     * when reading file path. Remove those entries before validating.
+     */
+    private function sanitizeEmptySlideUploads(Request $request): void
+    {
+        foreach ([
+            'desktop_image',
+            'tablet_image',
+            'mobile_image',
+            'video_desktop',
+            'video_tablet',
+            'video_mobile',
+        ] as $field) {
+            $file = $request->file($field);
+
+            if (! $file instanceof UploadedFile) {
+                continue;
+            }
+
+            $pathname = '';
+            try {
+                $pathname = (string) $file->getPathname();
+            } catch (\ValueError) {
+                $pathname = '';
+            }
+
+            if ($file->getError() === \UPLOAD_ERR_NO_FILE || $pathname === '') {
+                $request->files->remove($field);
+            }
+        }
+    }
+
+    private function validateSlideFiles(Request $request): void
+    {
+        $imageRules = [
+            'desktop_image' => ['maxKb' => 8192, 'minW' => 1600, 'minH' => 600, 'maxW' => 4096, 'maxH' => 2000],
+            'tablet_image' => ['maxKb' => 6144, 'minW' => 900, 'minH' => 500, 'maxW' => 2560, 'maxH' => 1600],
+            'mobile_image' => ['maxKb' => 4096, 'minW' => 640, 'minH' => 400, 'maxW' => 1536, 'maxH' => 1200],
+        ];
+
+        foreach ($imageRules as $field => $rules) {
+            $file = $request->file($field);
+
+            if (! $file instanceof UploadedFile) {
+                continue;
+            }
+
+            // Optional file inputs can still appear in request payloads
+            // with empty temp paths on some clients. Ignore them here.
+            if (! $this->hasUsableUploadedFile($request, $field)) {
+                continue;
+            }
+
+            $this->assertValidImageUpload($field, $file, $rules);
+        }
+
+        foreach (['video_desktop', 'video_tablet', 'video_mobile'] as $field) {
+            $file = $request->file($field);
+
+            if (! $file instanceof UploadedFile) {
+                continue;
+            }
+
+            if (! $this->hasUsableUploadedFile($request, $field)) {
+                continue;
+            }
+
+            $this->assertValidVideoUpload($field, $file, 102400);
+        }
+    }
+
+    private function assertValidImageUpload(string $field, UploadedFile $file, array $rules): void
+    {
+        $this->assertUploadedFileIsUsable($field, $file);
+
+        $extension = strtolower((string) $file->getClientOriginalExtension());
+        if (! in_array($extension, ['jpeg', 'jpg', 'png', 'webp'], true)) {
+            throw ValidationException::withMessages([$field => 'Format image non autorisé (jpeg, jpg, png, webp).']);
+        }
+
+        $size = (int) ($file->getSize() ?? 0);
+        if ($size <= 0 || $size > ($rules['maxKb'] * 1024)) {
+            throw ValidationException::withMessages([$field => 'Le fichier image dépasse la taille autorisée.']);
+        }
+
+        $path = $this->resolveUploadedFilePath($file);
+        if ($path === null) {
+            return;
+        }
+
+        $imageInfo = @getimagesize($path);
+        if (! is_array($imageInfo) || ! isset($imageInfo[0], $imageInfo[1])) {
+            return;
+        }
+
+        [$width, $height] = [$imageInfo[0], $imageInfo[1]];
+        if (
+            $width < $rules['minW'] || $height < $rules['minH'] ||
+            $width > $rules['maxW'] || $height > $rules['maxH']
+        ) {
+            throw ValidationException::withMessages([
+                $field => "Dimensions invalides: minimum {$rules['minW']}x{$rules['minH']} et maximum {$rules['maxW']}x{$rules['maxH']}.",
+            ]);
+        }
+    }
+
+    private function assertValidVideoUpload(string $field, UploadedFile $file, int $maxKb): void
+    {
+        $this->assertUploadedFileIsUsable($field, $file);
+
+        $extension = strtolower((string) $file->getClientOriginalExtension());
+        if (! in_array($extension, ['mp4', 'webm'], true)) {
+            throw ValidationException::withMessages([$field => 'Format vidéo non autorisé (mp4, webm).']);
+        }
+
+        $size = (int) ($file->getSize() ?? 0);
+        if ($size <= 0 || $size > ($maxKb * 1024)) {
+            throw ValidationException::withMessages([$field => 'Le fichier vidéo dépasse la taille autorisée.']);
+        }
+    }
+
+    private function assertUploadedFileIsUsable(string $field, UploadedFile $file): void
+    {
+        if (! $this->isUsableUploadedFile($file)) {
+            throw ValidationException::withMessages([
+                $field => 'Le fichier téléversé est invalide ou incomplet. Veuillez le sélectionner à nouveau.',
+            ]);
+        }
+    }
+
+    private function hasUsableUploadedFile(Request $request, string $field): bool
+    {
+        $file = $request->file($field);
+
+        return $file instanceof UploadedFile && $this->isUsableUploadedFile($file);
+    }
+
+    private function isUsableUploadedFile(UploadedFile $file): bool
+    {
+        try {
+            return $file->isValid() && $file->getError() === \UPLOAD_ERR_OK;
+        } catch (\ValueError) {
+            return false;
+        }
+    }
+
+    private function resolveUploadedFilePath(UploadedFile $file): ?string
+    {
+        try {
+            $pathname = (string) ($file->getRealPath() ?: $file->getPathname());
+        } catch (\ValueError) {
+            return null;
+        }
+
+        if ($pathname === '' || ! is_file($pathname)) {
+            return null;
+        }
+
+        return $pathname;
     }
 
     private function storeSiteBrandFile(UploadedFile $file, string $directory): string
@@ -420,8 +637,11 @@ class AdministrationController extends Controller
             $mime = (string) $file->getMimeType();
             $type = $this->resolveSiteMediaType($mime);
 
-            $path = $file->store('site/media-library', 'public');
-            $url = '/storage/'.$path;
+            $extension = $file->guessExtension() ?: $file->getClientOriginalExtension();
+            $filename  = Str::random(40) . ($extension ? '.' . $extension : '');
+            $path      = 'site/media-library/' . $filename;
+            Storage::disk('public')->put($path, fopen($file->getPathname(), 'r'));
+            $url = '/storage/' . $path;
 
             SiteMediaItem::query()->create([
                 'type' => $type,

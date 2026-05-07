@@ -209,7 +209,8 @@
 
         <div class="flex items-end">
             <label class="inline-flex items-center gap-2 text-sm text-slate-300">
-                <input type="checkbox" name="is_free" value="1" @checked(old('is_free', $event->is_free))
+                <input type="hidden" name="is_free" value="0">
+                <input type="checkbox" name="is_free" id="is_free" value="1" @checked(old('is_free', $event->is_free))
                        class="rounded border-slate-600 bg-slate-800 text-amber-500">
                 Événement gratuit
             </label>
@@ -217,8 +218,9 @@
 
         <div>
             <label class="block text-sm text-slate-300 mb-1">Prix</label>
-            <input type="number" min="0" step="0.01" name="price" value="{{ old('price', $event->price) }}"
+            <input type="number" min="0" step="0.01" name="price" id="price" value="{{ old('price', $event->price) }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+            <p class="text-[11px] text-slate-500 mt-1">Montant en FCFA (laisser 0 si gratuit).</p>
         </div>
 
         <div>
@@ -321,6 +323,8 @@ function previewEventCoverFromFile(fileInputId) {
 document.addEventListener('DOMContentLoaded', () => {
     const coverUrl = document.getElementById('cover_url');
     const coverFile = document.getElementById('cover_image');
+    const isFreeCheckbox = document.getElementById('is_free');
+    const priceInput = document.getElementById('price');
 
     if (coverUrl && coverUrl.value) {
         previewEventCoverFromUrl(coverUrl.value);
@@ -332,6 +336,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (coverFile) {
         coverFile.addEventListener('change', () => previewEventCoverFromFile('cover_image'));
+    }
+
+    if (isFreeCheckbox && priceInput) {
+        const syncPriceState = () => {
+            const isFree = isFreeCheckbox.checked;
+            priceInput.disabled = isFree;
+            priceInput.required = !isFree;
+
+            if (isFree) {
+                priceInput.value = '0';
+            }
+        };
+
+        isFreeCheckbox.addEventListener('change', syncPriceState);
+        syncPriceState();
     }
 
     const recurring = document.getElementById('is_recurring');

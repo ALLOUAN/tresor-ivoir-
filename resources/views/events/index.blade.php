@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" id="html-root" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Événements — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -82,6 +84,130 @@
             background:
                 linear-gradient(140deg, rgba(56,56,46,0.7), rgba(28,28,22,0.95)),
                 repeating-linear-gradient(45deg, rgba(232,160,32,0.1), rgba(232,160,32,0.1) 8px, transparent 8px, transparent 16px);
+        }
+        .event-cta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.6rem;
+            margin-top: 0.75rem;
+            padding: 0.36rem;
+            border-radius: 0.85rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(130deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+            backdrop-filter: blur(10px);
+            animation: ctaRowIn .55s cubic-bezier(.2,.8,.2,1) both;
+        }
+        .event-price-badge-modern {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.38rem;
+            min-height: 2rem;
+            padding: 0.38rem 0.7rem;
+            border-radius: 0.7rem;
+            border: 1px solid rgba(232,160,32,0.35);
+            background: linear-gradient(145deg, rgba(232,160,32,0.22), rgba(255,255,255,0.08));
+            color: #f8d79a;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25);
+            animation: pricePulseSoft 2.7s ease-in-out infinite;
+        }
+        .event-ticket-btn-modern {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            min-height: 2rem;
+            padding: 0.38rem 0.78rem;
+            border-radius: 0.65rem;
+            font-size: 11px;
+            font-weight: 800;
+            color: #1b1408;
+            background: linear-gradient(135deg, #f4c65a 0%, #e8a020 65%, #cb8517 100%);
+            box-shadow: 0 10px 20px rgba(232,160,32,0.28);
+            transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+        }
+        .event-ticket-btn-modern::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-130%);
+            background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.38) 50%, transparent 80%);
+            transition: transform .55s ease;
+            pointer-events: none;
+        }
+        .event-ticket-btn-modern:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.03);
+            box-shadow: 0 14px 24px rgba(232,160,32,0.35);
+        }
+        .event-ticket-btn-modern:hover::after {
+            transform: translateX(130%);
+        }
+        .group:hover .event-cta-row {
+            border-color: rgba(232,160,32,0.35);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
+            transform: translateY(-1px);
+        }
+        @keyframes ctaRowIn {
+            0% { opacity: 0; transform: translateY(8px) scale(0.985); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes pricePulseSoft {
+            0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25); }
+            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(232,160,32,0.22); }
+        }
+        html:not(.dark) .events-hero {
+            border-color: rgba(0,0,0,0.1);
+            background:
+                linear-gradient(130deg, rgba(255,255,255,0.96), rgba(247,243,235,0.98)),
+                radial-gradient(circle at top right, rgba(232,160,32,0.1), transparent 40%);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.07);
+        }
+        html:not(.dark) .events-filter-panel {
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.94);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+        }
+        html:not(.dark) .events-input {
+            border-color: rgba(0,0,0,0.12);
+            background: #ffffff;
+            color: #1c1915;
+        }
+        html:not(.dark) .events-input::placeholder { color:#7c796f; }
+        html:not(.dark) .event-card {
+            border-color: rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #ffffff, #f8f4ec);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+        }
+        html:not(.dark) .event-card:hover {
+            border-color: rgba(180,83,9,0.35);
+            box-shadow: 0 14px 28px rgba(180,83,9,0.14);
+        }
+        html:not(.dark) .event-cover {
+            border-bottom-color: rgba(0,0,0,0.08);
+            background: #f4f0e8;
+        }
+        html:not(.dark) .event-cover::after {
+            background: linear-gradient(to top, rgba(255,255,255,0.92), rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.06));
+        }
+        html:not(.dark) .event-cover-missing {
+            background:
+                linear-gradient(140deg, rgba(240,235,226,0.9), rgba(231,224,214,0.92)),
+                repeating-linear-gradient(45deg, rgba(180,83,9,0.12), rgba(180,83,9,0.12) 8px, transparent 8px, transparent 16px);
+        }
+        html:not(.dark) .event-cta-row {
+            border-color: rgba(0,0,0,0.08);
+            background: linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.92));
+        }
+        html:not(.dark) .event-price-badge-modern {
+            border-color: rgba(180,83,9,0.28);
+            background: linear-gradient(145deg, rgba(245,158,11,0.24), rgba(255,255,255,0.95));
+            color: #78350f;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(180,83,9,0.14);
         }
     </style>
 </head>
@@ -163,6 +289,19 @@
                             <i class="fas fa-location-dot text-[11px] text-amber-400/70"></i>
                             {{ $event->city ?: 'Côte d\'Ivoire' }}
                         </p>
+                        <div class="event-cta-row">
+                            <span class="event-price-badge-modern">
+                                <i class="fas fa-ticket text-[10px]"></i>
+                                @if($event->is_free || (float) ($event->price ?? 0) <= 0)
+                                    Gratuit
+                                @else
+                                    {{ number_format((float) $event->price, 0, ',', ' ') }} FCFA
+                                @endif
+                            </span>
+                            <span class="event-ticket-btn-modern">
+                                <i class="fas fa-arrow-right text-[10px]"></i> Voir détails
+                            </span>
+                        </div>
                     </div>
                 </a>
             @empty

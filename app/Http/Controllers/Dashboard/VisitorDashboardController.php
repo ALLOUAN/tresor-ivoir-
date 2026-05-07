@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Event;
+use App\Models\MediaPurchase;
 use App\Models\NewsletterSubscriber;
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +46,15 @@ class VisitorDashboardController extends Controller
 
         $favorites_count = $user->favorites()->count();
         $unread_notifications = $user->unreadNotifications()->count();
+        $purchases_count = MediaPurchase::where('user_id', $user->id)
+            ->where('status', 'completed')
+            ->count();
+        $recent_purchases = MediaPurchase::with('media')
+            ->where('user_id', $user->id)
+            ->where('status', 'completed')
+            ->latest('paid_at')
+            ->take(3)
+            ->get();
 
         return view('dashboards.visitor', compact(
             'featured_articles',
@@ -53,6 +63,8 @@ class VisitorDashboardController extends Controller
             'my_reviews',
             'favorites_count',
             'unread_notifications',
+            'purchases_count',
+            'recent_purchases',
         ));
     }
 }

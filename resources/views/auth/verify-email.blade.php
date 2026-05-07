@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" id="html-root" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
         <link rel="icon" href="{{ $siteBrand['favicon_url'] }}" type="image/png">
     @endif
     <title>Vérifiez votre e-mail — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -26,6 +27,7 @@
             }
         }
     </script>
+    @include('partials.theme-light-bridge')
     <style>
         * { box-sizing: border-box; }
         body {
@@ -76,6 +78,21 @@
             border: 1px solid rgba(255,255,255,0.08);
             background: rgba(255,255,255,0.02);
         }
+        html:not(.dark) body {
+            background:
+                radial-gradient(900px 560px at 8% 10%, rgba(232,160,32,0.08), transparent 62%),
+                radial-gradient(760px 460px at 92% 88%, rgba(99,102,241,0.06), transparent 64%),
+                #f8f5ee;
+        }
+        html:not(.dark) .verify-card {
+            border-color: rgba(0,0,0,0.1);
+            background:
+                radial-gradient(110% 130% at 0% 0%, rgba(232,160,32,0.08), rgba(232,160,32,0.03) 45%, rgba(255,255,255,0.95) 100%),
+                linear-gradient(145deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98));
+            box-shadow: 0 16px 36px rgba(0,0,0,0.08);
+        }
+        html:not(.dark) .verify-step { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); }
+        html:not(.dark) .verify-input { border-color: rgba(0,0,0,0.18); background: #ffffff; color: #1c1915; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 font-sans">

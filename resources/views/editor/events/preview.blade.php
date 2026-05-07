@@ -39,6 +39,14 @@
             <span class="text-slate-600"> · </span>{{ $event->city }}
         @endif
     </p>
+    <p class="text-amber-300 text-sm font-semibold">
+        <i class="fas fa-ticket mr-1"></i>
+        @if($event->is_free || (float) ($event->price ?? 0) <= 0)
+            Gratuit
+        @else
+            {{ number_format((float) $event->price, 0, ',', ' ') }} FCFA
+        @endif
+    </p>
     @if($event->cover_url)
         <figure class="rounded-xl overflow-hidden border border-slate-800">
             <img src="{{ $event->cover_url }}" alt="{{ $event->cover_alt ?? '' }}" class="w-full max-h-[360px] object-cover">

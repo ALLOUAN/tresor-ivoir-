@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" id="html-root" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,8 @@
     @endif
     <title>{{ $siteBrand['site_name'] }} — Magazine Culturel & Touristique Premium</title>
     <meta name="description" content="{{ $siteBrand['site_description'] ?: 'Découvrez la Côte d\'Ivoire à travers ses richesses culturelles, touristiques et patrimoniales. Grand reportage, adresses choisies, art de vivre ivoirien.' }}">
+    @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -404,6 +406,27 @@
             color: #fef3c7;
             box-shadow: 0 0 24px rgba(232,160,32,0.1);
         }
+        .nav-dd-lnk {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.45rem 0.625rem; border-radius: 0.625rem;
+            font-size: 0.8125rem; font-weight: 500; color: #94a3b8;
+            text-decoration: none; white-space: nowrap;
+            background: none; border: none; cursor: pointer;
+            transition: background .15s ease, color .15s ease;
+            width: 100%; text-align: left;
+        }
+        .nav-dd-lnk:hover { background: rgba(255,255,255,0.05); color: #f1f5f9; }
+        .nav-dd-lnk:hover .nav-dd-icon { background: rgba(245,158,11,0.18); color: #fbbf24; }
+        .nav-dd-icon {
+            width: 1.875rem; height: 1.875rem; border-radius: 0.5rem; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05); color: #475569; font-size: 0.7rem;
+            transition: background .15s ease, color .15s ease;
+        }
+        .nav-dd-danger { color: #f87171; }
+        .nav-dd-danger .nav-dd-icon { color: #f87171; background: rgba(239,68,68,0.1); }
+        .nav-dd-danger:hover { background: rgba(239,68,68,0.08); color: #fca5a5; }
+        .nav-dd-danger:hover .nav-dd-icon { background: rgba(239,68,68,0.2); color: #fca5a5; }
         .btn-gold-header {
             border-radius: 9999px;
             background: linear-gradient(135deg, #f5b942 0%, #e8a020 50%, #c4811a 100%);
@@ -636,6 +659,50 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+        /* ── Featured section title (special design) ───────── */
+        .featured-title-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+        }
+        .featured-title-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(232,160,32,0.45));
+        }
+        .featured-title-line.reverse {
+            background: linear-gradient(90deg, rgba(232,160,32,0.45), transparent);
+        }
+        .featured-title-badge {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.55rem 1.2rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(232,160,32,0.38);
+            background:
+                linear-gradient(135deg, rgba(232,160,32,0.18), rgba(255,255,255,0.04)),
+                rgba(20,20,16,0.84);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.08);
+            backdrop-filter: blur(8px);
+        }
+        .featured-title-dot {
+            width: 0.42rem;
+            height: 0.42rem;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #f5b942, #e8a020);
+            box-shadow: 0 0 10px rgba(232,160,32,0.65);
+        }
+        .featured-title-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #fcd68a;
+        }
         @media (prefers-reduced-motion: reduce) {
             .social-icon-ultra,
             .social-icon-ultra::before,
@@ -645,6 +712,286 @@
                 transition: none;
                 animation: none;
             }
+        }
+
+        /* ── CSS variables dropdown ────────────────────── */
+        :root {
+            --dd-bg: rgba(8,10,14,0.96);
+            --dd-border: rgba(255,255,255,0.07);
+            --dd-shadow: 0 32px 64px -8px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.06);
+            --dd-divider: rgba(255,255,255,0.06);
+            --dd-head-gradient: rgba(245,158,11,0.07);
+        }
+        html:not(.dark) {
+            --dd-bg: rgba(255,253,248,0.99);
+            --dd-border: rgba(0,0,0,0.09);
+            --dd-shadow: 0 24px 48px -8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.9);
+            --dd-divider: rgba(0,0,0,0.07);
+            --dd-head-gradient: rgba(245,158,11,0.05);
+        }
+
+        /* ── Theme toggle ───────────────────────────────── */
+        .theme-toggle {
+            width:2.25rem; height:2.25rem; border-radius:9999px;
+            display:flex; align-items:center; justify-content:center;
+            border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04);
+            color:#94a3b8; cursor:pointer; transition:.2s ease; font-size:0.8rem; flex-shrink:0;
+        }
+        .theme-toggle:hover { color:#fde68a; border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); }
+        html:not(.dark) .theme-toggle { border-color:rgba(0,0,0,0.1); background:rgba(0,0,0,0.04); color:#6b6860; }
+        html:not(.dark) .theme-toggle:hover { color:#d97706; border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); }
+        .theme-toggle .icon-sun  { display:block; }
+        .theme-toggle .icon-moon { display:none; }
+        html:not(.dark) .theme-toggle .icon-sun  { display:none; }
+        html:not(.dark) .theme-toggle .icon-moon { display:block; }
+
+        /* ── Light mode: body & textes ──────────────────── */
+        html:not(.dark) body           { background-color:#f8f5ee!important; color:#1c1915!important; }
+        html:not(.dark) .text-white    { color:#1c1915!important; }
+        html:not(.dark) .text-gray-100 { color:#1c1915!important; }
+        html:not(.dark) .text-gray-200 { color:#2d2a23!important; }
+        html:not(.dark) .text-gray-300 { color:#44413a!important; }
+        html:not(.dark) .text-gray-400 { color:#6b6860!important; }
+        html:not(.dark) .text-gray-500 { color:#9e9b90!important; }
+        html:not(.dark) .text-slate-400 { color:#6b6860!important; }
+        html:not(.dark) .text-slate-500 { color:#9e9b90!important; }
+
+        /* ── Light mode: custom dark palette ────────────── */
+        html:not(.dark) .bg-dark-900  { background-color:#f8f5ee!important; }
+        html:not(.dark) .bg-dark-800  { background-color:#f0ece4!important; }
+        html:not(.dark) .bg-dark-700  { background-color:#e8e3da!important; }
+
+        /* ── Light mode: borders ────────────────────────── */
+        html:not(.dark) .border-white\/5           { border-color:rgba(0,0,0,0.05)!important; }
+        html:not(.dark) .border-white\/10          { border-color:rgba(0,0,0,0.08)!important; }
+        html:not(.dark) .border-white\/20          { border-color:rgba(0,0,0,0.12)!important; }
+        html:not(.dark) .border-white\/\[0\.07\]   { border-color:rgba(0,0,0,0.07)!important; }
+        html:not(.dark) .bg-white\/\[0\.04\]       { background-color:rgba(0,0,0,0.04)!important; }
+
+        /* ── Light mode: header & nav ───────────────────── */
+        html:not(.dark) #main-header.main-header-ultra:not(.header-scrolled) {
+            background:linear-gradient(180deg,rgba(254,252,248,0.97) 0%,rgba(254,252,248,0.92) 55%,rgba(254,252,248,0.82) 100%);
+            border-bottom-color:rgba(0,0,0,0.08);
+        }
+        html:not(.dark) #main-header.main-header-ultra.header-scrolled {
+            background:rgba(254,252,248,0.97)!important;
+            border-bottom-color:rgba(0,0,0,0.1)!important;
+        }
+        html:not(.dark) .nav-pill      { color:rgba(28,25,21,0.72); }
+        html:not(.dark) .nav-pill:hover { color:#1c1915; background:rgba(0,0,0,0.05); box-shadow:none; }
+        html:not(.dark) .btn-ghost-header { border-color:rgba(0,0,0,0.1); background:rgba(0,0,0,0.03); color:rgba(28,25,21,0.75); }
+        html:not(.dark) .btn-ghost-header:hover { border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); color:#92400e; }
+        html:not(.dark) #mobile-menu.mobile-menu-ultra { background:rgba(254,252,248,0.98); }
+        html:not(.dark) .lang-switch-ultra { border-color:rgba(0,0,0,0.12); background:rgba(0,0,0,0.04); }
+        html:not(.dark) .lang-switch-ultra a { color:rgba(28,25,21,0.6); }
+
+        /* ── Light mode: dropdown ───────────────────────── */
+        html:not(.dark) .nav-dd-lnk { color:#44413a; }
+        html:not(.dark) .nav-dd-lnk:hover { background:rgba(0,0,0,0.04); color:#1c1915; }
+        html:not(.dark) .nav-dd-lnk:hover .nav-dd-icon { background:rgba(245,158,11,0.14); color:#d97706; }
+        html:not(.dark) .nav-dd-icon { background:rgba(0,0,0,0.05); color:#6b6860; }
+        html:not(.dark) .nav-dd-danger { color:#dc2626; }
+        html:not(.dark) .nav-dd-danger:hover { background:rgba(239,68,68,0.06); color:#b91c1c; }
+
+        /* ── Light mode: cartes & sections ─────────────── */
+        html:not(.dark) .bg-slate-900    { background-color:#ffffff!important; }
+        html:not(.dark) .bg-slate-800    { background-color:#f4f0e8!important; }
+        html:not(.dark) .border-slate-800 { border-color:#e8e3da!important; }
+        html:not(.dark) #home-top-bar.topbar-ultra {
+            background: linear-gradient(105deg,#fefcf8 0%,#fdf9f2 42%,#fbf7eb 100%);
+            border-bottom-color: rgba(200,160,60,0.22);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+        html:not(.dark) .topbar-slogan-pill,
+        html:not(.dark) .topbar-action {
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.72);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+        }
+        html:not(.dark) .topbar-slogan-pill { color:#2d2a23; }
+        html:not(.dark) .topbar-action { color:#2d2a23; }
+        html:not(.dark) .topbar-action i { color:#b45309; opacity:0.95; }
+        html:not(.dark) .topbar-action:hover,
+        html:not(.dark) .topbar-slogan-pill:hover {
+            border-color: rgba(217,119,6,0.32);
+            box-shadow: 0 12px 22px rgba(217,119,6,0.12);
+        }
+        html:not(.dark) .topbar-action:hover { color:#1c1915; background:rgba(245,158,11,0.12); }
+        html:not(.dark) .topbar-action:hover i { color:#92400e; }
+        html:not(.dark) #home-top-bar .text-gray-300 { color:#2d2a23 !important; }
+        html:not(.dark) #home-top-bar .text-amber-200\/90 { color:#92400e !important; }
+        html:not(.dark) .hero-bg-fallback {
+            background: linear-gradient(135deg, #f8f4ec 0%, #fefcf8 50%, #f5efe4 100%);
+        }
+        html:not(.dark) .featured-title-line {
+            background: linear-gradient(90deg, transparent, rgba(180,83,9,0.4));
+        }
+        html:not(.dark) .featured-title-line.reverse {
+            background: linear-gradient(90deg, rgba(180,83,9,0.4), transparent);
+        }
+        html:not(.dark) .featured-title-badge {
+            border-color: rgba(180,83,9,0.35);
+            background:
+                linear-gradient(135deg, rgba(245,158,11,0.14), rgba(255,255,255,0.85)),
+                rgba(255,255,255,0.92);
+            box-shadow: 0 10px 20px rgba(180,83,9,0.12), inset 0 1px 0 rgba(255,255,255,0.95);
+        }
+        html:not(.dark) .featured-title-text { color:#92400e; }
+        html:not(.dark) .featured-title-dot { box-shadow: 0 0 8px rgba(180,83,9,0.45); }
+
+        .event-price-badge {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(232,160,32,0.35);
+            background: linear-gradient(135deg, rgba(232,160,32,0.2), rgba(255,255,255,0.06));
+            box-shadow: 0 8px 20px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.12);
+            animation: eventPricePulse 2.8s ease-in-out infinite;
+        }
+        .event-price-badge::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-120%);
+            background: linear-gradient(100deg, transparent 15%, rgba(255,255,255,0.35) 45%, transparent 75%);
+            animation: eventPriceShine 2.4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .group:hover .event-price-badge {
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(232,160,32,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
+        }
+        @keyframes eventPricePulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.08); }
+        }
+        @keyframes eventPriceShine {
+            0%, 20% { transform: translateX(-120%); }
+            60%, 100% { transform: translateX(130%); }
+        }
+        html:not(.dark) .event-price-badge {
+            border-color: rgba(180,83,9,0.32);
+            background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(255,255,255,0.95));
+            color: #78350f;
+        }
+
+        .event-cta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.6rem;
+            margin-top: 0.85rem;
+            padding: 0.38rem;
+            border-radius: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(130deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+            backdrop-filter: blur(10px);
+            animation: ctaRowIn .55s cubic-bezier(.2,.8,.2,1) both;
+        }
+        .event-price-badge-modern {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.38rem;
+            min-height: 2rem;
+            padding: 0.38rem 0.7rem;
+            border-radius: 0.7rem;
+            border: 1px solid rgba(232,160,32,0.35);
+            background: linear-gradient(145deg, rgba(232,160,32,0.22), rgba(255,255,255,0.08));
+            color: #f8d79a;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25);
+            animation: pricePulseSoft 2.7s ease-in-out infinite;
+        }
+        .event-price-badge-modern i {
+            font-size: 10px;
+            opacity: 0.95;
+        }
+        .event-ticket-btn-modern {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            min-height: 2rem;
+            padding: 0.38rem 0.78rem;
+            border-radius: 0.65rem;
+            font-size: 11px;
+            font-weight: 800;
+            color: #1b1408;
+            background: linear-gradient(135deg, #f4c65a 0%, #e8a020 65%, #cb8517 100%);
+            box-shadow: 0 10px 20px rgba(232,160,32,0.28);
+            transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+        }
+        .event-ticket-btn-modern::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-130%);
+            background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.38) 50%, transparent 80%);
+            transition: transform .55s ease;
+            pointer-events: none;
+        }
+        .event-ticket-btn-modern:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.03);
+            box-shadow: 0 14px 24px rgba(232,160,32,0.35);
+        }
+        .event-ticket-btn-modern:hover::after {
+            transform: translateX(130%);
+        }
+        .group:hover .event-cta-row {
+            border-color: rgba(232,160,32,0.35);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
+            transform: translateY(-1px);
+        }
+        .event-cta-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            min-height: 2rem;
+            padding: 0.38rem 0.78rem;
+            border-radius: 0.65rem;
+            font-size: 11px;
+            font-weight: 700;
+            color: #f3f4f6;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.05);
+            transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+        }
+        .event-cta-ghost:hover {
+            transform: translateY(-1px);
+            border-color: rgba(232,160,32,0.45);
+            background: rgba(232,160,32,0.14);
+        }
+        @keyframes ctaRowIn {
+            0% {
+                opacity: 0;
+                transform: translateY(8px) scale(0.985);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes pricePulseSoft {
+            0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25); }
+            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(232,160,32,0.22); }
+        }
+        html:not(.dark) .event-cta-row {
+            border-color: rgba(0,0,0,0.08);
+            background: linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.92));
+        }
+        html:not(.dark) .event-price-badge-modern {
+            border-color: rgba(180,83,9,0.28);
+            background: linear-gradient(145deg, rgba(245,158,11,0.24), rgba(255,255,255,0.95));
+            color: #78350f;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(180,83,9,0.14);
+        }
+        html:not(.dark) .event-cta-ghost {
+            color: #1f2937;
+            border-color: rgba(0,0,0,0.12);
+            background: rgba(255,255,255,0.85);
         }
 
     </style>
@@ -772,12 +1119,126 @@
                    class="{{ session('locale', app()->getLocale()) === 'en' ? 'bg-gold-500 text-dark-900 shadow-sm' : 'text-gray-400 hover:text-white' }}">EN</a>
             </div>
 
+            {{-- Theme toggle --}}
+            <button type="button" id="theme-toggle" class="theme-toggle hidden sm:flex" title="Changer le thème" aria-label="Basculer le thème">
+                <i class="fas fa-sun icon-sun"></i>
+                <i class="fas fa-moon icon-moon"></i>
+            </button>
+
             @auth
-            <a href="{{ route('dashboard') }}"
-               class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gold-200 btn-ghost-header">
-                <i class="fas fa-gauge-high text-xs opacity-80"></i>
-                <span>Dashboard</span>
-            </a>
+            @php $__initials = strtoupper(substr(auth()->user()->first_name ?? '', 0, 1) . substr(auth()->user()->last_name ?? '', 0, 1)); @endphp
+            <div class="relative hidden sm:block" id="nav-user-dropdown-wrap">
+
+                {{-- Trigger --}}
+                <button type="button" id="nav-user-dropdown-btn"
+                        class="group inline-flex items-center gap-2.5 pl-1.5 pr-3.5 py-1.5 rounded-full border border-white/10 bg-white/4 hover:border-amber-500/30 hover:bg-amber-500/6 transition-all duration-200">
+                    <span class="w-7 h-7 rounded-full bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center text-[11px] font-bold text-white shadow-sm">
+                        {{ $__initials }}
+                    </span>
+                    <span class="text-sm font-medium text-gray-300 group-hover:text-amber-100 transition-colors">Mon espace</span>
+                    <i class="fas fa-chevron-down text-[9px] text-gray-500 group-hover:text-amber-400 transition-all duration-200" id="nav-dd-chevron"></i>
+                </button>
+
+                {{-- Dropdown --}}
+                <div id="nav-user-dropdown"
+                     class="hidden absolute right-0 top-full mt-3 w-72 z-50"
+                     role="menu">
+                    <div class="rounded-2xl overflow-hidden"
+                         style="background:var(--dd-bg);border:1px solid var(--dd-border);box-shadow:var(--dd-shadow);backdrop-filter:blur(32px)">
+
+                        {{-- En-tête utilisateur --}}
+                        <div class="relative px-4 pt-4 pb-3.5 overflow-hidden">
+                            <div class="absolute inset-0" style="background:radial-gradient(ellipse 120% 80% at 0% 0%,var(--dd-head-gradient),transparent 65%)"></div>
+                            <div class="relative flex items-start gap-3">
+                                <div class="w-11 h-11 rounded-xl bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-sm font-bold shadow-lg shrink-0"
+                                     style="box-shadow:0 8px 24px rgba(245,158,11,0.3)">
+                                    {{ $__initials }}
+                                </div>
+                                <div class="min-w-0 flex-1 pt-0.5">
+                                    <p class="text-white text-sm font-semibold leading-tight truncate">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</p>
+                                    <p class="text-slate-500 text-xs truncate mt-0.5">{{ auth()->user()->email }}</p>
+                                    <span class="mt-1.5 inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full
+                                        @if(auth()->user()->role==='admin') bg-red-500/10 text-red-300 border border-red-500/20
+                                        @elseif(auth()->user()->role==='editor') bg-blue-500/10 text-blue-300 border border-blue-500/20
+                                        @elseif(auth()->user()->role==='provider') bg-purple-500/10 text-purple-300 border border-purple-500/20
+                                        @else bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 @endif">
+                                        <span class="w-1.5 h-1.5 rounded-full
+                                            @if(auth()->user()->role==='admin') bg-red-400
+                                            @elseif(auth()->user()->role==='editor') bg-blue-400
+                                            @elseif(auth()->user()->role==='provider') bg-purple-400
+                                            @else bg-emerald-400 @endif"></span>
+                                        {{ ucfirst(auth()->user()->role) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--dd-divider) 30%,var(--dd-divider) 70%,transparent);margin:0 1rem"></div>
+
+                        {{-- Navigation --}}
+                        <div class="p-2">
+                            @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('admin.dashboard') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
+                                </a>
+                                <a href="{{ route('admin.users.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-users"></i></span> Utilisateurs
+                                </a>
+                                <a href="{{ route('admin.payments.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-chart-line"></i></span> Finance
+                                </a>
+                            @elseif(auth()->user()->role === 'editor')
+                                <a href="{{ route('editor.dashboard') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
+                                </a>
+                                <a href="{{ route('editor.articles.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-pen-nib"></i></span> Mes articles
+                                </a>
+                            @elseif(auth()->user()->role === 'provider')
+                                <a href="{{ route('provider.dashboard') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
+                                </a>
+                                <a href="{{ route('provider.profile.edit') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-store"></i></span> Ma fiche
+                                </a>
+                                <a href="{{ route('provider.billing.plans') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-gem"></i></span> Mon forfait
+                                </a>
+                            @else
+                                <a href="{{ route('visitor.dashboard') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
+                                </a>
+                                <a href="{{ route('visitor.purchases.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-image"></i></span> Mes achats
+                                </a>
+                                <a href="{{ route('visitor.profile.edit') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-user-pen"></i></span> Mon profil
+                                </a>
+                                <a href="{{ route('visitor.favorites.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-heart"></i></span> Mes favoris
+                                </a>
+                                <a href="{{ route('visitor.notifications.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-bell"></i></span> Notifications
+                                </a>
+                            @endif
+                        </div>
+
+                        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--dd-divider) 30%,var(--dd-divider) 70%,transparent);margin:0 1rem"></div>
+
+                        {{-- Déconnexion --}}
+                        <div class="p-2">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="nav-dd-lnk nav-dd-danger w-full text-left">
+                                    <span class="nav-dd-icon nav-dd-icon-danger"><i class="fas fa-right-from-bracket"></i></span>
+                                    Déconnexion
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
             @else
             <a href="{{ route('login') }}"
                class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-200 btn-ghost-header">
@@ -899,7 +1360,7 @@
     {{-- Content : carousel plein écran (slides responsives) --}}
     <div class="hero-viewport relative z-10 flex w-full flex-1 flex-col sm:min-h-[min(100svh,900px)]">
         @if($heroSlides->isNotEmpty())
-            <div id="hero-bg-carousel" class="hero-viewport pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden" aria-hidden="true">
+            <div id="hero-bg-carousel" class="hero-viewport pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden">
                 @foreach($heroSlides as $idx => $slide)
                     @if($slide->isVideo())
                         @php
@@ -954,99 +1415,48 @@
                         @endif
                     @endif
                 @endforeach
-                <div class="hero-overlay-primary absolute inset-0 z-20 bg-linear-to-r from-black/92 via-black/65 to-black/35 sm:from-black/88 sm:via-black/55 sm:to-black/25"></div>
-                <div class="hero-overlay-secondary absolute inset-0 z-20 bg-linear-to-t from-black/80 via-black/15 to-black/50"></div>
-            </div>
-            @if($heroSlides->count() > 1)
-                <div class="hero-bg-controls absolute inset-x-0 bottom-16 sm:bottom-28 z-30 flex items-center justify-center gap-2 sm:gap-3 pointer-events-none px-4">
-                    <button type="button" id="hero-bg-prev" class="pointer-events-auto w-9 h-9 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center" aria-label="Slide précédent">
-                        <i class="fas fa-chevron-left text-xs"></i>
-                    </button>
-                    <div class="flex items-center gap-2 pointer-events-auto" id="hero-bg-dots" role="tablist" aria-label="Choisir un slide">
-                        @foreach($heroSlides as $idx => $slide)
-                            <button type="button"
-                                    class="hero-bg-dot h-2 rounded-full transition-all {{ $idx === 0 ? 'w-6 bg-gold-400' : 'w-2 bg-white/35 hover:bg-white/60' }}"
-                                    data-hero-bg-dot="{{ $idx }}"
-                                    aria-label="Slide {{ $idx + 1 }}"
-                                    aria-selected="{{ $idx === 0 ? 'true' : 'false' }}"></button>
-                        @endforeach
-                    </div>
-                    <button type="button" id="hero-bg-next" class="pointer-events-auto w-9 h-9 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center" aria-label="Slide suivant">
-                        <i class="fas fa-chevron-right text-xs"></i>
-                    </button>
-                </div>
-            @endif
-        @endif
+                <div class="hero-overlay-primary absolute inset-0 z-20 bg-linear-to-r from-black/92 via-black/65 to-black/35 sm:from-black/88 sm:via-black/55 sm:to-black/25" aria-hidden="true"></div>
+                <div class="hero-overlay-secondary absolute inset-0 z-20 bg-linear-to-t from-black/80 via-black/15 to-black/50" aria-hidden="true"></div>
 
-        {{-- Contenu éditorial hero --}}
-        @php
-            $heroArticle = ($hideHomeHeroArticle ?? false)
-                ? null
-                : ($homeDestinationArticle ?? (($homeArticles ?? collect())->where('is_featured', true)->first() ?? ($homeArticles ?? collect())->first()));
-            $heroContributors = $heroArticle
-                ? $heroArticle->display_uploaders
-                : collect();
-        @endphp
-        <div class="hero-editorial-content relative z-10 flex w-full flex-1 items-center">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-                <div class="hero-editorial-copy max-w-xl pt-28 sm:pt-32 pb-10">
-                    @if($heroArticle)
-                        <span class="inline-flex items-center gap-1.5 text-gold-400 text-xs uppercase tracking-[.2em] font-elegant mb-4 animate-fade-in">
-                            <i class="fas fa-star text-[10px]"></i>
-                            {{ $heroArticle->category?->name_fr ?? 'Sélection de la rédaction' }}
-                        </span>
-                        <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 text-white animate-fade-up">
-                            {{ $heroArticle->title_fr }}
-                        </h1>
-                        @if($heroArticle->excerpt_fr)
-                        <p class="text-gray-300 font-elegant text-lg font-light leading-relaxed mb-6 line-clamp-2 animate-fade-up">
-                            {{ $heroArticle->excerpt_fr }}
-                        </p>
-                        @endif
-                        <div class="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-8 animate-fade-in">
-                            @if($heroArticle->author)
-                            <span><i class="fas fa-user-pen mr-1 text-gold-500/60"></i>{{ $heroArticle->author->full_name }}</span>
-                            <span class="text-gray-600">·</span>
-                            @endif
-                            @if($heroArticle->reading_time)
-                            <span><i class="fas fa-clock mr-1 text-gold-500/60"></i>{{ $heroArticle->reading_time }} min de lecture</span>
-                            <span class="text-gray-600">·</span>
-                            @endif
-                            <span><i class="fas fa-calendar mr-1 text-gold-500/60"></i>{{ $heroArticle->published_at?->translatedFormat('d M Y') }}</span>
-                        </div>
-                        @if($heroContributors->isNotEmpty())
-                        <div class="mb-6 flex flex-wrap items-center gap-1.5">
-                            @foreach($heroContributors->take(4) as $contributor)
-                            <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-200">
-                                {{ $contributor->full_name }}
-                            </span>
+                @if($heroSlides->count() > 1)
+                    {{-- Flèches latérales (desktop & tablette) --}}
+                    <button type="button" id="hero-bg-prev"
+                            class="hero-bg-arrow hero-bg-arrow-prev pointer-events-auto absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition shadow-lg shadow-black/40 backdrop-blur-sm"
+                            aria-label="Slide précédent">
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </button>
+                    <button type="button" id="hero-bg-next"
+                            class="hero-bg-arrow hero-bg-arrow-next pointer-events-auto absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition shadow-lg shadow-black/40 backdrop-blur-sm"
+                            aria-label="Slide suivant">
+                        <i class="fas fa-chevron-right text-sm"></i>
+                    </button>
+
+                    {{-- Barre de contrôles (mobile + dots desktop) --}}
+                    <div class="hero-bg-controls absolute inset-x-0 bottom-3 sm:bottom-4 z-30 flex items-center justify-center gap-2 sm:gap-3 pointer-events-none px-4">
+                        <button type="button" id="hero-bg-prev-mobile"
+                                class="pointer-events-auto sm:hidden w-9 h-9 rounded-full bg-black/55 border border-white/25 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center backdrop-blur-sm"
+                                aria-label="Slide précédent">
+                            <i class="fas fa-chevron-left text-xs"></i>
+                        </button>
+                        <div class="flex items-center gap-2 pointer-events-auto rounded-full bg-black/35 border border-white/10 px-3 py-1.5 backdrop-blur-sm" id="hero-bg-dots" role="tablist" aria-label="Choisir un slide">
+                            @foreach($heroSlides as $idx => $slide)
+                                <button type="button"
+                                        class="hero-bg-dot h-2 rounded-full transition-all {{ $idx === 0 ? 'w-6 bg-gold-400' : 'w-2 bg-white/35 hover:bg-white/60' }}"
+                                        data-hero-bg-dot="{{ $idx }}"
+                                        aria-label="Slide {{ $idx + 1 }}"
+                                        aria-selected="{{ $idx === 0 ? 'true' : 'false' }}"></button>
                             @endforeach
                         </div>
-                        @endif
-                        <a href="{{ route('articles.show', $heroArticle->slug_fr) }}"
-                           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm transition-all duration-300 shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:-translate-y-0.5 animate-fade-up">
-                            <i class="fas fa-book-open text-xs"></i>
-                            Lire le reportage
-                        </a>
-                    @elseif(!($hideHomeHeroArticle ?? false))
-                        <span class="inline-flex items-center gap-1.5 text-gold-400 text-xs uppercase tracking-[.2em] font-elegant mb-4">
-                            <i class="fas fa-star text-[10px]"></i>Magazine Premium
-                        </span>
-                        <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 text-white">
-                            Découvrez la Côte d'Ivoire<br class="hidden sm:block">à travers sa culture
-                        </h1>
-                        <p class="text-gray-300 font-elegant text-lg font-light leading-relaxed mb-8">
-                            Patrimoine, art de vivre, gastronomie et destinations d'exception — le magazine de référence.
-                        </p>
-                        <a href="{{ route('articles.index') }}"
-                           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm transition-all duration-300 shadow-xl shadow-gold-500/25 hover:shadow-gold-500/40 hover:-translate-y-0.5">
-                            <i class="fas fa-newspaper text-xs"></i>
-                            Explorer le magazine
-                        </a>
-                    @endif
-                </div>
+                        <button type="button" id="hero-bg-next-mobile"
+                                class="pointer-events-auto sm:hidden w-9 h-9 rounded-full bg-black/55 border border-white/25 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center backdrop-blur-sm"
+                                aria-label="Slide suivant">
+                            <i class="fas fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                @endif
             </div>
-        </div>
+        @endif
+
     </div>
 
     {{-- Categories bar --}}
@@ -1084,16 +1494,14 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
         {{-- ── En-tête centré style presse ── --}}
-        <div class="flex items-center gap-4 mb-10 sm:mb-12 reveal">
-            <div class="flex-1 h-px bg-gradient-to-r from-transparent to-gold-500/40"></div>
-            <div class="flex items-center gap-3 shrink-0">
-                <span class="w-1.5 h-1.5 rounded-full bg-gold-400"></span>
-                <span class="font-elegant text-xs sm:text-sm font-bold uppercase tracking-[0.28em] text-gold-300 border border-gold-500/30 px-5 py-2 rounded-full bg-dark-800/80">
-                    À la une
-                </span>
-                <span class="w-1.5 h-1.5 rounded-full bg-gold-400"></span>
+        <div class="featured-title-wrap mb-10 sm:mb-12 reveal">
+            <div class="featured-title-line"></div>
+            <div class="featured-title-badge shrink-0">
+                <span class="featured-title-dot"></span>
+                <span class="featured-title-text">À la une</span>
+                <span class="featured-title-dot"></span>
             </div>
-            <div class="flex-1 h-px bg-gradient-to-l from-transparent to-gold-500/40"></div>
+            <div class="featured-title-line reverse"></div>
         </div>
 
         @if(($homeArticles ?? collect())->isNotEmpty())
@@ -1409,14 +1817,21 @@
                         <p class="text-gray-500 text-xs mt-2">
                             <i class="fas fa-location-dot mr-1 text-gold-500/60"></i>{{ $ev->city ?: 'Côte d\'Ivoire' }}
                         </p>
-
-                        <div class="mt-3">
+                        <div class="event-cta-row">
+                            <span class="event-price-badge-modern">
+                                <i class="fas fa-ticket"></i>
+                                @if($ev->is_free || (float) ($ev->price ?? 0) <= 0)
+                                    Gratuit
+                                @else
+                                    {{ number_format((float) $ev->price, 0, ',', ' ') }} FCFA
+                                @endif
+                            </span>
                             @if($ev->ticket_url)
-                                <a href="{{ $ev->ticket_url }}" target="_blank" class="inline-flex items-center gap-1.5 bg-gold-500 hover:bg-gold-400 text-dark-900 text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                                <a href="{{ $ev->ticket_url }}" target="_blank" class="event-ticket-btn-modern">
                                     <i class="fas fa-ticket-simple text-[10px]"></i> Réserver
                                 </a>
                             @else
-                                <a href="{{ route('events.show', $ev->slug) }}" class="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                                <a href="{{ route('events.show', $ev->slug) }}" class="event-cta-ghost">
                                     <i class="fas fa-arrow-right text-[10px]"></i> Voir détails
                                 </a>
                             @endif
@@ -1434,10 +1849,14 @@
 {{-- ══════════════════════════════════════════════════════════
      SECTION : ANNUAIRE PRESTATAIRES
 ══════════════════════════════════════════════════════════ --}}
-<section id="annuaire" class="py-16 sm:py-24 bg-dark-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class="reveal">
+<section id="annuaire" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none opacity-40">
+        <div class="absolute -top-32 -left-24 w-80 h-80 rounded-full bg-gold-500/10 blur-3xl"></div>
+        <div class="absolute -bottom-20 right-0 w-72 h-72 rounded-full bg-amber-400/10 blur-3xl"></div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+            <div class="lg:col-span-5 reveal rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-transparent backdrop-blur-xl p-6 sm:p-8 shadow-2xl shadow-black/25">
                 <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Annuaire des prestataires</p>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-5 leading-snug">
                     Les meilleures adresses<br>de Côte d'Ivoire
@@ -1445,52 +1864,61 @@
                 <p class="text-gray-400 font-elegant text-lg font-light leading-relaxed mb-8">
                     Hôtels, restaurants, guides touristiques, artisans… Découvrez notre sélection premium d'établissements vérifiés et notés par notre équipe.
                 </p>
-                <div class="flex flex-wrap gap-3 mb-8">
+
+                <div class="flex flex-wrap gap-2.5 mb-8">
                     @if(($homeProviderCategories ?? collect())->isNotEmpty())
                         @foreach($homeProviderCategories as $pc)
                         <a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}"
-                           class="px-3 py-1.5 bg-dark-700 border border-white/8 text-gray-300 text-xs rounded-full hover:border-gold-400/40 hover:text-gold-400 transition">
+                           class="group inline-flex items-center px-3.5 py-1.5 rounded-full border border-white/10 bg-dark-700/70 text-gray-300 text-[11px] font-semibold tracking-wide hover:border-gold-400/45 hover:bg-gold-500/10 hover:text-gold-300 transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold-500/60 mr-2 group-hover:scale-125 transition"></span>
                             {{ $pc->name_fr }}
                         </a>
                         @endforeach
                     @else
                         @foreach(['Hôtellerie', 'Gastronomie', 'Guides', 'Artisanat', 'Loisirs', 'Bien-être'] as $c)
                         <a href="{{ route('providers.index') }}"
-                           class="px-3 py-1.5 bg-dark-700 border border-white/8 text-gray-300 text-xs rounded-full hover:border-gold-400/40 hover:text-gold-400 transition">
+                           class="group inline-flex items-center px-3.5 py-1.5 rounded-full border border-white/10 bg-dark-700/70 text-gray-300 text-[11px] font-semibold tracking-wide hover:border-gold-400/45 hover:bg-gold-500/10 hover:text-gold-300 transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold-500/60 mr-2 group-hover:scale-125 transition"></span>
                             {{ $c }}
                         </a>
                         @endforeach
                     @endif
                 </div>
+
                 <a href="{{ route('providers.index') }}"
-                   class="inline-flex items-center gap-2 px-6 py-3 bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm rounded-xl transition shadow-lg shadow-gold-500/20">
-                    <i class="fas fa-search"></i> Explorer l'annuaire
+                   class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl text-dark-900 font-bold text-sm bg-gradient-to-r from-gold-400 via-gold-500 to-amber-500 hover:from-gold-300 hover:to-amber-400 transition-all duration-300 shadow-lg shadow-gold-500/25 hover:-translate-y-0.5">
+                    <i class="fas fa-compass"></i> Explorer l'annuaire
                 </a>
             </div>
-            <div class="grid grid-cols-2 gap-4 reveal">
+
+            <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 reveal">
                 @forelse(($homeProviders ?? collect()) as $p)
-                <a href="{{ route('providers.show', $p->slug) }}" class="bg-dark-700/50 border border-white/8 hover:border-gold-500/30 rounded-xl p-4 transition-all duration-300 group block">
+                <a href="{{ route('providers.show', $p->slug) }}" class="group rounded-2xl border border-white/10 bg-gradient-to-br from-dark-700/80 via-dark-700/60 to-dark-800/70 p-4.5 sm:p-5 hover:border-gold-500/35 hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-black/20">
                     <div class="flex items-start justify-between mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-dark-600 flex items-center justify-center group-hover:bg-gold-500/10 transition">
-                            <i class="fas fa-store text-gold-400/60 group-hover:text-gold-400 transition"></i>
+                        <div class="w-11 h-11 rounded-xl border border-white/10 bg-dark-600/80 flex items-center justify-center group-hover:border-gold-500/35 group-hover:bg-gold-500/10 transition">
+                            <i class="fas fa-store text-gold-400/70 group-hover:text-gold-300 transition"></i>
                         </div>
                         @if($p->is_verified)
-                        <span class="bg-gold-500/15 text-gold-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-gold-500/30">
-                            <i class="fas fa-check-circle mr-0.5 text-[9px]"></i>Vérifié
+                        <span class="inline-flex items-center bg-emerald-500/15 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-400/35">
+                            <i class="fas fa-badge-check mr-1 text-[9px]"></i>Vérifié
                         </span>
                         @endif
                     </div>
-                    <p class="text-white text-sm font-semibold font-serif">{{ $p->name }}</p>
-                    <p class="text-gray-500 text-xs">{{ $p->category->name_fr ?? 'Prestataire' }}</p>
-                    <div class="flex items-center gap-1 mt-2">
-                        @for($i = 1; $i <= 5; $i++)
-                        <i class="fas fa-star text-[10px] {{ $i <= round((float) ($p->rating_avg ?? 0)) ? 'text-gold-400' : 'text-dark-500' }}"></i>
-                        @endfor
-                        <span class="text-gray-500 text-xs ml-1">{{ number_format((float) ($p->rating_avg ?? 0), 1) }} ({{ (int) ($p->rating_count ?? 0) }})</span>
+                    <p class="text-white text-sm sm:text-[15px] font-semibold font-serif leading-snug line-clamp-2">{{ $p->name }}</p>
+                    <p class="text-gray-400 text-xs mt-1">{{ $p->category->name_fr ?? 'Prestataire' }}</p>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                            @for($i = 1; $i <= 5; $i++)
+                            <i class="fas fa-star text-[10px] {{ $i <= round((float) ($p->rating_avg ?? 0)) ? 'text-gold-400' : 'text-dark-500' }}"></i>
+                            @endfor
+                        </div>
+                        <span class="text-gray-400 text-[11px] font-medium">{{ number_format((float) ($p->rating_avg ?? 0), 1) }} ({{ (int) ($p->rating_count ?? 0) }})</span>
                     </div>
                 </a>
                 @empty
-                <div class="col-span-2 text-gray-500 text-sm">Aucun prestataire actif pour le moment.</div>
+                <div class="sm:col-span-2 text-center text-gray-500 text-sm py-10 rounded-2xl border border-dashed border-white/10 bg-dark-800/40">
+                    Aucun prestataire actif pour le moment.
+                </div>
                 @endforelse
             </div>
         </div>
@@ -1897,8 +2325,14 @@
         }
 
         const dots   = document.querySelectorAll('[data-hero-bg-dot]');
-        const prevBtn = document.getElementById('hero-bg-prev');
-        const nextBtn = document.getElementById('hero-bg-next');
+        const prevBtns = [
+            document.getElementById('hero-bg-prev'),
+            document.getElementById('hero-bg-prev-mobile'),
+        ].filter(Boolean);
+        const nextBtns = [
+            document.getElementById('hero-bg-next'),
+            document.getElementById('hero-bg-next-mobile'),
+        ].filter(Boolean);
 
         let index = 0;
         let timer = null;
@@ -1986,15 +2420,19 @@
             });
         }
 
-        if (prevBtn) prevBtn.addEventListener('click', function () {
-            var v = getVideo(layers[index]);
-            if (v) v.removeEventListener('ended', onVideoEnded);
-            prev();
+        prevBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var v = getVideo(layers[index]);
+                if (v) v.removeEventListener('ended', onVideoEnded);
+                prev();
+            });
         });
-        if (nextBtn) nextBtn.addEventListener('click', function () {
-            var v = getVideo(layers[index]);
-            if (v) v.removeEventListener('ended', onVideoEnded);
-            next();
+        nextBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var v = getVideo(layers[index]);
+                if (v) v.removeEventListener('ended', onVideoEnded);
+                next();
+            });
         });
         dots.forEach(function (dot, i) {
             dot.addEventListener('click', function () {
@@ -2023,6 +2461,42 @@
         });
     })();
 
+    // ── Dropdown "Mon espace" ─────────────────────────────────────────────
+    (function () {
+        const btn      = document.getElementById('nav-user-dropdown-btn');
+        const dropdown = document.getElementById('nav-user-dropdown');
+        const chevron  = document.getElementById('nav-dd-chevron');
+        const wrap     = document.getElementById('nav-user-dropdown-wrap');
+        if (!btn || !dropdown) return;
+
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = !dropdown.classList.contains('hidden');
+            dropdown.classList.toggle('hidden', isOpen);
+            chevron?.classList.toggle('rotate-180', !isOpen);
+        });
+        document.addEventListener('click', (e) => {
+            if (!wrap?.contains(e.target)) {
+                dropdown.classList.add('hidden');
+                chevron?.classList.remove('rotate-180');
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { dropdown.classList.add('hidden'); chevron?.classList.remove('rotate-180'); }
+        });
+    })();
+
+    // ── Theme toggle ──────────────────────────────────────────────────────
+    (function () {
+        const btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+        btn.addEventListener('click', () => {
+            const html = document.documentElement;
+            const going_light = html.classList.contains('dark');
+            html.classList.toggle('dark', !going_light);
+            localStorage.setItem('tiTheme', going_light ? 'light' : 'dark');
+        });
+    })();
 </script>
 
 </body>

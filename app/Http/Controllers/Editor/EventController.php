@@ -57,6 +57,8 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
+        $this->sanitizeEmptyEventUploads($request);
+
         $data = $request->validate([
             'title_fr' => 'required|string|max:255',
             'title_en' => 'nullable|string|max:255',
@@ -78,7 +80,7 @@ class EventController extends Controller
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'is_free' => 'boolean',
-            'price' => 'nullable|numeric|min:0',
+            'price' => 'nullable|numeric|min:0|required_unless:is_free,1',
             'ticket_url' => 'nullable|url|max:500',
             'location_name' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
@@ -97,7 +99,7 @@ class EventController extends Controller
             $data['slug'] = Str::slug($data['title_fr']);
         }
 
-        if ($request->hasFile('cover_image')) {
+        if ($this->hasUsableUploadedFile($request, 'cover_image')) {
             $data['cover_url'] = $this->storeEventCover($request->file('cover_image'));
         }
 
@@ -196,6 +198,7 @@ class EventController extends Controller
     public function update(Request $request, Event $event)
     {
         $this->authorizeEdit($event);
+        $this->sanitizeEmptyEventUploads($request);
 
         $data = $request->validate([
             'title_fr' => 'required|string|max:255',
@@ -218,7 +221,7 @@ class EventController extends Controller
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'is_free' => 'boolean',
-            'price' => 'nullable|numeric|min:0',
+            'price' => 'nullable|numeric|min:0|required_unless:is_free,1',
             'ticket_url' => 'nullable|url|max:500',
             'location_name' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
@@ -242,7 +245,7 @@ class EventController extends Controller
             $data['price'] = 0;
         }
 
-        if ($request->hasFile('cover_image')) {
+        if ($this->hasUsableUploadedFile($request, 'cover_image')) {
             $this->deleteStoredPublicFile($event->cover_url);
             $data['cover_url'] = $this->storeEventCover($request->file('cover_image'));
         }
@@ -315,9 +318,79 @@ class EventController extends Controller
 
     private function storeEventCover(UploadedFile $file): string
     {
-        $path = $file->store('events/covers', 'public');
+        $this->assertUploadedFileIsUsable('cover_image', $file);
 
-        return '/storage/'.$path;
+        // Windows/Laragon safeguard: avoid UploadedFile::store() realpath edge cases.
+        $pathname = $file->getPathname();
+        $handle = (is_string($pathname) && $pathname !== '') ? @fopen($pathname, 'r') : false;
+
+        if (! is_resource($handle)) {
+            throw ValidationException::withMessages([
+                'cover_image' => 'Le fichier image televerse est invalide. Veuillez le selectionner a nouveau.',
+            ]);
+        }
+
+        $extension = strtolower((string) $file->getClientOriginalExtension());
+        $relativePath = 'events/covers/' . Str::random(40) . '.' . $extension;
+
+        try {
+            $stored = Storage::disk('public')->put($relativePath, $handle);
+        } finally {
+            is_resource($handle) && fclose($handle);
+        }
+
+        if (! $stored) {
+            throw ValidationException::withMessages([
+                'cover_image' => 'Le fichier image televerse est invalide. Veuillez le selectionner a nouveau.',
+            ]);
+        }
+
+        return '/storage/' . $relativePath;
+    }
+
+    private function sanitizeEmptyEventUploads(Request $request): void
+    {
+        $file = $request->file('cover_image');
+
+        if (! $file instanceof UploadedFile) {
+            return;
+        }
+
+        $pathname = '';
+        try {
+            $pathname = (string) $file->getPathname();
+        } catch (\ValueError) {
+            $pathname = '';
+        }
+
+        if ($file->getError() === \UPLOAD_ERR_NO_FILE || $pathname === '') {
+            $request->files->remove('cover_image');
+        }
+    }
+
+    private function hasUsableUploadedFile(Request $request, string $field): bool
+    {
+        $file = $request->file($field);
+
+        return $file instanceof UploadedFile && $this->isUsableUploadedFile($file);
+    }
+
+    private function assertUploadedFileIsUsable(string $field, UploadedFile $file): void
+    {
+        if (! $this->isUsableUploadedFile($file)) {
+            throw ValidationException::withMessages([
+                $field => 'Le fichier televerse est invalide ou incomplet. Veuillez le selectionner a nouveau.',
+            ]);
+        }
+    }
+
+    private function isUsableUploadedFile(UploadedFile $file): bool
+    {
+        try {
+            return $file->isValid() && $file->getError() === \UPLOAD_ERR_OK;
+        } catch (\ValueError) {
+            return false;
+        }
     }
 
     private function deleteStoredPublicFile(?string $storedUrl): void

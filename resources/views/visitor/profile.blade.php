@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.visitor-public')
 
 @section('title', 'Mon profil')
 @section('page-title', 'Mon profil visiteur')

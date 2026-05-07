@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->validateCsrfTokens(except: [
             '/webhook/cynetpay',
+            '/galerie/achat/webhook',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

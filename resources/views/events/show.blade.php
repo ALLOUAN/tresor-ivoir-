@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" id="html-root" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->title_fr }} — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -73,6 +74,55 @@
             border-color: rgba(232,160,32,0.45);
             box-shadow: 0 16px 32px rgba(0,0,0,0.35);
         }
+        html:not(.dark) body {
+            background: #f6f3ed;
+            color: #111827;
+        }
+        html:not(.dark) .event-detail-shell::before {
+            background:
+                radial-gradient(120% 80% at 0% 0%, rgba(232,160,32,0.2), transparent 50%),
+                radial-gradient(80% 70% at 100% 0%, rgba(99,102,241,0.09), transparent 55%);
+        }
+        html:not(.dark) .event-hero {
+            border-color: rgba(15,23,42,0.12);
+            background:
+                linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,245,238,0.96)),
+                radial-gradient(circle at top right, rgba(232,160,32,0.16), transparent 50%);
+            box-shadow: 0 18px 40px rgba(15,23,42,0.14), inset 0 1px 0 rgba(255,255,255,0.85);
+        }
+        html:not(.dark) .event-cover-frame {
+            border-color: rgba(15,23,42,0.12);
+            background: #ece7dc;
+        }
+        html:not(.dark) .event-cover-frame::after {
+            background: linear-gradient(to top, rgba(17,24,39,0.34), rgba(17,24,39,0.06) 45%, rgba(17,24,39,0.12));
+        }
+        html:not(.dark) .event-cover-fallback {
+            background:
+                linear-gradient(140deg, rgba(243,236,224,0.95), rgba(228,220,204,0.96)),
+                repeating-linear-gradient(45deg, rgba(180,83,9,0.08), rgba(180,83,9,0.08) 8px, transparent 8px, transparent 16px);
+        }
+        html:not(.dark) .event-stat-chip {
+            border-color: rgba(15,23,42,0.14);
+            background: rgba(255,255,255,0.9);
+            color: #1f2937;
+        }
+        html:not(.dark) .event-hero h1 {
+            color: #111827 !important;
+            text-shadow: none !important;
+        }
+        html:not(.dark) .event-hero .fa-image {
+            color: rgba(180,83,9,0.72) !important;
+        }
+        html:not(.dark) .event-hero .absolute span {
+            background: rgba(255,255,255,0.88) !important;
+            border-color: rgba(15,23,42,0.14) !important;
+            color: #92400e !important;
+            text-shadow: none !important;
+        }
+        html:not(.dark) .prose-content {
+            color: #1f2937;
+        }
     </style>
 </head>
 <body class="bg-[#0d0d0b] text-white">
@@ -91,27 +141,35 @@
                     <div class="event-cover-fallback h-full w-full flex items-center justify-center">
                         <div class="text-center px-5">
                             <i class="fas fa-image text-amber-300/80 text-2xl mb-3"></i>
-                            <p class="text-[11px] uppercase tracking-[0.24em] text-amber-200/90 font-semibold">Aucune couverture</p>
+                            <p class="text-[11px] uppercase tracking-[0.24em] text-amber-200/90 font-semibold [text-shadow:0_1px_4px_rgba(0,0,0,0.35)]">Aucune couverture</p>
                         </div>
                     </div>
                 @endif
                 <div class="absolute bottom-3 left-3 z-[1]">
-                    <span class="inline-flex items-center rounded-full bg-black/55 border border-white/20 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-amber-200 font-semibold backdrop-blur">
+                    <span class="inline-flex items-center rounded-full bg-black/60 border border-white/25 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-amber-100 font-semibold backdrop-blur [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">
                         {{ $event->category->name_fr ?? 'Événement' }}
                     </span>
                 </div>
             </div>
 
             <div class="pt-5">
-                <h1 class="font-serif text-3xl sm:text-4xl font-bold leading-tight">{{ $event->title_fr }}</h1>
+                <h1 class="font-serif text-3xl sm:text-4xl font-bold leading-tight text-white [text-shadow:0_4px_16px_rgba(0,0,0,0.45)]">{{ $event->title_fr }}</h1>
                 <div class="mt-4 flex flex-wrap gap-2.5">
-                    <span class="event-stat-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-gray-300">
+                    <span class="event-stat-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-gray-100">
                         <i class="fas fa-calendar text-amber-400/80"></i>
                         {{ $event->starts_at?->format('d/m/Y H:i') }} @if($event->ends_at) - {{ $event->ends_at->format('d/m/Y H:i') }} @endif
                     </span>
-                    <span class="event-stat-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-gray-300">
+                    <span class="event-stat-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-gray-100">
                         <i class="fas fa-location-dot text-amber-400/80"></i>
                         {{ $event->location_name ?: 'Lieu non précisé' }} · {{ $event->city ?: 'Côte d\'Ivoire' }}
+                    </span>
+                    <span class="event-stat-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-gray-100">
+                        <i class="fas fa-ticket text-amber-400/80"></i>
+                        @if($event->is_free || (float) ($event->price ?? 0) <= 0)
+                            Gratuit
+                        @else
+                            {{ number_format((float) $event->price, 0, ',', ' ') }} FCFA
+                        @endif
                     </span>
                 </div>
             </div>
@@ -136,7 +194,7 @@
                     </div>
                 @endif
             @endauth
-            <div class="mt-5 leading-relaxed text-gray-300 prose-content max-w-none">{!! \App\Support\HtmlSanitizer::articleBody($event->description_fr) !!}</div>
+            <div class="mt-5 leading-relaxed text-gray-100 prose-content max-w-none">{!! \App\Support\HtmlSanitizer::articleBody($event->description_fr) !!}</div>
 
             @if($event->ticket_url)
                 <a href="{{ $event->ticket_url }}" target="_blank" rel="noopener noreferrer" class="event-ticket-btn inline-flex items-center gap-2 mt-6 text-black font-bold px-5 py-2.5 rounded-xl text-sm">
@@ -164,6 +222,13 @@
                             <div class="p-4">
                                 <p class="text-amber-400 text-xs uppercase">{{ $r->category->name_fr ?? 'Événement' }}</p>
                                 <p class="font-semibold mt-1">{{ $r->title_fr }}</p>
+                                <p class="text-amber-300 text-xs mt-1.5">
+                                    @if($r->is_free || (float) ($r->price ?? 0) <= 0)
+                                        Gratuit
+                                    @else
+                                        {{ number_format((float) $r->price, 0, ',', ' ') }} FCFA
+                                    @endif
+                                </p>
                                 <p class="text-gray-500 text-xs mt-2">{{ $r->starts_at?->format('d/m/Y H:i') }}</p>
                             </div>
                         </a>

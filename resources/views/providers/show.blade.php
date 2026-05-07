@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" id="html-root" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $provider->name }} — Annuaire {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -55,9 +57,50 @@
             border-color: rgba(232,160,32,0.52);
             box-shadow: 0 20px 38px rgba(0,0,0,0.38), 0 0 22px rgba(232,160,32,0.14);
         }
+        html:not(.dark) .provider-hero-panel {
+            border-color: rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #ffffff, #f8f4ec);
+            box-shadow: 0 16px 30px rgba(0,0,0,0.07);
+        }
+        html:not(.dark) .provider-info-card {
+            border-color: rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #ffffff, #f6f2ea);
+        }
+        html:not(.dark) .provider-chip {
+            border-color: rgba(180,83,9,0.25);
+            background: rgba(180,83,9,0.08);
+        }
+        html:not(.dark) .provider-similar-card {
+            border-color: rgba(0,0,0,0.1);
+            background: linear-gradient(155deg, #ffffff, #f7f3eb);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+        }
+        .order-modal-backdrop {
+            backdrop-filter: blur(5px);
+        }
+        .order-modal-card {
+            transition: opacity .22s ease, transform .24s cubic-bezier(.2,.8,.2,1);
+            transform-origin: center;
+        }
+        .order-pill {
+            border: 1px solid rgba(16, 78, 45, 0.9);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.02);
+        }
+        .guest-pop {
+            border: 1px solid rgba(255,255,255,0.12);
+            background: #141410;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+        }
+        .qty-btn {
+            width: 36px; height: 36px; border-radius: 999px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: #003b22; color: #fff; font-weight: 700;
+        }
+        .qty-btn:disabled { background: #9aaea4; cursor: not-allowed; }
     </style>
 </head>
-<body class="bg-[#0d0d0b] text-white">
+<body class="bg-[#0d0d0b] text-white" data-order-errors="{{ $errors->any() ? '1' : '0' }}">
     @include('partials.public-top-nav')
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
         @if(session('success'))
@@ -135,18 +178,54 @@
                                 N/A
                             @endif
                         </p>
+                        <p class="mt-1.5"><span class="text-gray-500">Lien réserver :</span>
+                            @if($provider->reserve_url || $provider->website)
+                                <a href="{{ $provider->reserve_url ?: $provider->website }}" target="_blank" class="text-amber-400 hover:text-amber-300">{{ $provider->reserve_url ?: $provider->website }}</a>
+                            @else
+                                N/A
+                            @endif
+                        </p>
+                        <p class="mt-1.5"><span class="text-gray-500">Lien commander :</span>
+                            Formulaire de commande (bouton ci-dessous)
+                        </p>
                     </div>
                 </div>
-                @if(!empty($provider->website))
-                    <div class="mt-5 flex justify-center">
-                        <a href="{{ $provider->website }}"
-                           target="_blank" rel="noopener noreferrer"
-                           class="provider-book-btn inline-flex items-center justify-center gap-2.5 rounded-xl text-black font-bold px-7 py-3.5 text-base">
-                            <i class="fas fa-hotel text-sm"></i>
-                            Effectuer une réservation d’hôtel
-                        </a>
-                    </div>
-                @endif
+                <div class="mt-5 space-y-3">
+                    @if(!empty($provider->reserve_url) || !empty($provider->website))
+                        <div class="flex justify-center">
+                            <a href="{{ $provider->reserve_url ?: $provider->website }}"
+                               target="_blank" rel="noopener noreferrer"
+                               class="provider-book-btn inline-flex items-center justify-center gap-2.5 rounded-xl text-black font-bold px-7 py-3.5 text-base">
+                                <i class="fas fa-hotel text-sm"></i>
+                                Effectuer une réservation d’hôtel
+                            </a>
+                        </div>
+                    @endif
+
+                    @auth
+                        @if(auth()->user()->role === 'visitor')
+                            <div class="flex justify-center">
+                                <button type="button"
+                                        onclick="openOrderModal()"
+                                        class="provider-book-btn inline-flex items-center justify-center gap-2.5 rounded-xl text-black font-bold px-7 py-3 text-base">
+                                    <i class="fas fa-cart-shopping text-sm"></i>
+                                    Passer une commande
+                                </button>
+                            </div>
+                        @else
+                            <p class="text-center text-xs text-gray-500">
+                                Le formulaire de commande est disponible pour les comptes visiteurs.
+                            </p>
+                        @endif
+                    @else
+                        <div class="flex justify-center">
+                            <a href="{{ route('login') }}" class="provider-book-btn inline-flex items-center justify-center gap-2.5 rounded-xl text-black font-bold px-7 py-3 text-base">
+                                <i class="fas fa-right-to-bracket text-sm"></i>
+                                Se connecter pour commander
+                            </a>
+                        </div>
+                    @endauth
+                </div>
             </div>
         </div>
 
@@ -267,12 +346,224 @@
             </div>
         @endif
     </div>
-    <footer class="border-t border-white/5 bg-[#0d0d0b] py-6 mt-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between text-xs text-gray-600">
-            <span>&copy; {{ date('Y') }} {{ $siteBrand['site_name'] }}</span>
-            <a href="{{ route('providers.index') }}" class="hover:text-amber-400 transition">← Retour à l'annuaire</a>
-        </div>
-    </footer>
 @include('partials.homepage-footer')
+
+@auth
+    @if(auth()->user()->role === 'visitor')
+        <div id="order-modal" class="fixed inset-0 z-[90] hidden">
+            <div id="order-modal-backdrop" class="absolute inset-0 bg-black/70 order-modal-backdrop opacity-0 transition-opacity duration-200" onclick="closeOrderModal()"></div>
+            <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
+                <div id="order-modal-card" class="order-modal-card w-full max-w-2xl bg-[#141410] border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col opacity-0 scale-95 translate-y-3">
+                    <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+                        <h2 class="text-white font-semibold">Passer une commande</h2>
+                        <button type="button" onclick="closeOrderModal()" class="text-slate-400 hover:text-white">
+                            <i class="fas fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+                    <form method="POST" action="{{ route('providers.order', $provider->slug) }}" class="p-5 overflow-y-auto space-y-3">
+                        @csrf
+                        @if($errors->any())
+                            <div class="p-2.5 bg-red-900/30 border border-red-700 rounded-lg text-red-200 text-xs">
+                                {{ $errors->first() }}
+                            </div>
+                        @endif
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1.5">Nom complet *</label>
+                                <input type="text" name="customer_name" required
+                                       value="{{ old('customer_name', auth()->user()->full_name) }}"
+                                       class="w-full bg-[#1c1c16] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1.5">Téléphone *</label>
+                                <input type="text" name="customer_phone" required value="{{ old('customer_phone') }}"
+                                       class="w-full bg-[#1c1c16] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100"
+                                       placeholder="+225 ...">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1.5">Email</label>
+                                <input type="email" name="customer_email" value="{{ old('customer_email', auth()->user()->email) }}"
+                                       class="w-full bg-[#1c1c16] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1.5">Service souhaité *</label>
+                                <input type="text" name="service_requested" required value="{{ old('service_requested') }}"
+                                       class="w-full bg-[#1c1c16] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100"
+                                       placeholder="Ex: Réservation, livraison, devis...">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1.5">Arrivée</label>
+                                <input type="date" name="arrival_date" value="{{ old('arrival_date') }}"
+                                       class="w-full bg-[#1c1c16] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1.5">Départ</label>
+                                <input type="date" name="departure_date" value="{{ old('departure_date') }}"
+                                       class="w-full bg-[#1c1c16] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1.5">Budget estimé (FCFA)</label>
+                                <input type="number" min="0" step="1" name="estimated_budget" value="{{ old('estimated_budget') }}"
+                                       class="w-full bg-[#1c1c16] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100"
+                                       placeholder="Ex: 100000">
+                            </div>
+                            <div class="md:col-span-2 relative">
+                                <label class="block text-xs text-gray-400 mb-1.5">Chambres/Personnes</label>
+                                <button type="button" id="guest-trigger"
+                                        class="order-pill w-full px-4 py-2.5 text-left text-sm text-white">
+                                    <span id="guest-summary">1 chambre, 2 adultes, 0 enfant</span>
+                                </button>
+                                <input type="hidden" name="rooms" id="rooms" value="{{ old('rooms', 1) }}">
+                                <input type="hidden" name="adults" id="adults" value="{{ old('adults', 2) }}">
+                                <input type="hidden" name="children" id="children" value="{{ old('children', 0) }}">
+
+                                <div id="guest-popover" class="guest-pop hidden absolute z-20 mt-2 w-full rounded-2xl p-4">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <p class="text-white font-semibold">Chambres</p>
+                                            <div class="flex items-center gap-3">
+                                                <button type="button" class="qty-btn" data-target="rooms" data-step="-1">−</button>
+                                                <span id="rooms-value" class="text-white font-semibold w-4 text-center">1</span>
+                                                <button type="button" class="qty-btn" data-target="rooms" data-step="1">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <p class="text-white font-semibold">Adultes</p>
+                                            <div class="flex items-center gap-3">
+                                                <button type="button" class="qty-btn" data-target="adults" data-step="-1">−</button>
+                                                <span id="adults-value" class="text-white font-semibold w-4 text-center">2</span>
+                                                <button type="button" class="qty-btn" data-target="adults" data-step="1">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <p class="text-white font-semibold">Enfants</p>
+                                            <div class="flex items-center gap-3">
+                                                <button type="button" class="qty-btn" data-target="children" data-step="-1">−</button>
+                                                <span id="children-value" class="text-white font-semibold w-4 text-center">0</span>
+                                                <button type="button" class="qty-btn" data-target="children" data-step="1">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1.5">Détails de la commande (optionnel)</label>
+                            <textarea name="order_message" rows="4" maxlength="2000"
+                                      class="w-full bg-[#1c1c16] border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-100"
+                                      placeholder="Ex: 2 chambres du 15 au 17 août, arrivée à 18h...">{{ old('order_message') }}</textarea>
+                        </div>
+                        <div class="pt-1 flex justify-end gap-2">
+                            <button type="button" onclick="closeOrderModal()"
+                                    class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+                                Annuler
+                            </button>
+                            <button type="submit"
+                                    class="provider-book-btn inline-flex items-center justify-center gap-2 rounded-xl text-black font-bold px-5 py-2.5 text-sm">
+                                <i class="fas fa-cart-shopping text-sm"></i>
+                                Envoyer la commande
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+@endauth
+
+<script>
+function openOrderModal() {
+    const modal = document.getElementById('order-modal');
+    const backdrop = document.getElementById('order-modal-backdrop');
+    const card = document.getElementById('order-modal-card');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    requestAnimationFrame(() => {
+        backdrop?.classList.remove('opacity-0');
+        backdrop?.classList.add('opacity-100');
+        card?.classList.remove('opacity-0', 'scale-95', 'translate-y-3');
+        card?.classList.add('opacity-100', 'scale-100', 'translate-y-0');
+    });
+}
+
+function closeOrderModal() {
+    const modal = document.getElementById('order-modal');
+    const backdrop = document.getElementById('order-modal-backdrop');
+    const card = document.getElementById('order-modal-card');
+    if (!modal) return;
+    backdrop?.classList.remove('opacity-100');
+    backdrop?.classList.add('opacity-0');
+    card?.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
+    card?.classList.add('opacity-0', 'scale-95', 'translate-y-3');
+    setTimeout(() => modal.classList.add('hidden'), 240);
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeOrderModal();
+    }
+});
+
+const guestTrigger = document.getElementById('guest-trigger');
+const guestPopover = document.getElementById('guest-popover');
+const roomsInput = document.getElementById('rooms');
+const adultsInput = document.getElementById('adults');
+const childrenInput = document.getElementById('children');
+const summary = document.getElementById('guest-summary');
+
+function clamp(val, min, max) {
+    return Math.max(min, Math.min(max, val));
+}
+
+function refreshGuestUi() {
+    if (!roomsInput || !adultsInput || !childrenInput || !summary) return;
+    const r = parseInt(roomsInput.value || '1', 10);
+    const a = parseInt(adultsInput.value || '2', 10);
+    const c = parseInt(childrenInput.value || '0', 10);
+    const roomsVal = document.getElementById('rooms-value');
+    const adultsVal = document.getElementById('adults-value');
+    const childrenVal = document.getElementById('children-value');
+    if (roomsVal) roomsVal.textContent = String(r);
+    if (adultsVal) adultsVal.textContent = String(a);
+    if (childrenVal) childrenVal.textContent = String(c);
+    summary.textContent = `${r} chambre${r > 1 ? 's' : ''}, ${a} adulte${a > 1 ? 's' : ''}, ${c} enfant${c > 1 ? 's' : ''}`;
+}
+
+if (guestTrigger && guestPopover) {
+    guestTrigger.addEventListener('click', () => {
+        guestPopover.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Node)) return;
+        if (!guestPopover.contains(target) && !guestTrigger.contains(target)) {
+            guestPopover.classList.add('hidden');
+        }
+    });
+
+    guestPopover.querySelectorAll('.qty-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const target = btn.getAttribute('data-target');
+            const step = parseInt(btn.getAttribute('data-step') || '0', 10);
+            if (!target || !['rooms', 'adults', 'children'].includes(target)) return;
+            const input = document.getElementById(target);
+            if (!input) return;
+
+            const current = parseInt(input.value || '0', 10);
+            const limits = target === 'children' ? [0, 20] : [1, 20];
+            input.value = String(clamp(current + step, limits[0], limits[1]));
+            refreshGuestUi();
+        });
+    });
+
+    refreshGuestUi();
+}
+
+const hasOrderErrors = document.body?.dataset?.orderErrors === '1';
+if (hasOrderErrors) {
+    openOrderModal();
+}
+</script>
 </body>
 </html>

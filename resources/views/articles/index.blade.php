@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" id="html-root" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Articles — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -324,6 +326,59 @@
         @keyframes socialRingSpin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+        html:not(.dark) .articles-hero {
+            border-bottom-color: rgba(0,0,0,0.08);
+            background:
+                linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.98)),
+                radial-gradient(110% 90% at 0% 0%, rgba(232,160,32,0.10), transparent 55%);
+        }
+        html:not(.dark) .articles-search-shell {
+            border-color: rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.06);
+        }
+        html:not(.dark) .articles-search-input {
+            border-color: rgba(0,0,0,0.1);
+            background: #ffffff;
+            color: #1c1915;
+        }
+        html:not(.dark) .articles-search-input::placeholder { color:#7c796f; }
+        html:not(.dark) .articles-hero p.text-amber-300 { color:#92400e !important; }
+        html:not(.dark) .articles-hero p.text-gray-500 { color:#6b6860 !important; }
+        html:not(.dark) .categories-strip {
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        html:not(.dark) .category-chip {
+            border-color: rgba(0,0,0,0.12);
+            background: rgba(255,255,255,0.9);
+            color: #2d2a23;
+        }
+        html:not(.dark) .category-chip:hover {
+            color: #1c1915;
+            border-color: rgba(180,83,9,0.35);
+            background: rgba(245,158,11,0.10);
+            box-shadow: 0 0 14px rgba(180,83,9,0.12);
+        }
+        html:not(.dark) .category-chip.is-active {
+            border-color: rgba(180,83,9,0.45);
+            background: linear-gradient(135deg, #f5b942, #e8a020);
+            color: #1c1915;
+            box-shadow: 0 8px 18px rgba(180,83,9,0.2);
+        }
+        html:not(.dark) .agenda-panel {
+            border-color: rgba(0,0,0,0.1);
+            background:
+                linear-gradient(140deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98)),
+                radial-gradient(100% 70% at 0% 0%, rgba(232,160,32,0.08), transparent 55%);
+            box-shadow: 0 16px 30px rgba(0,0,0,0.07);
+        }
+        html:not(.dark) .agenda-card {
+            border-color: rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #ffffff, #f8f4ec);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
         }
     </style>
 </head>

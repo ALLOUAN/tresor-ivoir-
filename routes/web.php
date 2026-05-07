@@ -38,6 +38,7 @@ use App\Http\Controllers\Provider\ProviderAnalyticsController;
 use App\Http\Controllers\Provider\ReviewController as ProviderReviewController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicContactController;
+use App\Http\Controllers\MediaPurchaseController;
 use App\Http\Controllers\PublicHomeGalleryController;
 use App\Http\Controllers\PublicNewsletterController;
 use App\Http\Controllers\PublicSubscriptionController;
@@ -46,6 +47,7 @@ use App\Http\Controllers\Admin\NotificationController as AdminNotificationContro
 use App\Http\Controllers\VisitorFavoriteController;
 use App\Http\Controllers\VisitorNotificationController;
 use App\Http\Controllers\VisitorProfileController;
+use App\Http\Controllers\VisitorPurchaseController;
 use App\Http\Middleware\LogAdminActions;
 use App\Models\AppearanceSlide;
 use App\Models\Article;
@@ -171,6 +173,13 @@ Route::get('/galerie-tresors-ivoire/visuelle/{uuid}', [PublicHomeGalleryControll
     ->where('uuid', '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}')
     ->name('gallery.public.show');
 Route::get('/galerie-tresors-ivoire', [PublicHomeGalleryController::class, 'index'])->name('gallery.public');
+
+// ── ACHAT MÉDIA ───────────────────────────────────────────────────────────────
+Route::get('/galerie/achat/retour', [MediaPurchaseController::class, 'handleReturn'])->name('gallery.purchase.return');
+Route::post('/galerie/achat/webhook', [MediaPurchaseController::class, 'webhook'])->name('gallery.purchase.webhook');
+Route::get('/galerie/achat/{media:uuid}/init', [MediaPurchaseController::class, 'init'])->name('gallery.purchase.init');
+Route::post('/galerie/achat/{media:uuid}/creer-et-payer', [MediaPurchaseController::class, 'registerAndPay'])->name('gallery.purchase.register')->middleware('throttle:10,1');
+Route::post('/galerie/achat/{media:uuid}/payer', [MediaPurchaseController::class, 'pay'])->name('gallery.purchase.pay')->middleware(['auth', 'throttle:10,1']);
 
 Route::post('/contact', [PublicContactController::class, 'store'])
     ->name('contact.store')
@@ -605,4 +614,7 @@ Route::middleware(['auth', 'verified', 'role:visitor'])
 
         Route::get('/notifications', [VisitorNotificationController::class, 'index'])->name('notifications.index');
         Route::patch('/notifications/read-all', [VisitorNotificationController::class, 'markAllRead'])->name('notifications.read-all');
+
+        Route::get('/mes-achats', [VisitorPurchaseController::class, 'index'])->name('purchases.index');
+        Route::get('/mes-achats/{purchase:uuid}/telecharger', [VisitorPurchaseController::class, 'download'])->name('purchases.download');
     });

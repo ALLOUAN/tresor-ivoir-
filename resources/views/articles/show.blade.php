@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" id="html-root" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $article->meta_title_fr ?: $article->title_fr }} — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
     @if($article->meta_desc_fr)
     <meta name="description" content="{{ $article->meta_desc_fr }}">
     @endif
