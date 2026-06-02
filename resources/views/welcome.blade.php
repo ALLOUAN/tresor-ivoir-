@@ -2499,5 +2499,6 @@
     })();
 </script>
 
+@include('partials.image-protection')
 </body>
 </html>

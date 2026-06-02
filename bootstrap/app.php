@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\PermissionMiddleware;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocaleMiddleware;
 use App\Http\Middleware\SiteMaintenanceMiddleware;
 use App\Http\Middleware\SubscriptionActiveMiddleware;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SetLocaleMiddleware::class,
             SiteMaintenanceMiddleware::class,
+            SecurityHeaders::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [

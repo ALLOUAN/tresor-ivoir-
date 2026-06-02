@@ -97,6 +97,7 @@
 
     @include('partials.homepage-footer')
 
+    @include('partials.image-protection')
     @stack('scripts')
 </body>
 </html>

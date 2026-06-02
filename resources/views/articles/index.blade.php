@@ -620,5 +620,6 @@
     }, { threshold: 0.06 });
     revealEls.forEach(el => revealObs.observe(el));
 </script>
+@include('partials.image-protection')
 </body>
 </html>

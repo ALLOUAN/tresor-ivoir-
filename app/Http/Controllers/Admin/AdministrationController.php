@@ -641,6 +641,10 @@ class AdministrationController extends Controller
             $filename  = Str::random(40) . ($extension ? '.' . $extension : '');
             $path      = 'site/media-library/' . $filename;
             Storage::disk('public')->put($path, fopen($file->getPathname(), 'r'));
+            if (str_starts_with($mime, 'image/')) {
+                $path = app(\App\Services\ImageWatermarkService::class)->optimize($path);
+                $mime = str_ends_with($path, '.webp') ? 'image/webp' : $mime;
+            }
             $url = '/storage/' . $path;
 
             SiteMediaItem::query()->create([

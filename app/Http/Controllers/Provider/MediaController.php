@@ -76,6 +76,9 @@ class MediaController extends Controller
         }
 
         $path = $file->store('providers/media', 'public');
+        if ($type === 'image') {
+            $path = app(\App\Services\ImageWatermarkService::class)->optimize($path);
+        }
         $url = '/storage/'.$path;
 
         $provider->media()->create([

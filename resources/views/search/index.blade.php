@@ -217,5 +217,6 @@
     </div>
 </footer>
 @include('partials.homepage-footer')
+@include('partials.image-protection')
 </body>
 </html>

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-Content \"c:\\\\laragon\\\\www\\\\tresorsIvoire\\\\storage\\\\logs\\\\laravel.log\" -Tail 50)"
+    ]
+  }
+}

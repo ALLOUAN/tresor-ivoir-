@@ -345,6 +345,8 @@ class EventController extends Controller
             ]);
         }
 
+        $relativePath = app(\App\Services\ImageWatermarkService::class)->optimize($relativePath);
+
         return '/storage/' . $relativePath;
     }
 

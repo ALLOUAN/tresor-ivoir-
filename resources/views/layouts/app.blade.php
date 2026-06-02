@@ -615,6 +615,7 @@
             });
         })();
     </script>
+    @include('partials.image-protection')
     @stack('scripts')
 </body>
 </html>

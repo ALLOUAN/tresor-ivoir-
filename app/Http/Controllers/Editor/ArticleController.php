@@ -296,6 +296,7 @@ class ArticleController extends Controller
     private function storeArticleCover(UploadedFile $file): string
     {
         $path = $file->store('articles/covers', 'public');
+        $path = app(\App\Services\ImageWatermarkService::class)->optimize($path);
 
         return '/storage/'.$path;
     }
@@ -326,6 +327,7 @@ class ArticleController extends Controller
             }
 
             $path = $image->store('articles/gallery', 'public');
+            $path = app(\App\Services\ImageWatermarkService::class)->optimize($path);
             $absolutePath = Storage::disk('public')->path($path);
             $width = null;
             $height = null;
