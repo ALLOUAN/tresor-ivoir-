@@ -1762,6 +1762,109 @@
 </section>
 
 {{-- ══════════════════════════════════════════════════════════
+     SECTION : RÉGIONS TOURISTIQUES
+══════════════════════════════════════════════════════════ --}}
+@if(($homeTouristCities ?? collect())->isNotEmpty())
+<section id="regions-touristiques" class="py-16 sm:py-24 bg-dark-900 relative overflow-hidden">
+    {{-- Motif décoratif --}}
+    <div class="absolute inset-0 pointer-events-none opacity-[0.03]"
+         style="background-image: radial-gradient(circle, #e8a020 1px, transparent 1px); background-size: 32px 32px;"></div>
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
+
+        {{-- En-tête --}}
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 sm:mb-16">
+            <div class="reveal">
+                <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Voyage en Côte d'Ivoire</p>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Régions Touristiques</h2>
+                <p class="text-gray-400 font-elegant text-base font-light mt-4 max-w-lg">
+                    Plages, parcs nationaux, monuments historiques… Explorez les villes et leurs merveilles.
+                </p>
+            </div>
+            <a href="{{ route('tourist.cities') }}"
+               class="shrink-0 inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-gold-500/25 bg-dark-800/70 text-sm text-gold-300 hover:text-gold-200 hover:border-gold-400/50 hover:bg-dark-700/80 transition-all duration-300 font-semibold tracking-wide group hover:-translate-y-0.5 self-start sm:self-auto">
+                <span>Explorer toutes les villes</span>
+                <i class="fas fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
+            </a>
+        </div>
+
+        {{-- Grille des villes --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            @foreach($homeTouristCities as $city)
+            <a href="{{ route('tourist.city', $city->slug) }}"
+               class="group relative rounded-2xl overflow-hidden border border-white/5 hover:border-gold-500/30 transition-all duration-300 hover:-translate-y-1 reveal"
+               style="min-height: 220px;">
+
+                {{-- Image de fond --}}
+                @if($city->cover_image || $city->thumbnail)
+                <img src="{{ $city->cover_image ?? $city->thumbnail }}" alt="{{ $city->name }}"
+                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                @else
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-900/60 to-slate-900"></div>
+                @endif
+
+                {{-- Overlay dégradé --}}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent group-hover:from-black/75 transition-all duration-300"></div>
+
+                {{-- Badge vedette --}}
+                @if($city->is_featured)
+                <div class="absolute top-3 left-3">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-gold-500/90 text-black text-[10px] font-bold rounded-full backdrop-blur-sm">
+                        <i class="fas fa-star text-[8px]"></i> À la une
+                    </span>
+                </div>
+                @endif
+
+                {{-- Contenu --}}
+                <div class="absolute bottom-0 left-0 right-0 p-5">
+                    <h3 class="font-serif text-xl font-bold text-white mb-1 group-hover:text-gold-200 transition-colors">
+                        {{ $city->name }}
+                    </h3>
+                    @if($city->district)
+                    <p class="text-gold-400/80 text-xs font-elegant mb-2 truncate">
+                        <i class="fas fa-map-marker-alt text-[10px] mr-1"></i>{{ $city->district }}
+                    </p>
+                    @endif
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-xs">
+                            <i class="fas fa-map-pin text-gold-500/60 mr-1 text-[10px]"></i>
+                            {{ $city->sites_count }} site{{ $city->sites_count > 1 ? 's' : '' }} à explorer
+                        </span>
+                        <span class="w-7 h-7 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-400 group-hover:bg-gold-500/20 group-hover:translate-x-0.5 transition-all">
+                            <i class="fas fa-arrow-right text-[10px]"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            @endforeach
+        </div>
+
+        {{-- Catégories touristiques --}}
+        @php
+            $touristCats = \App\Models\TouristCategory::where('is_active', 1)->orderBy('sort_order')->limit(8)->get();
+        @endphp
+        @if($touristCats->isNotEmpty())
+        <div class="mt-12 pt-10 border-t border-white/5">
+            <p class="text-center text-gray-500 text-xs tracking-[.2em] uppercase font-elegant mb-6">Explorez par catégorie</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                @foreach($touristCats as $cat)
+                <a href="{{ route('tourist.cities') }}#{{ $cat->slug }}"
+                   class="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:border-gold-500/40 hover:bg-gold-500/10 transition-all duration-200">
+                    <i class="{{ $cat->icon ?: 'fas fa-tag' }} text-xs"
+                       style="{{ $cat->color ? 'color:'.$cat->color : 'color:#e8a020' }}"></i>
+                    <span class="text-gray-300 group-hover:text-white text-xs font-medium transition-colors">{{ $cat->name }}</span>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+    </div>
+</section>
+@endif
+
+{{-- ══════════════════════════════════════════════════════════
      SECTION : ÉVÉNEMENTS
 ══════════════════════════════════════════════════════════ --}}
 <section id="evenements" class="py-16 sm:py-24 bg-dark-900">

@@ -48,6 +48,8 @@ use App\Http\Controllers\VisitorFavoriteController;
 use App\Http\Controllers\VisitorNotificationController;
 use App\Http\Controllers\VisitorProfileController;
 use App\Http\Controllers\VisitorPurchaseController;
+use App\Http\Controllers\TouristController;
+use App\Http\Controllers\Admin\TouristManagementController;
 use App\Http\Middleware\LogAdminActions;
 use App\Models\AppearanceSlide;
 use App\Models\Article;
@@ -57,6 +59,7 @@ use App\Models\InformationPage;
 use App\Models\Partner;
 use App\Models\Provider;
 use App\Models\ProviderCategory;
+use App\Models\TouristCity;
 use App\Models\PaymentSetting;
 use App\Models\SiteSetting;
 use App\Models\SubscriptionPlan;
@@ -163,9 +166,19 @@ Route::get('/', function () {
             ->get()
         : collect();
 
+    $homeTouristCities = Schema::hasTable('tourist_cities')
+        ? TouristCity::where('is_active', 1)
+            ->withCount(['sites as sites_count' => fn ($q) => $q->where('is_active', 1)])
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('sort_order')
+            ->limit(8)
+            ->get()
+        : collect();
+
     return view('welcome', compact(
         'homeEvents', 'homeProviders', 'heroSlides', 'homePartners',
-        'informationPages', 'homeArticles', 'homeCategories', 'homeProviderCategories', 'homeDestinationArticle', 'hideHomeHeroArticle'
+        'informationPages', 'homeArticles', 'homeCategories', 'homeProviderCategories',
+        'homeDestinationArticle', 'hideHomeHeroArticle', 'homeTouristCities'
     ));
 })->name('home');
 
@@ -283,6 +296,12 @@ Route::post('/abonnements/{plan}/traiter', [PublicSubscriptionController::class,
 // ── ANNUAIRE PRESTATAIRES PUBLIC ──────────────────────────────────────────
 Route::get('/annuaire', [ProviderController::class, 'index'])->name('providers.index');
 Route::get('/annuaire/{slug}', [ProviderController::class, 'show'])->name('providers.show');
+
+// ── TOURISME PUBLIC ────────────────────────────────────────────────────────
+Route::get('/tourisme', [TouristController::class, 'cities'])->name('tourist.cities');
+Route::get('/tourisme/{citySlug}', [TouristController::class, 'city'])->name('tourist.city');
+Route::get('/tourisme/{citySlug}/{categorySlug}', [TouristController::class, 'category'])->name('tourist.category');
+Route::get('/sites-touristiques/{slug}', [TouristController::class, 'site'])->name('tourist.site');
 
 // ── AVIS (POST — auth optionnel) ──────────────────────────────────────────
 Route::post('/annuaire/{provider}/avis', [ReviewController::class, 'store'])
@@ -461,6 +480,12 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/evenements/{event}/cancel', [EventManagementController::class, 'cancel'])->name('events.cancel');
         Route::delete('/evenements/{event}', [EventManagementController::class, 'destroy'])->name('events.destroy');
 
+        // Catégories d'événements
+        Route::get('/evenements/categories', [EventManagementController::class, 'categories'])->name('events.categories.index');
+        Route::post('/evenements/categories', [EventManagementController::class, 'storeCategory'])->name('events.categories.store');
+        Route::put('/evenements/categories/{category}', [EventManagementController::class, 'updateCategory'])->name('events.categories.update');
+        Route::delete('/evenements/categories/{category}', [EventManagementController::class, 'destroyCategory'])->name('events.categories.destroy');
+
         // Prestataires
         Route::get('/prestataires', [ProviderManagementController::class, 'index'])->name('providers.index');
         Route::post('/prestataires', [ProviderManagementController::class, 'store'])->name('providers.store');
@@ -505,6 +530,34 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/users/{user}/role', [UserRoleManagementController::class, 'update'])->name('users.role.update');
         Route::patch('/users/{user}/permissions', [UserRoleManagementController::class, 'updatePermissions'])->name('users.permissions.update');
         Route::delete('/users/{user}', [UserRoleManagementController::class, 'destroy'])->name('users.destroy');
+
+        // Tourisme — Villes
+        Route::get('/tourisme/villes', [TouristManagementController::class, 'cities'])->name('tourist.cities.index');
+        Route::post('/tourisme/villes', [TouristManagementController::class, 'storeCity'])->name('tourist.cities.store');
+        Route::put('/tourisme/villes/{city}', [TouristManagementController::class, 'updateCity'])->name('tourist.cities.update');
+        Route::delete('/tourisme/villes/{city}', [TouristManagementController::class, 'destroyCity'])->name('tourist.cities.destroy');
+        Route::patch('/tourisme/villes/{city}/toggle', [TouristManagementController::class, 'toggleCityActive'])->name('tourist.cities.toggle');
+        Route::patch('/tourisme/villes/{city}/vedette', [TouristManagementController::class, 'toggleCityFeatured'])->name('tourist.cities.featured');
+
+        // Tourisme — Catégories
+        Route::get('/tourisme/categories', [TouristManagementController::class, 'categories'])->name('tourist.categories.index');
+        Route::post('/tourisme/categories', [TouristManagementController::class, 'storeCategory'])->name('tourist.categories.store');
+        Route::put('/tourisme/categories/{category}', [TouristManagementController::class, 'updateCategory'])->name('tourist.categories.update');
+        Route::delete('/tourisme/categories/{category}', [TouristManagementController::class, 'destroyCategory'])->name('tourist.categories.destroy');
+
+        // Tourisme — Sites
+        Route::get('/tourisme/sites', [TouristManagementController::class, 'sites'])->name('tourist.sites.index');
+        Route::get('/tourisme/sites/creer', [TouristManagementController::class, 'createSite'])->name('tourist.sites.create');
+        Route::post('/tourisme/sites', [TouristManagementController::class, 'storeSite'])->name('tourist.sites.store');
+        Route::get('/tourisme/sites/{site}/modifier', [TouristManagementController::class, 'editSite'])->name('tourist.sites.edit');
+        Route::put('/tourisme/sites/{site}', [TouristManagementController::class, 'updateSite'])->name('tourist.sites.update');
+        Route::delete('/tourisme/sites/{site}', [TouristManagementController::class, 'destroySite'])->name('tourist.sites.destroy');
+        Route::patch('/tourisme/sites/{site}/toggle', [TouristManagementController::class, 'toggleSiteActive'])->name('tourist.sites.toggle');
+        Route::patch('/tourisme/sites/{site}/vedette', [TouristManagementController::class, 'toggleSiteFeatured'])->name('tourist.sites.featured');
+
+        // Tourisme — Médias
+        Route::post('/tourisme/sites/{site}/medias', [TouristManagementController::class, 'storeMedia'])->name('tourist.media.store');
+        Route::delete('/tourisme/medias/{media}', [TouristManagementController::class, 'destroyMedia'])->name('tourist.media.destroy');
     });
 
 // ── ÉDITEUR ───────────────────────────────────────────────────────────────

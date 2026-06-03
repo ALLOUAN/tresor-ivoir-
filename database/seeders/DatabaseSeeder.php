@@ -16,6 +16,11 @@ class DatabaseSeeder extends Seeder
             EventCategorySeeder::class,
             TagSeeder::class,
 
+            // Tourisme (référentiels indépendants)
+            TouristCategorySeeder::class,
+            TouristCitySeeder::class,
+            TouristSiteSeeder::class,
+
             // Utilisateurs
             UserSeeder::class,
             PartnerSeeder::class,

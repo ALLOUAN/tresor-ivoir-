@@ -3,6 +3,11 @@
 @section('title', 'Événements')
 @section('page-title', 'Gestion des événements')
 @section('header-actions')
+    <a href="{{ route('admin.events.categories.index') }}"
+       class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg border border-slate-700 transition">
+        <i class="fas fa-folder"></i>
+        Catégories
+    </a>
     <a href="{{ route('editor.events.index') }}"
        class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg border border-slate-700 transition">
         <i class="fas fa-list-check"></i>

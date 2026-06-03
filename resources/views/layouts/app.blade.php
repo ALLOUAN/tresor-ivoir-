@@ -385,6 +385,16 @@
                     <span class="nav-row-icon"><i class="fas fa-tags"></i></span>
                     <span>Catégories &amp; tags</span>
                 </a>
+                <a href="{{ route('admin.tourist.cities.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.tourist.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-map-location-dot"></i></span>
+                    <span>Régions Touristiques</span>
+                </a>
+                <a href="#"
+                   class="nav-row opacity-70 hover:opacity-100">
+                    <span class="nav-row-icon"><i class="fas fa-masks-theater"></i></span>
+                    <span>Cultures Ivoiriennes</span>
+                </a>
                 <p class="nav-section-title"><span>Sécurité</span></p>
                 <a href="{{ route('admin.analytics.index') }}"
                    class="nav-row {{ request()->routeIs('admin.analytics.*') ? 'is-active' : '' }}">

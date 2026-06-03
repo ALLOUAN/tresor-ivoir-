@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(Get-Content \"c:\\\\laragon\\\\www\\\\tresorsIvoire\\\\storage\\\\logs\\\\laravel.log\" -Tail 50)"
+      "Bash(Get-Content \"c:\\\\laragon\\\\www\\\\tresorsIvoire\\\\storage\\\\logs\\\\laravel.log\" -Tail 50)",
+      "Bash(Get-ChildItem -Path \"c:\\\\laragon\\\\www\\\\tresorsIvoire\" -Force)",
+      "Bash(Select-Object Name, Mode)",
+      "Bash(php artisan *)",
+      "Bash(php -l app/Http/Controllers/Admin/TouristManagementController.php)",
+      "Bash(php -r \"require 'vendor/autoload.php'; echo 'OK';\")"
     ]
   }
 }

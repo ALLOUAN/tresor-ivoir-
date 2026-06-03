@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class EventManagementController extends Controller
 {
@@ -60,5 +61,53 @@ class EventManagementController extends Controller
         $event->delete();
 
         return back()->with('success', 'Événement supprimé.');
+    }
+
+    // ── CATÉGORIES ────────────────────────────────────────────────────────────
+
+    public function categories()
+    {
+        $categories = EventCategory::withCount('events')->orderBy('sort_order')->get();
+
+        return view('admin.events.categories', compact('categories'));
+    }
+
+    public function storeCategory(Request $request)
+    {
+        $data = $request->validate([
+            'name_fr'    => 'required|string|max:150',
+            'name_en'    => 'nullable|string|max:150',
+            'icon'       => 'nullable|string|max:80',
+            'color_hex'  => 'nullable|string|max:7',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $data['slug'] = Str::slug($data['name_fr']);
+
+        EventCategory::create($data);
+
+        return back()->with('success', "Catégorie « {$data['name_fr']} » créée.");
+    }
+
+    public function updateCategory(Request $request, EventCategory $category)
+    {
+        $data = $request->validate([
+            'name_fr'    => 'required|string|max:150',
+            'name_en'    => 'nullable|string|max:150',
+            'icon'       => 'nullable|string|max:80',
+            'color_hex'  => 'nullable|string|max:7',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $category->update($data);
+
+        return back()->with('success', "Catégorie « {$category->name_fr} » mise à jour.");
+    }
+
+    public function destroyCategory(EventCategory $category)
+    {
+        $category->delete();
+
+        return back()->with('success', 'Catégorie supprimée.');
     }
 }
