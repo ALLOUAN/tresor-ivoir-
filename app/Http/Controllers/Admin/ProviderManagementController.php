@@ -15,6 +15,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -306,6 +307,53 @@ class ProviderManagementController extends Controller
             ->update(['provider_id' => (int) $data['target_provider_id']]);
 
         return back()->with('success', 'Événements réattribués en masse.');
+    }
+
+    public function storeMedia(Request $request, Provider $provider): RedirectResponse
+    {
+        $request->validate([
+            'media_files'   => 'required|array|min:1',
+            'media_files.*' => 'file|image|max:5120',
+        ]);
+
+        $sort = (int) ($provider->media()->max('sort_order') ?? 0);
+
+        foreach ($request->file('media_files', []) as $file) {
+            if (! $file || ! $file->isValid()) {
+                continue;
+            }
+            $sort++;
+            $ext      = strtolower($file->getClientOriginalExtension()) ?: 'jpg';
+            $filePath = 'providers/media/photo_' . Str::random(32) . '.' . $ext;
+            Storage::disk('public')->put($filePath, fopen($file->getPathname(), 'r'));
+
+            $provider->media()->create([
+                'collection'    => 'gallery',
+                'type'          => 'image',
+                'mime_type'     => $file->getMimeType(),
+                'original_name' => $file->getClientOriginalName(),
+                'file_path'     => $filePath,
+                'url'           => '/storage/' . $filePath,
+                'size_bytes'    => $file->getSize(),
+                'sort_order'    => $sort,
+                'uploaded_by'   => auth()->id(),
+            ]);
+        }
+
+        return back()->with('success', 'Photos ajoutées avec succès.');
+    }
+
+    public function destroyMedia(Provider $provider, Media $media): RedirectResponse
+    {
+        if ($media->mediable_type !== Provider::class || (int) $media->mediable_id !== (int) $provider->id) {
+            abort(404);
+        }
+        if ($media->file_path) {
+            Storage::disk('public')->delete($media->file_path);
+        }
+        $media->delete();
+
+        return back()->with('success', 'Photo supprimée.');
     }
 
     public function reassignMedia(Request $request, Provider $provider, Media $media)

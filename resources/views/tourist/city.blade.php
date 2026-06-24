@@ -23,7 +23,7 @@
 @include('partials.public-top-nav')
 
 {{-- Bannière Ville --}}
-<section class="relative h-72 md:h-[420px] overflow-hidden">
+<section class="relative h-[500px] md:h-[650px] overflow-hidden">
 
     {{-- Image de bannière --}}
     @if($city->cover_image)
@@ -43,7 +43,7 @@
     @endif
 
     {{-- Dégradé bas renforcé --}}
-    <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d0b] via-[#0d0d0b]/50 to-transparent"></div>
+    <div class="absolute inset-0 bg-linear-to-t from-[#0d0d0b] via-[#0d0d0b]/50 to-transparent"></div>
     {{-- Dégradé latéral gauche --}}
     <div class="absolute inset-0 bg-linear-to-r from-[#0d0d0b]/60 to-transparent"></div>
 
@@ -98,10 +98,20 @@
 
 </section>
 
-{{-- Description --}}
-@if($city->description)
+{{-- Description + site web --}}
+@if($city->description || $city->website)
 <section class="max-w-6xl mx-auto px-6 py-8">
-    <p class="text-slate-400 text-base leading-relaxed max-w-3xl">{{ $city->description }}</p>
+    @if($city->description)
+    <p class="text-slate-400 text-base leading-relaxed max-w-3xl mb-4">{{ $city->description }}</p>
+    @endif
+    @if($city->website)
+    <a href="{{ $city->website }}" target="_blank" rel="noopener"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 hover:text-amber-200 text-sm font-medium transition group">
+        <i class="fas fa-globe text-xs"></i>
+        <span>Visiter le site officiel</span>
+        <i class="fas fa-arrow-up-right-from-square text-[10px] opacity-60 group-hover:opacity-100 transition"></i>
+    </a>
+    @endif
 </section>
 @endif
 
@@ -125,9 +135,18 @@
             </div>
             <div class="flex-1 min-w-0">
                 <h3 class="text-white font-semibold group-hover:text-amber-400 transition truncate">{{ $cat->name }}</h3>
-                <p class="text-slate-500 text-xs mt-0.5">
-                    {{ $cat->sites_count }} site(s) à explorer
-                </p>
+                <div class="flex flex-wrap items-center gap-2 mt-0.5">
+                    @if($cat->sites_count > 0)
+                    <span class="text-slate-500 text-xs">
+                        <i class="fas fa-map-pin text-[9px] mr-0.5"></i>{{ $cat->sites_count }} site(s)
+                    </span>
+                    @endif
+                    @if(($cat->accoms_count ?? 0) > 0)
+                    <span class="text-amber-400/70 text-xs">
+                        <i class="fas fa-hotel text-[9px] mr-0.5"></i>{{ $cat->accoms_count }} hébergement(s)
+                    </span>
+                    @endif
+                </div>
                 @if($cat->description)
                 <p class="text-slate-600 text-xs mt-1 line-clamp-1">{{ $cat->description }}</p>
                 @endif

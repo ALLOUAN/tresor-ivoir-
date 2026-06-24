@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Accommodation;
 use App\Models\TouristCategory;
 use App\Models\TouristCity;
 use App\Models\TouristSite;
@@ -24,18 +25,32 @@ class TouristController extends Controller
     {
         $city = TouristCity::where('slug', $slug)->where('is_active', 1)->firstOrFail();
 
-        $categoryIds = TouristSite::where('city_id', $city->id)
+        // Catégories ayant au moins un site touristique
+        $siteCatIds = TouristSite::where('city_id', $city->id)
             ->where('is_active', 1)
             ->pluck('category_id')
             ->unique();
 
-        $categories = TouristCategory::whereIn('id', $categoryIds)
+        // Catégories ayant au moins un hébergement
+        $accomCatIds = Accommodation::where('city_id', $city->id)
+            ->where('is_active', 1)
+            ->get(['category_ids'])
+            ->flatMap(fn ($a) => $a->category_ids ?? [])
+            ->unique();
+
+        $allCatIds = $siteCatIds->merge($accomCatIds)->unique();
+
+        $categories = TouristCategory::whereIn('id', $allCatIds)
             ->where('is_active', 1)
             ->orderBy('sort_order')
             ->get()
             ->each(function ($cat) use ($city) {
                 $cat->sites_count = TouristSite::where('city_id', $city->id)
                     ->where('category_id', $cat->id)
+                    ->where('is_active', 1)
+                    ->count();
+                $cat->accoms_count = Accommodation::where('city_id', $city->id)
+                    ->whereJsonContains('category_ids', $cat->id)
                     ->where('is_active', 1)
                     ->count();
             });
@@ -57,7 +72,16 @@ class TouristController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('tourist.category', compact('city', 'category', 'sites'));
+        $accommodations = Accommodation::with(['media' => fn ($q) => $q->where('type', 'photo')->orderBy('sort_order')->limit(1)])
+            ->where('city_id', $city->id)
+            ->whereJsonContains('category_ids', $category->id)
+            ->where('is_active', 1)
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('stars', 'desc')
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('tourist.category', compact('city', 'category', 'sites', 'accommodations'));
     }
 
     public function site(string $slug)

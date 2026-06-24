@@ -49,7 +49,10 @@ use App\Http\Controllers\VisitorNotificationController;
 use App\Http\Controllers\VisitorProfileController;
 use App\Http\Controllers\VisitorPurchaseController;
 use App\Http\Controllers\TouristController;
+use App\Http\Controllers\CulturalController;
 use App\Http\Controllers\Admin\TouristManagementController;
+use App\Http\Controllers\Admin\CulturalManagementController;
+use App\Http\Controllers\Admin\AccommodationManagementController;
 use App\Http\Middleware\LogAdminActions;
 use App\Models\AppearanceSlide;
 use App\Models\Article;
@@ -60,6 +63,8 @@ use App\Models\Partner;
 use App\Models\Provider;
 use App\Models\ProviderCategory;
 use App\Models\TouristCity;
+use App\Models\CulturalPeople;
+use App\Models\CulturalDomain;
 use App\Models\PaymentSetting;
 use App\Models\SiteSetting;
 use App\Models\SubscriptionPlan;
@@ -175,10 +180,27 @@ Route::get('/', function () {
             ->get()
         : collect();
 
+    $homeCulturalPeoples = Schema::hasTable('cultural_peoples')
+        ? CulturalPeople::where('is_active', 1)
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('sort_order')
+            ->limit(8)
+            ->get()
+        : collect();
+
+    $homeCulturalDomains = Schema::hasTable('cultural_domains')
+        ? CulturalDomain::whereNull('parent_id')
+            ->where('is_active', 1)
+            ->orderBy('sort_order')
+            ->limit(8)
+            ->get()
+        : collect();
+
     return view('welcome', compact(
         'homeEvents', 'homeProviders', 'heroSlides', 'homePartners',
         'informationPages', 'homeArticles', 'homeCategories', 'homeProviderCategories',
-        'homeDestinationArticle', 'hideHomeHeroArticle', 'homeTouristCities'
+        'homeDestinationArticle', 'hideHomeHeroArticle', 'homeTouristCities',
+        'homeCulturalPeoples', 'homeCulturalDomains'
     ));
 })->name('home');
 
@@ -302,6 +324,11 @@ Route::get('/tourisme', [TouristController::class, 'cities'])->name('tourist.cit
 Route::get('/tourisme/{citySlug}', [TouristController::class, 'city'])->name('tourist.city');
 Route::get('/tourisme/{citySlug}/{categorySlug}', [TouristController::class, 'category'])->name('tourist.category');
 Route::get('/sites-touristiques/{slug}', [TouristController::class, 'site'])->name('tourist.site');
+
+// ── CULTURES IVOIRIENNES PUBLIC ────────────────────────────────────────────
+Route::get('/cultures', [CulturalController::class, 'peoples'])->name('cultural.peoples');
+Route::get('/cultures/{slug}', [CulturalController::class, 'people'])->name('cultural.people');
+Route::get('/elements-culturels/{slug}', [CulturalController::class, 'element'])->name('cultural.element');
 
 // ── AVIS (POST — auth optionnel) ──────────────────────────────────────────
 Route::post('/annuaire/{provider}/avis', [ReviewController::class, 'store'])
@@ -500,6 +527,8 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/prestataires/{provider}/contenus/evenements/{event}', [ProviderManagementController::class, 'reassignEvent'])->name('providers.content.events.reassign');
         Route::patch('/prestataires/{provider}/contenus/medias/reassign-bulk', [ProviderManagementController::class, 'reassignMediaBulk'])->name('providers.content.media.reassign-bulk');
         Route::patch('/prestataires/{provider}/contenus/medias/{media}', [ProviderManagementController::class, 'reassignMedia'])->name('providers.content.media.reassign');
+        Route::post('/prestataires/{provider}/contenus/medias', [ProviderManagementController::class, 'storeMedia'])->name('providers.content.media.store');
+        Route::delete('/prestataires/{provider}/contenus/medias/{media}', [ProviderManagementController::class, 'destroyMedia'])->name('providers.content.media.destroy');
 
         // Avis
         Route::get('/avis', [ReviewManagementController::class, 'index'])->name('reviews.index');
@@ -558,6 +587,44 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         // Tourisme — Médias
         Route::post('/tourisme/sites/{site}/medias', [TouristManagementController::class, 'storeMedia'])->name('tourist.media.store');
         Route::delete('/tourisme/medias/{media}', [TouristManagementController::class, 'destroyMedia'])->name('tourist.media.destroy');
+
+        // Cultures — Peuples
+        Route::get('/cultures/peuples', [CulturalManagementController::class, 'peoples'])->name('cultural.peoples.index');
+        Route::post('/cultures/peuples', [CulturalManagementController::class, 'storePeople'])->name('cultural.peoples.store');
+        Route::put('/cultures/peuples/{people}', [CulturalManagementController::class, 'updatePeople'])->name('cultural.peoples.update');
+        Route::delete('/cultures/peuples/{people}', [CulturalManagementController::class, 'destroyPeople'])->name('cultural.peoples.destroy');
+        Route::patch('/cultures/peuples/{people}/toggle', [CulturalManagementController::class, 'togglePeopleActive'])->name('cultural.peoples.toggle');
+        Route::patch('/cultures/peuples/{people}/vedette', [CulturalManagementController::class, 'togglePeopleFeatured'])->name('cultural.peoples.featured');
+
+        // Cultures — Domaines
+        Route::get('/cultures/domaines', [CulturalManagementController::class, 'domains'])->name('cultural.domains.index');
+        Route::post('/cultures/domaines', [CulturalManagementController::class, 'storeDomain'])->name('cultural.domains.store');
+        Route::put('/cultures/domaines/{domain}', [CulturalManagementController::class, 'updateDomain'])->name('cultural.domains.update');
+        Route::delete('/cultures/domaines/{domain}', [CulturalManagementController::class, 'destroyDomain'])->name('cultural.domains.destroy');
+
+        // Cultures — Éléments
+        Route::get('/cultures/elements', [CulturalManagementController::class, 'elements'])->name('cultural.elements.index');
+        Route::get('/cultures/elements/creer', [CulturalManagementController::class, 'createElement'])->name('cultural.elements.create');
+        Route::post('/cultures/elements', [CulturalManagementController::class, 'storeElement'])->name('cultural.elements.store');
+        Route::get('/cultures/elements/{element}/modifier', [CulturalManagementController::class, 'editElement'])->name('cultural.elements.edit');
+        Route::put('/cultures/elements/{element}', [CulturalManagementController::class, 'updateElement'])->name('cultural.elements.update');
+        Route::delete('/cultures/elements/{element}', [CulturalManagementController::class, 'destroyElement'])->name('cultural.elements.destroy');
+        Route::patch('/cultures/elements/{element}/toggle', [CulturalManagementController::class, 'toggleElementActive'])->name('cultural.elements.toggle');
+        Route::patch('/cultures/elements/{element}/vedette', [CulturalManagementController::class, 'toggleElementFeatured'])->name('cultural.elements.featured');
+
+        // Cultures — Médias
+        Route::delete('/cultures/medias/{media}', [CulturalManagementController::class, 'destroyMedia'])->name('cultural.media.destroy');
+
+        // Hébergements
+        Route::get('/hebergements', [AccommodationManagementController::class, 'index'])->name('accommodations.index');
+        Route::get('/hebergements/creer', [AccommodationManagementController::class, 'create'])->name('accommodations.create');
+        Route::post('/hebergements', [AccommodationManagementController::class, 'store'])->name('accommodations.store');
+        Route::get('/hebergements/{accommodation}/modifier', [AccommodationManagementController::class, 'edit'])->name('accommodations.edit');
+        Route::put('/hebergements/{accommodation}', [AccommodationManagementController::class, 'update'])->name('accommodations.update');
+        Route::delete('/hebergements/{accommodation}', [AccommodationManagementController::class, 'destroy'])->name('accommodations.destroy');
+        Route::patch('/hebergements/{accommodation}/toggle-actif', [AccommodationManagementController::class, 'toggleActive'])->name('accommodations.toggle-active');
+        Route::patch('/hebergements/{accommodation}/toggle-vedette', [AccommodationManagementController::class, 'toggleFeatured'])->name('accommodations.toggle-featured');
+        Route::delete('/hebergements/medias/{media}', [AccommodationManagementController::class, 'destroyMedia'])->name('accommodations.media.destroy');
     });
 
 // ── ÉDITEUR ───────────────────────────────────────────────────────────────

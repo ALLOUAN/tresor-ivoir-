@@ -115,7 +115,7 @@
                                 </button>
                             </form>
                             {{-- Edit --}}
-                            <button onclick="openCityModal({{ $city->toJson() }})"
+                            <button onclick='openCityModal(@json($city))'
                                 class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Modifier">
                                 <i class="fas fa-pen text-xs"></i>
                             </button>
@@ -310,6 +310,25 @@
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-none"></textarea>
             </div>
 
+            <div class="md:col-span-2">
+                <label class="block text-xs text-slate-400 mb-1">
+                    <i class="fas fa-globe text-amber-400/70 mr-1"></i>
+                    Site web officiel
+                </label>
+                <div class="flex gap-2 items-center">
+                    <input type="url" name="website" id="city_website" maxlength="300"
+                        placeholder="https://…"
+                        oninput="toggleCityWebsiteLink(this.value)"
+                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    <a id="city_website_link" href="#" target="_blank" rel="noopener"
+                        style="display:none"
+                        class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 hover:bg-amber-500/20 border border-slate-700 hover:border-amber-500/40 items-center justify-center text-slate-400 hover:text-amber-400 transition"
+                        title="Visiter le site">
+                        <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Ordre d'affichage</label>
                 <input type="number" name="sort_order" id="city_sort_order" min="0" value="0"
@@ -415,6 +434,17 @@ function previewCityThumbFile(input) {
     reader.readAsDataURL(input.files[0]);
 }
 
+// ── Bouton "Visiter" du champ website ─────────────────────────────────────
+function toggleCityWebsiteLink(url) {
+    const link = document.getElementById('city_website_link');
+    if (url && url.startsWith('http')) {
+        link.href = url;
+        link.style.display = 'flex';
+    } else {
+        link.style.display = 'none';
+    }
+}
+
 // ── Aperçu bannière ────────────────────────────────────────────────────────
 function previewCityBanner(url) {
     const preview = document.getElementById('city_banner_preview');
@@ -502,10 +532,20 @@ function openCityModal(city = null) {
         document.getElementById('city_lng').value            = city.longitude || '';
         document.getElementById('city_cover').value          = city.cover_image || '';
         document.getElementById('city_thumbnail').value      = city.thumbnail || '';
+        document.getElementById('city_website').value        = city.website || '';
         document.getElementById('city_description').value    = city.description || '';
         document.getElementById('city_sort_order').value     = city.sort_order || 0;
         document.getElementById('city_is_active').checked    = city.is_active == 1;
         document.getElementById('city_is_featured').checked  = city.is_featured == 1;
+
+        // Bouton Visiter
+        const wLink = document.getElementById('city_website_link');
+        if (city.website) {
+            wLink.href = city.website;
+            wLink.style.display = 'flex';
+        } else {
+            wLink.style.display = 'none';
+        }
 
         // Charger les aperçus si des URLs existent
         if (city.cover_image) previewCityBanner(city.cover_image);
@@ -518,6 +558,7 @@ function openCityModal(city = null) {
         form.reset();
         document.getElementById('city_is_active').checked = true;
         document.getElementById('city_sort_order').value  = 0;
+        document.getElementById('city_website_link').style.display = 'none';
     }
 
     const modal = document.getElementById('cityModal');

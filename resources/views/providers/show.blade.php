@@ -112,118 +112,232 @@
 
         <a href="{{ route('providers.index') }}" class="text-amber-400 hover:text-amber-300 transition text-sm">← Retour à l'annuaire</a>
 
-        <div class="mt-4 bg-[#141410] border border-white/8 rounded-xl overflow-hidden">
-            <div class="h-56 bg-[#1c1c16]">
-                @if($provider->cover_url)
-                    <img src="{{ $provider->cover_url }}" alt="{{ $provider->name }}" class="w-full h-full object-cover">
-                @else
-                    <div class="w-full h-full flex items-center justify-center text-gray-600">
-                        <i class="fas fa-store text-5xl"></i>
+        @php
+            $galleryPhotos = collect();
+            if ($provider->cover_url) {
+                $galleryPhotos->push(['url' => $provider->cover_url, 'alt' => $provider->name]);
+            }
+            foreach ($provider->media->where('type', 'image')->sortBy('sort_order') as $gm) {
+                $galleryPhotos->push(['url' => $gm->url, 'alt' => $gm->alt_text ?: $provider->name]);
+            }
+        @endphp
+
+        <style>
+            @@keyframes heroFade { from { opacity:0; transform:scale(1.05) } to { opacity:1; transform:scale(1) } }
+            #prov-hero-img { animation: heroFade .6s cubic-bezier(.22,1,.36,1) both }
+        </style>
+        <script id="gallery-json" type="application/json">@json($galleryPhotos->values())</script>
+
+        <div class="mt-4 space-y-3">
+
+            {{-- ── HERO ──────────────────────────────────────────────────────── --}}
+            <div class="relative rounded-3xl overflow-hidden bg-[#0d0d0b]"
+                 style="height:clamp(320px,60vh,540px)" id="prov-hero-wrap">
+
+                @if($galleryPhotos->isNotEmpty())
+                <img id="prov-hero-img"
+                     src="{{ $galleryPhotos->first()[‘url’] }}"
+                     alt="{{ $galleryPhotos->first()[‘alt’] }}"
+                     class="w-full h-full object-cover">
+
+                {{-- Gradient diagonal --}}
+                <div class="absolute inset-0 pointer-events-none"
+                     style="background:linear-gradient(135deg,rgba(0,0,0,.55) 0%,transparent 45%,rgba(0,0,0,.65) 100%)"></div>
+
+                {{-- Badges top-left --}}
+                <div class="absolute top-5 left-5 flex flex-wrap gap-2">
+                    @if($provider->is_verified)
+                    <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 backdrop-blur-md border border-emerald-400/25 text-emerald-300 text-xs font-semibold px-3 py-1.5 rounded-full">
+                        <i class="fas fa-circle-check text-[10px]"></i> Vérifié
+                    </span>
+                    @endif
+                    @if($provider->city)
+                    <span class="inline-flex items-center gap-1.5 bg-black/35 backdrop-blur-md border border-white/10 text-white/80 text-xs px-3 py-1.5 rounded-full">
+                        <i class="fas fa-location-dot text-amber-400 text-[10px]"></i> {{ $provider->city }}
+                    </span>
+                    @endif
+                </div>
+
+                {{-- Rating card top-right --}}
+                <div class="absolute top-5 right-5 bg-black/45 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 text-center">
+                    <p class="text-4xl font-black text-white tabular-nums leading-none">
+                        {{ number_format((float)($provider->rating_avg ?? 0), 1) }}
+                    </p>
+                    @php $rounded = (int) round($provider->rating_avg ?? 0); @endphp
+                    <div class="flex justify-center gap-0.5 mt-1.5">
+                        @foreach(range(1,5) as $star)
+                        <i class="fas fa-star text-[9px] @if($star <= $rounded) text-amber-400 @else text-white/20 @endif"></i>
+                        @endforeach
                     </div>
+                    <p class="text-white/35 text-[10px] mt-1.5 tabular-nums">{{ $provider->approvedReviews->count() }} avis</p>
+                </div>
+
+                {{-- Flèches pill --}}
+                @if($galleryPhotos->count() > 1)
+                <button onclick="provSlide(-1)"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 h-10 pl-3 pr-4 rounded-full bg-black/35 hover:bg-black/65 backdrop-blur-md border border-white/12 text-white transition-all duration-200 hover:scale-105 active:scale-95">
+                    <i class="fas fa-arrow-left text-xs"></i>
+                    <span class="text-[11px] text-white/60 hidden sm:inline">Préc.</span>
+                </button>
+                <button onclick="provSlide(+1)"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 h-10 pl-4 pr-3 rounded-full bg-black/35 hover:bg-black/65 backdrop-blur-md border border-white/12 text-white transition-all duration-200 hover:scale-105 active:scale-95">
+                    <span class="text-[11px] text-white/60 hidden sm:inline">Suiv.</span>
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+                @endif
+
+                @else
+                <div class="w-full h-full flex flex-col items-center justify-center gap-4">
+                    <div class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center">
+                        <i class="fas fa-store text-4xl text-gray-600"></i>
+                    </div>
+                    <p class="text-gray-600 text-sm">Aucune photo disponible</p>
+                </div>
                 @endif
             </div>
 
-            <div class="p-6 provider-hero-panel rounded-b-xl">
-                <div class="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                        <h1 class="font-serif text-3xl sm:text-4xl font-bold leading-tight">{{ $provider->name }}</h1>
-                        <p class="text-gray-400 text-sm mt-1.5">{{ $provider->category->name_fr ?? 'Catégorie' }} · {{ $provider->city ?: 'N/A' }}</p>
-                        @if($provider->is_verified)
-                            <span class="inline-flex mt-3 items-center gap-1.5 bg-emerald-500/18 border border-emerald-500/30 text-emerald-300 text-xs px-3 py-1.5 rounded-full">
-                                <i class="fas fa-badge-check"></i> Prestataire vérifié
-                            </span>
+            {{-- ── CARTE TITRE + THUMBNAILS ────────────────────────────────── --}}
+            <div class="bg-[#141410] rounded-3xl border border-white/6 overflow-hidden">
+                <div class="px-5 pt-5 pb-4 flex items-start justify-between gap-4">
+                    <div class="min-w-0">
+                        <h1 class="font-serif text-2xl sm:text-3xl font-bold text-white leading-tight truncate">
+                            {{ $provider->name }}
+                        </h1>
+                        <p class="text-amber-400/70 text-sm font-medium mt-0.5">
+                            {{ $provider->category->name_fr ?? ‘’ }}
+                        </p>
+                    </div>
+                    @if($galleryPhotos->count() > 1)
+                    <span id="prov-counter"
+                          class="shrink-0 text-xs font-mono text-white/30 bg-white/5 px-2.5 py-1 rounded-lg tabular-nums mt-1">
+                        {{ str_pad(1, 2, ‘0’, STR_PAD_LEFT) }} / {{ str_pad($galleryPhotos->count(), 2, ‘0’, STR_PAD_LEFT) }}
+                    </span>
+                    @endif
+                </div>
+
+                @if($galleryPhotos->count() > 1)
+                <div class="flex gap-2 px-4 pb-4 overflow-x-auto" id="prov-thumbs"
+                     style="scrollbar-width:none;-ms-overflow-style:none">
+                    @foreach($galleryPhotos as $gi => $gp)
+                    @php
+                        $thumbCls = $gi === 0
+                            ? ‘shrink-0 w-21 h-14 rounded-xl overflow-hidden transition-all duration-300 ring-2 ring-amber-400 scale-105 shadow-lg shadow-amber-500/25’
+                            : ‘shrink-0 w-21 h-14 rounded-xl overflow-hidden transition-all duration-300 opacity-35 hover:opacity-75 hover:scale-105’;
+                    @endphp
+                    <button data-idx="{{ $gi }}" onclick="provGoTo(+this.dataset.idx)"
+                            id="prov-thumb-{{ $gi }}"
+                            class="{{ $thumbCls }}">
+                        <img src="{{ $gp[‘url’] }}" alt="" class="w-full h-full object-cover" loading="lazy">
+                    </button>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+
+            {{-- ── PANEL INFO ───────────────────────────────────────────────── --}}
+            <div class="bg-[#141410] rounded-3xl border border-white/6 p-5">
+
+                {{-- Wishlist --}}
+                @auth
+                    @if(auth()->user()->role === ‘visitor’)
+                    <div class="mb-5">
+                        @if(!($isFavorited ?? false))
+                        <form method="POST" action="{{ route(‘visitor.favorites.store’) }}">
+                            @csrf
+                            <input type="hidden" name="type" value="provider">
+                            <input type="hidden" name="id" value="{{ $provider->id }}">
+                            <button type="submit"
+                                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-medium hover:bg-amber-500/20 transition">
+                                <i class="fas fa-heart text-[10px]"></i> Ajouter à ma wishlist
+                            </button>
+                        </form>
+                        @else
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-medium">
+                            <i class="fas fa-heart-circle-check text-[10px]"></i> Déjà dans vos favoris
+                        </span>
                         @endif
                     </div>
-                    <div class="provider-chip rounded-xl px-4 py-3 text-right">
-                        <p class="text-amber-300 text-2xl font-semibold leading-none">{{ number_format((float) ($provider->rating_avg ?? 0), 1) }} <span class="text-amber-400">★</span></p>
-                        <p class="text-gray-400 text-xs mt-1">{{ $provider->approvedReviews->count() }} avis</p>
-                    </div>
-                </div>
-                @auth
-                    @if(auth()->user()->role === 'visitor')
-                        <div class="mt-4">
-                            @if(!($isFavorited ?? false))
-                                <form method="POST" action="{{ route('visitor.favorites.store') }}">
-                                    @csrf
-                                    <input type="hidden" name="type" value="provider">
-                                    <input type="hidden" name="id" value="{{ $provider->id }}">
-                                    <button type="submit" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs hover:bg-amber-500/30 transition">
-                                        <i class="fas fa-heart"></i> Ajouter à ma wishlist
-                                    </button>
-                                </form>
-                            @else
-                                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs">
-                                    <i class="fas fa-heart-circle-check"></i> Déjà dans vos favoris
-                                </span>
-                            @endif
-                        </div>
                     @endif
                 @endauth
 
-                <p class="text-gray-200 mt-6 leading-relaxed text-[15px]">{{ $provider->description_fr ?: 'Description non disponible.' }}</p>
+                {{-- Description --}}
+                <p class="text-gray-300 leading-relaxed text-[15px]">
+                    {{ $provider->description_fr ?: ‘Description non disponible.’ }}
+                </p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                    <div class="provider-info-card rounded-xl p-4 text-sm">
-                        <p><span class="text-gray-500">Adresse :</span> {{ $provider->address ?: 'N/A' }}</p>
-                        <p class="mt-1.5"><span class="text-gray-500">Ville :</span> {{ $provider->city ?: 'N/A' }}</p>
-                        <p class="mt-1.5"><span class="text-gray-500">Région :</span> {{ $provider->region ?: 'N/A' }}</p>
+                {{-- Infos pratiques --}}
+                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    @foreach([
+                        [‘icon’=>’fa-location-dot’,’label’=>’Adresse’,  ‘value’=>$provider->address],
+                        [‘icon’=>’fa-city’,        ‘label’=>’Ville’,    ‘value’=>$provider->city],
+                        [‘icon’=>’fa-map’,         ‘label’=>’Région’,   ‘value’=>$provider->region],
+                        [‘icon’=>’fa-phone’,       ‘label’=>’Téléphone’,’value’=>$provider->phone],
+                        [‘icon’=>’fa-envelope’,    ‘label’=>’Email’,    ‘value’=>$provider->email],
+                    ] as $row)
+                    @if($row[‘value’])
+                    <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/4 hover:bg-white/6 transition">
+                        <div class="w-7 h-7 rounded-lg bg-amber-500/12 flex items-center justify-center shrink-0">
+                            <i class="fas {{ $row[‘icon’] }} text-amber-400 text-[11px]"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-[9px] font-semibold uppercase tracking-widest text-gray-600">{{ $row[‘label’] }}</p>
+                            <p class="text-gray-200 text-sm truncate">{{ $row[‘value’] }}</p>
+                        </div>
                     </div>
-                    <div class="provider-info-card rounded-xl p-4 text-sm">
-                        <p><span class="text-gray-500">Téléphone :</span> {{ $provider->phone ?: 'N/A' }}</p>
-                        <p class="mt-1.5"><span class="text-gray-500">Email :</span> {{ $provider->email ?: 'N/A' }}</p>
-                        <p class="mt-1.5"><span class="text-gray-500">Site web :</span>
-                            @if($provider->website)
-                                <a href="{{ $provider->website }}" target="_blank" class="text-amber-400 hover:text-amber-300">{{ $provider->website }}</a>
-                            @else
-                                N/A
-                            @endif
-                        </p>
-                        <p class="mt-1.5"><span class="text-gray-500">Lien réserver :</span>
-                            @if($provider->reserve_url || $provider->website)
-                                <a href="{{ $provider->reserve_url ?: $provider->website }}" target="_blank" class="text-amber-400 hover:text-amber-300">{{ $provider->reserve_url ?: $provider->website }}</a>
-                            @else
-                                N/A
-                            @endif
-                        </p>
-                        <p class="mt-1.5"><span class="text-gray-500">Lien commander :</span>
-                            Formulaire de commande (bouton ci-dessous)
-                        </p>
-                    </div>
-                </div>
-                <div class="mt-5 space-y-3">
-                    @if(!empty($provider->reserve_url) || !empty($provider->website))
-                        <div class="flex justify-center">
-                            <a href="{{ $provider->reserve_url ?: $provider->website }}"
-                               target="_blank" rel="noopener noreferrer"
-                               class="provider-book-btn inline-flex items-center justify-center gap-2.5 rounded-xl text-black font-bold px-7 py-3.5 text-base">
-                                <i class="fas fa-hotel text-sm"></i>
-                                Effectuer une réservation d’hôtel
+                    @endif
+                    @endforeach
+
+                    @if($provider->website)
+                    <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/4 hover:bg-white/6 transition sm:col-span-2">
+                        <div class="w-7 h-7 rounded-lg bg-amber-500/12 flex items-center justify-center shrink-0">
+                            <i class="fas fa-globe text-amber-400 text-[11px]"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-[9px] font-semibold uppercase tracking-widest text-gray-600">Site web</p>
+                            <a href="{{ $provider->website }}" target="_blank"
+                               class="text-amber-400 hover:text-amber-300 text-sm truncate block transition">
+                                {{ $provider->website }}
                             </a>
                         </div>
+                    </div>
+                    @endif
+                </div>
+
+                {{-- CTAs --}}
+                <div class="mt-5 space-y-2.5">
+                    @if(!empty($provider->reserve_url) || !empty($provider->website))
+                    <a href="{{ $provider->reserve_url ?: $provider->website }}"
+                       target="_blank" rel="noopener noreferrer"
+                       class="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-[15px] transition-all duration-200 hover:shadow-xl hover:shadow-amber-500/20 active:scale-[.98] group">
+                        <span class="flex items-center gap-2.5">
+                            <i class="fas fa-hotel text-sm"></i> Effectuer une réservation
+                        </span>
+                        <i class="fas fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                     @endif
 
                     @auth
-                        @if(auth()->user()->role === 'visitor')
-                            <div class="flex justify-center">
-                                <button type="button"
-                                        onclick="openOrderModal()"
-                                        class="provider-book-btn inline-flex items-center justify-center gap-2.5 rounded-xl text-black font-bold px-7 py-3 text-base">
-                                    <i class="fas fa-cart-shopping text-sm"></i>
-                                    Passer une commande
-                                </button>
-                            </div>
+                        @if(auth()->user()->role === ‘visitor’)
+                        <button onclick="openOrderModal()"
+                                class="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-white/6 hover:bg-white/10 border border-white/8 text-white font-semibold text-[15px] transition-all duration-200 active:scale-[.98] group">
+                            <span class="flex items-center gap-2.5">
+                                <i class="fas fa-cart-shopping text-sm text-amber-400"></i> Passer une commande
+                            </span>
+                            <i class="fas fa-arrow-right text-sm text-white/30 group-hover:translate-x-1 group-hover:text-white/60 transition"></i>
+                        </button>
                         @else
-                            <p class="text-center text-xs text-gray-500">
-                                Le formulaire de commande est disponible pour les comptes visiteurs.
-                            </p>
+                        <p class="text-center text-xs text-gray-600 py-1">
+                            Le formulaire de commande est disponible pour les comptes visiteurs.
+                        </p>
                         @endif
                     @else
-                        <div class="flex justify-center">
-                            <a href="{{ route('login') }}" class="provider-book-btn inline-flex items-center justify-center gap-2.5 rounded-xl text-black font-bold px-7 py-3 text-base">
-                                <i class="fas fa-right-to-bracket text-sm"></i>
-                                Se connecter pour commander
-                            </a>
-                        </div>
+                    <a href="{{ route(‘login’) }}"
+                       class="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-white/6 hover:bg-white/10 border border-white/8 text-white font-semibold text-[15px] transition-all duration-200 active:scale-[.98] group">
+                        <span class="flex items-center gap-2.5">
+                            <i class="fas fa-right-to-bracket text-sm text-amber-400"></i> Se connecter pour commander
+                        </span>
+                        <i class="fas fa-arrow-right text-sm text-white/30 group-hover:translate-x-1 group-hover:text-white/60 transition"></i>
+                    </a>
                     @endauth
                 </div>
             </div>
@@ -350,7 +464,7 @@
 
 @auth
     @if(auth()->user()->role === 'visitor')
-        <div id="order-modal" class="fixed inset-0 z-[90] hidden">
+        <div id="order-modal" class="fixed inset-0 z-90 hidden">
             <div id="order-modal-backdrop" class="absolute inset-0 bg-black/70 order-modal-backdrop opacity-0 transition-opacity duration-200" onclick="closeOrderModal()"></div>
             <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
                 <div id="order-modal-card" class="order-modal-card w-full max-w-2xl bg-[#141410] border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col opacity-0 scale-95 translate-y-3">
@@ -472,6 +586,51 @@
 @endauth
 
 <script>
+// ── Provider photo gallery ────────────────────────────────────────────────
+(function () {
+    const photos = JSON.parse(document.getElementById('gallery-json').textContent);
+    if (photos.length <= 1) return;
+
+    let current = 0;
+    const hero    = document.getElementById('prov-hero-img');
+    const counter = document.getElementById('prov-counter');
+    const total   = photos.length;
+    const pad     = n => String(n).padStart(2, '0');
+
+    const ACTIVE   = ['ring-2','ring-amber-400','ring-offset-2','ring-offset-[#141410]','scale-[1.06]','shadow-lg','shadow-amber-500/25'];
+    const INACTIVE = ['opacity-35'];
+
+    function go(idx) {
+        current = (idx + total) % total;
+
+        // Animate image
+        hero.style.animation = 'none';
+        hero.offsetHeight;
+        hero.style.animation = 'heroFade .6s cubic-bezier(.22,1,.36,1) both';
+        hero.src = photos[current].url;
+        hero.alt = photos[current].alt;
+
+        if (counter) counter.textContent = pad(current + 1) + ' / ' + pad(total);
+
+        document.querySelectorAll('[id^="prov-thumb-"]').forEach((btn, i) => {
+            if (i === current) {
+                btn.classList.add(...ACTIVE);
+                btn.classList.remove(...INACTIVE);
+            } else {
+                btn.classList.remove(...ACTIVE);
+                btn.classList.add(...INACTIVE);
+            }
+        });
+
+        document.getElementById('prov-thumb-' + current)
+            ?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+    }
+
+    window.provGoTo  = go;
+    window.provSlide = (dir) => go(current + dir);
+})();
+
+// ── Orders modal ─────────────────────────────────────────────────────────
 function openOrderModal() {
     const modal = document.getElementById('order-modal');
     const backdrop = document.getElementById('order-modal-backdrop');

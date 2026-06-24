@@ -11,7 +11,7 @@ class TouristCity extends Model
     protected $fillable = [
         'name', 'slug', 'district', 'region_administrative',
         'description', 'thumbnail', 'cover_image',
-        'latitude', 'longitude',
+        'latitude', 'longitude', 'website',
         'is_featured', 'is_active', 'sort_order',
     ];
 

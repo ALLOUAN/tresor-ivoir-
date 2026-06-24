@@ -390,10 +390,15 @@
                     <span class="nav-row-icon"><i class="fas fa-map-location-dot"></i></span>
                     <span>Régions Touristiques</span>
                 </a>
-                <a href="#"
-                   class="nav-row opacity-70 hover:opacity-100">
+                <a href="{{ route('admin.cultural.peoples.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.cultural.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-masks-theater"></i></span>
                     <span>Cultures Ivoiriennes</span>
+                </a>
+                <a href="{{ route('admin.accommodations.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.accommodations.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-hotel"></i></span>
+                    <span>Hébergements</span>
                 </a>
                 <p class="nav-section-title"><span>Sécurité</span></p>
                 <a href="{{ route('admin.analytics.index') }}"

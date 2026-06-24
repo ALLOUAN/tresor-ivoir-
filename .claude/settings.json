@@ -6,7 +6,14 @@
       "Bash(Select-Object Name, Mode)",
       "Bash(php artisan *)",
       "Bash(php -l app/Http/Controllers/Admin/TouristManagementController.php)",
-      "Bash(php -r \"require 'vendor/autoload.php'; echo 'OK';\")"
+      "Bash(php -r \"require 'vendor/autoload.php'; echo 'OK';\")",
+      "Bash(php -l app/Models/TouristCity.php)",
+      "Bash(powershell -Command \"Get-Content storage/logs/laravel.log | Select-Object -Last 100\")",
+      "Bash(php -r ' *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\laragon\\\\www\\\\tresorsIvoire\\\\database\\\\migrations\" -Filter \"*.php\")",
+      "Bash(Select-Object -ExpandProperty Name)",
+      "Bash(Sort-Object)",
+      "Read(//temp/readonly/**)"
     ]
   }
 }

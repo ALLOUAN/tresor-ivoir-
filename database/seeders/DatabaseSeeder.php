@@ -20,6 +20,12 @@ class DatabaseSeeder extends Seeder
             TouristCategorySeeder::class,
             TouristCitySeeder::class,
             TouristSiteSeeder::class,
+            AccommodationSeeder::class,
+
+            // Cultures Ivoiriennes (référentiels indépendants)
+            CulturalPeopleSeeder::class,
+            CulturalDomainSeeder::class,
+            CulturalElementSeeder::class,
 
             // Utilisateurs
             UserSeeder::class,

@@ -1702,7 +1702,8 @@
 {{-- ══════════════════════════════════════════════════════════
      BANNER : DÉCOUVERTES
 ══════════════════════════════════════════════════════════ --}}
-<section id="decouvertes" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
+{{-- [COMMENTÉ] section #decouvertes --}}
+{{-- <section id="decouvertes" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
     <div class="absolute inset-0 opacity-5" style="background-image: repeating-linear-gradient(45deg, #e8a020 0, #e8a020 1px, transparent 0, transparent 50%); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16 reveal">
@@ -1759,23 +1760,287 @@
         </div>
         @endif
     </div>
-</section>
+</section> --}}
 
 {{-- ══════════════════════════════════════════════════════════
      SECTION : RÉGIONS TOURISTIQUES
 ══════════════════════════════════════════════════════════ --}}
 @if(($homeTouristCities ?? collect())->isNotEmpty())
+<style>
+/* ════════════════════════════════════════════════════════════
+   RÉGIONS TOURISTIQUES — Design asymétrique cinématique
+   ════════════════════════════════════════════════════════════ */
+
+/* Entrée hero (gauche) */
+@@keyframes rt2-hero-in {
+    from { opacity:0; transform: translateX(-50px) scale(.97); }
+    to   { opacity:1; transform: translateX(0)     scale(1);   }
+}
+/* Entrée cards droite (stagger) */
+@@keyframes rt2-side-in {
+    from { opacity:0; transform: translateX(40px); }
+    to   { opacity:1; transform: translateX(0);    }
+}
+/* Entrée strip bas */
+@@keyframes rt2-strip-in {
+    from { opacity:0; transform: translateY(30px); }
+    to   { opacity:1; transform: translateY(0);    }
+}
+/* Shimmer sweep */
+@@keyframes rt2-sweep {
+    from { left: -60%; }
+    to   { left: 130%; }
+}
+/* Pulsation dorée badge */
+@@keyframes rt2-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(232,160,32,.55); }
+    60%     { box-shadow: 0 0 0 8px rgba(232,160,32,0); }
+}
+/* Ligne dorée animée (hero) */
+@@keyframes rt2-line {
+    from { width: 0; opacity:0; }
+    to   { width: 3rem; opacity:1; }
+}
+/* Scroll indicator bounce */
+@@keyframes rt2-bounce-x {
+    0%,100% { transform: translateX(0); }
+    50%     { transform: translateX(5px); }
+}
+
+/* ── Hero card ─────────────────────── */
+.rt2-hero {
+    opacity: 0;
+    animation: rt2-hero-in .8s cubic-bezier(.22,1,.36,1) forwards;
+    animation-play-state: paused;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.06);
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: border-color .35s ease, box-shadow .35s ease;
+}
+.rt2-hero:hover {
+    border-color: rgba(232,160,32,.35);
+    box-shadow: 0 0 40px rgba(232,160,32,.10), inset 0 0 60px rgba(0,0,0,.1);
+}
+.rt2-hero .rt2-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    transform-origin: center;
+    transition: transform 1s cubic-bezier(.22,1,.36,1), filter .5s ease;
+    will-change: transform;
+}
+.rt2-hero:hover .rt2-img {
+    transform: scale(1.06) translateY(-8px);
+    filter: brightness(1.06) saturate(1.1);
+}
+/* Sweep shimmer */
+.rt2-hero::after {
+    content: '';
+    position: absolute; inset: 0; top: 0; height: 100%;
+    width: 40%;
+    background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,.06) 50%, transparent 80%);
+    left: -60%;
+    pointer-events: none;
+    z-index: 6;
+}
+.rt2-hero:hover::after {
+    animation: rt2-sweep .8s ease forwards;
+}
+/* Ligne de titre animée */
+.rt2-line {
+    display: block;
+    height: 2px;
+    background: linear-gradient(to right, #e8a020, transparent);
+    margin-bottom: .75rem;
+    animation: rt2-line .6s .5s ease forwards;
+    width: 0; opacity: 0;
+}
+
+/* ── Side cards ────────────────────── */
+.rt2-side {
+    opacity: 0;
+    animation: rt2-side-in .6s cubic-bezier(.22,1,.36,1) forwards;
+    animation-play-state: paused;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.06);
+    display: flex;
+    align-items: flex-end;
+    min-height: 148px;
+    transition: border-color .3s ease, transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+    flex: 1;
+}
+.rt2-side:hover {
+    transform: translateX(5px) translateY(-2px);
+    border-color: rgba(232,160,32,.35);
+    box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 20px rgba(232,160,32,.08);
+}
+.rt2-side .rt2-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .7s cubic-bezier(.22,1,.36,1), filter .4s ease;
+    will-change: transform;
+}
+.rt2-side:hover .rt2-img {
+    transform: scale(1.08);
+    filter: brightness(1.07);
+}
+/* Indicateur latéral doré */
+.rt2-side::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, #e8a020, transparent);
+    z-index: 5;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+.rt2-side:hover::before { opacity: 1; }
+
+/* ── Strip (bas, scroll horizontal) ── */
+.rt2-strip-wrap {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+}
+.rt2-strip-wrap::-webkit-scrollbar { display: none; }
+.rt2-strip-wrap:active { cursor: grabbing; }
+
+.rt2-strip-card {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    width: 220px;
+    height: 160px;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,255,255,.06);
+    opacity: 0;
+    animation: rt2-strip-in .5s cubic-bezier(.22,1,.36,1) forwards;
+    animation-play-state: paused;
+    transition: border-color .3s ease, transform .3s ease;
+}
+.rt2-strip-card:hover {
+    border-color: rgba(232,160,32,.4);
+    transform: translateY(-4px) scale(1.02);
+}
+.rt2-strip-card .rt2-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s cubic-bezier(.22,1,.36,1);
+}
+.rt2-strip-card:hover .rt2-img { transform: scale(1.08); }
+
+/* Scroll indicator arrows */
+.rt2-nav-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(20,18,14,.85);
+    border: 1px solid rgba(232,160,32,.25);
+    display: flex; align-items: center; justify-content: center;
+    color: #e8a020;
+    cursor: pointer;
+    transition: background .2s, border-color .2s, transform .2s;
+    backdrop-filter: blur(8px);
+    flex-shrink: 0;
+}
+.rt2-nav-btn:hover {
+    background: rgba(232,160,32,.15);
+    border-color: rgba(232,160,32,.5);
+    transform: scale(1.1);
+}
+.rt2-nav-btn i { animation: rt2-bounce-x 1.4s ease-in-out infinite; }
+.rt2-nav-btn.rt2-prev i { animation: none; }
+
+/* Progress bar */
+.rt2-progress {
+    height: 2px;
+    background: rgba(255,255,255,.06);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+.rt2-progress-bar {
+    height: 100%;
+    background: linear-gradient(to right, #e8a020, #f5c842);
+    border-radius: 999px;
+    transition: width .25s ease;
+    width: 0%;
+}
+
+/* Badge pulse */
+.rt2-badge {
+    animation: rt2-pulse 2.2s ease-in-out infinite;
+}
+
+/* Pill categories */
+@@keyframes rt2-pill-in {
+    from { opacity:0; transform: translateY(10px) scale(.92); }
+    to   { opacity:1; transform: translateY(0)    scale(1);   }
+}
+.rt2-pill {
+    opacity: 0;
+    animation: rt2-pill-in .4s cubic-bezier(.22,1,.36,1) both;
+    animation-play-state: paused;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.04);
+    font-size: 11px; font-weight: 500;
+    color: #9ca3af;
+    transition: background .2s, border-color .2s, color .2s, transform .2s;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.rt2-pill:hover {
+    background: rgba(232,160,32,.10);
+    border-color: rgba(232,160,32,.4);
+    color: #fff;
+    transform: translateY(-2px);
+}
+.rt2-pill i { transition: transform .2s; }
+.rt2-pill:hover i { transform: scale(1.15); }
+
+/* Overlay gradient commun */
+.rt2-overlay-b {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.88) 0%, rgba(0,0,0,.22) 50%, transparent 100%);
+    transition: background .4s ease;
+    z-index: 2;
+}
+.rt2-hero:hover .rt2-overlay-b   { background: linear-gradient(to top, rgba(0,0,0,.80) 0%, rgba(0,0,0,.10) 50%, transparent 100%); }
+.rt2-side:hover .rt2-overlay-b   { background: linear-gradient(to top, rgba(0,0,0,.82) 0%, rgba(0,0,0,.1) 50%, transparent 100%); }
+.rt2-strip-card:hover .rt2-overlay-b { background: linear-gradient(to top, rgba(0,0,0,.82) 0%, transparent 70%); }
+
+/* Content z-index */
+.rt2-content { position: relative; z-index: 3; }
+</style>
+
 <section id="regions-touristiques" class="py-16 sm:py-24 bg-dark-900 relative overflow-hidden">
-    {{-- Motif décoratif --}}
-    <div class="absolute inset-0 pointer-events-none opacity-[0.03]"
-         style="background-image: radial-gradient(circle, #e8a020 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    {{-- Fond décoratif subtil --}}
+    <div class="absolute inset-0 pointer-events-none opacity-[0.025]"
+         style="background-image: radial-gradient(circle, #e8a020 1px, transparent 1px); background-size: 28px 28px;"></div>
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent"></div>
+    {{-- Halo ambiance --}}
+    <div class="absolute -top-60 -left-40 w-[700px] h-[700px] rounded-full pointer-events-none"
+         style="background: radial-gradient(circle, rgba(232,160,32,.06) 0%, transparent 65%);"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative" id="rt2-section">
 
-        {{-- En-tête --}}
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 sm:mb-16">
-            <div class="reveal">
+        {{-- ── En-tête ─────────────────────────────────────────────── --}}
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 sm:mb-14 reveal">
+            <div>
                 <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Voyage en Côte d'Ivoire</p>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Régions Touristiques</h2>
                 <p class="text-gray-400 font-elegant text-base font-light mt-4 max-w-lg">
@@ -1785,30 +2050,311 @@
             <a href="{{ route('tourist.cities') }}"
                class="shrink-0 inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-gold-500/25 bg-dark-800/70 text-sm text-gold-300 hover:text-gold-200 hover:border-gold-400/50 hover:bg-dark-700/80 transition-all duration-300 font-semibold tracking-wide group hover:-translate-y-0.5 self-start sm:self-auto">
                 <span>Explorer toutes les villes</span>
+                <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform duration-300"></i>
+            </a>
+        </div>
+
+        @php
+            $rtMain  = $homeTouristCities->take(4);   /* Hero + 3 side */
+            $rtStrip = $homeTouristCities->skip(4);   /* Strip bas */
+            $rtHero  = $rtMain->first();
+            $rtSides = $rtMain->skip(1);
+        @endphp
+
+        {{-- ── Layout principal (hero gauche + colonne droite) ───────── --}}
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4" id="rt2-main">
+
+            {{-- Hero (grande carte gauche, 3 colonnes sur 5) --}}
+            @if($rtHero)
+            <a href="{{ route('tourist.city', $rtHero->slug) }}"
+               class="rt2-hero lg:col-span-3" style="min-height:480px;">
+
+                @if($rtHero->cover_image || $rtHero->thumbnail)
+                <img src="{{ $rtHero->cover_image ?? $rtHero->thumbnail }}" alt="{{ $rtHero->name }}"
+                     class="rt2-img" loading="lazy">
+                @else
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-900/70 to-slate-900"></div>
+                @endif
+
+                <div class="rt2-overlay-b"></div>
+
+                {{-- Badge --}}
+                @if($rtHero->is_featured)
+                <div class="absolute top-4 left-4 z-10">
+                    <span class="rt2-badge inline-flex items-center gap-1.5 px-3 py-1.5 bg-gold-500/90 text-black text-[11px] font-bold rounded-full backdrop-blur-sm">
+                        <i class="fas fa-star text-[9px]"></i> Destination vedette
+                    </span>
+                </div>
+                @endif
+
+                {{-- Contenu bas --}}
+                <div class="rt2-content p-7">
+                    <span class="rt2-line"></span>
+                    <h3 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-2 leading-tight">
+                        {{ $rtHero->name }}
+                    </h3>
+                    @if($rtHero->district)
+                    <p class="text-gold-400/80 text-sm font-elegant mb-4">
+                        <i class="fas fa-map-marker-alt mr-1.5 text-xs"></i>{{ $rtHero->district }}
+                    </p>
+                    @endif
+                    <div class="flex items-center gap-4">
+                        <span class="text-gray-300 text-sm">
+                            <i class="fas fa-map-pin text-gold-500/60 mr-1.5 text-xs"></i>
+                            {{ $rtHero->sites_count }} site{{ $rtHero->sites_count > 1 ? 's' : '' }} à explorer
+                        </span>
+                        <span class="ml-auto flex items-center gap-2 text-gold-400 text-sm font-semibold group-hover:gap-3 transition-all duration-300">
+                            Explorer
+                            <span class="w-8 h-8 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-black group-hover:border-gold-500 transition-all duration-300">
+                                <i class="fas fa-arrow-right text-xs"></i>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            @endif
+
+            {{-- Colonne droite : 3 cards empilées (2 colonnes sur 5) --}}
+            <div class="lg:col-span-2 flex flex-col gap-4">
+                @foreach($rtSides as $k => $city)
+                <a href="{{ route('tourist.city', $city->slug) }}"
+                   class="rt2-side" style="animation-delay: {{ ($k + 1) * 120 }}ms; flex:1; min-height:148px;">
+
+                    @if($city->cover_image || $city->thumbnail)
+                    <img src="{{ $city->cover_image ?? $city->thumbnail }}" alt="{{ $city->name }}"
+                         class="rt2-img" loading="lazy">
+                    @else
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-900/60 to-slate-900"></div>
+                    @endif
+
+                    <div class="rt2-overlay-b"></div>
+
+                    @if($city->is_featured)
+                    <div class="absolute top-2.5 right-2.5 z-10">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gold-500/80 text-black text-[9px] font-bold rounded-full">
+                            <i class="fas fa-star text-[7px]"></i>
+                        </span>
+                    </div>
+                    @endif
+
+                    <div class="rt2-content px-4 pb-4 pt-2 w-full">
+                        <div class="flex items-end justify-between">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-serif text-lg font-bold text-white truncate group-hover:text-gold-200 transition-colors">{{ $city->name }}</h3>
+                                @if($city->district)
+                                <p class="text-gold-400/70 text-xs truncate mt-0.5">{{ $city->district }}</p>
+                                @endif
+                            </div>
+                            <span class="ml-3 w-7 h-7 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-400 shrink-0 group-hover:bg-gold-500 group-hover:text-black transition-all duration-300">
+                                <i class="fas fa-arrow-right text-[9px]"></i>
+                            </span>
+                        </div>
+                        <p class="text-gray-500 text-xs mt-1.5">
+                            <i class="fas fa-map-pin mr-1 text-[9px]"></i>{{ $city->sites_count }} site{{ $city->sites_count > 1 ? 's' : '' }}
+                        </p>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+
+        </div>
+
+        {{-- ── Strip horizontal (villes restantes) ───────────────────── --}}
+        @if($rtStrip->isNotEmpty())
+        <div class="mt-2" id="rt2-strip-section">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-gray-600 text-[10px] tracking-[.2em] uppercase font-elegant flex-1">Autres destinations</span>
+                <button class="rt2-nav-btn rt2-prev" id="rt2-prev" aria-label="Précédent">
+                    <i class="fas fa-arrow-left text-xs"></i>
+                </button>
+                <button class="rt2-nav-btn" id="rt2-next" aria-label="Suivant">
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+
+            <div class="rt2-strip-wrap flex gap-3" id="rt2-strip">
+                @foreach($rtStrip as $m => $city)
+                <a href="{{ route('tourist.city', $city->slug) }}"
+                   class="rt2-strip-card group" style="animation-delay: {{ $m * 80 }}ms;">
+
+                    @if($city->cover_image || $city->thumbnail)
+                    <img src="{{ $city->cover_image ?? $city->thumbnail }}" alt="{{ $city->name }}"
+                         class="rt2-img" loading="lazy">
+                    @else
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-900/60 to-slate-900"></div>
+                    @endif
+
+                    <div class="rt2-overlay-b"></div>
+
+                    <div class="rt2-content absolute bottom-0 left-0 right-0 p-3.5">
+                        <h3 class="font-serif text-base font-bold text-white truncate group-hover:text-gold-200 transition-colors">{{ $city->name }}</h3>
+                        <p class="text-gray-400 text-xs mt-0.5">
+                            <i class="fas fa-map-pin text-gold-500/50 mr-1 text-[9px]"></i>
+                            {{ $city->sites_count }} site{{ $city->sites_count > 1 ? 's' : '' }}
+                        </p>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+
+            {{-- Barre de progression --}}
+            <div class="rt2-progress">
+                <div class="rt2-progress-bar" id="rt2-prog"></div>
+            </div>
+        </div>
+        @endif
+
+        {{-- ── Catégories ─────────────────────────────────────────────── --}}
+        @php
+            $touristCats = \App\Models\TouristCategory::where('is_active', 1)->orderBy('sort_order')->limit(8)->get();
+        @endphp
+        @if($touristCats->isNotEmpty())
+        <div class="mt-12 pt-10 border-t border-white/5" id="rt2-pills">
+            <p class="text-center text-gray-600 text-[10px] tracking-[.22em] uppercase font-elegant mb-5">Explorer par catégorie</p>
+            <div class="flex flex-wrap justify-center gap-2">
+                @foreach($touristCats as $j => $cat)
+                <a href="{{ route('tourist.cities') }}#{{ $cat->slug }}"
+                   class="rt2-pill" style="animation-delay: {{ $j * 45 }}ms;">
+                    <i class="{{ $cat->icon ?: 'fas fa-tag' }} text-[10px]"
+                       style="{{ $cat->color ? 'color:'.$cat->color : 'color:#e8a020' }}"></i>
+                    {{ $cat->name }}
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+    </div>
+</section>
+
+<script>
+(function () {
+    /* ── IntersectionObserver : déclenche toutes les animations ── */
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            const id = e.target.id;
+            if (id === 'rt2-main') {
+                e.target.querySelector('.rt2-hero')?.style.setProperty('animation-play-state', 'running');
+                e.target.querySelectorAll('.rt2-side').forEach(c => c.style.animationPlayState = 'running');
+                e.target.querySelector('.rt2-line')?.style.setProperty('animation-play-state', 'running');
+            }
+            if (id === 'rt2-strip-section') {
+                e.target.querySelectorAll('.rt2-strip-card').forEach(c => c.style.animationPlayState = 'running');
+            }
+            if (id === 'rt2-pills') {
+                e.target.querySelectorAll('.rt2-pill').forEach(c => c.style.animationPlayState = 'running');
+            }
+            io.unobserve(e.target);
+        });
+    }, { threshold: 0.1 });
+
+    /* Pause tout dès le départ */
+    document.querySelectorAll('.rt2-hero, .rt2-side, .rt2-strip-card, .rt2-line, .rt2-pill').forEach(el => {
+        el.style.animationPlayState = 'paused';
+    });
+
+    ['rt2-main','rt2-strip-section','rt2-pills'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) io.observe(el);
+    });
+
+    /* ── Navigation strip ── */
+    const strip = document.getElementById('rt2-strip');
+    const prog  = document.getElementById('rt2-prog');
+    const prev  = document.getElementById('rt2-prev');
+    const next  = document.getElementById('rt2-next');
+    const STEP  = 240;
+
+    function updateProg() {
+        if (!strip || !prog) return;
+        const max = strip.scrollWidth - strip.clientWidth;
+        prog.style.width = max > 0 ? (strip.scrollLeft / max * 100) + '%' : '0%';
+    }
+    if (strip) {
+        strip.addEventListener('scroll', updateProg, { passive: true });
+        updateProg();
+    }
+    prev?.addEventListener('click', () => strip?.scrollBy({ left: -STEP, behavior: 'smooth' }));
+    next?.addEventListener('click', () => strip?.scrollBy({ left:  STEP, behavior: 'smooth' }));
+
+    /* Drag-to-scroll */
+    if (strip) {
+        let isDown = false, startX, scrollLeft;
+        strip.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - strip.offsetLeft; scrollLeft = strip.scrollLeft; });
+        strip.addEventListener('mouseleave', () => isDown = false);
+        strip.addEventListener('mouseup', () => isDown = false);
+        strip.addEventListener('mousemove', e => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - strip.offsetLeft;
+            strip.scrollLeft = scrollLeft - (x - startX) * 1.2;
+        });
+    }
+
+    /* ── Tilt 3D sur le hero ── */
+    const hero = document.querySelector('.rt2-hero');
+    if (hero) {
+        hero.addEventListener('mousemove', e => {
+            const r = hero.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width  - .5;
+            const y = (e.clientY - r.top)  / r.height - .5;
+            hero.style.transform = `perspective(900px) rotateY(${x * 3.5}deg) rotateX(${-y * 2.5}deg)`;
+        });
+        hero.addEventListener('mouseleave', () => {
+            hero.style.transform = '';
+        });
+    }
+})();
+</script>
+@endif
+
+{{-- ══════════════════════════════════════════════════════════
+     SECTION : CULTURES IVOIRIENNES
+══════════════════════════════════════════════════════════ --}}
+@if(($homeCulturalPeoples ?? collect())->isNotEmpty())
+<section id="cultures-ivoiriennes" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
+
+    <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(circle, #e8a020 1px, transparent 1px); background-size: 32px 32px;"></div>
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
+
+        {{-- En-tête --}}
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 sm:mb-16">
+            <div class="reveal">
+                <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Patrimoine vivant</p>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Cultures Ivoiriennes</h2>
+                <p class="text-gray-400 font-elegant text-base font-light mt-4 max-w-lg">
+                    Peuples, traditions, masques, gastronomie… Plongez dans la richesse des 60 ethnies de Côte d'Ivoire.
+                </p>
+            </div>
+            <a href="{{ route('cultural.peoples') }}" class="shrink-0 inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-gold-500/25 bg-dark-800/70 text-sm text-gold-300 hover:text-gold-200 hover:border-gold-400/50 hover:bg-dark-700/80 transition-all duration-300 font-semibold tracking-wide group hover:-translate-y-0.5 self-start sm:self-auto">
+                <span>Explorer toutes les cultures</span>
                 <i class="fas fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
             </a>
         </div>
 
-        {{-- Grille des villes --}}
+        {{-- Grille des peuples --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            @foreach($homeTouristCities as $city)
-            <a href="{{ route('tourist.city', $city->slug) }}"
-               class="group relative rounded-2xl overflow-hidden border border-white/5 hover:border-gold-500/30 transition-all duration-300 hover:-translate-y-1 reveal"
-               style="min-height: 220px;">
+            @foreach($homeCulturalPeoples as $people)
+            <a href="{{ route('cultural.people', $people->slug) }}" class="group relative rounded-2xl overflow-hidden border border-white/5 hover:border-gold-500/30 transition-all duration-300 hover:-translate-y-1 reveal" style="min-height: 220px;">
 
-                {{-- Image de fond --}}
-                @if($city->cover_image || $city->thumbnail)
-                <img src="{{ $city->cover_image ?? $city->thumbnail }}" alt="{{ $city->name }}"
-                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                {{-- Image --}}
+                @if($people->cover_image)
+                <img src="{{ $people->cover_image }}" alt="{{ $people->name }}"
+                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                 @else
-                <div class="absolute inset-0 bg-gradient-to-br from-amber-900/60 to-slate-900"></div>
+                <div class="absolute inset-0 flex items-center justify-center"
+                    style="background: linear-gradient(135deg, #1a1a12 0%, #2a2510 100%);">
+                    <i class="fas fa-people-group text-gold-500/20 text-6xl"></i>
+                </div>
                 @endif
 
-                {{-- Overlay dégradé --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent group-hover:from-black/75 transition-all duration-300"></div>
 
                 {{-- Badge vedette --}}
-                @if($city->is_featured)
+                @if($people->is_featured)
                 <div class="absolute top-3 left-3">
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-gold-500/90 text-black text-[10px] font-bold rounded-full backdrop-blur-sm">
                         <i class="fas fa-star text-[8px]"></i> À la une
@@ -1816,22 +2362,33 @@
                 </div>
                 @endif
 
-                {{-- Contenu --}}
+                {{-- Badge zone --}}
+                @if($people->zone_geographique)
+                <div class="absolute top-3 right-3">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-black/50 backdrop-blur-sm text-slate-300 text-[10px] rounded-full border border-white/10">
+                        <i class="fas fa-map-location-dot text-gold-400/60 text-[8px]"></i>
+                        {{ $people->zone_geographique }}
+                    </span>
+                </div>
+                @endif
+
                 <div class="absolute bottom-0 left-0 right-0 p-5">
                     <h3 class="font-serif text-xl font-bold text-white mb-1 group-hover:text-gold-200 transition-colors">
-                        {{ $city->name }}
+                        {{ $people->name }}
                     </h3>
-                    @if($city->district)
+                    @if($people->famille_linguistique)
                     <p class="text-gold-400/80 text-xs font-elegant mb-2 truncate">
-                        <i class="fas fa-map-marker-alt text-[10px] mr-1"></i>{{ $city->district }}
+                        <i class="fas fa-language text-[10px] mr-1"></i>{{ $people->famille_linguistique }}
                     </p>
                     @endif
                     <div class="flex items-center justify-between">
+                        @if($people->capitale_culturelle)
                         <span class="text-gray-400 text-xs">
                             <i class="fas fa-map-pin text-gold-500/60 mr-1 text-[10px]"></i>
-                            {{ $city->sites_count }} site{{ $city->sites_count > 1 ? 's' : '' }} à explorer
+                            {{ $people->capitale_culturelle }}
                         </span>
-                        <span class="w-7 h-7 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-400 group-hover:bg-gold-500/20 group-hover:translate-x-0.5 transition-all">
+                        @endif
+                        <span class="w-7 h-7 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-400 group-hover:bg-gold-500/20 group-hover:translate-x-0.5 transition-all ml-auto">
                             <i class="fas fa-arrow-right text-[10px]"></i>
                         </span>
                     </div>
@@ -1840,20 +2397,15 @@
             @endforeach
         </div>
 
-        {{-- Catégories touristiques --}}
-        @php
-            $touristCats = \App\Models\TouristCategory::where('is_active', 1)->orderBy('sort_order')->limit(8)->get();
-        @endphp
-        @if($touristCats->isNotEmpty())
+        {{-- Domaines culturels --}}
+        @if(($homeCulturalDomains ?? collect())->isNotEmpty())
         <div class="mt-12 pt-10 border-t border-white/5">
-            <p class="text-center text-gray-500 text-xs tracking-[.2em] uppercase font-elegant mb-6">Explorez par catégorie</p>
+            <p class="text-center text-gray-500 text-xs tracking-[.2em] uppercase font-elegant mb-6">Explorer par domaine</p>
             <div class="flex flex-wrap justify-center gap-3">
-                @foreach($touristCats as $cat)
-                <a href="{{ route('tourist.cities') }}#{{ $cat->slug }}"
-                   class="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:border-gold-500/40 hover:bg-gold-500/10 transition-all duration-200">
-                    <i class="{{ $cat->icon ?: 'fas fa-tag' }} text-xs"
-                       style="{{ $cat->color ? 'color:'.$cat->color : 'color:#e8a020' }}"></i>
-                    <span class="text-gray-300 group-hover:text-white text-xs font-medium transition-colors">{{ $cat->name }}</span>
+                @foreach($homeCulturalDomains as $domain)
+                <a href="{{ route('cultural.peoples', ['domaine' => $domain->slug]) }}" class="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:border-gold-500/40 hover:bg-gold-500/10 transition-all duration-200">
+                    <i class="{{ $domain->icon }} text-xs" style="color: {{ $domain->color }}"></i>
+                    <span class="text-gray-300 group-hover:text-white text-xs font-medium transition-colors">{{ $domain->name }}</span>
                 </a>
                 @endforeach
             </div>

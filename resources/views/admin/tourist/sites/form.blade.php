@@ -151,9 +151,24 @@
             </div>
 
             <div>
-                <label class="block text-xs text-slate-400 mb-1">Site web</label>
-                <input type="url" name="website" value="{{ old('website', $site->website ?? '') }}" maxlength="300"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                <label class="block text-xs text-slate-400 mb-1">
+                    <i class="fas fa-globe text-amber-400/70 mr-1"></i>Site web officiel
+                </label>
+                <div class="flex gap-2 items-center">
+                    <input type="url" name="website" id="site_website"
+                        value="{{ old('website', $site->website ?? '') }}"
+                        maxlength="300" placeholder="https://…"
+                        oninput="toggleSiteWebsiteLink(this.value)"
+                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    <a id="site_website_link"
+                        href="{{ old('website', $site->website ?? '') ?: '#' }}"
+                        target="_blank" rel="noopener"
+                        style="{{ old('website', $site->website ?? '') ? 'display:flex' : 'display:none' }}"
+                        class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 hover:bg-amber-500/20 border border-slate-700 hover:border-amber-500/40 items-center justify-center text-slate-400 hover:text-amber-400 transition"
+                        title="Visiter le site">
+                        <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+                    </a>
+                </div>
             </div>
 
             <div>
@@ -346,15 +361,18 @@
         </div>
     </div>
 
-    {{-- ── SECTION 5 : Médias ───────────────────────────────────────────── --}}
-    @isset($site)
+    {{-- ── SECTION 5 : Photos & Vidéos ────────────────────────────────── --}}
     <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-            <i class="fas fa-images text-amber-400"></i> Photos & Vidéos
-            <span class="text-slate-600 font-normal text-xs ml-1">({{ $site->media->count() }} fichier(s))</span>
+            <i class="fas fa-images text-amber-400"></i>
+            Photos & Vidéos
+            @isset($site)
+            <span class="text-slate-600 font-normal text-xs ml-1">({{ $site->media->count() }} fichier(s) existant(s))</span>
+            @endisset
         </h2>
 
-        {{-- Médias existants --}}
+        {{-- Médias existants — édition seulement --}}
+        @isset($site)
         @if($site->media->isNotEmpty())
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-6">
             @foreach($site->media as $m)
@@ -374,18 +392,25 @@
                         </button>
                     </form>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 bg-black/60 px-2 py-1 flex items-center justify-between">
+                <div class="absolute bottom-0 left-0 right-0 bg-black/60 px-2 py-1">
                     <span class="text-[10px] text-slate-400">{{ $m->type === 'photo' ? '📷' : '🎬' }} {{ $m->caption ?: '—' }}</span>
                 </div>
             </div>
             @endforeach
         </div>
+        @else
+        <p class="text-slate-600 text-sm mb-5">Aucune photo pour ce site — ajoutez-en ci-dessous.</p>
         @endif
+        @endisset
 
-        {{-- Onglets Upload / URL --}}
-        <div class="border-t border-slate-800 pt-5">
+        {{-- Zone d'upload + URL — toujours visible --}}
+        <div class="{{ isset($site) && $site->media->isNotEmpty() ? 'border-t border-slate-800 pt-5' : '' }}">
+
+            {{-- Onglets --}}
             <div class="flex items-center gap-3 mb-4">
-                <p class="text-xs text-slate-400 font-medium">Ajouter des médias :</p>
+                <p class="text-xs text-slate-400 font-medium">
+                    {{ isset($site) ? 'Ajouter des médias :' : 'Photos du site :' }}
+                </p>
                 <div class="flex gap-1 bg-slate-800 rounded-lg p-0.5">
                     <button type="button" id="media_btn_upload" onclick="setMediaMode('upload')"
                         class="px-3 py-1.5 rounded-md text-xs font-medium transition bg-slate-700 text-white">
@@ -398,20 +423,33 @@
                 </div>
             </div>
 
-            {{-- Upload multiple photos --}}
+            {{-- Zone glisser-déposer upload multiple --}}
             <div id="media_upload_section">
-                <label id="media_drop_zone"
-                    class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-amber-500/50 rounded-2xl p-8 cursor-pointer transition group">
-                    <i class="fas fa-cloud-arrow-up text-4xl text-slate-600 group-hover:text-amber-400/70 transition mb-3"></i>
-                    <p class="text-slate-400 text-sm group-hover:text-slate-200 transition font-medium">Cliquez ou glissez vos photos ici</p>
-                    <p class="text-slate-600 text-xs mt-1">JPG, PNG, WebP — max 5 Mo par fichier — plusieurs fichiers acceptés</p>
+                <label
+                    class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-amber-500/60 rounded-2xl p-10 cursor-pointer transition-all group"
+                    ondragover="event.preventDefault(); this.classList.add('border-amber-500/60','bg-amber-500/5')"
+                    ondragleave="this.classList.remove('border-amber-500/60','bg-amber-500/5')"
+                    ondrop="handleDrop(event)">
+                    <i class="fas fa-cloud-arrow-up text-5xl text-slate-600 group-hover:text-amber-400/80 transition mb-4"></i>
+                    <p class="text-slate-300 text-sm font-semibold mb-1">
+                        Glissez vos photos ici ou <span class="text-amber-400 underline">parcourir</span>
+                    </p>
+                    <p class="text-slate-600 text-xs">JPG · PNG · WebP — max 5 Mo par fichier — sélection multiple</p>
                     <input type="file" name="media_files[]" id="media_files_input"
                         accept="image/jpeg,image/png,image/webp,image/jpg"
                         multiple class="hidden"
                         onchange="previewMediaFiles(this)">
                 </label>
-                {{-- Aperçus photos sélectionnées --}}
-                <div id="media_files_preview" class="hidden mt-3 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2"></div>
+
+                {{-- Compteur + aperçus --}}
+                <div id="media_files_info" class="hidden mt-3 items-center justify-between text-xs text-slate-400 mb-2">
+                    <span id="media_files_count"></span>
+                    <button type="button" onclick="clearMediaFiles()"
+                        class="text-slate-600 hover:text-red-400 transition flex items-center gap-1">
+                        <i class="fas fa-xmark"></i> Tout retirer
+                    </button>
+                </div>
+                <div id="media_files_preview" class="hidden mt-2 grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2"></div>
             </div>
 
             {{-- Ajout par URL --}}
@@ -457,7 +495,6 @@
             </div>
         </div>
     </div>
-    @endisset
 
     {{-- ── Submit ──────────────────────────────────────────────────────── --}}
     <div class="flex justify-end gap-3">
@@ -475,6 +512,17 @@
 
 @push('scripts')
 <script>
+// ── Bouton "Visiter" site web ─────────────────────────────────────────────
+function toggleSiteWebsiteLink(url) {
+    const link = document.getElementById('site_website_link');
+    if (url && url.startsWith('http')) {
+        link.href = url;
+        link.style.display = 'flex';
+    } else {
+        link.style.display = 'none';
+    }
+}
+
 function addScheduleRow() {
     const container = document.getElementById('scheduleRows');
     const idx = container.querySelectorAll('.schedule-row').length;
@@ -639,30 +687,67 @@ function setSiteThumbMode(mode) {
 // ── Aperçu photos sélectionnées pour upload multiple ─────────────────────
 function previewMediaFiles(input) {
     const container = document.getElementById('media_files_preview');
+    const info      = document.getElementById('media_files_info');
+    const count     = document.getElementById('media_files_count');
     container.innerHTML = '';
 
     if (!input.files || !input.files.length) {
-        container.classList.add('hidden');
+        container.style.display = 'none';
+        info.style.display = 'none';
         return;
     }
 
-    container.classList.remove('hidden');
+    const n = input.files.length;
+    count.textContent = n + ' photo' + (n > 1 ? 's' : '') + ' sélectionnée' + (n > 1 ? 's' : '');
+    info.style.display = 'flex';
     container.style.display = 'grid';
+    container.style.gridTemplateColumns = 'repeat(auto-fill, minmax(80px, 1fr))';
+    container.style.gap = '8px';
 
-    Array.from(input.files).forEach((file, i) => {
+    Array.from(input.files).forEach(file => {
         const reader = new FileReader();
         reader.onload = e => {
             const div = document.createElement('div');
             div.className = 'relative rounded-xl overflow-hidden bg-slate-800 border border-slate-700';
             div.innerHTML = `
                 <img src="${e.target.result}" class="w-full h-20 object-cover">
-                <div class="absolute bottom-0 left-0 right-0 bg-black/60 px-1.5 py-1">
+                <div class="absolute bottom-0 left-0 right-0 bg-black/70 px-1.5 py-1">
                     <p class="text-[9px] text-slate-300 truncate">${file.name}</p>
                 </div>`;
             container.appendChild(div);
         };
         reader.readAsDataURL(file);
     });
+}
+
+// ── Vider la sélection ────────────────────────────────────────────────────
+function clearMediaFiles() {
+    document.getElementById('media_files_input').value = '';
+    const container = document.getElementById('media_files_preview');
+    const info      = document.getElementById('media_files_info');
+    container.innerHTML = '';
+    container.style.display = 'none';
+    info.style.display = 'none';
+}
+
+// ── Glisser-déposer ────────────────────────────────────────────────────────
+function handleDrop(event) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('border-amber-500/60', 'bg-amber-500/5');
+    const input = document.getElementById('media_files_input');
+    const dt    = event.dataTransfer;
+    if (!dt?.files?.length) return;
+
+    // Fusionner les fichiers déposés avec ceux déjà sélectionnés
+    const existing = Array.from(input.files || []);
+    const newFiles = Array.from(dt.files).filter(f => f.type.startsWith('image/'));
+    const merged   = [...existing, ...newFiles];
+
+    const container = new DataTransfer();
+    merged.forEach(f => container.items.add(f));
+    input.files = container.files;
+
+    previewMediaFiles(input);
 }
 </script>
 @endpush

@@ -38,12 +38,15 @@ class TouristManagementController extends Controller
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active']   = $request->boolean('is_active', true);
 
-        // Upload fichier prioritaire sur l'URL saisie
-        if ($request->hasFile('cover_image_file')) {
-            $data['cover_image'] = $this->storeCityImage($request->file('cover_image_file'), 'cover');
+        unset($data['thumbnail_file'], $data['cover_image_file']);
+
+        $coverFile = $request->file('cover_image_file');
+        if ($coverFile && $coverFile->isValid()) {
+            $data['cover_image'] = $this->storeCityImage($coverFile, 'cover');
         }
-        if ($request->hasFile('thumbnail_file')) {
-            $data['thumbnail'] = $this->storeCityImage($request->file('thumbnail_file'), 'thumb');
+        $thumbFile = $request->file('thumbnail_file');
+        if ($thumbFile && $thumbFile->isValid()) {
+            $data['thumbnail'] = $this->storeCityImage($thumbFile, 'thumb');
         }
 
         TouristCity::create($data);
@@ -57,14 +60,17 @@ class TouristManagementController extends Controller
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active']   = $request->boolean('is_active');
 
-        // Upload fichier : remplace l'image existante
-        if ($request->hasFile('cover_image_file')) {
+        unset($data['thumbnail_file'], $data['cover_image_file']);
+
+        $coverFile = $request->file('cover_image_file');
+        if ($coverFile && $coverFile->isValid()) {
             $this->deleteCityImage($city->cover_image);
-            $data['cover_image'] = $this->storeCityImage($request->file('cover_image_file'), 'cover');
+            $data['cover_image'] = $this->storeCityImage($coverFile, 'cover');
         }
-        if ($request->hasFile('thumbnail_file')) {
+        $thumbFile = $request->file('thumbnail_file');
+        if ($thumbFile && $thumbFile->isValid()) {
             $this->deleteCityImage($city->thumbnail);
-            $data['thumbnail'] = $this->storeCityImage($request->file('thumbnail_file'), 'thumb');
+            $data['thumbnail'] = $this->storeCityImage($thumbFile, 'thumb');
         }
 
         $city->update($data);
@@ -163,8 +169,12 @@ class TouristManagementController extends Controller
         $data['schedules']      = $this->parseSchedules($request);
         $data['practical_info'] = $this->parsePracticalInfo($request);
 
-        if ($request->hasFile('thumbnail_file')) {
-            $data['thumbnail'] = $this->storeSiteImage($request->file('thumbnail_file'), 'thumb');
+        // Retirer les champs fichiers — non persistés directement en base
+        unset($data['thumbnail_file'], $data['media_files']);
+
+        $thumbFile = $request->file('thumbnail_file');
+        if ($thumbFile && $thumbFile->isValid()) {
+            $data['thumbnail'] = $this->storeSiteImage($thumbFile, 'thumb');
         }
 
         $site = TouristSite::create($data);
@@ -191,16 +201,22 @@ class TouristManagementController extends Controller
         $data['schedules']      = $this->parseSchedules($request);
         $data['practical_info'] = $this->parsePracticalInfo($request);
 
-        if ($request->hasFile('thumbnail_file')) {
+        // Retirer les champs fichiers — non persistés directement en base
+        unset($data['thumbnail_file'], $data['media_files']);
+
+        $thumbFile = $request->file('thumbnail_file');
+        if ($thumbFile && $thumbFile->isValid()) {
             $this->deleteSiteImage($site->thumbnail);
-            $data['thumbnail'] = $this->storeSiteImage($request->file('thumbnail_file'), 'thumb');
+            $data['thumbnail'] = $this->storeSiteImage($thumbFile, 'thumb');
         }
 
         $site->update($data);
         $this->storeInlineMedia($request, $site);
         $this->storeUploadedMediaFiles($request, $site);
 
-        return back()->with('success', "Site « {$site->name} » mis à jour.");
+        return redirect()
+            ->route('admin.tourist.sites.edit', $site)
+            ->with('success', "Site « {$site->name} » mis à jour.");
     }
 
     public function destroySite(TouristSite $site)
@@ -255,6 +271,7 @@ class TouristManagementController extends Controller
             'thumbnail_file'        => 'nullable|file|image|max:5120',
             'cover_image'           => 'nullable|url|max:500',
             'cover_image_file'      => 'nullable|file|image|max:5120',
+            'website'               => 'nullable|url|max:300',
             'latitude'              => 'nullable|numeric|between:-90,90',
             'longitude'             => 'nullable|numeric|between:-180,180',
             'sort_order'            => 'nullable|integer|min:0',
@@ -336,7 +353,7 @@ class TouristManagementController extends Controller
             'thumbnail'          => 'nullable|url|max:500',
             'thumbnail_file'     => 'nullable|file|image|max:5120',
             'media_files'        => 'nullable|array',
-            'media_files.*'      => 'file|image|max:5120',
+            'media_files.*'      => 'nullable|file|image|max:5120',
             'entrance_fee'       => 'nullable|string|max:100',
             'website'            => 'nullable|url|max:300',
             'phone'              => 'nullable|string|max:30',
