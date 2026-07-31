@@ -793,10 +793,14 @@ class AccommodationSeeder extends Seeder
         ];
 
         foreach ($accommodations as $data) {
-            Accommodation::updateOrCreate(
+            $accommodation = Accommodation::withTrashed()->updateOrCreate(
                 ['slug' => $data['slug']],
                 $data
             );
+
+            if ($accommodation->trashed()) {
+                $accommodation->restore();
+            }
         }
 
         $this->command->info('✓ ' . count($accommodations) . ' hébergements seedés.');

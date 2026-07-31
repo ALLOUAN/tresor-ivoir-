@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark h-full">
+<html lang="fr" id="html-root" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,21 +24,21 @@
             font-size: 0.875rem;
             transition: color 0.15s ease, background 0.15s ease;
         }
-        .sidebar-link:hover { background: #1e293b; color: #fff; }
+        .sidebar-link:hover { background:#e9e5d9; color: #fff; }
         .sidebar-link.active {
-            background: rgba(245, 158, 11, 0.12);
-            color: #fbbf24;
+            background: rgba(242, 121, 15, 0.12);
+            color: #fa9a3c;
             font-weight: 500;
         }
         /* ——— Sidebar administrateur ——— */
         .admin-sidebar {
             width: 18rem;
-            background: linear-gradient(165deg, #0f172a 0%, #020617 55%, #0c1222 100%);
-            border-right: 1px solid rgba(245, 158, 11, 0.12);
+            background:#e9e5d9;
+            border-right: 1px solid rgba(242, 121, 15, 0.12);
             box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
         }
         .admin-sidebar-brand {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, transparent 55%);
+            background: linear-gradient(135deg, rgba(242, 121, 15, 0.08) 0%, transparent 55%);
             border-bottom: 1px solid rgba(148, 163, 184, 0.12);
         }
         .admin-sidebar .nav-section-title {
@@ -73,14 +73,14 @@
             margin-bottom: 1px;
         }
         .admin-sidebar .nav-row:hover {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(233, 229, 217, 0.04);
             color: #f1f5f9;
         }
         .admin-sidebar .nav-row.is-active {
             font-weight: 600;
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0.02) 100%);
-            color: #fde68a;
-            box-shadow: inset 3px 0 0 #f59e0b;
+            background: linear-gradient(90deg, rgba(242, 121, 15, 0.14) 0%, rgba(242, 121, 15, 0.02) 100%);
+            color: #fdbe7b;
+            box-shadow: inset 3px 0 0 #f2790f;
         }
         .admin-sidebar .nav-row-icon {
             width: 2.25rem;
@@ -89,7 +89,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 0.55rem;
-            background: rgba(30, 41, 59, 0.85);
+            background: rgba(233, 229, 217, 0.85);
             border: 1px solid rgba(71, 85, 105, 0.35);
             flex-shrink: 0;
             font-size: 0.8rem;
@@ -101,108 +101,94 @@
             color: #e2e8f0;
         }
         .admin-sidebar .nav-row.is-active .nav-row-icon {
-            background: rgba(245, 158, 11, 0.18);
-            border-color: rgba(245, 158, 11, 0.35);
-            color: #fbbf24;
+            background: rgba(242, 121, 15, 0.18);
+            border-color: rgba(242, 121, 15, 0.35);
+            color: #fa9a3c;
         }
         .admin-sidebar .nav-scroll {
             scrollbar-width: thin;
-            scrollbar-color: rgba(245, 158, 11, 0.35) transparent;
+            scrollbar-color: rgba(242, 121, 15, 0.35) transparent;
         }
         .admin-sidebar .role-pill {
-            background: linear-gradient(135deg, rgba(190, 18, 60, 0.35), rgba(136, 19, 55, 0.25));
-            border: 1px solid rgba(251, 113, 133, 0.25);
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.12);
+            background: linear-gradient(135deg, rgba(212, 99, 10, 0.35), rgba(122, 60, 8, 0.25));
+            border: 1px solid rgba(250, 154, 60, 0.25);
+            box-shadow: 0 0 20px rgba(242, 121, 15, 0.12);
         }
         .admin-sidebar-footer {
-            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.9));
+            background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.9));
             border-top: 1px solid rgba(148, 163, 184, 0.12);
         }
         .admin-sidebar .user-card {
             border-radius: 0.75rem;
             padding: 0.65rem 0.75rem;
-            background: rgba(30, 41, 59, 0.55);
+            background: rgba(233, 229, 217, 0.55);
             border: 1px solid rgba(71, 85, 105, 0.35);
         }
         .admin-sidebar .user-avatar {
-            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 0 0 2px rgba(242, 121, 15, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
         }
-        /* ── Theme toggle ─────────────────────────────── */
-        .theme-toggle {
-            width:2.1rem; height:2.1rem; border-radius:9999px;
-            display:flex; align-items:center; justify-content:center;
-            border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04);
-            color:#94a3b8; cursor:pointer; transition:.2s ease; font-size:0.75rem; flex-shrink:0;
-        }
-        .theme-toggle:hover { color:#fde68a; border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); }
-        html:not(.dark) .theme-toggle { border-color:rgba(0,0,0,0.12); background:rgba(0,0,0,0.04); color:#6b6860; }
-        html:not(.dark) .theme-toggle:hover { color:#d97706; border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); }
-        .theme-toggle .icon-sun  { display:block; }
-        .theme-toggle .icon-moon { display:none; }
-        html:not(.dark) .theme-toggle .icon-sun  { display:none; }
-        html:not(.dark) .theme-toggle .icon-moon { display:block; }
         /* ── Light mode: body & fond ──────────────────── */
-        html:not(.dark) body                    { background-color:#f4f1ec!important; color:#1c1915!important; }
+        html:not(.dark) body                    { background-color:#e9e5d9!important; color:#1c1915!important; }
         html:not(.dark) .text-white             { color:#1c1915!important; }
         html:not(.dark) .text-slate-100         { color:#1c1915!important; }
         html:not(.dark) .text-slate-200         { color:#2d2a23!important; }
         html:not(.dark) .text-slate-300         { color:#44413a!important; }
-        html:not(.dark) .text-slate-400         { color:#6b6860!important; }
-        html:not(.dark) .text-slate-500         { color:#9e9b90!important; }
-        html:not(.dark) .text-slate-600         { color:#7c796f!important; }
-        html:not(.dark) .bg-slate-950           { background-color:#f4f1ec!important; }
-        html:not(.dark) .bg-slate-900           { background-color:#ffffff!important; }
-        html:not(.dark) .bg-slate-800           { background-color:#f4f0e8!important; }
-        html:not(.dark) .bg-slate-700           { background-color:#e8e3da!important; }
-        html:not(.dark) .border-slate-800       { border-color:#e8e3da!important; }
-        html:not(.dark) .border-slate-700       { border-color:#d6d0c5!important; }
+        html:not(.dark) .text-slate-400         { color:#544f47!important; }
+        html:not(.dark) .text-slate-500         { color:#665f52!important; }
+        html:not(.dark) .text-slate-600         { color:#5c574e!important; }
+        html:not(.dark) .bg-green-950           { background-color:#e9e5d9!important; }
+        html:not(.dark) .bg-green-900           { background-color:#ddd7c7!important; }
+        html:not(.dark) .bg-slate-800           { background-color:#f0ece1!important; }
+        html:not(.dark) .bg-slate-700           { background-color:#ddd7c7!important; }
+        html:not(.dark) .border-slate-800       { border-color:#d6cfba!important; }
+        html:not(.dark) .border-slate-700       { border-color:#c2b89e!important; }
         html:not(.dark) .border-slate-700\/70   { border-color:rgba(0,0,0,0.1)!important; }
-        html:not(.dark) .bg-slate-900\/80       { background-color:rgba(255,252,248,0.97)!important; }
-        html:not(.dark) .bg-slate-800\/70       { background-color:rgba(244,240,232,0.7)!important; }
-        html:not(.dark) .bg-slate-700\/70       { background-color:rgba(232,227,218,0.7)!important; }
-        html:not(.dark) .hover\:bg-slate-700\/70:hover { background-color:rgba(224,219,210,0.9)!important; }
+        html:not(.dark) .bg-green-900\/80       { background-color:rgba(233, 229, 217, 0.97)!important; }
+        html:not(.dark) .bg-slate-800\/70       { background-color:rgba(0,0,0,0.05)!important; }
+        html:not(.dark) .bg-slate-700\/70       { background-color:rgba(0,0,0,0.06)!important; }
+        html:not(.dark) .hover\:bg-slate-700\/70:hover { background-color:rgba(0,0,0,0.08)!important; }
         /* ── Light mode: sidebar non-admin ──────────── */
-        html:not(.dark) .sidebar-link              { color:#6b6860; }
-        html:not(.dark) .sidebar-link:hover        { background:#eae6de; color:#1c1915; }
-        html:not(.dark) .sidebar-link.active       { background:rgba(245,158,11,0.1); color:#92400e; }
+        html:not(.dark) .sidebar-link              { color:#544f47; }
+        html:not(.dark) .sidebar-link:hover        { background:rgba(0,0,0,0.04); color:#1c1915; }
+        html:not(.dark) .sidebar-link.active       { background:rgba(242, 121, 15,0.1); color:#a3450a; }
         /* ── Light mode: sidebar admin ───────────────── */
         html:not(.dark) .admin-sidebar {
-            background:linear-gradient(165deg,#ffffff 0%,#f9f7f3 55%,#f5f2ee 100%);
-            border-right-color:rgba(232,160,32,0.18);
+            background:#ddd7c7;
+            border-right-color:#d6cfba;
             box-shadow:4px 0 24px rgba(0,0,0,0.05);
         }
         html:not(.dark) .admin-sidebar-brand {
-            background:linear-gradient(135deg,rgba(245,158,11,0.05) 0%,transparent 55%);
+            background:linear-gradient(135deg,rgba(242, 121, 15,0.05) 0%,transparent 55%);
             border-bottom-color:rgba(0,0,0,0.07);
         }
-        html:not(.dark) .admin-sidebar .nav-section-title { color:#9e9b90; }
+        html:not(.dark) .admin-sidebar .nav-section-title { color:#665f52; }
         html:not(.dark) .admin-sidebar .nav-section-title::after {
             background:linear-gradient(90deg,rgba(0,0,0,0.1),transparent);
         }
-        html:not(.dark) .admin-sidebar .nav-row                   { color:#6b6860; }
+        html:not(.dark) .admin-sidebar .nav-row                   { color:#544f47; }
         html:not(.dark) .admin-sidebar .nav-row:hover             { background:rgba(0,0,0,0.04); color:#1c1915; }
-        html:not(.dark) .admin-sidebar .nav-row.is-active         { background:linear-gradient(90deg,rgba(245,158,11,0.12) 0%,rgba(245,158,11,0.02) 100%); color:#92400e; box-shadow:inset 3px 0 0 #f59e0b; }
-        html:not(.dark) .admin-sidebar .nav-row-icon              { background:rgba(0,0,0,0.05); border-color:rgba(0,0,0,0.1); color:#6b6860; }
+        html:not(.dark) .admin-sidebar .nav-row.is-active         { background:linear-gradient(90deg,rgba(242, 121, 15,0.12) 0%,rgba(242, 121, 15,0.02) 100%); color:#a3450a; box-shadow:inset 3px 0 0 #f2790f; }
+        html:not(.dark) .admin-sidebar .nav-row-icon              { background:rgba(0,0,0,0.05); border-color:rgba(0,0,0,0.1); color:#544f47; }
         html:not(.dark) .admin-sidebar .nav-row:hover .nav-row-icon { background:rgba(0,0,0,0.08); border-color:rgba(0,0,0,0.14); color:#1c1915; }
-        html:not(.dark) .admin-sidebar .nav-row.is-active .nav-row-icon { background:rgba(245,158,11,0.14); border-color:rgba(245,158,11,0.3); color:#d97706; }
-        html:not(.dark) .admin-sidebar-footer { background:linear-gradient(180deg,transparent,rgba(249,247,243,0.9)); border-top-color:rgba(0,0,0,0.07); }
+        html:not(.dark) .admin-sidebar .nav-row.is-active .nav-row-icon { background:rgba(242, 121, 15,0.14); border-color:rgba(242, 121, 15,0.3); color:#9f4709; }
+        html:not(.dark) .admin-sidebar-footer { background:linear-gradient(180deg,transparent,rgba(255,255,255,0.9)); border-top-color:rgba(0,0,0,0.07); }
         html:not(.dark) .admin-sidebar .user-card { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.1); }
-        html:not(.dark) .admin-sidebar .user-avatar { box-shadow:0 0 0 2px rgba(245,158,11,0.3),0 4px 12px rgba(0,0,0,0.08); }
-        html:not(.dark) .admin-sidebar .role-pill { background:linear-gradient(135deg,rgba(190,18,60,0.1),rgba(136,19,55,0.07)); border-color:rgba(251,113,133,0.2); box-shadow:none; }
-        html:not(.dark) .admin-sidebar .nav-scroll { scrollbar-color:rgba(245,158,11,0.2) transparent; }
+        html:not(.dark) .admin-sidebar .user-avatar { box-shadow:0 0 0 2px rgba(242, 121, 15,0.3),0 4px 12px rgba(0,0,0,0.08); }
+        html:not(.dark) .admin-sidebar .role-pill { background:linear-gradient(135deg,rgba(212,99,10,0.1),rgba(122,60,8,0.07)); border-color:rgba(250,154,60,0.2); box-shadow:none; }
+        html:not(.dark) .admin-sidebar .nav-scroll { scrollbar-color:rgba(242, 121, 15,0.2) transparent; }
         /* ── Light mode: top bar ─────────────────────── */
-        html:not(.dark) header.sticky { border-bottom-color:#e8e3da!important; }
+        html:not(.dark) header.sticky { border-bottom-color:#d6cfba!important; }
         /* ── Light mode: content cards ───────────────── */
         html:not(.dark) .bg-white\/5  { background-color:rgba(0,0,0,0.04)!important; }
         html:not(.dark) .border-white\/10 { border-color:rgba(0,0,0,0.1)!important; }
-        html:not(.dark) .divide-slate-800>*+* { border-color:#e8e3da!important; }
+        html:not(.dark) .divide-slate-800>*+* { border-color:#d6cfba!important; }
         /* ── Light mode: toast messages ──────────────── */
         html:not(.dark) .bg-emerald-500\/15 { background-color:rgba(209,250,229,0.6)!important; }
         html:not(.dark) .border-emerald-400\/40 { border-color:rgba(52,211,153,0.4)!important; }
         html:not(.dark) .bg-red-900\/40 { background-color:rgba(255,228,228,0.6)!important; }
     </style>
 </head>
-<body class="h-full bg-slate-950 text-white flex">
+<body class="h-full bg-green-950 text-white flex">
     @php
         $role = auth()->user()->role;
         $sidebarMessagingUnreadCount = 0;
@@ -237,7 +223,7 @@
     {{-- ══════════════ SIDEBAR ══════════════ --}}
     <aside id="sidebar"
         class="fixed inset-y-0 left-0 z-50 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300
-            {{ $role === 'admin' ? 'admin-sidebar' : 'w-64 bg-slate-900 border-r border-slate-800' }}">
+            {{ $role === 'admin' ? 'admin-sidebar' : 'w-64 bg-green-900 border-r border-slate-800' }}">
 
         {{-- Brand --}}
         <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-800 {{ $role === 'admin' ? 'admin-sidebar-brand !border-b-0' : '' }}">
@@ -246,12 +232,12 @@
                     <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
                 </div>
             @else
-                <div class="flex items-center justify-center {{ $role === 'admin' ? 'w-10 h-10 rounded-xl shadow-lg shadow-amber-900/40' : 'w-9 h-9 rounded-lg' }} bg-gradient-to-br from-amber-400 to-amber-600 shrink-0">
+                <div class="flex items-center justify-center {{ $role === 'admin' ? 'w-10 h-10 rounded-xl shadow-lg shadow-orange-900/40' : 'w-9 h-9 rounded-lg' }} bg-gradient-to-br from-orange-400 to-orange-600 shrink-0">
                     <i class="fas fa-gem text-white {{ $role === 'admin' ? 'text-lg' : 'text-base' }}"></i>
                 </div>
             @endif
             <div class="min-w-0">
-                <p class="text-amber-400 font-bold {{ $role === 'admin' ? 'text-[0.95rem] tracking-tight' : 'text-sm' }} leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
+                <p class="text-orange-400 font-bold {{ $role === 'admin' ? 'text-[0.95rem] tracking-tight' : 'text-sm' }} leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
                 <p class="text-slate-500 {{ $role === 'admin' ? 'text-[11px]' : 'text-xs' }} truncate">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
             </div>
         </div>
@@ -259,9 +245,9 @@
         {{-- Role badge --}}
         <div class="px-5 py-3 border-b border-slate-800 {{ $role === 'admin' ? '!border-slate-700/50' : '' }}">
             <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full
-                {{ $role === 'admin'    ? 'role-pill text-rose-100' :
-                  ($role === 'editor'   ? 'bg-blue-900/50 text-blue-300'    :
-                  ($role === 'provider' ? 'bg-violet-900/50 text-violet-300' :
+                {{ $role === 'admin'    ? 'role-pill text-orange-100' :
+                  ($role === 'editor'   ? 'bg-green-900/50 text-green-300'    :
+                  ($role === 'provider' ? 'bg-orange-900/50 text-orange-300' :
                                          'bg-emerald-900/50 text-emerald-300')) }}">
                 <i class="fas
                     {{ $role === 'admin'    ? 'fa-shield-halved' :
@@ -298,7 +284,7 @@
                     <span class="nav-row-icon"><i class="fas fa-comments"></i></span>
                     <span class="flex-1">Messagerie</span>
                     @if($sidebarMessagingUnreadCount > 0)
-                        <span class="inline-flex min-w-[1.35rem] h-[1.35rem] px-1.5 items-center justify-center rounded-full bg-amber-500 text-black text-[10px] font-bold leading-none">
+                        <span class="inline-flex min-w-[1.35rem] h-[1.35rem] px-1.5 items-center justify-center rounded-full bg-orange-500 text-black text-[10px] font-bold leading-none">
                             {{ $sidebarMessagingUnreadCount > 99 ? '99+' : $sidebarMessagingUnreadCount }}
                         </span>
                     @endif
@@ -381,7 +367,8 @@
                     <span class="nav-row-icon"><i class="fas fa-envelope-open-text"></i></span>
                     <span>Newsletter</span>
                 </a>
-                <a href="#" class="nav-row opacity-70 hover:opacity-100">
+                <a href="{{ route('admin.categories.articles') }}"
+                   class="nav-row {{ request()->routeIs('admin.categories.articles*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-tags"></i></span>
                     <span>Catégories &amp; tags</span>
                 </a>
@@ -399,6 +386,11 @@
                    class="nav-row {{ request()->routeIs('admin.accommodations.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-hotel"></i></span>
                     <span>Hébergements</span>
+                </a>
+                <a href="{{ route('admin.reservations.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.reservations.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-calendar-check"></i></span>
+                    <span>Réservations</span>
                 </a>
                 <p class="nav-section-title"><span>Sécurité</span></p>
                 <a href="{{ route('admin.analytics.index') }}"
@@ -466,7 +458,7 @@
                     <i class="fas fa-comments w-4 text-center"></i>
                     <span class="flex-1">Messagerie admin</span>
                     @if($sidebarMessagingUnreadCount > 0)
-                        <span class="inline-flex min-w-[1.2rem] h-[1.2rem] px-1 items-center justify-center rounded-full bg-amber-500 text-black text-[10px] font-bold leading-none">
+                        <span class="inline-flex min-w-[1.2rem] h-[1.2rem] px-1 items-center justify-center rounded-full bg-orange-500 text-black text-[10px] font-bold leading-none">
                             {{ $sidebarMessagingUnreadCount > 99 ? '99+' : $sidebarMessagingUnreadCount }}
                         </span>
                     @endif
@@ -514,7 +506,7 @@
         {{-- User footer --}}
         <div class="border-t border-slate-800 p-4 {{ $role === 'admin' ? 'admin-sidebar-footer' : '' }}">
             <div class="flex items-center gap-3 {{ $role === 'admin' ? 'user-card' : '' }}">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xs font-bold shrink-0 {{ $role === 'admin' ? 'user-avatar' : '' }}">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-xs font-bold shrink-0 {{ $role === 'admin' ? 'user-avatar' : '' }}">
                     {{ auth()->user()->initials }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -534,14 +526,14 @@
 
     {{-- Overlay mobile --}}
     <div id="sidebar-overlay"
-        class="fixed inset-0 z-40 bg-black/60 lg:hidden hidden"
+        class="fixed inset-0 z-40 bg-green-950/60 lg:hidden hidden"
         onclick="toggleSidebar()"></div>
 
     {{-- ══════════════ MAIN ══════════════ --}}
     <div class="flex-1 flex flex-col min-h-screen {{ $role === 'admin' ? 'lg:ml-[18rem]' : 'lg:ml-64' }}">
 
         {{-- Top bar --}}
-        <header class="sticky top-0 z-30 bg-slate-900/80 backdrop-blur border-b border-slate-800 flex items-center justify-between px-4 sm:px-6 h-14">
+        <header class="sticky top-0 z-30 bg-green-900/80 backdrop-blur border-b border-slate-800 flex items-center justify-between px-4 sm:px-6 h-14">
             <div class="flex items-center gap-4">
                 <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white">
                     <i class="fas fa-bars"></i>
@@ -566,7 +558,7 @@
                        title="Notifications">
                         <i class="fas fa-bell text-sm"></i>
                         @if($globalUnreadNotifications > 0)
-                            <span class="absolute -top-1 -right-1 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-amber-500 text-black text-[10px] font-bold leading-[1.1rem] text-center">
+                            <span class="absolute -top-1 -right-1 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-orange-500 text-black text-[10px] font-bold leading-[1.1rem] text-center">
                                 {{ $globalUnreadNotifications > 99 ? '99+' : $globalUnreadNotifications }}
                             </span>
                         @endif
@@ -579,10 +571,6 @@
                         Maintenance active
                     </a>
                 @endif
-                <button type="button" id="theme-toggle" class="theme-toggle" title="Changer le thème" aria-label="Basculer le thème">
-                    <i class="fas fa-sun icon-sun"></i>
-                    <i class="fas fa-moon icon-moon"></i>
-                </button>
                 <span class="text-slate-500 text-xs hidden sm:block">
                     {{ now()->isoFormat('dddd D MMMM YYYY') }}
                 </span>
@@ -617,18 +605,6 @@
                 setTimeout(() => successToast.remove(), 300);
             }, 3500);
         }
-
-        // ── Theme toggle ──────────────────────────────
-        (function () {
-            const btn = document.getElementById('theme-toggle');
-            if (!btn) return;
-            btn.addEventListener('click', () => {
-                const html = document.documentElement;
-                const going_light = html.classList.contains('dark');
-                html.classList.toggle('dark', !going_light);
-                localStorage.setItem('tiTheme', going_light ? 'light' : 'dark');
-            });
-        })();
     </script>
     @include('partials.image-protection')
     @stack('scripts')

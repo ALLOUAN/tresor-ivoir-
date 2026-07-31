@@ -29,7 +29,7 @@
     $hasFeaturedColumn = Schema::hasColumn('site_media_items', 'is_featured');
 @endphp
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,8 +55,8 @@
                         plus:    ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        gold: { 300:'#fcd68a', 400:'#f5b942', 500:'#e8a020', 600:'#c4811a' },
-                        dark: { 600:'#252520', 700:'#1c1c16', 800:'#141410', 900:'#0d0d0b' },
+                        gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
+                        dark: { 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
                     }
                 }
             }
@@ -68,14 +68,14 @@
         .font-elegant { font-family: 'Cormorant Garamond', Georgia, serif; }
         .font-plus    { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0d0d0b; }
-        ::-webkit-scrollbar-thumb { background: #e8a020; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background:#e9e5d9; }
+        ::-webkit-scrollbar-thumb { background: #f2790f; border-radius: 3px; }
         .detail-mesh {
             background-color: #050403;
             background-image:
-                radial-gradient(ellipse 100% 70% at 50% -15%, rgba(232, 160, 32, 0.12), transparent 55%),
+                radial-gradient(ellipse 100% 70% at 50% -15%, rgba(242, 121, 15, 0.12), transparent 55%),
                 radial-gradient(ellipse 60% 40% at 100% 50%, rgba(99, 102, 241, 0.05), transparent 50%),
-                radial-gradient(ellipse 50% 45% at 0% 100%, rgba(232, 160, 32, 0.04), transparent 50%);
+                radial-gradient(ellipse 50% 45% at 0% 100%, rgba(242, 121, 15, 0.04), transparent 50%);
         }
         .detail-noise {
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
@@ -84,57 +84,57 @@
             box-shadow:
                 0 0 0 1px rgba(255,255,255,0.06) inset,
                 0 32px 64px -12px rgba(0,0,0,0.65),
-                0 0 80px -20px rgba(232, 160, 32, 0.08);
+                0 0 80px -20px rgba(242, 121, 15, 0.08);
         }
         .detail-spec-tile {
             transition: border-color .25s ease, background-color .25s ease, transform .25s ease;
         }
         .detail-spec-tile:hover {
-            border-color: rgba(232, 160, 32, 0.22);
-            background-color: rgba(255,255,255,0.045);
+            border-color: rgba(242, 121, 15, 0.22);
+            background-color: rgba(233, 229, 217, 0.045);
         }
         html:not(.dark) .detail-mesh {
-            background-color: #f8f5ee;
+            background-color:#e9e5d9;
             background-image:
-                radial-gradient(ellipse 90% 65% at 50% -10%, rgba(232, 160, 32, 0.16), transparent 55%),
+                radial-gradient(ellipse 90% 65% at 50% -10%, rgba(242, 121, 15, 0.16), transparent 55%),
                 radial-gradient(ellipse 55% 40% at 100% 45%, rgba(99, 102, 241, 0.08), transparent 50%),
-                radial-gradient(ellipse 50% 45% at 0% 100%, rgba(232, 160, 32, 0.07), transparent 55%);
+                radial-gradient(ellipse 50% 45% at 0% 100%, rgba(242, 121, 15, 0.07), transparent 55%);
         }
         html:not(.dark) .detail-viewer-frame {
             box-shadow:
                 0 0 0 1px rgba(0,0,0,0.08) inset,
-                0 22px 50px -20px rgba(15, 23, 42, 0.24),
-                0 0 70px -24px rgba(232, 160, 32, 0.16);
+                0 22px 50px -20px rgba(255, 255, 255, 0.24),
+                0 0 70px -24px rgba(242, 121, 15, 0.16);
         }
         html:not(.dark) .detail-viewer-surface {
-            border-color: rgba(15,23,42,0.10);
-            background: rgba(255,255,255,0.86);
+            border-color: rgba(255, 255, 255,0.10);
+            background: rgba(233, 229, 217, 0.86);
         }
         html:not(.dark) .detail-viewer-stage {
             background-color: #f3efe6;
             background-image: radial-gradient(ellipse 80% 70% at 50% 45%, rgba(120,120,130,0.20) 0%, #e7e1d5 68%) !important;
         }
         html:not(.dark) .detail-meta-card {
-            border-color: rgba(15,23,42,0.12);
-            background: rgba(255,255,255,0.84);
-            box-shadow: 0 12px 36px -20px rgba(15,23,42,0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+            border-color: rgba(255, 255, 255,0.12);
+            background: rgba(233, 229, 217, 0.84);
+            box-shadow: 0 12px 36px -20px rgba(255, 255, 255,0.25), inset 0 1px 0 rgba(255,255,255,0.8);
         }
         html:not(.dark) .detail-back-btn {
-            border-color: rgba(15,23,42,0.15);
-            background: rgba(255,255,255,0.92);
+            border-color: rgba(255, 255, 255,0.15);
+            background: rgba(233, 229, 217, 0.92);
             color: #1f2937;
         }
         html:not(.dark) .detail-back-btn:hover {
-            background: #ffffff;
-            border-color: rgba(180,83,9,0.35);
+            background:#e9e5d9;
+            border-color: rgba(194, 94, 10,0.35);
         }
         html:not(.dark) .detail-spec-tile {
-            border-color: rgba(15,23,42,0.10);
-            background: rgba(255,255,255,0.88);
+            border-color: rgba(255, 255, 255,0.10);
+            background: rgba(233, 229, 217, 0.88);
         }
         html:not(.dark) .detail-spec-tile:hover {
-            border-color: rgba(180,83,9,0.35);
-            background: #ffffff;
+            border-color: rgba(194, 94, 10,0.35);
+            background:#e9e5d9;
         }
         html:not(.dark) .detail-muted { color: #4b5563 !important; }
         html:not(.dark) .detail-text { color: #111827 !important; }
@@ -162,17 +162,17 @@
 
 <section class="relative isolate py-12 sm:py-20 detail-mesh border-t border-white/[0.05] overflow-hidden">
     <div class="pointer-events-none absolute inset-0 detail-noise opacity-80"></div>
-    <div class="pointer-events-none absolute top-0 left-1/2 h-72 w-[min(100%,48rem)] -translate-x-1/2 rounded-full bg-gradient-to-b from-amber-500/12 via-transparent to-transparent blur-3xl"></div>
+    <div class="pointer-events-none absolute top-0 left-1/2 h-72 w-[min(100%,48rem)] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-500/12 via-transparent to-transparent blur-3xl"></div>
 
     <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-10">
         {{-- Visionneuse --}}
-        <div class="relative rounded-[1.35rem] p-[1px] bg-gradient-to-br from-white/15 via-white/[0.04] to-amber-500/20 detail-viewer-frame">
-            <div class="detail-viewer-surface rounded-[1.3rem] border border-white/[0.06] bg-zinc-950/90 backdrop-blur-xl overflow-hidden">
-                <div class="detail-viewer-stage relative flex items-center justify-center p-4 sm:p-10 md:p-12 min-h-[220px] bg-zinc-950"
+        <div class="relative rounded-[1.35rem] p-[1px] bg-gradient-to-br from-white/15 via-white/[0.04] to-orange-500/20 detail-viewer-frame">
+            <div class="detail-viewer-surface rounded-[1.3rem] border border-white/[0.06] bg-green-950/90 backdrop-blur-xl overflow-hidden">
+                <div class="detail-viewer-stage relative flex items-center justify-center p-4 sm:p-10 md:p-12 min-h-[220px] bg-green-950"
                      style="background-image: radial-gradient(ellipse 80% 70% at 50% 45%, rgba(55,55,62,0.45) 0%, #090807 68%);">
                     <div class="pointer-events-none absolute inset-0 opacity-[0.15]" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 48px 48px;"></div>
                     <img src="{{ url($media->url) }}" alt="{{ $imgAlt }}"
-                         class="relative z-[1] max-w-full w-auto max-h-[min(70vh,800px)] h-auto object-contain rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] ring-1 ring-black/40">
+                         class="relative z-[1] max-w-full w-auto max-h-[min(70vh,800px)] h-auto object-contain rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] ring-1 ring-green-950/40">
                 </div>
             </div>
         </div>
@@ -190,14 +190,14 @@
                     data-user-email="{{ auth()->user()->email }}"
                     data-user-phone="{{ auth()->user()->phone ?? '' }}"
                     @endauth
-                    class="group inline-flex flex-1 sm:flex-initial min-w-0 items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black text-sm font-bold shadow-lg shadow-amber-900/35 hover:from-amber-300 hover:via-amber-400 hover:to-amber-500 transition-all duration-300 font-plus">
+                    class="group inline-flex flex-1 sm:flex-initial min-w-0 items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 text-black text-sm font-bold shadow-lg shadow-orange-900/35 hover:from-orange-300 hover:via-orange-400 hover:to-orange-500 transition-all duration-300 font-plus">
                 <i class="fas fa-cart-shopping text-xs opacity-90 group-hover:scale-110 transition-transform"></i>
                 Acheter — {{ $priceLabel }}
             </button>
             @endif
             <a href="{{ route('gallery.public') }}"
-               class="detail-back-btn inline-flex flex-1 sm:flex-initial items-center justify-center gap-2.5 px-6 py-3.5 rounded-full border border-white/12 bg-white/[0.04] backdrop-blur-md text-gray-100 text-sm font-semibold hover:bg-white/[0.08] hover:border-amber-400/30 transition-all duration-300 font-plus">
-                <i class="fas fa-arrow-left text-xs text-amber-400/80"></i>
+               class="detail-back-btn inline-flex flex-1 sm:flex-initial items-center justify-center gap-2.5 px-6 py-3.5 rounded-full border border-white/12 bg-white/[0.04] backdrop-blur-md text-gray-100 text-sm font-semibold hover:bg-white/[0.08] hover:border-orange-400/30 transition-all duration-300 font-plus">
+                <i class="fas fa-arrow-left text-xs text-orange-400/80"></i>
                 Retour à la galerie
             </a>
         </div>
@@ -206,44 +206,44 @@
         <div class="detail-meta-card rounded-[1.35rem] border border-white/[0.08] bg-white/[0.03] backdrop-blur-2xl shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.05)] p-6 sm:p-8 md:p-10">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 pb-6 border-b border-white/[0.06]">
                 <div>
-                    <p class="text-[10px] font-plus font-bold uppercase tracking-[0.22em] text-amber-500/80 mb-2">Fiche technique</p>
+                    <p class="text-[10px] font-plus font-bold uppercase tracking-[0.22em] text-orange-500/80 mb-2">Fiche technique</p>
                     <h2 class="detail-text font-serif text-xl sm:text-2xl font-semibold tracking-tight text-white flex items-center gap-3">
-                        <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/25 bg-gradient-to-br from-amber-500/15 to-transparent text-amber-400">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-500/25 bg-gradient-to-br from-orange-500/15 to-transparent text-orange-400">
                             <i class="fas fa-layer-group text-sm"></i>
                         </span>
                         Informations sur l’image
                     </h2>
                 </div>
-                <span class="detail-muted inline-flex items-center gap-2 self-start rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-[11px] text-gray-300 font-plus">
-                    <i class="fas fa-fingerprint text-amber-500/50 text-[10px]"></i>
+                <span class="detail-muted inline-flex items-center gap-2 self-start rounded-full border border-white/10 bg-green-950/30 px-3 py-1.5 text-[11px] text-gray-300 font-plus">
+                    <i class="fas fa-fingerprint text-orange-500/50 text-[10px]"></i>
                     Média sécurisé
                 </span>
             </div>
 
             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                 @if(trim((string) ($media->title ?? '')) !== '')
-                    <div class="detail-spec-tile sm:col-span-2 rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <div class="detail-spec-tile sm:col-span-2 rounded-xl border border-white/[0.06] bg-green-950/20 p-4 sm:p-5">
                         <dt class="detail-muted text-gray-300 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Titre</dt>
                         <dd class="detail-text text-white font-serif text-base sm:text-lg font-medium leading-snug">{{ $media->title }}</dd>
                     </div>
                 @endif
                 @if(trim((string) ($media->alt_text ?? '')) !== '')
-                    <div class="detail-spec-tile sm:col-span-2 rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <div class="detail-spec-tile sm:col-span-2 rounded-xl border border-white/[0.06] bg-green-950/20 p-4 sm:p-5">
                         <dt class="detail-muted text-gray-300 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Texte alternatif</dt>
                         <dd class="detail-text text-gray-100 leading-relaxed text-[13px] sm:text-sm">{{ $media->alt_text }}</dd>
                     </div>
                 @endif
                 @if(trim((string) ($media->credit ?? '')) !== '')
-                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-green-950/20 p-4 sm:p-5">
                         <dt class="detail-muted text-gray-300 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Crédit photo</dt>
                         <dd class="detail-text text-gray-100 flex items-center gap-2 text-[13px] sm:text-sm">
-                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400/90"><i class="fas fa-camera text-xs"></i></span>
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-500/10 text-orange-400/90"><i class="fas fa-camera text-xs"></i></span>
                             <span class="break-words">{{ $media->credit }}</span>
                         </dd>
                     </div>
                 @endif
                 @if($priceLabel)
-                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-black/20 p-4 sm:p-5">
+                    <div class="detail-spec-tile rounded-xl border border-white/[0.06] bg-green-950/20 p-4 sm:p-5">
                         <dt class="detail-muted text-gray-300 text-[10px] font-plus font-bold uppercase tracking-[0.18em] mb-2">Prix</dt>
                         <dd><span class="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-emerald-200 text-sm font-bold tracking-tight font-plus">{{ $priceLabel }}</span></dd>
                     </div>
@@ -268,7 +268,7 @@
 {{-- ═══════════════════════ MODAL ACHAT ═══════════════════════ --}}
 <div id="modal-achat" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
     {{-- Backdrop --}}
-    <div id="modal-backdrop" class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+    <div id="modal-backdrop" class="absolute inset-0 bg-green-950/75 backdrop-blur-sm"></div>
 
     {{-- Fenêtre --}}
     <div class="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#0f1a0f] shadow-2xl overflow-hidden">
@@ -296,7 +296,7 @@
 
         {{-- ÉTAPE 1 : Création de compte --}}
         <div id="step-register">
-            <div class="mx-5 mt-4 rounded-xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm text-blue-200">
+            <div class="mx-5 mt-4 rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-200">
                 <i class="fas fa-circle-info mr-2"></i>
                 Remplissez vos informations pour créer votre compte et finaliser votre achat.
             </div>
@@ -382,7 +382,7 @@
                 </div>
                 <div class="flex justify-between px-4 py-3 text-gray-400">
                     <span>Statut</span>
-                    <span class="rounded-full border border-amber-500/40 bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-amber-300">
+                    <span class="rounded-full border border-orange-500/40 bg-orange-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-orange-300">
                         <i class="fas fa-clock mr-1 text-[10px]"></i>En attente de paiement
                     </span>
                 </div>
@@ -398,7 +398,7 @@
 
             {{-- CTA paiement --}}
             <button type="button" id="btn-pay-cinetpay"
-                    class="flex w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 py-3.5 text-sm font-bold text-white shadow-lg transition hover:brightness-110 disabled:opacity-50">
+                    class="flex w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-orange-500 to-orange-500 py-3.5 text-sm font-bold text-white shadow-lg transition hover:brightness-110 disabled:opacity-50">
                 <i class="fas fa-shield-halved text-xs"></i>
                 <span id="btn-pay-label">Payer via CinetPay</span>
             </button>

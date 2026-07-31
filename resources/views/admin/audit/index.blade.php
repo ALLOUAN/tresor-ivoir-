@@ -5,8 +5,8 @@
 
 @section('content')
 @if($missingTable ?? false)
-    <div class="rounded-xl border border-amber-500/40 bg-amber-500/10 px-5 py-4 text-amber-100 text-sm">
-        La table d\'audit n\'existe pas encore. Exécutez <code class="text-amber-200">php artisan migrate</code> pour activer l\'enregistrement des actions.
+    <div class="rounded-xl border border-orange-500/40 bg-orange-500/10 px-5 py-4 text-orange-100 text-sm">
+        La table d\'audit n\'existe pas encore. Exécutez <code class="text-orange-200">php artisan migrate</code> pour activer l\'enregistrement des actions.
     </div>
 @else
     <p class="text-slate-500 text-sm mb-6">
@@ -33,13 +33,13 @@
             <input type="text" name="route" id="route" value="{{ request('route') }}" placeholder="ex. articles.publish"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
         </div>
-        <button type="submit" class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
+        <button type="submit" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
             <i class="fas fa-search text-xs"></i> Filtrer
         </button>
         <a href="{{ route('admin.audit.index') }}" class="text-slate-400 hover:text-slate-200 text-sm py-2">Réinitialiser</a>
     </form>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="text-slate-500 text-xs uppercase border-b border-slate-800 bg-slate-800/40">
@@ -64,7 +64,7 @@
                                     <span class="text-slate-500">—</span>
                                 @endif
                             </td>
-                            <td class="px-4 py-2"><span class="font-mono text-xs text-amber-300/90">{{ $log->method }}</span></td>
+                            <td class="px-4 py-2"><span class="font-mono text-xs text-orange-300/90">{{ $log->method }}</span></td>
                             <td class="px-4 py-2 text-slate-400 text-xs hidden lg:table-cell font-mono">{{ $log->route_name ?? '—' }}</td>
                             <td class="px-4 py-2">
                                 <span class="inline-flex px-2 py-0.5 rounded text-xs font-medium

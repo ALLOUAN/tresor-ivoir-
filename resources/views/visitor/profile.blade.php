@@ -11,7 +11,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('visitor.profile.update') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-5">
+    <form method="POST" action="{{ route('visitor.profile.update') }}" class="bg-green-900 border border-slate-800 rounded-xl p-5 space-y-5">
         @csrf
         @method('PUT')
 
@@ -75,7 +75,7 @@
         </div>
 
         <div class="flex justify-end">
-            <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-black text-sm font-semibold px-4 py-2 rounded-lg">
+            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-black text-sm font-semibold px-4 py-2 rounded-lg">
                 Enregistrer
             </button>
         </div>

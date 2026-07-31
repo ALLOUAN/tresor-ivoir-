@@ -181,7 +181,10 @@ class ProviderSeeder extends Seeder
         ];
 
         foreach ($providers as $entry) {
-            $provider = Provider::updateOrCreate(['slug' => $entry['data']['slug']], $entry['data']);
+            $provider = Provider::withTrashed()->updateOrCreate(['slug' => $entry['data']['slug']], $entry['data']);
+            if ($provider->trashed()) {
+                $provider->restore();
+            }
 
             // Subscription
             if ($entry['plan'] && ! $provider->subscriptions()->exists()) {

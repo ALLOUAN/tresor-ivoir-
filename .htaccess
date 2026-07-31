@@ -1,0 +1,98 @@
+# ============================================================
+#  Trésors d'Ivoire — .htaccess racine (utilisé uniquement si le
+#  "Document Root" du domaine pointe sur la RACINE du projet et
+#  non sur /public — cas classique d'un hébergement cPanel sans
+#  possibilité de changer le docroot).
+#
+#  MEILLEURE PRATIQUE : si votre hébergeur le permet, configurez
+#  le Document Root du domaine sur le dossier /public du projet.
+#  Dans ce cas, ce fichier racine n'est plus nécessaire (vous
+#  pouvez même le supprimer) et seul public/.htaccess est utilisé.
+# ============================================================
+
+# ── Blocage des fichiers et dossiers sensibles ────────────────
+# (protection supplémentaire même si le routage ci-dessous les
+#  laisse déjà normalement inatteignables)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+<FilesMatch "\.(env|env\.example|log|lock|sql|sqlite)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Transmet l'en-tête Authorization (auth API / Sanctum)
+    RewriteCond %{HTTP:Authorization} .+
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Interdit l'accès direct aux dossiers internes de Laravel
+    # (même si le rewrite plus bas ne devrait normalement jamais
+    #  les exposer, ceci est une seconde ligne de défense).
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor)(/|$) - [F,L]
+
+    # Redirection HTTPS obligatoire — à activer une fois le
+    # certificat SSL installé sur le domaine (décommentez) :
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Sert directement les fichiers statiques réellement présents
+    # dans /public (CSS, JS, images, fonts, favicon, etc.)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Tout le reste est envoyé au front controller Laravel.
+    # NB : on route vers public/index.php (comme le ferait Apache
+    # avec un docroot=/public), PAS vers server.php — ce dernier
+    # n'existe que pour émuler mod_rewrite avec `php artisan serve`
+    # et n'a pas sa place derrière un vrai serveur Apache.
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ public/index.php [L]
+</IfModule>
+
+# BEGIN cPanel-generated php ini directives, do not edit
+# Manual editing of this file may result in unexpected behavior.
+# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
+# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
+<IfModule php7_module>
+   php_flag display_errors On
+   php_value max_execution_time 30
+   php_value max_input_time -1
+   php_value max_input_vars 1000
+   php_value memory_limit 1024M
+   php_value post_max_size 800M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/var/cpanel/php/sessions/ea-php74"
+   php_value upload_max_filesize 2024M
+   php_flag zlib.output_compression Off
+</IfModule>
+<IfModule lsapi_module>
+   php_flag display_errors On
+   php_value max_execution_time 30
+   php_value max_input_time -1
+   php_value max_input_vars 1000
+   php_value memory_limit 1024M
+   php_value post_max_size 800M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/var/cpanel/php/sessions/ea-php74"
+   php_value upload_max_filesize 2024M
+   php_flag zlib.output_compression Off
+</IfModule>
+# END cPanel-generated php ini directives, do not edit
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# This domain inherits the “PHP” package.
+# php -- END cPanel-generated handler, do not edit
+
+<Files 403.shtml>
+order allow,deny
+allow from all
+</Files>
+

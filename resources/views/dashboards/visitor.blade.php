@@ -12,7 +12,7 @@
 @endif
 @if(session('newsletter_info'))
     <div class="mb-5 px-4 py-3 bg-slate-800 border border-slate-600 text-slate-200 text-sm rounded-xl flex items-center gap-2">
-        <i class="fas fa-circle-info text-amber-400"></i> {{ session('newsletter_info') }}
+        <i class="fas fa-circle-info text-orange-400"></i> {{ session('newsletter_info') }}
     </div>
 @endif
 @if(session('newsletter_error'))
@@ -27,8 +27,8 @@
 @endif
 
 {{-- ── Welcome banner ──────────────────────────────────────────────────── --}}
-<div class="bg-gradient-to-r from-amber-900/30 to-slate-900 border border-amber-700/20 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-5">
-    <div class="w-14 h-14 rounded-2xl bg-amber-500 flex items-center justify-center text-white text-xl font-bold shrink-0">
+<div class="bg-gradient-to-r from-orange-900/30 to-green-900 border border-orange-700/20 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-5">
+    <div class="w-14 h-14 rounded-2xl bg-orange-500 flex items-center justify-center text-white text-xl font-bold shrink-0">
         {{ auth()->user()->initials }}
     </div>
     <div class="flex-1">
@@ -47,7 +47,7 @@
         <input type="hidden" name="newsletter_email" value="{{ old('newsletter_email', auth()->user()->email) }}">
         <input type="hidden" name="redirect_to" value="dashboard">
         <button type="submit" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 py-2 transition text-left">
-            <i class="fas fa-envelope text-amber-400"></i>
+            <i class="fas fa-envelope text-orange-400"></i>
             <span class="text-slate-300 text-xs font-medium">S’abonner avec mon e-mail</span>
         </button>
     </form>
@@ -58,7 +58,7 @@
         <input type="hidden" name="newsletter_email" value="{{ old('newsletter_email', auth()->user()->email) }}">
         <input type="hidden" name="redirect_to" value="dashboard">
         <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 py-2.5 transition text-sm text-slate-300 font-medium">
-            <i class="fas fa-envelope text-amber-400"></i>
+            <i class="fas fa-envelope text-orange-400"></i>
             S’abonner à la newsletter
         </button>
     </form>
@@ -66,21 +66,21 @@
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-    <a href="{{ route('visitor.profile.edit') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
+    <a href="{{ route('visitor.profile.edit') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
         <p class="text-slate-400 text-xs uppercase">Profil</p>
         <p class="text-white font-semibold mt-1">Modifier mes informations</p>
     </a>
-    <a href="{{ route('visitor.purchases.index') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
+    <a href="{{ route('visitor.purchases.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
         <p class="text-slate-400 text-xs uppercase flex items-center gap-1.5">
-            <i class="fas fa-image text-amber-400/80 text-[10px]"></i> Mes achats
+            <i class="fas fa-image text-orange-400/80 text-[10px]"></i> Mes achats
         </p>
         <p class="text-white font-semibold mt-1">{{ number_format($purchases_count ?? 0) }} image{{ ($purchases_count ?? 0) > 1 ? 's' : '' }} achetée{{ ($purchases_count ?? 0) > 1 ? 's' : '' }}</p>
     </a>
-    <a href="{{ route('visitor.favorites.index') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
+    <a href="{{ route('visitor.favorites.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
         <p class="text-slate-400 text-xs uppercase">Wishlist</p>
         <p class="text-white font-semibold mt-1">{{ number_format($favorites_count ?? 0) }} favoris enregistrés</p>
     </a>
-    <a href="{{ route('visitor.notifications.index') }}" class="bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-amber-600/50 transition">
+    <a href="{{ route('visitor.notifications.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
         <p class="text-slate-400 text-xs uppercase">Notifications</p>
         <p class="text-white font-semibold mt-1">{{ number_format($unread_notifications ?? 0) }} non lues</p>
     </a>
@@ -91,15 +91,15 @@
 <div class="mb-6">
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-white font-semibold flex items-center gap-2">
-            <i class="fas fa-image text-amber-400"></i> Mes achats récents
+            <i class="fas fa-image text-orange-400"></i> Mes achats récents
         </h2>
-        <a href="{{ route('visitor.purchases.index') }}" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir tout →</a>
+        <a href="{{ route('visitor.purchases.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
         @foreach($recent_purchases as $purchase)
             @php $media = $purchase->media; @endphp
             <div class="flex items-center gap-4 px-5 py-3.5">
-                <a href="{{ route('gallery.public.show', $media->uuid) }}" class="shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-slate-800 border border-slate-700 hover:border-amber-500/50 transition">
+                <a href="{{ route('gallery.public.show', $media->uuid) }}" class="shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-slate-800 border border-slate-700 hover:border-orange-500/50 transition">
                     @if($media->url)
                         <img src="{{ $media->url }}" alt="{{ $media->alt_text ?? $media->title }}" class="w-full h-full object-cover">
                     @else
@@ -110,7 +110,7 @@
                 </a>
                 <div class="flex-1 min-w-0">
                     <p class="text-white text-sm font-medium truncate">{{ $media->title ?? $media->original_name }}</p>
-                    <p class="text-slate-500 text-xs mt-0.5">{{ $purchase->paid_at->format('d/m/Y') }} · <span class="text-amber-400/80">{{ number_format((float) $purchase->amount, 0, ',', ' ') }} FCFA</span></p>
+                    <p class="text-slate-500 text-xs mt-0.5">{{ $purchase->paid_at->format('d/m/Y') }} · <span class="text-orange-400/80">{{ number_format((float) $purchase->amount, 0, ',', ' ') }} FCFA</span></p>
                 </div>
                 <a href="{{ route('gallery.public.show', $media->uuid) }}"
                    class="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition">
@@ -129,32 +129,32 @@
     <div class="xl:col-span-2">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-newspaper text-amber-400"></i> Articles à la une
+                <i class="fas fa-newspaper text-orange-400"></i> Articles à la une
             </h2>
-            <a href="{{ route('articles.index') }}" class="text-amber-400 hover:text-amber-300 text-xs transition">Tous les articles →</a>
+            <a href="{{ route('articles.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Tous les articles →</a>
         </div>
 
         @if($featured_articles->isEmpty())
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-10 text-center text-slate-500 text-sm">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-10 text-center text-slate-500 text-sm">
             <i class="fas fa-newspaper text-slate-700 text-3xl mb-2 block"></i>
             Aucun article à la une pour le moment.
         </div>
         @else
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             @foreach($featured_articles as $article)
-            <a href="{{ route('articles.show', $article->slug_fr) }}" class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-amber-700/50 transition">
+            <a href="{{ route('articles.show', $article->slug_fr) }}" class="group bg-green-900 border border-slate-800 rounded-xl overflow-hidden hover:border-orange-700/50 transition">
                 {{-- Cover placeholder --}}
                 <div class="h-32 bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center relative overflow-hidden">
                     <i class="fas fa-image text-slate-600 text-3xl"></i>
                     @if($article->is_featured)
-                    <span class="absolute top-2 left-2 bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                    <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
                         <i class="fas fa-star mr-1 text-[10px]"></i>À la une
                     </span>
                     @endif
                 </div>
                 <div class="p-4">
-                    <span class="text-xs text-amber-400 font-medium">{{ $article->category->name ?? 'Non classé' }}</span>
-                    <h3 class="text-white text-sm font-semibold mt-1 line-clamp-2 group-hover:text-amber-400 transition">
+                    <span class="text-xs text-orange-400 font-medium">{{ $article->category->name ?? 'Non classé' }}</span>
+                    <h3 class="text-white text-sm font-semibold mt-1 line-clamp-2 group-hover:text-orange-400 transition">
                         {{ $article->title }}
                     </h3>
                     <div class="flex items-center gap-3 mt-2 text-xs text-slate-500">
@@ -175,33 +175,33 @@
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-calendar-days text-violet-400"></i> Événements à venir
+                <i class="fas fa-calendar-days text-green-400"></i> Événements à venir
             </h2>
-            <a href="{{ route('events.index') }}" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir tout →</a>
+            <a href="{{ route('events.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
         </div>
 
         <div class="space-y-3">
             @forelse($upcoming_events as $event)
-            <a href="{{ route('events.show', $event->slug) }}" class="group flex items-start gap-3 bg-slate-900 border border-slate-800 hover:border-violet-700/40 rounded-xl p-4 transition">
+            <a href="{{ route('events.show', $event->slug) }}" class="group flex items-start gap-3 bg-green-900 border border-slate-800 hover:border-green-700/40 rounded-xl p-4 transition">
                 {{-- Date badge --}}
-                <div class="shrink-0 w-12 text-center bg-violet-900/30 border border-violet-800/40 rounded-lg py-1.5">
-                    <p class="text-violet-300 text-xs font-bold uppercase">{{ $event->starts_at->format('M') }}</p>
+                <div class="shrink-0 w-12 text-center bg-green-900/30 border border-green-800/40 rounded-lg py-1.5">
+                    <p class="text-green-300 text-xs font-bold uppercase">{{ $event->starts_at->format('M') }}</p>
                     <p class="text-white text-xl font-bold leading-none">{{ $event->starts_at->format('d') }}</p>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-white text-sm font-medium group-hover:text-violet-300 transition line-clamp-2">
+                    <p class="text-white text-sm font-medium group-hover:text-green-300 transition line-clamp-2">
                         {{ $event->title }}
                     </p>
                     <p class="text-slate-500 text-xs mt-1">
                         <i class="fas fa-location-dot mr-1"></i>{{ $event->city }}
                         @if($event->category)
-                        · <span class="text-violet-400">{{ $event->category->name }}</span>
+                        · <span class="text-green-400">{{ $event->category->name }}</span>
                         @endif
                     </p>
                 </div>
             </a>
             @empty
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 text-center text-slate-500 text-sm">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6 text-center text-slate-500 text-sm">
                 <i class="fas fa-calendar text-slate-700 text-2xl mb-2 block"></i>
                 Aucun événement à venir.
             </div>
@@ -211,12 +211,12 @@
 </div>
 
 {{-- ── My reviews ──────────────────────────────────────────────────────── --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold text-sm flex items-center gap-2">
-            <i class="fas fa-star text-amber-400"></i> Mes derniers avis
+            <i class="fas fa-star text-orange-400"></i> Mes derniers avis
         </h2>
-        <a href="#" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir mes avis →</a>
+        <a href="#" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir mes avis →</a>
     </div>
     <div class="divide-y divide-slate-800">
         @forelse($my_reviews as $review)
@@ -225,14 +225,14 @@
                 <div class="flex items-center gap-2 mb-1.5">
                     <span class="text-white text-sm font-medium">{{ $review->provider->business_name ?? '—' }}</span>
                     @php
-                    $rstatus = ['approved'=>['text-emerald-400','bg-emerald-900/30','Approuvé'],'pending'=>['text-amber-400','bg-amber-900/30','En attente'],'rejected'=>['text-red-400','bg-red-900/30','Refusé']];
+                    $rstatus = ['approved'=>['text-emerald-400','bg-emerald-900/30','Approuvé'],'pending'=>['text-orange-400','bg-orange-900/30','En attente'],'rejected'=>['text-red-400','bg-red-900/30','Refusé']];
                     [$rc, $rbg, $rl] = $rstatus[$review->status] ?? ['text-slate-400','bg-slate-800',$review->status];
                     @endphp
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs {{ $rc }} {{ $rbg }}">{{ $rl }}</span>
                 </div>
                 <div class="flex items-center gap-1 mb-1.5">
                     @for($i = 1; $i <= 5; $i++)
-                    <i class="fas fa-star text-xs {{ $i <= $review->rating ? 'text-amber-400' : 'text-slate-700' }}"></i>
+                    <i class="fas fa-star text-xs {{ $i <= $review->rating ? 'text-orange-400' : 'text-slate-700' }}"></i>
                     @endfor
                     <span class="text-slate-500 text-xs ml-2">{{ $review->created_at->diffForHumans() }}</span>
                 </div>
@@ -240,7 +240,7 @@
                 <p class="text-slate-400 text-xs line-clamp-2">{{ $review->comment }}</p>
                 @endif
             </div>
-            <a href="#" class="shrink-0 text-slate-600 hover:text-amber-400 text-xs transition">
+            <a href="#" class="shrink-0 text-slate-600 hover:text-orange-400 text-xs transition">
                 <i class="fas fa-pen"></i>
             </a>
         </div>
@@ -248,7 +248,7 @@
         <div class="px-5 py-10 text-center text-slate-500 text-sm">
             <i class="fas fa-star text-slate-700 text-3xl mb-3 block"></i>
             <p class="mb-3">Vous n'avez pas encore rédigé d'avis.</p>
-            <a href="{{ route('providers.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium rounded-lg transition">
+            <a href="{{ route('providers.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded-lg transition">
                 <i class="fas fa-compass"></i> Explorer les prestataires
             </a>
         </div>

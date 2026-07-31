@@ -23,7 +23,7 @@
 @endsection
 
 @section('content')
-<div class="max-w-5xl mx-auto bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="max-w-5xl mx-auto bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
         <h2 class="text-white font-semibold">Modifier l'événement</h2>
         <a href="{{ route('editor.events.index') }}" class="text-slate-300 hover:text-white text-sm">
@@ -211,7 +211,7 @@
             <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                 <input type="hidden" name="is_free" value="0">
                 <input type="checkbox" name="is_free" id="is_free" value="1" @checked(old('is_free', $event->is_free))
-                       class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                       class="rounded border-slate-600 bg-slate-800 text-orange-500">
                 Événement gratuit
             </label>
         </div>
@@ -245,7 +245,7 @@
             <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                 <input type="hidden" name="is_recurring" value="0">
                 <input type="checkbox" name="is_recurring" id="is_recurring" value="1" @checked(old('is_recurring', $event->is_recurring))
-                       class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                       class="rounded border-slate-600 bg-slate-800 text-orange-500">
                 Événement récurrent
             </label>
         </div>
@@ -288,7 +288,7 @@
                 Annuler
             </a>
             <button type="submit"
-                    class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+                    class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
                 Mettre à jour
             </button>
         </div>

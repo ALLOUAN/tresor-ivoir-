@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,8 +24,8 @@
                         plus:    ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        gold: { 300:'#fcd68a', 400:'#f5b942', 500:'#e8a020', 600:'#c4811a' },
-                        dark: { 600:'#252520', 700:'#1c1c16', 800:'#141410', 900:'#0d0d0b' },
+                        gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
+                        dark: { 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
                     }
                 }
             }
@@ -37,8 +37,8 @@
         .font-elegant { font-family: 'Cormorant Garamond', Georgia, serif; }
         .font-plus    { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0d0d0b; }
-        ::-webkit-scrollbar-thumb { background: #e8a020; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background:#e9e5d9; }
+        ::-webkit-scrollbar-thumb { background: #f2790f; border-radius: 3px; }
         .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
         .cat-card:hover .cat-img { transform: scale(1.06); }
@@ -50,7 +50,7 @@
             display: block;
             width: 52px;
             height: 2px;
-            background: linear-gradient(90deg, #e8a020, #f5b942);
+            background: linear-gradient(90deg, #f2790f, #fa9a3c);
             margin-top: 10px;
         }
     </style>
@@ -60,9 +60,9 @@
 @include('partials.public-top-nav')
 
 {{-- ── HERO ──────────────────────────────────────────────────────────────── --}}
-<section class="relative pt-24 sm:pt-32 pb-16 sm:pb-20 overflow-hidden" style="background: linear-gradient(135deg, #0d0d0b 0%, #1a1506 40%, #151208 100%);">
-    <div class="absolute inset-0 opacity-5" style="background-image: repeating-linear-gradient(45deg,#e8a020 0,#e8a020 1px,transparent 0,transparent 50%); background-size: 20px 20px;"></div>
-    <div class="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none" style="background:rgba(232,160,32,0.06)"></div>
+<section class="relative pt-24 sm:pt-32 pb-16 sm:pb-20 overflow-hidden" style="background: linear-gradient(135deg, #e9e5d9 0%, #e9e5d9 40%, #e9e5d9 100%);">
+    <div class="absolute inset-0 opacity-5" style="background-image: repeating-linear-gradient(45deg,#f2790f 0,#f2790f 1px,transparent 0,transparent 50%); background-size: 20px 20px;"></div>
+    <div class="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none" style="background:rgba(242, 121, 15,0.06)"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="max-w-2xl">
             <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Explorer par thème</p>
@@ -102,14 +102,14 @@
         @php
             $defaultIcons  = ['fa-landmark','fa-palette','fa-leaf','fa-utensils','fa-map-location-dot','fa-gem','fa-camera','fa-music','fa-heart','fa-star'];
             $defaultGrads  = [
-                ['from-amber-900/50 to-amber-800/20','border-amber-700/30'],
+                ['from-orange-900/50 to-orange-800/20','border-orange-700/30'],
                 ['from-rose-900/40 to-rose-800/15','border-rose-700/25'],
                 ['from-green-900/50 to-green-800/20','border-green-700/30'],
                 ['from-orange-900/40 to-orange-800/15','border-orange-700/25'],
-                ['from-blue-900/40 to-blue-800/15','border-blue-700/25'],
-                ['from-violet-900/40 to-violet-800/15','border-violet-700/25'],
-                ['from-teal-900/40 to-teal-800/15','border-teal-700/25'],
-                ['from-pink-900/40 to-pink-800/15','border-pink-700/25'],
+                ['from-green-900/40 to-green-800/15','border-green-700/25'],
+                ['from-green-900/40 to-green-800/15','border-green-700/25'],
+                ['from-green-900/40 to-green-800/15','border-green-700/25'],
+                ['from-green-900/40 to-green-800/15','border-green-700/25'],
             ];
         @endphp
 
@@ -148,7 +148,7 @@
 
                 {{-- Déco fond --}}
                 <div class="absolute -bottom-4 -right-4 w-24 h-24 rounded-full opacity-10 group-hover:opacity-20 transition"
-                     style="background: radial-gradient(circle, #e8a020, transparent 70%)"></div>
+                     style="background: radial-gradient(circle, #f2790f, transparent 70%)"></div>
             </a>
             @endforeach
         </div>

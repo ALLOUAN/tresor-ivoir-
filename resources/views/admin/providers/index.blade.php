@@ -7,16 +7,16 @@
 <div class="mb-6 flex justify-end">
     <button type="button"
             onclick="openCreateProviderModal()"
-            class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+            class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
         <i class="fas fa-plus"></i>
         Créer un prestataire
     </button>
 </div>
 
 <div id="create-provider-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/70" onclick="closeCreateProviderModal()"></div>
+    <div class="absolute inset-0 bg-green-950/70" onclick="closeCreateProviderModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
-        <div class="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+        <div class="w-full max-w-3xl bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
                 <h2 class="text-white font-semibold">Créer un prestataire</h2>
                 <button type="button" onclick="closeCreateProviderModal()" class="text-slate-400 hover:text-white">
@@ -96,6 +96,15 @@
                            placeholder="https://...">
                 </div>
                 <div>
+                    <label class="block text-sm text-slate-300 mb-1">Hébergement lié (réservation + paiement en ligne)</label>
+                    <select name="accommodation_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($accommodations as $acc)
+                            <option value="{{ $acc->id }}">{{ $acc->name }}{{ $acc->provider_id ? ' (déjà lié)' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
                     <label class="block text-sm text-slate-300 mb-1">Ville</label>
                     <input type="text" name="city" value="{{ old('city') }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
@@ -113,12 +122,12 @@
                 <div class="md:col-span-2 flex items-center gap-6">
                     <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                         <input type="checkbox" name="is_featured" value="1" @checked(old('is_featured'))
-                               class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                               class="rounded border-slate-600 bg-slate-800 text-orange-500">
                         Mettre en avant
                     </label>
                     <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                         <input type="checkbox" name="is_verified" value="1" @checked(old('is_verified'))
-                               class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                               class="rounded border-slate-600 bg-slate-800 text-orange-500">
                         Vérifié
                     </label>
                 </div>
@@ -128,7 +137,7 @@
                         Annuler
                     </button>
                     <button type="submit"
-                            class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+                            class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
                         Créer
                     </button>
                 </div>
@@ -138,9 +147,9 @@
 </div>
 
 <div id="edit-provider-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/70" onclick="closeEditProviderModal()"></div>
+    <div class="absolute inset-0 bg-green-950/70" onclick="closeEditProviderModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
-        <div class="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+        <div class="w-full max-w-3xl bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
                 <h2 class="text-white font-semibold">Modifier un prestataire</h2>
                 <button type="button" onclick="closeEditProviderModal()" class="text-slate-400 hover:text-white">
@@ -223,6 +232,15 @@
                            placeholder="https://...">
                 </div>
                 <div>
+                    <label class="block text-sm text-slate-300 mb-1">Hébergement lié (réservation + paiement en ligne)</label>
+                    <select name="accommodation_id" id="edit_accommodation_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($accommodations as $acc)
+                            <option value="{{ $acc->id }}">{{ $acc->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
                     <label class="block text-sm text-slate-300 mb-1">Ville</label>
                     <input type="text" name="city" id="edit_city" value="{{ old('city') }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
@@ -240,12 +258,12 @@
                 <div class="md:col-span-2 flex items-center gap-6">
                     <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                         <input type="checkbox" name="is_featured" id="edit_is_featured" value="1"
-                               class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                               class="rounded border-slate-600 bg-slate-800 text-orange-500">
                         Mettre en avant
                     </label>
                     <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                         <input type="checkbox" name="is_verified" id="edit_is_verified" value="1"
-                               class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                               class="rounded border-slate-600 bg-slate-800 text-orange-500">
                         Vérifié
                     </label>
                 </div>
@@ -255,7 +273,7 @@
                         Annuler
                     </button>
                     <button type="submit"
-                            class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+                            class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
                         Enregistrer
                     </button>
                 </div>
@@ -265,29 +283,29 @@
 </div>
 
 <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">Tous</p>
         <p class="text-white text-2xl font-bold mt-1">{{ number_format($counts['all']) }}</p>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">Actifs</p>
         <p class="text-emerald-400 text-2xl font-bold mt-1">{{ number_format($counts['active']) }}</p>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">En attente</p>
-        <p class="text-amber-400 text-2xl font-bold mt-1">{{ number_format($counts['pending']) }}</p>
+        <p class="text-orange-400 text-2xl font-bold mt-1">{{ number_format($counts['pending']) }}</p>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">Suspendus</p>
         <p class="text-red-400 text-2xl font-bold mt-1">{{ number_format($counts['suspended']) }}</p>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">Mis en avant</p>
-        <p class="text-violet-400 text-2xl font-bold mt-1">{{ number_format($counts['featured']) }}</p>
+        <p class="text-green-400 text-2xl font-bold mt-1">{{ number_format($counts['featured']) }}</p>
     </div>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold">Liste des prestataires</h2>
         <form method="GET" action="{{ route('admin.providers.index') }}" class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -306,7 +324,7 @@
                 @endforeach
             </select>
             <div class="md:col-span-4 flex items-center gap-2">
-                <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Filtrer</button>
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Filtrer</button>
                 <a href="{{ route('admin.providers.index') }}" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Réinitialiser</a>
             </div>
         </form>
@@ -341,7 +359,7 @@
                             @php
                                 $statusClass = match($provider->status) {
                                     'active' => 'bg-emerald-500/20 text-emerald-300',
-                                    'pending' => 'bg-amber-500/20 text-amber-300',
+                                    'pending' => 'bg-orange-500/20 text-orange-300',
                                     'suspended' => 'bg-red-500/20 text-red-300',
                                     default => 'bg-slate-500/20 text-slate-300',
                                 };
@@ -357,7 +375,7 @@
                         <td class="px-5 py-3">
                             <div class="flex items-center gap-2">
                                 <a href="{{ route('admin.providers.content', $provider) }}"
-                                   class="bg-violet-600 hover:bg-violet-500 text-white text-xs px-3 py-1.5 rounded">
+                                   class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded">
                                     Gérer contenus
                                 </a>
                                 @if($provider->status !== 'active')
@@ -382,12 +400,13 @@
                                         data-provider-email="{{ $provider->email ?? '' }}"
                                         data-phone="{{ $provider->phone ?? '' }}"
                                         data-website="{{ $provider->website ?? '' }}"
+                                        data-accommodation-id="{{ $provider->accommodation->id ?? '' }}"
                                         data-city="{{ $provider->city ?? '' }}"
                                         data-address="{{ $provider->address ?? '' }}"
                                         data-description-fr="{{ $provider->description_fr ?? '' }}"
                                         data-is-featured="{{ $provider->is_featured ? '1' : '0' }}"
                                         data-is-verified="{{ $provider->is_verified ? '1' : '0' }}"
-                                        class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded">
+                                        class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded">
                                     Modifier
                                 </button>
                                 @if($provider->status !== 'suspended')
@@ -453,6 +472,7 @@
         document.getElementById('edit_provider_email').value = button.dataset.providerEmail || '';
         document.getElementById('edit_phone').value = button.dataset.phone || '';
         document.getElementById('edit_website').value = button.dataset.website || '';
+        document.getElementById('edit_accommodation_id').value = button.dataset.accommodationId || '';
         document.getElementById('edit_city').value = button.dataset.city || '';
         document.getElementById('edit_address').value = button.dataset.address || '';
         document.getElementById('edit_description_fr').value = button.dataset.descriptionFr || '';

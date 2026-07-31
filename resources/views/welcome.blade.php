@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,22 +25,22 @@
                     },
                     colors: {
                         gold: {
-                            300: '#fcd68a',
-                            400: '#f5b942',
-                            500: '#e8a020',
-                            600: '#c4811a',
+                            300: '#fdbe7b',
+                            400: '#fa9a3c',
+                            500: '#f2790f',
+                            600: '#d4630a',
                         },
                         ivory: {
                             50:  '#fdfaf3',
                             100: '#faf3e0',
                         },
                         dark: {
-                            900: '#0d0d0b',
-                            800: '#141410',
-                            700: '#1c1c16',
-                            600: '#252520',
-                            500: '#2e2e26',
-                            400: '#3a3a30',
+                            900: '#e9e5d9',
+                            800: '#e9e5d9',
+                            700: '#e9e5d9',
+                            600: '#e9e5d9',
+                            500: '#e9e5d9',
+                            400: '#e9e5d9',
                         }
                     },
                     animation: {
@@ -75,11 +75,11 @@
         /* Fallback gradient when no image */
         .hero-bg-fallback {
             background: linear-gradient(135deg,
-                #0d0d0b 0%,
-                #1a1506 25%,
-                #2a1f08 50%,
-                #1c1408 75%,
-                #0d0d0b 100%);
+                #ffffff 0%,
+                #ffffff 25%,
+                #ffffff 50%,
+                #ffffff 75%,
+                #ffffff 100%);
             position: relative;
             overflow: hidden;
         }
@@ -87,7 +87,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at 70% 50%, rgba(232,160,32,.12) 0%, transparent 60%),
+            background: radial-gradient(ellipse at 70% 50%, rgba(242, 121, 15,.12) 0%, transparent 60%),
                         radial-gradient(ellipse at 20% 80%, rgba(34,85,34,.08) 0%, transparent 50%);
             pointer-events: none;
         }
@@ -96,8 +96,8 @@
             position: absolute;
             inset: 0;
             background-image:
-                repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(232,160,32,.015) 80px, rgba(232,160,32,.015) 81px),
-                repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(232,160,32,.015) 80px, rgba(232,160,32,.015) 81px);
+                repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(242, 121, 15,.015) 80px, rgba(242, 121, 15,.015) 81px),
+                repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(242, 121, 15,.015) 80px, rgba(242, 121, 15,.015) 81px);
             pointer-events: none;
         }
         .hero-viewport { min-height: auto; }
@@ -125,7 +125,7 @@
         }
         #hero-bg-carousel img   { object-position: 52% 42%; }
         #hero-bg-carousel video { object-position: center center; }
-        #hero-bg-carousel .hero-bg-layer { background: #000; }
+        #hero-bg-carousel .hero-bg-layer { background:#e9e5d9; }
         #hero .hero-editorial-content {
             display: block;
             flex: none;
@@ -140,11 +140,9 @@
         #hero .hero-scroll-indicator { display: none; }
 
         @media (max-width: 639px) {
-            #hero { padding-top: 4.5rem; }
             #hero-bg-carousel.hero-viewport { aspect-ratio: 16 / 8.5; }
         }
         @media (min-width: 640px) and (max-width: 1023px) {
-            #hero { padding-top: 8.25rem; }
             #hero-bg-carousel.hero-viewport { aspect-ratio: 16 / 8; }
             #hero-bg-carousel img { object-position: 54% 40%; }
             #hero .hero-editorial-copy {
@@ -155,7 +153,6 @@
             #hero .hero-bg-controls { bottom: 1rem; }
         }
         @media (min-width: 1024px) and (max-width: 1439px) {
-            #hero { padding-top: 8.25rem; }
             #hero-bg-carousel.hero-viewport { aspect-ratio: 16 / 7; }
             #hero-bg-carousel img { object-position: 50% 42%; }
             #hero .hero-editorial-copy {
@@ -166,7 +163,6 @@
             #hero .hero-bg-controls { bottom: 1.25rem; }
         }
         @media (min-width: 1440px) {
-            #hero { padding-top: 8.25rem; }
             #hero-bg-carousel.hero-viewport { aspect-ratio: 16 / 6.4; }
             #hero-bg-carousel img { object-position: center center; }
             #hero .hero-editorial-copy {
@@ -179,290 +175,8 @@
 
         /* ── Scrollbar ───────────────────────────────────────── */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0d0d0b; }
-        ::-webkit-scrollbar-thumb { background: #e8a020; border-radius: 3px; }
-
-        /* ── Ultra-modern top bar & header (2025) ─────────────── */
-        .font-plus { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
-        #home-top-bar.topbar-ultra {
-            position: relative;
-            isolation: isolate;
-            background: linear-gradient(105deg, #0c0b09 0%, #12100c 42%, #15120e 100%);
-            border-bottom: 1px solid rgba(232, 160, 32, 0.14);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-            overflow: hidden;
-        }
-        #home-top-bar.topbar-ultra::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            background:
-                radial-gradient(100% 180% at 0% 0%, rgba(232, 160, 32, 0.11), transparent 52%),
-                radial-gradient(80% 120% at 100% 100%, rgba(120, 90, 40, 0.08), transparent 50%);
-            pointer-events: none;
-        }
-        #home-top-bar.topbar-ultra::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                linear-gradient(120deg, rgba(255,255,255,0.02), transparent 35%, rgba(255,255,255,0.01)),
-                repeating-linear-gradient(90deg, transparent 0, transparent 48px, rgba(232,160,32,0.02) 48px, rgba(232,160,32,0.02) 49px);
-            pointer-events: none;
-            opacity: 0.75;
-        }
-        #home-top-bar.topbar-ultra > * { position: relative; z-index: 1; }
-        .topbar-slogan-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.35rem 0.85rem 0.35rem 0.65rem;
-            border-radius: 9999px;
-            border: 1px solid rgba(255,255,255,0.11);
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025));
-            backdrop-filter: blur(12px) saturate(130%);
-            box-shadow: 0 0 0 1px rgba(232,160,32,0.08), 0 6px 26px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
-            transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
-        }
-        .topbar-slogan-pill:hover {
-            transform: translateY(-1px);
-            border-color: rgba(232,160,32,0.35);
-            box-shadow: 0 0 0 1px rgba(232,160,32,0.14), 0 10px 28px rgba(0,0,0,0.3), 0 0 20px rgba(232,160,32,0.12);
-        }
-        .topbar-slogan-pill .pulse-dot {
-            width: 6px; height: 6px; border-radius: 9999px;
-            background: linear-gradient(135deg, #f5b942, #e8a020);
-            box-shadow: 0 0 10px rgba(232,160,32,0.75);
-            animation: topbarPulse 2.2s ease-in-out infinite;
-        }
-        @keyframes topbarPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.65; transform: scale(0.92); }
-        }
-        .topbar-action {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.36rem 0.9rem;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            color: rgba(226, 232, 240, 0.9);
-            border: 1px solid rgba(255,255,255,0.1);
-            background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
-            backdrop-filter: blur(11px) saturate(125%);
-            transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease, box-shadow .2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .topbar-action::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.14), transparent);
-            transform: translateX(-130%);
-            transition: transform .45s ease;
-            pointer-events: none;
-        }
-        .topbar-action:hover {
-            color: #fde68a;
-            border-color: rgba(232,160,32,0.35);
-            background: linear-gradient(135deg, rgba(232,160,32,0.14), rgba(232,160,32,0.06));
-            box-shadow: 0 0 24px rgba(232,160,32,0.18);
-            transform: translateY(-1px) scale(1.02);
-        }
-        .topbar-action:hover::before {
-            transform: translateX(130%);
-        }
-        .topbar-action i { opacity: 0.75; }
-
-        #main-header.main-header-ultra:not(.header-scrolled) {
-            background: linear-gradient(180deg, rgba(13,13,11,0.92) 0%, rgba(13,13,11,0.72) 55%, rgba(13,13,11,0.45) 100%);
-            backdrop-filter: blur(16px) saturate(160%);
-            -webkit-backdrop-filter: blur(16px) saturate(160%);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-        #main-header.main-header-ultra .header-shell {
-            position: relative;
-        }
-        #main-header.main-header-ultra .header-shell::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            transform: translateX(-50%);
-            width: min(72%, 640px);
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(232,160,32,0.25), transparent);
-            pointer-events: none;
-        }
-        .nav-pill {
-            position: relative;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.8125rem;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            color: rgba(226, 232, 240, 0.82);
-            transition: color .2s ease, background .2s ease, box-shadow .2s ease;
-        }
-        .nav-pill:hover {
-            color: #fef3c7;
-            background: rgba(255,255,255,0.06);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-        }
-        .nav-pill-glow::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: 2px;
-            width: 0;
-            height: 2px;
-            border-radius: 2px;
-            background: linear-gradient(90deg, #c4811a, #f5b942, #e8a020);
-            transform: translateX(-50%);
-            transition: width .28s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 12px rgba(232,160,32,0.45);
-        }
-        .nav-pill-glow:hover::after { width: 70%; }
-        .logo-ring {
-            position: relative;
-            border-radius: 1rem;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.12), rgba(232,160,32,0.25));
-            box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
-            transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .35s ease;
-            animation: logoFloat 5.4s ease-in-out infinite;
-        }
-        .logo-ring::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: inherit;
-            background: conic-gradient(from 180deg, rgba(232,160,32,0.0), rgba(232,160,32,0.5), rgba(255,255,255,0.08), rgba(232,160,32,0.0));
-            opacity: .45;
-            filter: blur(6px);
-            animation: logoHaloSpin 8s linear infinite;
-            pointer-events: none;
-        }
-        .logo-ring-inner {
-            border-radius: calc(1rem - 2px);
-            overflow: hidden;
-            background: rgba(13,13,11,0.9);
-            transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), filter .35s ease;
-        }
-        .group:hover .logo-ring {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 14px 34px rgba(0,0,0,0.42), 0 0 26px rgba(232,160,32,0.26), 0 0 0 1px rgba(255,255,255,0.08) inset;
-        }
-        .group:hover .logo-ring::before {
-            opacity: .8;
-        }
-        .group:hover .logo-ring-inner {
-            transform: scale(1.04);
-            filter: brightness(1.08) saturate(1.08);
-        }
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-2px); }
-        }
-        @keyframes logoHaloSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .logo-ring,
-            .logo-ring::before {
-                animation: none;
-            }
-        }
-        .lang-switch-ultra {
-            display: inline-flex;
-            padding: 3px;
-            border-radius: 9999px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-        .lang-switch-ultra button {
-            border-radius: 9999px;
-            padding: 0.35rem 0.75rem;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            transition: background .2s ease, color .2s ease, box-shadow .2s ease;
-        }
-        .btn-ghost-header {
-            border-radius: 9999px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.04);
-            transition: border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
-        }
-        .btn-ghost-header:hover {
-            border-color: rgba(232,160,32,0.35);
-            background: rgba(232,160,32,0.08);
-            color: #fef3c7;
-            box-shadow: 0 0 24px rgba(232,160,32,0.1);
-        }
-        .nav-dd-lnk {
-            display: flex; align-items: center; gap: 0.75rem;
-            padding: 0.45rem 0.625rem; border-radius: 0.625rem;
-            font-size: 0.8125rem; font-weight: 500; color: #94a3b8;
-            text-decoration: none; white-space: nowrap;
-            background: none; border: none; cursor: pointer;
-            transition: background .15s ease, color .15s ease;
-            width: 100%; text-align: left;
-        }
-        .nav-dd-lnk:hover { background: rgba(255,255,255,0.05); color: #f1f5f9; }
-        .nav-dd-lnk:hover .nav-dd-icon { background: rgba(245,158,11,0.18); color: #fbbf24; }
-        .nav-dd-icon {
-            width: 1.875rem; height: 1.875rem; border-radius: 0.5rem; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.05); color: #475569; font-size: 0.7rem;
-            transition: background .15s ease, color .15s ease;
-        }
-        .nav-dd-danger { color: #f87171; }
-        .nav-dd-danger .nav-dd-icon { color: #f87171; background: rgba(239,68,68,0.1); }
-        .nav-dd-danger:hover { background: rgba(239,68,68,0.08); color: #fca5a5; }
-        .nav-dd-danger:hover .nav-dd-icon { background: rgba(239,68,68,0.2); color: #fca5a5; }
-        .btn-gold-header {
-            border-radius: 9999px;
-            background: linear-gradient(135deg, #f5b942 0%, #e8a020 50%, #c4811a 100%);
-            box-shadow: 0 4px 20px rgba(232,160,32,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
-            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
-        }
-        .btn-gold-header:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.05);
-            box-shadow: 0 8px 28px rgba(232,160,32,0.45), inset 0 1px 0 rgba(255,255,255,0.3);
-        }
-        #mobile-menu.mobile-menu-ultra {
-            background: rgba(10,10,9,0.96);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-top: 1px solid rgba(232,160,32,0.12);
-        }
-        #mobile-menu.mobile-menu-ultra a,
-        #mobile-menu.mobile-menu-ultra button {
-            border-radius: 0.75rem;
-            border: 1px solid transparent;
-        }
-        #mobile-menu.mobile-menu-ultra a:hover,
-        #mobile-menu.mobile-menu-ultra button:hover {
-            border-color: rgba(232,160,32,0.2);
-            background: rgba(232,160,32,0.06);
-        }
-
-        /* ── Header scroll effect ────────────────────────────── */
-        .header-scrolled {
-            background: rgba(8,8,7,.94) !important;
-            backdrop-filter: blur(28px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-            border-bottom: 1px solid rgba(232,160,32,.22) !important;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
-        }
+        ::-webkit-scrollbar-track { background:#e9e5d9; }
+        ::-webkit-scrollbar-thumb { background: #f2790f; border-radius: 3px; }
 
         /* ── Gold line decoration ────────────────────────────── */
         .gold-line::after {
@@ -470,7 +184,7 @@
             display: block;
             width: 60px;
             height: 2px;
-            background: linear-gradient(90deg, #e8a020, #f5b942);
+            background: linear-gradient(90deg, #f2790f, #fa9a3c);
             margin-top: 12px;
         }
         .gold-line-center::after { margin-left: auto; margin-right: auto; }
@@ -518,147 +232,6 @@
             .partner-card { width: 210px; min-height: 210px; }
         }
 
-        /* ── Footer ultra-moderne ─────────────────────────────── */
-        .footer-ultra {
-            position: relative;
-            isolation: isolate;
-            background-color: #060504;
-            background-image:
-                radial-gradient(ellipse 90% 50% at 50% -20%, rgba(232, 160, 32, 0.09), transparent 55%),
-                radial-gradient(ellipse 50% 40% at 100% 100%, rgba(99, 102, 241, 0.05), transparent 45%);
-        }
-        .footer-ultra::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='fn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23fn)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            opacity: 0.9;
-        }
-        .footer-ultra-inner { position: relative; z-index: 1; }
-        .footer-v2-link {
-            display: block;
-            padding: 0.32rem 0;
-            font-size: 0.8125rem;
-            color: rgba(163, 163, 163, 0.92);
-            transition: color .18s ease, padding-left .18s ease;
-        }
-        .footer-v2-link:hover {
-            color: #fde68a;
-            padding-left: 0.35rem;
-        }
-        .social-links-wrap {
-            position: relative;
-        }
-        .social-icon-ultra {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.62rem;
-            backdrop-filter: blur(8px);
-            transition: transform .28s cubic-bezier(0.2, 0.8, 0.2, 1), color .25s ease, border-color .25s ease, box-shadow .3s ease, background-color .25s ease;
-            isolation: isolate;
-        }
-        .social-icon-ultra::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: inherit;
-            background: conic-gradient(from 180deg, rgba(232,160,32,0.0), rgba(232,160,32,0.45), rgba(255,255,255,0.16), rgba(232,160,32,0.0));
-            opacity: 0;
-            transform: rotate(0deg);
-            transition: opacity .28s ease;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .social-icon-ultra::after {
-            content: '';
-            position: absolute;
-            inset: 1px;
-            border-radius: calc(0.62rem - 1px);
-            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
-            opacity: 0;
-            transition: opacity .25s ease;
-            z-index: 0;
-        }
-        .social-icon-ultra i {
-            position: relative;
-            z-index: 1;
-            transition: transform .25s ease;
-        }
-        .social-icon-ultra:hover {
-            transform: translateY(-3px) scale(1.06);
-            box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 0 18px rgba(232,160,32,0.22);
-        }
-        .social-icon-ultra:hover::before {
-            opacity: 0.9;
-            animation: socialRingSpin 1.2s linear infinite;
-        }
-        .social-icon-ultra:hover::after {
-            opacity: 1;
-        }
-        .social-icon-ultra:hover i {
-            transform: scale(1.1);
-        }
-        .social-icon-ultra.social-icon-wa:hover {
-            box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 0 18px rgba(16,185,129,0.28);
-        }
-        .social-icon-ultra.social-icon-wa::before {
-            background: conic-gradient(from 180deg, rgba(16,185,129,0), rgba(16,185,129,0.6), rgba(236,253,245,0.25), rgba(16,185,129,0));
-        }
-        .footer-logo-link {
-            display: inline-flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-        }
-        .footer-logo-ring {
-            position: relative;
-            border-radius: 0.7rem;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.14), rgba(232,160,32,0.25));
-            box-shadow: 0 8px 26px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
-            transition: transform .32s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .32s ease;
-            animation: footerLogoFloat 5.4s ease-in-out infinite;
-        }
-        .footer-logo-ring::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: inherit;
-            background: conic-gradient(from 180deg, rgba(232,160,32,0), rgba(232,160,32,0.45), rgba(255,255,255,0.1), rgba(232,160,32,0));
-            opacity: 0.4;
-            filter: blur(5px);
-            animation: footerLogoSpin 8s linear infinite;
-            pointer-events: none;
-        }
-        .footer-logo-inner {
-            border-radius: calc(0.7rem - 2px);
-            overflow: hidden;
-            background: rgba(13,13,11,0.9);
-            transition: transform .32s cubic-bezier(0.2, 0.8, 0.2, 1), filter .32s ease;
-        }
-        .footer-logo-link:hover .footer-logo-ring {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.42), 0 0 22px rgba(232,160,32,0.25), 0 0 0 1px rgba(255,255,255,0.08) inset;
-        }
-        .footer-logo-link:hover .footer-logo-ring::before {
-            opacity: 0.82;
-        }
-        .footer-logo-link:hover .footer-logo-inner {
-            transform: scale(1.04);
-            filter: brightness(1.08) saturate(1.08);
-        }
-        @keyframes footerLogoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-2px); }
-        }
-        @keyframes footerLogoSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes socialRingSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
         /* ── Featured section title (special design) ───────── */
         .featured-title-wrap {
             position: relative;
@@ -669,10 +242,10 @@
         .featured-title-line {
             flex: 1;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(232,160,32,0.45));
+            background: linear-gradient(90deg, transparent, rgba(242, 121, 15,0.45));
         }
         .featured-title-line.reverse {
-            background: linear-gradient(90deg, rgba(232,160,32,0.45), transparent);
+            background: linear-gradient(90deg, rgba(242, 121, 15,0.45), transparent);
         }
         .featured-title-badge {
             position: relative;
@@ -681,10 +254,10 @@
             gap: 0.6rem;
             padding: 0.55rem 1.2rem;
             border-radius: 9999px;
-            border: 1px solid rgba(232,160,32,0.38);
+            border: 1px solid rgba(242, 121, 15,0.38);
             background:
-                linear-gradient(135deg, rgba(232,160,32,0.18), rgba(255,255,255,0.04)),
-                rgba(20,20,16,0.84);
+                linear-gradient(135deg, rgba(242, 121, 15,0.18), rgba(255,255,255,0.04)),
+                rgba(255, 255, 255,0.84);
             box-shadow: 0 10px 24px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.08);
             backdrop-filter: blur(8px);
         }
@@ -692,8 +265,8 @@
             width: 0.42rem;
             height: 0.42rem;
             border-radius: 9999px;
-            background: linear-gradient(135deg, #f5b942, #e8a020);
-            box-shadow: 0 0 10px rgba(232,160,32,0.65);
+            background: linear-gradient(135deg, #fa9a3c, #f2790f);
+            box-shadow: 0 0 10px rgba(242, 121, 15,0.65);
         }
         .featured-title-text {
             font-family: 'Cormorant Garamond', Georgia, serif;
@@ -701,7 +274,7 @@
             font-weight: 700;
             letter-spacing: 0.25em;
             text-transform: uppercase;
-            color: #fcd68a;
+            color: #fdbe7b;
         }
         @media (prefers-reduced-motion: reduce) {
             .social-icon-ultra,
@@ -720,46 +293,32 @@
             --dd-border: rgba(255,255,255,0.07);
             --dd-shadow: 0 32px 64px -8px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.06);
             --dd-divider: rgba(255,255,255,0.06);
-            --dd-head-gradient: rgba(245,158,11,0.07);
+            --dd-head-gradient: rgba(242, 121, 15,0.07);
         }
         html:not(.dark) {
             --dd-bg: rgba(255,253,248,0.99);
             --dd-border: rgba(0,0,0,0.09);
             --dd-shadow: 0 24px 48px -8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.9);
             --dd-divider: rgba(0,0,0,0.07);
-            --dd-head-gradient: rgba(245,158,11,0.05);
+            --dd-head-gradient: rgba(242, 121, 15,0.05);
         }
 
-        /* ── Theme toggle ───────────────────────────────── */
-        .theme-toggle {
-            width:2.25rem; height:2.25rem; border-radius:9999px;
-            display:flex; align-items:center; justify-content:center;
-            border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04);
-            color:#94a3b8; cursor:pointer; transition:.2s ease; font-size:0.8rem; flex-shrink:0;
-        }
-        .theme-toggle:hover { color:#fde68a; border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); }
-        html:not(.dark) .theme-toggle { border-color:rgba(0,0,0,0.1); background:rgba(0,0,0,0.04); color:#6b6860; }
-        html:not(.dark) .theme-toggle:hover { color:#d97706; border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); }
-        .theme-toggle .icon-sun  { display:block; }
-        .theme-toggle .icon-moon { display:none; }
-        html:not(.dark) .theme-toggle .icon-sun  { display:none; }
-        html:not(.dark) .theme-toggle .icon-moon { display:block; }
 
         /* ── Light mode: body & textes ──────────────────── */
-        html:not(.dark) body           { background-color:#f8f5ee!important; color:#1c1915!important; }
+        html:not(.dark) body           { background-color:#e9e5d9!important; color:#1c1915!important; }
         html:not(.dark) .text-white    { color:#1c1915!important; }
         html:not(.dark) .text-gray-100 { color:#1c1915!important; }
         html:not(.dark) .text-gray-200 { color:#2d2a23!important; }
         html:not(.dark) .text-gray-300 { color:#44413a!important; }
-        html:not(.dark) .text-gray-400 { color:#6b6860!important; }
-        html:not(.dark) .text-gray-500 { color:#9e9b90!important; }
-        html:not(.dark) .text-slate-400 { color:#6b6860!important; }
-        html:not(.dark) .text-slate-500 { color:#9e9b90!important; }
+        html:not(.dark) .text-gray-400 { color:#544f47!important; }
+        html:not(.dark) .text-gray-500 { color:#665f52!important; }
+        html:not(.dark) .text-slate-400 { color:#544f47!important; }
+        html:not(.dark) .text-slate-500 { color:#665f52!important; }
 
         /* ── Light mode: custom dark palette ────────────── */
-        html:not(.dark) .bg-dark-900  { background-color:#f8f5ee!important; }
+        html:not(.dark) .bg-dark-900  { background-color:#e9e5d9!important; }
         html:not(.dark) .bg-dark-800  { background-color:#f0ece4!important; }
-        html:not(.dark) .bg-dark-700  { background-color:#e8e3da!important; }
+        html:not(.dark) .bg-dark-700  { background-color:#d6cfba!important; }
 
         /* ── Light mode: borders ────────────────────────── */
         html:not(.dark) .border-white\/5           { border-color:rgba(0,0,0,0.05)!important; }
@@ -768,82 +327,34 @@
         html:not(.dark) .border-white\/\[0\.07\]   { border-color:rgba(0,0,0,0.07)!important; }
         html:not(.dark) .bg-white\/\[0\.04\]       { background-color:rgba(0,0,0,0.04)!important; }
 
-        /* ── Light mode: header & nav ───────────────────── */
-        html:not(.dark) #main-header.main-header-ultra:not(.header-scrolled) {
-            background:linear-gradient(180deg,rgba(254,252,248,0.97) 0%,rgba(254,252,248,0.92) 55%,rgba(254,252,248,0.82) 100%);
-            border-bottom-color:rgba(0,0,0,0.08);
-        }
-        html:not(.dark) #main-header.main-header-ultra.header-scrolled {
-            background:rgba(254,252,248,0.97)!important;
-            border-bottom-color:rgba(0,0,0,0.1)!important;
-        }
-        html:not(.dark) .nav-pill      { color:rgba(28,25,21,0.72); }
-        html:not(.dark) .nav-pill:hover { color:#1c1915; background:rgba(0,0,0,0.05); box-shadow:none; }
-        html:not(.dark) .btn-ghost-header { border-color:rgba(0,0,0,0.1); background:rgba(0,0,0,0.03); color:rgba(28,25,21,0.75); }
-        html:not(.dark) .btn-ghost-header:hover { border-color:rgba(232,160,32,0.35); background:rgba(232,160,32,0.08); color:#92400e; }
-        html:not(.dark) #mobile-menu.mobile-menu-ultra { background:rgba(254,252,248,0.98); }
-        html:not(.dark) .lang-switch-ultra { border-color:rgba(0,0,0,0.12); background:rgba(0,0,0,0.04); }
-        html:not(.dark) .lang-switch-ultra a { color:rgba(28,25,21,0.6); }
-
-        /* ── Light mode: dropdown ───────────────────────── */
-        html:not(.dark) .nav-dd-lnk { color:#44413a; }
-        html:not(.dark) .nav-dd-lnk:hover { background:rgba(0,0,0,0.04); color:#1c1915; }
-        html:not(.dark) .nav-dd-lnk:hover .nav-dd-icon { background:rgba(245,158,11,0.14); color:#d97706; }
-        html:not(.dark) .nav-dd-icon { background:rgba(0,0,0,0.05); color:#6b6860; }
-        html:not(.dark) .nav-dd-danger { color:#dc2626; }
-        html:not(.dark) .nav-dd-danger:hover { background:rgba(239,68,68,0.06); color:#b91c1c; }
-
         /* ── Light mode: cartes & sections ─────────────── */
-        html:not(.dark) .bg-slate-900    { background-color:#ffffff!important; }
-        html:not(.dark) .bg-slate-800    { background-color:#f4f0e8!important; }
-        html:not(.dark) .border-slate-800 { border-color:#e8e3da!important; }
-        html:not(.dark) #home-top-bar.topbar-ultra {
-            background: linear-gradient(105deg,#fefcf8 0%,#fdf9f2 42%,#fbf7eb 100%);
-            border-bottom-color: rgba(200,160,60,0.22);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
-        }
-        html:not(.dark) .topbar-slogan-pill,
-        html:not(.dark) .topbar-action {
-            border-color: rgba(0,0,0,0.1);
-            background: rgba(255,255,255,0.72);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.05);
-        }
-        html:not(.dark) .topbar-slogan-pill { color:#2d2a23; }
-        html:not(.dark) .topbar-action { color:#2d2a23; }
-        html:not(.dark) .topbar-action i { color:#b45309; opacity:0.95; }
-        html:not(.dark) .topbar-action:hover,
-        html:not(.dark) .topbar-slogan-pill:hover {
-            border-color: rgba(217,119,6,0.32);
-            box-shadow: 0 12px 22px rgba(217,119,6,0.12);
-        }
-        html:not(.dark) .topbar-action:hover { color:#1c1915; background:rgba(245,158,11,0.12); }
-        html:not(.dark) .topbar-action:hover i { color:#92400e; }
-        html:not(.dark) #home-top-bar .text-gray-300 { color:#2d2a23 !important; }
-        html:not(.dark) #home-top-bar .text-amber-200\/90 { color:#92400e !important; }
+        html:not(.dark) .bg-green-900    { background-color:#e9e5d9!important; }
+        html:not(.dark) .bg-slate-800    { background-color:#e9e5d9!important; }
+        html:not(.dark) .border-slate-800 { border-color:#d6cfba!important; }
         html:not(.dark) .hero-bg-fallback {
             background: linear-gradient(135deg, #f8f4ec 0%, #fefcf8 50%, #f5efe4 100%);
         }
         html:not(.dark) .featured-title-line {
-            background: linear-gradient(90deg, transparent, rgba(180,83,9,0.4));
+            background: linear-gradient(90deg, transparent, rgba(194, 94, 10,0.4));
         }
         html:not(.dark) .featured-title-line.reverse {
-            background: linear-gradient(90deg, rgba(180,83,9,0.4), transparent);
+            background: linear-gradient(90deg, rgba(194, 94, 10,0.4), transparent);
         }
         html:not(.dark) .featured-title-badge {
-            border-color: rgba(180,83,9,0.35);
+            border-color: rgba(194, 94, 10,0.35);
             background:
-                linear-gradient(135deg, rgba(245,158,11,0.14), rgba(255,255,255,0.85)),
+                linear-gradient(135deg, rgba(242, 121, 15,0.14), rgba(255,255,255,0.85)),
                 rgba(255,255,255,0.92);
-            box-shadow: 0 10px 20px rgba(180,83,9,0.12), inset 0 1px 0 rgba(255,255,255,0.95);
+            box-shadow: 0 10px 20px rgba(194, 94, 10,0.12), inset 0 1px 0 rgba(255,255,255,0.95);
         }
-        html:not(.dark) .featured-title-text { color:#92400e; }
-        html:not(.dark) .featured-title-dot { box-shadow: 0 0 8px rgba(180,83,9,0.45); }
+        html:not(.dark) .featured-title-text { color:#a3450a; }
+        html:not(.dark) .featured-title-dot { box-shadow: 0 0 8px rgba(194, 94, 10,0.45); }
 
         .event-price-badge {
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(232,160,32,0.35);
-            background: linear-gradient(135deg, rgba(232,160,32,0.2), rgba(255,255,255,0.06));
+            border: 1px solid rgba(242, 121, 15,0.35);
+            background: linear-gradient(135deg, rgba(242, 121, 15,0.2), rgba(255,255,255,0.06));
             box-shadow: 0 8px 20px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.12);
             animation: eventPricePulse 2.8s ease-in-out infinite;
         }
@@ -858,7 +369,7 @@
         }
         .group:hover .event-price-badge {
             transform: translateY(-1px) scale(1.02);
-            box-shadow: 0 12px 24px rgba(232,160,32,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
+            box-shadow: 0 12px 24px rgba(242, 121, 15,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
         }
         @keyframes eventPricePulse {
             0%, 100% { filter: brightness(1); }
@@ -869,9 +380,9 @@
             60%, 100% { transform: translateX(130%); }
         }
         html:not(.dark) .event-price-badge {
-            border-color: rgba(180,83,9,0.32);
-            background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(255,255,255,0.95));
-            color: #78350f;
+            border-color: rgba(194, 94, 10,0.32);
+            background: linear-gradient(135deg, rgba(242, 121, 15,0.2), rgba(255,255,255,0.95));
+            color: #7a3c08;
         }
 
         .event-cta-row {
@@ -894,8 +405,8 @@
             min-height: 2rem;
             padding: 0.38rem 0.7rem;
             border-radius: 0.7rem;
-            border: 1px solid rgba(232,160,32,0.35);
-            background: linear-gradient(145deg, rgba(232,160,32,0.22), rgba(255,255,255,0.08));
+            border: 1px solid rgba(242, 121, 15,0.35);
+            background: linear-gradient(145deg, rgba(242, 121, 15,0.22), rgba(255,255,255,0.08));
             color: #f8d79a;
             font-size: 11px;
             font-weight: 800;
@@ -919,8 +430,8 @@
             font-size: 11px;
             font-weight: 800;
             color: #1b1408;
-            background: linear-gradient(135deg, #f4c65a 0%, #e8a020 65%, #cb8517 100%);
-            box-shadow: 0 10px 20px rgba(232,160,32,0.28);
+            background: linear-gradient(135deg, #f4c65a 0%, #f2790f 65%, #cb8517 100%);
+            box-shadow: 0 10px 20px rgba(242, 121, 15,0.28);
             transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
         }
         .event-ticket-btn-modern::after {
@@ -935,13 +446,13 @@
         .event-ticket-btn-modern:hover {
             transform: translateY(-1px);
             filter: brightness(1.03);
-            box-shadow: 0 14px 24px rgba(232,160,32,0.35);
+            box-shadow: 0 14px 24px rgba(242, 121, 15,0.35);
         }
         .event-ticket-btn-modern:hover::after {
             transform: translateX(130%);
         }
         .group:hover .event-cta-row {
-            border-color: rgba(232,160,32,0.35);
+            border-color: rgba(242, 121, 15,0.35);
             box-shadow: 0 10px 22px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
             transform: translateY(-1px);
         }
@@ -956,13 +467,13 @@
             font-weight: 700;
             color: #f3f4f6;
             border: 1px solid rgba(255,255,255,0.14);
-            background: rgba(255,255,255,0.05);
+            background: rgba(233, 229, 217, 0.05);
             transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
         }
         .event-cta-ghost:hover {
             transform: translateY(-1px);
-            border-color: rgba(232,160,32,0.45);
-            background: rgba(232,160,32,0.14);
+            border-color: rgba(242, 121, 15,0.45);
+            background: rgba(242, 121, 15,0.14);
         }
         @keyframes ctaRowIn {
             0% {
@@ -976,22 +487,22 @@
         }
         @keyframes pricePulseSoft {
             0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25); }
-            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(232,160,32,0.22); }
+            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(242, 121, 15,0.22); }
         }
         html:not(.dark) .event-cta-row {
             border-color: rgba(0,0,0,0.08);
             background: linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.92));
         }
         html:not(.dark) .event-price-badge-modern {
-            border-color: rgba(180,83,9,0.28);
-            background: linear-gradient(145deg, rgba(245,158,11,0.24), rgba(255,255,255,0.95));
-            color: #78350f;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(180,83,9,0.14);
+            border-color: rgba(194, 94, 10,0.28);
+            background: linear-gradient(145deg, rgba(242, 121, 15,0.24), rgba(255,255,255,0.95));
+            color: #7a3c08;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(194, 94, 10,0.14);
         }
         html:not(.dark) .event-cta-ghost {
             color: #1f2937;
             border-color: rgba(0,0,0,0.12);
-            background: rgba(255,255,255,0.85);
+            background: rgba(233, 229, 217, 0.85);
         }
 
     </style>
@@ -1007,346 +518,7 @@
     $infoLegal = $infoPages->firstWhere('slug', 'legal-notice');
 @endphp
 
-{{-- ══════════════════════════════════════════════════════════
-     TOP BAR (ultra-modern)
-══════════════════════════════════════════════════════════ --}}
-<div id="home-top-bar" class="topbar-ultra font-plus text-gray-300 hidden md:block">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        @if(session('contact_success') || session('contact_error'))
-            <div class="py-2.5 text-center text-[11px] font-semibold tracking-wide border-b border-white/[0.06] {{ session('contact_success') ? 'text-emerald-400/95' : 'text-red-400/95' }}">
-                {{ session('contact_success') ?? session('contact_error') }}
-            </div>
-        @endif
-        <div class="py-2.5 flex flex-wrap items-center justify-between gap-y-2 gap-x-4 min-h-[2.5rem]">
-            <div class="topbar-slogan-pill">
-                <span class="pulse-dot shrink-0" aria-hidden="true"></span>
-                <span class="text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] uppercase text-gold-200/90">
-                    {{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}
-                </span>
-            </div>
-            <div class="flex flex-wrap items-center justify-end gap-2 sm:gap-2.5">
-                <a href="{{ $topPhoneHref }}" class="topbar-action">
-                    <i class="fas fa-phone-volume text-[10px] text-gold-400/90"></i>
-                    <span>{{ $topPhoneDisplay }}</span>
-                </a>
-                <button type="button" onclick="openContactModal()" class="topbar-action cursor-pointer">
-                    <i class="fas fa-message text-[10px] text-gold-400/90"></i>
-                    Contact
-                </button>
-                @if($infoGuide)
-                <a href="{{ route('information.show', $infoGuide) }}" class="topbar-action">
-                    <i class="fas fa-book-open text-[10px] text-gold-400/90"></i>
-                    Guide
-                </a>
-                @endif
-                @if($infoFaq)
-                <a href="{{ route('information.show', $infoFaq) }}" class="topbar-action">
-                    <i class="fas fa-circle-question text-[10px] text-gold-400/90"></i>
-                    FAQ
-                </a>
-                @endif
-            </div>
-        </div>
-    </div>
-</div>
-@if(session('contact_success') || session('contact_error'))
-    <div id="home-contact-flash-mobile" class="md:hidden bg-dark-800 border-b border-white/5 text-center text-[11px] py-2 px-4 font-medium {{ session('contact_success') ? 'text-emerald-400/90' : 'text-red-400/90' }}">
-        {{ session('contact_success') ?? session('contact_error') }}
-    </div>
-@endif
-
-{{-- ══════════════════════════════════════════════════════════
-     HEADER
-══════════════════════════════════════════════════════════ --}}
-<header id="main-header"
-    class="main-header-ultra font-plus fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out"
-    style="top: 0"
-    x-data>
-    <div class="header-shell max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[4.25rem] md:h-[5.25rem] flex items-center justify-between gap-4 md:gap-8">
-
-        {{-- Logo --}}
-        <a href="/" class="flex items-center gap-3 sm:gap-3.5 shrink-0 group">
-            @if(!empty($siteBrand['logo_url']))
-                <div class="logo-ring shrink-0">
-                    <div class="logo-ring-inner w-12 h-12 md:w-[4rem] md:h-[4rem] flex items-center justify-center">
-                        <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain p-0.5">
-                    </div>
-                </div>
-            @else
-                <div class="logo-ring shrink-0">
-                    <div class="logo-ring-inner w-12 h-12 md:w-[4rem] md:h-[4rem] flex items-center justify-center bg-linear-to-br from-gold-400 to-gold-600">
-                        <i class="fas fa-gem text-dark-900 text-sm md:text-base drop-shadow-sm"></i>
-                    </div>
-                </div>
-            @endif
-            <div class="hidden sm:block min-w-0">
-                <p class="text-transparent bg-clip-text bg-linear-to-r from-gold-200 via-gold-400 to-amber-200 font-serif font-bold text-base md:text-lg leading-tight tracking-tight truncate group-hover:from-gold-100 group-hover:to-gold-300 transition-all duration-300">
-                    {{ $siteBrand['site_name'] }}
-                </p>
-                <p class="text-gray-500 group-hover:text-gray-400 text-[9px] md:text-[10px] tracking-[0.22em] uppercase truncate font-plus font-medium mt-0.5 transition-colors">
-                    {{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}
-                </p>
-            </div>
-        </a>
-
-        {{-- Nav desktop --}}
-        <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1">
-            @php $navItems = [
-                ['label' => 'Magazine Premium',     'href' => route('home')],
-                ['label' => 'Articles',             'href' => route('articles.index')],
-                ['label' => 'Découvertes',          'href' => route('discoveries.index')],
-                ['label' => 'Annuaire Prestataires','href' => route('providers.index')],
-                ['label' => 'Événements',           'href' => route('events.index')],
-            ]; @endphp
-            @foreach($navItems as $item)
-            <a href="{{ $item['href'] }}"
-               class="nav-pill nav-pill-glow whitespace-nowrap">
-                {{ $item['label'] }}
-            </a>
-            @endforeach
-            <a href="{{ route('gallery.public') }}"
-               class="nav-pill nav-pill-glow whitespace-nowrap">
-                Galerie Tresors d'Ivoire
-            </a>
-        </nav>
-
-        {{-- Right actions --}}
-        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            <div class="lang-switch-ultra hidden sm:inline-flex">
-                <a href="{{ route('lang.switch', 'fr') }}"
-                   class="{{ session('locale', app()->getLocale()) === 'fr' ? 'bg-gold-500 text-dark-900 shadow-sm' : 'text-gray-400 hover:text-white' }}">FR</a>
-                <a href="{{ route('lang.switch', 'en') }}"
-                   class="{{ session('locale', app()->getLocale()) === 'en' ? 'bg-gold-500 text-dark-900 shadow-sm' : 'text-gray-400 hover:text-white' }}">EN</a>
-            </div>
-
-            {{-- Theme toggle --}}
-            <button type="button" id="theme-toggle" class="theme-toggle hidden sm:flex" title="Changer le thème" aria-label="Basculer le thème">
-                <i class="fas fa-sun icon-sun"></i>
-                <i class="fas fa-moon icon-moon"></i>
-            </button>
-
-            @auth
-            @php $__initials = strtoupper(substr(auth()->user()->first_name ?? '', 0, 1) . substr(auth()->user()->last_name ?? '', 0, 1)); @endphp
-            <div class="relative hidden sm:block" id="nav-user-dropdown-wrap">
-
-                {{-- Trigger --}}
-                <button type="button" id="nav-user-dropdown-btn"
-                        class="group inline-flex items-center gap-2.5 pl-1.5 pr-3.5 py-1.5 rounded-full border border-white/10 bg-white/4 hover:border-amber-500/30 hover:bg-amber-500/6 transition-all duration-200">
-                    <span class="w-7 h-7 rounded-full bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center text-[11px] font-bold text-white shadow-sm">
-                        {{ $__initials }}
-                    </span>
-                    <span class="text-sm font-medium text-gray-300 group-hover:text-amber-100 transition-colors">Mon espace</span>
-                    <i class="fas fa-chevron-down text-[9px] text-gray-500 group-hover:text-amber-400 transition-all duration-200" id="nav-dd-chevron"></i>
-                </button>
-
-                {{-- Dropdown --}}
-                <div id="nav-user-dropdown"
-                     class="hidden absolute right-0 top-full mt-3 w-72 z-50"
-                     role="menu">
-                    <div class="rounded-2xl overflow-hidden"
-                         style="background:var(--dd-bg);border:1px solid var(--dd-border);box-shadow:var(--dd-shadow);backdrop-filter:blur(32px)">
-
-                        {{-- En-tête utilisateur --}}
-                        <div class="relative px-4 pt-4 pb-3.5 overflow-hidden">
-                            <div class="absolute inset-0" style="background:radial-gradient(ellipse 120% 80% at 0% 0%,var(--dd-head-gradient),transparent 65%)"></div>
-                            <div class="relative flex items-start gap-3">
-                                <div class="w-11 h-11 rounded-xl bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-sm font-bold shadow-lg shrink-0"
-                                     style="box-shadow:0 8px 24px rgba(245,158,11,0.3)">
-                                    {{ $__initials }}
-                                </div>
-                                <div class="min-w-0 flex-1 pt-0.5">
-                                    <p class="text-white text-sm font-semibold leading-tight truncate">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</p>
-                                    <p class="text-slate-500 text-xs truncate mt-0.5">{{ auth()->user()->email }}</p>
-                                    <span class="mt-1.5 inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full
-                                        @if(auth()->user()->role==='admin') bg-red-500/10 text-red-300 border border-red-500/20
-                                        @elseif(auth()->user()->role==='editor') bg-blue-500/10 text-blue-300 border border-blue-500/20
-                                        @elseif(auth()->user()->role==='provider') bg-purple-500/10 text-purple-300 border border-purple-500/20
-                                        @else bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 @endif">
-                                        <span class="w-1.5 h-1.5 rounded-full
-                                            @if(auth()->user()->role==='admin') bg-red-400
-                                            @elseif(auth()->user()->role==='editor') bg-blue-400
-                                            @elseif(auth()->user()->role==='provider') bg-purple-400
-                                            @else bg-emerald-400 @endif"></span>
-                                        {{ ucfirst(auth()->user()->role) }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--dd-divider) 30%,var(--dd-divider) 70%,transparent);margin:0 1rem"></div>
-
-                        {{-- Navigation --}}
-                        <div class="p-2">
-                            @if(auth()->user()->role === 'admin')
-                                <a href="{{ route('admin.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
-                                </a>
-                                <a href="{{ route('admin.users.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-users"></i></span> Utilisateurs
-                                </a>
-                                <a href="{{ route('admin.payments.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-chart-line"></i></span> Finance
-                                </a>
-                            @elseif(auth()->user()->role === 'editor')
-                                <a href="{{ route('editor.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
-                                </a>
-                                <a href="{{ route('editor.articles.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-pen-nib"></i></span> Mes articles
-                                </a>
-                            @elseif(auth()->user()->role === 'provider')
-                                <a href="{{ route('provider.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
-                                </a>
-                                <a href="{{ route('provider.profile.edit') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-store"></i></span> Ma fiche
-                                </a>
-                                <a href="{{ route('provider.billing.plans') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gem"></i></span> Mon forfait
-                                </a>
-                            @else
-                                <a href="{{ route('visitor.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
-                                </a>
-                                <a href="{{ route('visitor.purchases.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-image"></i></span> Mes achats
-                                </a>
-                                <a href="{{ route('visitor.profile.edit') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-user-pen"></i></span> Mon profil
-                                </a>
-                                <a href="{{ route('visitor.favorites.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-heart"></i></span> Mes favoris
-                                </a>
-                                <a href="{{ route('visitor.notifications.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-bell"></i></span> Notifications
-                                </a>
-                            @endif
-                        </div>
-
-                        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--dd-divider) 30%,var(--dd-divider) 70%,transparent);margin:0 1rem"></div>
-
-                        {{-- Déconnexion --}}
-                        <div class="p-2">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="nav-dd-lnk nav-dd-danger w-full text-left">
-                                    <span class="nav-dd-icon nav-dd-icon-danger"><i class="fas fa-right-from-bracket"></i></span>
-                                    Déconnexion
-                                </button>
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            @else
-            <a href="{{ route('login') }}"
-               class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-200 btn-ghost-header">
-                Connexion
-            </a>
-            <a href="{{ route('plans.public') }}"
-               class="inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 text-dark-900 text-xs sm:text-sm font-bold btn-gold-header">
-                <i class="fas fa-star text-[10px] sm:text-xs opacity-90 hidden sm:inline"></i>
-                <span>S’abonner</span>
-            </a>
-            @endauth
-
-            <button id="menu-toggle" type="button" onclick="document.getElementById('mobile-menu').classList.toggle('open')"
-                class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-gray-200 hover:text-white hover:border-gold-500/30 hover:bg-gold-500/5 transition">
-                <i class="fas fa-bars-staggered text-sm"></i>
-            </button>
-        </div>
-    </div>
-
-    {{-- Mobile menu --}}
-    <div id="mobile-menu" class="mobile-menu-ultra lg:hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-1.5 font-plus">
-            @foreach($navItems as $item)
-            <a href="{{ $item['href'] }}" class="block px-4 py-3 text-gray-200 font-medium text-sm tracking-wide">
-                {{ $item['label'] }}
-            </a>
-            @endforeach
-            <a href="{{ route('gallery.public') }}"
-               onclick="document.getElementById('mobile-menu')?.classList.remove('open')"
-               class="w-full text-left block px-4 py-3 text-gray-200 font-medium text-sm tracking-wide">
-                Galerie Tresors d'Ivoire
-            </a>
-            <div class="pt-4 mt-2 border-t border-white/10 flex flex-col gap-2">
-                <a href="{{ route('login') }}" class="text-center py-3 text-sm font-semibold text-gray-200 btn-ghost-header">Connexion</a>
-                <a href="{{ route('plans.public') }}" class="text-center py-3 text-sm font-bold text-dark-900 btn-gold-header">S’abonner</a>
-            </div>
-        </div>
-    </div>
-</header>
-
-{{-- Modal formulaire de contact (lien top bar / nav) --}}
-<div id="contact-modal" class="hidden fixed inset-0 z-[60] p-4 bg-dark-900/80 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
-    <div class="absolute inset-0" onclick="closeContactModal()" aria-hidden="true"></div>
-    <div class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-dark-800 shadow-2xl shadow-black/40">
-        <div class="sticky top-0 flex items-center justify-between gap-4 px-5 py-4 border-b border-white/10 bg-dark-800/95 backdrop-blur">
-            <div>
-                <p id="contact-modal-title" class="font-serif text-lg text-white font-semibold flex items-center gap-2">
-                    <i class="fas fa-pen-to-square text-gold-400 text-sm"></i>
-                    Envoyez-nous un message
-                </p>
-                <p class="text-gray-500 text-xs mt-0.5">Nous vous répondrons dans les plus brefs délais.</p>
-            </div>
-            <button type="button" onclick="closeContactModal()" class="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition" aria-label="Fermer">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <form method="post" action="{{ route('contact.store') }}" class="p-5 space-y-4">
-            @csrf
-            <div>
-                <label for="contact-name" class="block text-xs font-medium text-gray-400 mb-1.5">Nom complet</label>
-                <div class="relative">
-                    <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/50 text-xs"></i>
-                    <input id="contact-name" name="name" type="text" required maxlength="255" value="{{ old('name') }}"
-                        class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-dark-900 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500/50"
-                        placeholder="Jean Dupont" autocomplete="name">
-                </div>
-                @error('name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label for="contact-email" class="block text-xs font-medium text-gray-400 mb-1.5">E-mail</label>
-                <div class="relative">
-                    <i class="fas fa-at absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/50 text-xs"></i>
-                    <input id="contact-email" name="email" type="email" required maxlength="255" value="{{ old('email') }}"
-                        class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-dark-900 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500/50"
-                        placeholder="vous@exemple.ci" autocomplete="email">
-                </div>
-                @error('email')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label for="contact-subject" class="block text-xs font-medium text-gray-400 mb-1.5">Objet</label>
-                <div class="relative">
-                    <i class="fas fa-circle-notch absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/50 text-[10px]"></i>
-                    <input id="contact-subject" name="subject" type="text" required maxlength="255" value="{{ old('subject') }}"
-                        class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-dark-900 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500/50"
-                        placeholder="Sujet de votre message">
-                </div>
-                @error('subject')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label for="contact-message" class="block text-xs font-medium text-gray-400 mb-1.5">Message</label>
-                <div class="relative">
-                    <i class="fas fa-comment-dots absolute left-3 top-3 text-gold-500/50 text-xs"></i>
-                    <textarea id="contact-message" name="message" rows="5" required maxlength="5000"
-                        class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-dark-900 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500/50 resize-y min-h-[120px]"
-                        placeholder="Comment pouvons-nous vous aider ?">{{ old('message') }}</textarea>
-                </div>
-                @error('message')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-            <button type="submit" class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-gold-500 hover:bg-gold-400 text-dark-900 font-bold text-sm transition shadow-lg shadow-gold-500/20">
-                <i class="fas fa-paper-plane text-xs"></i>
-                Envoyer le message
-            </button>
-        </form>
-    </div>
-</div>
-@if($errors->hasAny(['name', 'email', 'subject', 'message']))
-    <span id="contact-modal-autoopen" class="hidden" aria-hidden="true"></span>
-@endif
+@include('partials.public-top-nav')
 
 {{-- ══════════════════════════════════════════════════════════
      HERO
@@ -1369,7 +541,7 @@
                             $vMobile  = trim((string) ($slide->video_mobile_url  ?: $slide->video_tablet_url ?: $slide->video_desktop_url));
                         @endphp
                         @if($vDesktop !== '')
-                            <div class="hero-bg-layer absolute inset-0 bg-black transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
+                            <div class="hero-bg-layer absolute inset-0 bg-green-950 transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
                                  data-hero-bg-layer="{{ $idx }}"
                                  data-slide-type="video">
                                 <video
@@ -1392,7 +564,7 @@
                             $src     = $mobile !== '' ? $mobile : ($tablet !== '' ? $tablet : $desktop);
                         @endphp
                         @if($src !== '')
-                            <div class="hero-bg-layer absolute inset-0 bg-black transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
+                            <div class="hero-bg-layer absolute inset-0 bg-green-950 transition-opacity duration-700 ease-out {{ $idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
                                  data-hero-bg-layer="{{ $idx }}"
                                  data-slide-type="image">
                                 <picture class="absolute inset-0 block h-full w-full">
@@ -1415,18 +587,18 @@
                         @endif
                     @endif
                 @endforeach
-                <div class="hero-overlay-primary absolute inset-0 z-20 bg-linear-to-r from-black/92 via-black/65 to-black/35 sm:from-black/88 sm:via-black/55 sm:to-black/25" aria-hidden="true"></div>
-                <div class="hero-overlay-secondary absolute inset-0 z-20 bg-linear-to-t from-black/80 via-black/15 to-black/50" aria-hidden="true"></div>
+                <div class="hero-overlay-primary absolute inset-0 z-20 bg-linear-to-r from-green-950/92 via-green-950/65 to-green-950/35 sm:from-green-950/88 sm:via-green-950/55 sm:to-green-950/25" aria-hidden="true"></div>
+                <div class="hero-overlay-secondary absolute inset-0 z-20 bg-linear-to-t from-green-950/80 via-green-950/15 to-green-950/50" aria-hidden="true"></div>
 
                 @if($heroSlides->count() > 1)
                     {{-- Flèches latérales (desktop & tablette) --}}
                     <button type="button" id="hero-bg-prev"
-                            class="hero-bg-arrow hero-bg-arrow-prev pointer-events-auto absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition shadow-lg shadow-black/40 backdrop-blur-sm"
+                            class="hero-bg-arrow hero-bg-arrow-prev pointer-events-auto absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-green-950/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition shadow-lg shadow-green-950/40 backdrop-blur-sm"
                             aria-label="Slide précédent">
                         <i class="fas fa-chevron-left text-sm"></i>
                     </button>
                     <button type="button" id="hero-bg-next"
-                            class="hero-bg-arrow hero-bg-arrow-next pointer-events-auto absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-black/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition shadow-lg shadow-black/40 backdrop-blur-sm"
+                            class="hero-bg-arrow hero-bg-arrow-next pointer-events-auto absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-green-950/45 border border-white/20 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition shadow-lg shadow-green-950/40 backdrop-blur-sm"
                             aria-label="Slide suivant">
                         <i class="fas fa-chevron-right text-sm"></i>
                     </button>
@@ -1434,11 +606,11 @@
                     {{-- Barre de contrôles (mobile + dots desktop) --}}
                     <div class="hero-bg-controls absolute inset-x-0 bottom-3 sm:bottom-4 z-30 flex items-center justify-center gap-2 sm:gap-3 pointer-events-none px-4">
                         <button type="button" id="hero-bg-prev-mobile"
-                                class="pointer-events-auto sm:hidden w-9 h-9 rounded-full bg-black/55 border border-white/25 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center backdrop-blur-sm"
+                                class="pointer-events-auto sm:hidden w-9 h-9 rounded-full bg-green-950/55 border border-white/25 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center backdrop-blur-sm"
                                 aria-label="Slide précédent">
                             <i class="fas fa-chevron-left text-xs"></i>
                         </button>
-                        <div class="flex items-center gap-2 pointer-events-auto rounded-full bg-black/35 border border-white/10 px-3 py-1.5 backdrop-blur-sm" id="hero-bg-dots" role="tablist" aria-label="Choisir un slide">
+                        <div class="flex items-center gap-2 pointer-events-auto rounded-full bg-green-950/35 border border-white/10 px-3 py-1.5 backdrop-blur-sm" id="hero-bg-dots" role="tablist" aria-label="Choisir un slide">
                             @foreach($heroSlides as $idx => $slide)
                                 <button type="button"
                                         class="hero-bg-dot h-2 rounded-full transition-all {{ $idx === 0 ? 'w-6 bg-gold-400' : 'w-2 bg-white/35 hover:bg-white/60' }}"
@@ -1448,7 +620,7 @@
                             @endforeach
                         </div>
                         <button type="button" id="hero-bg-next-mobile"
-                                class="pointer-events-auto sm:hidden w-9 h-9 rounded-full bg-black/55 border border-white/25 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center backdrop-blur-sm"
+                                class="pointer-events-auto sm:hidden w-9 h-9 rounded-full bg-green-950/55 border border-white/25 text-white hover:bg-gold-500/90 hover:text-dark-900 hover:border-gold-400 transition flex items-center justify-center backdrop-blur-sm"
                                 aria-label="Slide suivant">
                             <i class="fas fa-chevron-right text-xs"></i>
                         </button>
@@ -1508,7 +680,7 @@
         @php
             $mainArt   = $homeArticles->first();
             $leftArts  = $homeArticles->slice(1, 2)->values();
-            $rightArts = $homeArticles->slice(3)->values();
+            $rightArts = $homeArticles->slice(3, 4)->values();
         @endphp
 
         {{-- ── Grille 3 colonnes ── --}}
@@ -1554,7 +726,7 @@
                     @if($contributors->isNotEmpty())
                     <div class="mt-2 flex flex-wrap gap-1">
                         @foreach($contributors->take(2) as $contributor)
-                        <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-medium text-amber-200">
+                        <span class="inline-flex items-center rounded-full border border-orange-500/25 bg-orange-500/10 px-1.5 py-0.5 text-[9px] font-medium text-orange-200">
                             {{ $contributor->first_name }}
                         </span>
                         @endforeach
@@ -1621,7 +793,7 @@
                     @if($mainContributors->isNotEmpty())
                     <div class="mt-3 flex flex-wrap gap-1.5">
                         @foreach($mainContributors->take(4) as $contributor)
-                        <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-200">
+                        <span class="inline-flex items-center rounded-full border border-orange-500/25 bg-orange-500/10 px-2.5 py-1 text-[10px] font-medium text-orange-200">
                             {{ $contributor->full_name }}
                         </span>
                         @endforeach
@@ -1652,7 +824,7 @@
                             @if($contributors->isNotEmpty())
                             <div class="mt-1 flex flex-wrap gap-1">
                                 @foreach($contributors->take(2) as $contributor)
-                                <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-medium text-amber-200">
+                                <span class="inline-flex items-center rounded-full border border-orange-500/25 bg-orange-500/10 px-1.5 py-0.5 text-[9px] font-medium text-orange-200">
                                     {{ $contributor->first_name }}
                                 </span>
                                 @endforeach
@@ -1700,11 +872,111 @@
 </section>
 
 {{-- ══════════════════════════════════════════════════════════
+     SECTION : ANNUAIRE PRESTATAIRES
+══════════════════════════════════════════════════════════ --}}
+<section id="annuaire" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none opacity-40">
+        <div class="absolute -top-32 -left-24 w-80 h-80 rounded-full bg-gold-500/10 blur-3xl"></div>
+        <div class="absolute -bottom-20 right-0 w-72 h-72 rounded-full bg-orange-400/10 blur-3xl"></div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+            <aside class="lg:col-span-5 reveal lg:sticky lg:top-28 self-start rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-transparent backdrop-blur-xl shadow-2xl shadow-green-950/25 overflow-hidden">
+                {{-- Decorative accent bar --}}
+                <div class="h-1.5 bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500"></div>
+
+                <div class="p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br from-gold-400 via-gold-500 to-orange-500 flex items-center justify-center shadow-lg shadow-gold-500/25">
+                            <i class="fas fa-compass text-dark-900"></i>
+                        </div>
+                        <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant">Annuaire des prestataires</p>
+                    </div>
+
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4 leading-snug">
+                        Les meilleures adresses<br>de Côte d'Ivoire
+                    </h2>
+                    <p class="text-gray-400 font-elegant text-base font-light leading-relaxed mb-7">
+                        Hôtels, restaurants, guides touristiques, artisans… Découvrez notre sélection premium d'établissements vérifiés et notés par notre équipe.
+                    </p>
+
+                    {{-- Category list — sidebar-style vertical menu --}}
+                    <nav class="flex flex-col gap-1.5 mb-7 border-t border-white/10 pt-5">
+                        @php
+                            $sidebarCatIcons = ['hotels' => 'fa-bed', 'restaurants' => 'fa-utensils', 'sites-touristiques' => 'fa-mountain-sun', 'agences-voyages' => 'fa-plane-departure', 'loisirs-culture' => 'fa-masks-theater', 'transports' => 'fa-van-shuttle'];
+                        @endphp
+                        @if(($homeProviderCategories ?? collect())->isNotEmpty())
+                            @foreach($homeProviderCategories as $pc)
+                            <a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}"
+                               class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gold-500/10 transition-all duration-300">
+                                <span class="w-8 h-8 shrink-0 rounded-lg border border-white/10 bg-dark-700/70 flex items-center justify-center group-hover:border-gold-400/45 group-hover:bg-gold-500/15 transition-all duration-300">
+                                    <i class="fas {{ $sidebarCatIcons[$pc->slug] ?? 'fa-store' }} text-gold-400/80 text-xs group-hover:text-gold-300 transition"></i>
+                                </span>
+                                <span class="flex-1 text-gray-300 text-sm font-semibold tracking-wide group-hover:text-gold-300 transition-colors duration-300">{{ $pc->name_fr }}</span>
+                                <i class="fas fa-chevron-right text-[10px] text-gray-500 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-gold-400 transition-all duration-300"></i>
+                            </a>
+                            @endforeach
+                        @else
+                            @foreach(['Hôtellerie' => 'fa-bed', 'Gastronomie' => 'fa-utensils', 'Guides' => 'fa-mountain-sun', 'Artisanat' => 'fa-plane-departure', 'Loisirs' => 'fa-masks-theater', 'Bien-être' => 'fa-van-shuttle'] as $c => $icon)
+                            <a href="{{ route('providers.index') }}"
+                               class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gold-500/10 transition-all duration-300">
+                                <span class="w-8 h-8 shrink-0 rounded-lg border border-white/10 bg-dark-700/70 flex items-center justify-center group-hover:border-gold-400/45 group-hover:bg-gold-500/15 transition-all duration-300">
+                                    <i class="fas {{ $icon }} text-gold-400/80 text-xs group-hover:text-gold-300 transition"></i>
+                                </span>
+                                <span class="flex-1 text-gray-300 text-sm font-semibold tracking-wide group-hover:text-gold-300 transition-colors duration-300">{{ $c }}</span>
+                                <i class="fas fa-chevron-right text-[10px] text-gray-500 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-gold-400 transition-all duration-300"></i>
+                            </a>
+                            @endforeach
+                        @endif
+                    </nav>
+
+                    <a href="{{ route('providers.index') }}"
+                       class="flex items-center justify-center gap-2.5 w-full px-6 py-3.5 rounded-xl text-dark-900 font-bold text-sm bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 hover:from-gold-300 hover:to-orange-400 transition-all duration-300 shadow-lg shadow-gold-500/25 hover:-translate-y-0.5">
+                        <i class="fas fa-compass"></i> Explorer l'annuaire
+                    </a>
+                </div>
+            </aside>
+
+            <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 reveal">
+                @forelse(($homeProviders ?? collect()) as $p)
+                <a href="{{ route('providers.show', $p->slug) }}" class="group rounded-2xl border border-white/10 bg-gradient-to-br from-dark-700/80 via-dark-700/60 to-dark-800/70 p-4.5 sm:p-5 hover:border-gold-500/35 hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-green-950/20">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-11 h-11 rounded-xl border border-white/10 bg-dark-600/80 flex items-center justify-center group-hover:border-gold-500/35 group-hover:bg-gold-500/10 transition">
+                            <i class="fas fa-store text-gold-400/70 group-hover:text-gold-300 transition"></i>
+                        </div>
+                        @if($p->is_verified)
+                        <span class="inline-flex items-center bg-emerald-500/15 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-400/35">
+                            <i class="fas fa-badge-check mr-1 text-[9px]"></i>Vérifié
+                        </span>
+                        @endif
+                    </div>
+                    <p class="text-white text-sm sm:text-[15px] font-semibold font-serif leading-snug line-clamp-2">{{ $p->name }}</p>
+                    <p class="text-gray-400 text-xs mt-1">{{ $p->category->name_fr ?? 'Prestataire' }}</p>
+                    <div class="mt-3 flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                            @for($i = 1; $i <= 5; $i++)
+                            <i class="fas fa-star text-[10px] {{ $i <= round((float) ($p->rating_avg ?? 0)) ? 'text-gold-400' : 'text-dark-500' }}"></i>
+                            @endfor
+                        </div>
+                        <span class="text-gray-400 text-[11px] font-medium">{{ number_format((float) ($p->rating_avg ?? 0), 1) }} ({{ (int) ($p->rating_count ?? 0) }})</span>
+                    </div>
+                </a>
+                @empty
+                <div class="sm:col-span-2 text-center text-gray-500 text-sm py-10 rounded-2xl border border-dashed border-white/10 bg-dark-800/40">
+                    Aucun prestataire actif pour le moment.
+                </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
      BANNER : DÉCOUVERTES
 ══════════════════════════════════════════════════════════ --}}
 {{-- [COMMENTÉ] section #decouvertes --}}
 {{-- <section id="decouvertes" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-5" style="background-image: repeating-linear-gradient(45deg, #e8a020 0, #e8a020 1px, transparent 0, transparent 50%); background-size: 20px 20px;"></div>
+    <div class="absolute inset-0 opacity-5" style="background-image: repeating-linear-gradient(45deg, #f2790f 0, #f2790f 1px, transparent 0, transparent 50%); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16 reveal">
             <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Explorer par thème</p>
@@ -1715,14 +987,14 @@
         @php
             $defaultCatIcons = ['fa-landmark','fa-palette','fa-leaf','fa-utensils','fa-map-location-dot','fa-gem','fa-camera','fa-music','fa-heart','fa-star'];
             $defaultCatColors = [
-                'from-amber-900/40 to-amber-800/10 border-amber-700/20',
+                'from-orange-900/40 to-orange-800/10 border-orange-700/20',
                 'from-rose-900/30 to-rose-800/10 border-rose-700/20',
                 'from-green-900/40 to-green-800/10 border-green-700/20',
                 'from-orange-900/30 to-orange-800/10 border-orange-700/20',
-                'from-blue-900/30 to-blue-800/10 border-blue-700/20',
-                'from-violet-900/30 to-violet-800/10 border-violet-700/20',
-                'from-teal-900/30 to-teal-800/10 border-teal-700/20',
-                'from-pink-900/30 to-pink-800/10 border-pink-700/20',
+                'from-green-900/30 to-green-800/10 border-green-700/20',
+                'from-green-900/30 to-green-800/10 border-green-700/20',
+                'from-green-900/30 to-green-800/10 border-green-700/20',
+                'from-green-900/30 to-green-800/10 border-green-700/20',
             ];
         @endphp
 
@@ -1748,7 +1020,7 @@
         @else
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             @foreach(['Patrimoine','Art & Culture','Nature','Gastronomie','Destinations','Art de vivre'] as $i => $label)
-            @php $colors = ['from-amber-900/40 to-amber-800/10 border-amber-700/20','from-rose-900/30 to-rose-800/10 border-rose-700/20','from-green-900/40 to-green-800/10 border-green-700/20','from-orange-900/30 to-orange-800/10 border-orange-700/20','from-blue-900/30 to-blue-800/10 border-blue-700/20','from-violet-900/30 to-violet-800/10 border-violet-700/20']; $icons = ['fa-landmark','fa-palette','fa-leaf','fa-utensils','fa-map-location-dot','fa-gem']; @endphp
+            @php $colors = ['from-orange-900/40 to-orange-800/10 border-orange-700/20','from-rose-900/30 to-rose-800/10 border-rose-700/20','from-green-900/40 to-green-800/10 border-green-700/20','from-orange-900/30 to-orange-800/10 border-orange-700/20','from-green-900/30 to-green-800/10 border-green-700/20','from-green-900/30 to-green-800/10 border-green-700/20']; $icons = ['fa-landmark','fa-palette','fa-leaf','fa-utensils','fa-map-location-dot','fa-gem']; @endphp
             <a href="{{ route('articles.index') }}" class="group bg-linear-to-b {{ $colors[$i] }} border rounded-2xl p-5 text-center hover:scale-105 transition-all duration-300 reveal">
                 <div class="w-12 h-12 rounded-xl bg-white/5 group-hover:bg-gold-500/15 flex items-center justify-center mx-auto mb-3 transition">
                     <i class="fas {{ $icons[$i] }} text-gold-400 text-lg group-hover:scale-110 transition-transform"></i>
@@ -1793,8 +1065,8 @@
 }
 /* Pulsation dorée badge */
 @@keyframes rt2-pulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(232,160,32,.55); }
-    60%     { box-shadow: 0 0 0 8px rgba(232,160,32,0); }
+    0%,100% { box-shadow: 0 0 0 0 rgba(242, 121, 15,.55); }
+    60%     { box-shadow: 0 0 0 8px rgba(242, 121, 15,0); }
 }
 /* Ligne dorée animée (hero) */
 @@keyframes rt2-line {
@@ -1823,8 +1095,8 @@
     transition: border-color .35s ease, box-shadow .35s ease;
 }
 .rt2-hero:hover {
-    border-color: rgba(232,160,32,.35);
-    box-shadow: 0 0 40px rgba(232,160,32,.10), inset 0 0 60px rgba(0,0,0,.1);
+    border-color: rgba(242, 121, 15,.35);
+    box-shadow: 0 0 40px rgba(242, 121, 15,.10), inset 0 0 60px rgba(0,0,0,.1);
 }
 .rt2-hero .rt2-img {
     position: absolute; inset: 0;
@@ -1854,7 +1126,7 @@
 .rt2-line {
     display: block;
     height: 2px;
-    background: linear-gradient(to right, #e8a020, transparent);
+    background: linear-gradient(to right, #f2790f, transparent);
     margin-bottom: .75rem;
     animation: rt2-line .6s .5s ease forwards;
     width: 0; opacity: 0;
@@ -1877,8 +1149,8 @@
 }
 .rt2-side:hover {
     transform: translateX(5px) translateY(-2px);
-    border-color: rgba(232,160,32,.35);
-    box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 20px rgba(232,160,32,.08);
+    border-color: rgba(242, 121, 15,.35);
+    box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 20px rgba(242, 121, 15,.08);
 }
 .rt2-side .rt2-img {
     position: absolute; inset: 0;
@@ -1896,7 +1168,7 @@
     position: absolute;
     left: 0; top: 20%; bottom: 20%;
     width: 2px;
-    background: linear-gradient(to bottom, transparent, #e8a020, transparent);
+    background: linear-gradient(to bottom, transparent, #f2790f, transparent);
     z-index: 5;
     opacity: 0;
     transition: opacity .3s ease;
@@ -1930,7 +1202,7 @@
     transition: border-color .3s ease, transform .3s ease;
 }
 .rt2-strip-card:hover {
-    border-color: rgba(232,160,32,.4);
+    border-color: rgba(242, 121, 15,.4);
     transform: translateY(-4px) scale(1.02);
 }
 .rt2-strip-card .rt2-img {
@@ -1944,18 +1216,19 @@
 .rt2-nav-btn {
     width: 40px; height: 40px;
     border-radius: 50%;
-    background: rgba(20,18,14,.85);
-    border: 1px solid rgba(232,160,32,.25);
+    background: rgba(255,255,255,.9);
+    border: 1px solid rgba(242, 121, 15,.3);
     display: flex; align-items: center; justify-content: center;
-    color: #e8a020;
+    color: #a3450a;
     cursor: pointer;
     transition: background .2s, border-color .2s, transform .2s;
     backdrop-filter: blur(8px);
     flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(0,0,0,.08);
 }
 .rt2-nav-btn:hover {
-    background: rgba(232,160,32,.15);
-    border-color: rgba(232,160,32,.5);
+    background: rgba(242, 121, 15,.15);
+    border-color: rgba(242, 121, 15,.5);
     transform: scale(1.1);
 }
 .rt2-nav-btn i { animation: rt2-bounce-x 1.4s ease-in-out infinite; }
@@ -1964,14 +1237,14 @@
 /* Progress bar */
 .rt2-progress {
     height: 2px;
-    background: rgba(255,255,255,.06);
+    background: rgba(233, 229, 217, .06);
     border-radius: 999px;
     overflow: hidden;
     margin-top: 10px;
 }
 .rt2-progress-bar {
     height: 100%;
-    background: linear-gradient(to right, #e8a020, #f5c842);
+    background: linear-gradient(to right, #f2790f, #f5c842);
     border-radius: 999px;
     transition: width .25s ease;
     width: 0%;
@@ -1994,18 +1267,18 @@
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 14px;
     border-radius: 999px;
-    border: 1px solid rgba(255,255,255,.1);
-    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(0,0,0,.1);
+    background: rgba(0,0,0,.03);
     font-size: 11px; font-weight: 500;
-    color: #9ca3af;
+    color: #544f47;
     transition: background .2s, border-color .2s, color .2s, transform .2s;
     text-decoration: none;
     white-space: nowrap;
 }
 .rt2-pill:hover {
-    background: rgba(232,160,32,.10);
-    border-color: rgba(232,160,32,.4);
-    color: #fff;
+    background: rgba(242, 121, 15,.10);
+    border-color: rgba(242, 121, 15,.4);
+    color: #a3450a;
     transform: translateY(-2px);
 }
 .rt2-pill i { transition: transform .2s; }
@@ -2030,11 +1303,11 @@
 
     {{-- Fond décoratif subtil --}}
     <div class="absolute inset-0 pointer-events-none opacity-[0.025]"
-         style="background-image: radial-gradient(circle, #e8a020 1px, transparent 1px); background-size: 28px 28px;"></div>
+         style="background-image: radial-gradient(circle, #f2790f 1px, transparent 1px); background-size: 28px 28px;"></div>
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent"></div>
     {{-- Halo ambiance --}}
     <div class="absolute -top-60 -left-40 w-[700px] h-[700px] rounded-full pointer-events-none"
-         style="background: radial-gradient(circle, rgba(232,160,32,.06) 0%, transparent 65%);"></div>
+         style="background: radial-gradient(circle, rgba(242, 121, 15,.06) 0%, transparent 65%);"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative" id="rt2-section">
 
@@ -2073,7 +1346,7 @@
                 <img src="{{ $rtHero->cover_image ?? $rtHero->thumbnail }}" alt="{{ $rtHero->name }}"
                      class="rt2-img" loading="lazy">
                 @else
-                <div class="absolute inset-0 bg-gradient-to-br from-amber-900/70 to-slate-900"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-orange-900/70 to-green-900"></div>
                 @endif
 
                 <div class="rt2-overlay-b"></div>
@@ -2124,7 +1397,7 @@
                     <img src="{{ $city->cover_image ?? $city->thumbnail }}" alt="{{ $city->name }}"
                          class="rt2-img" loading="lazy">
                     @else
-                    <div class="absolute inset-0 bg-gradient-to-br from-amber-900/60 to-slate-900"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-900/60 to-green-900"></div>
                     @endif
 
                     <div class="rt2-overlay-b"></div>
@@ -2181,7 +1454,7 @@
                     <img src="{{ $city->cover_image ?? $city->thumbnail }}" alt="{{ $city->name }}"
                          class="rt2-img" loading="lazy">
                     @else
-                    <div class="absolute inset-0 bg-gradient-to-br from-amber-900/60 to-slate-900"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-900/60 to-green-900"></div>
                     @endif
 
                     <div class="rt2-overlay-b"></div>
@@ -2216,7 +1489,7 @@
                 <a href="{{ route('tourist.cities') }}#{{ $cat->slug }}"
                    class="rt2-pill" style="animation-delay: {{ $j * 45 }}ms;">
                     <i class="{{ $cat->icon ?: 'fas fa-tag' }} text-[10px]"
-                       style="{{ $cat->color ? 'color:'.$cat->color : 'color:#e8a020' }}"></i>
+                       style="{{ $cat->color ? 'color:'.$cat->color : 'color:#a3450a' }}"></i>
                     {{ $cat->name }}
                 </a>
                 @endforeach
@@ -2315,7 +1588,7 @@
 @if(($homeCulturalPeoples ?? collect())->isNotEmpty())
 <section id="cultures-ivoiriennes" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
 
-    <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(circle, #e8a020 1px, transparent 1px); background-size: 32px 32px;"></div>
+    <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(circle, #f2790f 1px, transparent 1px); background-size: 32px 32px;"></div>
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
@@ -2351,7 +1624,7 @@
                 </div>
                 @endif
 
-                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent group-hover:from-black/75 transition-all duration-300"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-green-950/85 via-green-950/30 to-transparent group-hover:from-green-950/75 transition-all duration-300"></div>
 
                 {{-- Badge vedette --}}
                 @if($people->is_featured)
@@ -2365,7 +1638,7 @@
                 {{-- Badge zone --}}
                 @if($people->zone_geographique)
                 <div class="absolute top-3 right-3">
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-black/50 backdrop-blur-sm text-slate-300 text-[10px] rounded-full border border-white/10">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-950/50 backdrop-blur-sm text-slate-300 text-[10px] rounded-full border border-white/10">
                         <i class="fas fa-map-location-dot text-gold-400/60 text-[8px]"></i>
                         {{ $people->zone_geographique }}
                     </span>
@@ -2427,7 +1700,7 @@
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Événements à venir</h2>
             </div>
             <a href="{{ route('events.index') }}"
-               class="hidden sm:inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-gold-500/25 bg-dark-800/70 text-base text-gold-300 hover:text-gold-200 hover:border-gold-400/50 hover:bg-dark-700/80 shadow-lg shadow-black/20 hover:shadow-gold-500/10 transition-all duration-300 font-semibold tracking-wide group hover:-translate-y-0.5">
+               class="hidden sm:inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-gold-500/25 bg-dark-800/70 text-base text-gold-300 hover:text-gold-200 hover:border-gold-400/50 hover:bg-dark-700/80 shadow-lg shadow-green-950/20 hover:shadow-gold-500/10 transition-all duration-300 font-semibold tracking-wide group hover:-translate-y-0.5">
                 <span>Voir l'agenda complet</span>
                 <i class="fas fa-arrow-right text-sm transition-transform duration-300 group-hover:translate-x-1 group-hover:scale-110"></i>
             </a>
@@ -2441,7 +1714,7 @@
                     ? null
                     : ($daysUntil <= 0 ? "Aujourd'hui" : "Dans {$daysUntil} jour" . ($daysUntil > 1 ? 's' : ''));
             @endphp
-            <article class="group bg-amber-900/20 border border-amber-700/20 rounded-2xl overflow-hidden hover:border-gold-500/30 transition-all duration-300 reveal">
+            <article class="group bg-orange-900/20 border border-orange-700/20 rounded-2xl overflow-hidden hover:border-gold-500/30 transition-all duration-300 reveal">
                 <a href="{{ route('events.show', $ev->slug) }}" class="relative block h-40 bg-dark-700">
                     @if($ev->cover_url)
                         <img src="{{ $ev->cover_url }}" alt="{{ $ev->title_fr }}" class="w-full h-full object-cover">
@@ -2450,13 +1723,13 @@
                             <i class="fas fa-calendar-days text-dark-500 text-3xl"></i>
                         </div>
                     @endif
-                    <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+                    <div class="absolute inset-0 bg-linear-to-t from-green-950/70 via-green-950/20 to-transparent"></div>
                     @if($urgencyLabel)
                         <span class="absolute top-3 left-3 inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide bg-rose-500/90 text-white">
                             <i class="fas fa-bolt mr-1 text-[9px]"></i>{{ $urgencyLabel }}
                         </span>
                     @endif
-                    <span class="absolute top-3 right-3 inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide {{ $ev->is_free ? 'bg-emerald-500/90 text-white' : 'bg-amber-500/90 text-dark-900' }}">
+                    <span class="absolute top-3 right-3 inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide {{ $ev->is_free ? 'bg-emerald-500/90 text-white' : 'bg-orange-500/90 text-dark-900' }}">
                         {{ $ev->is_free ? 'Gratuit' : 'Payant' }}
                     </span>
                 </a>
@@ -2497,85 +1770,6 @@
             @empty
             <div class="col-span-3 text-center text-gray-500 py-8">Aucun événement à venir pour le moment.</div>
             @endforelse
-        </div>
-    </div>
-</section>
-
-{{-- ══════════════════════════════════════════════════════════
-     SECTION : ANNUAIRE PRESTATAIRES
-══════════════════════════════════════════════════════════ --}}
-<section id="annuaire" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
-    <div class="absolute inset-0 pointer-events-none opacity-40">
-        <div class="absolute -top-32 -left-24 w-80 h-80 rounded-full bg-gold-500/10 blur-3xl"></div>
-        <div class="absolute -bottom-20 right-0 w-72 h-72 rounded-full bg-amber-400/10 blur-3xl"></div>
-    </div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-            <div class="lg:col-span-5 reveal rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-transparent backdrop-blur-xl p-6 sm:p-8 shadow-2xl shadow-black/25">
-                <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Annuaire des prestataires</p>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-5 leading-snug">
-                    Les meilleures adresses<br>de Côte d'Ivoire
-                </h2>
-                <p class="text-gray-400 font-elegant text-lg font-light leading-relaxed mb-8">
-                    Hôtels, restaurants, guides touristiques, artisans… Découvrez notre sélection premium d'établissements vérifiés et notés par notre équipe.
-                </p>
-
-                <div class="flex flex-wrap gap-2.5 mb-8">
-                    @if(($homeProviderCategories ?? collect())->isNotEmpty())
-                        @foreach($homeProviderCategories as $pc)
-                        <a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}"
-                           class="group inline-flex items-center px-3.5 py-1.5 rounded-full border border-white/10 bg-dark-700/70 text-gray-300 text-[11px] font-semibold tracking-wide hover:border-gold-400/45 hover:bg-gold-500/10 hover:text-gold-300 transition-all duration-300">
-                            <span class="w-1.5 h-1.5 rounded-full bg-gold-500/60 mr-2 group-hover:scale-125 transition"></span>
-                            {{ $pc->name_fr }}
-                        </a>
-                        @endforeach
-                    @else
-                        @foreach(['Hôtellerie', 'Gastronomie', 'Guides', 'Artisanat', 'Loisirs', 'Bien-être'] as $c)
-                        <a href="{{ route('providers.index') }}"
-                           class="group inline-flex items-center px-3.5 py-1.5 rounded-full border border-white/10 bg-dark-700/70 text-gray-300 text-[11px] font-semibold tracking-wide hover:border-gold-400/45 hover:bg-gold-500/10 hover:text-gold-300 transition-all duration-300">
-                            <span class="w-1.5 h-1.5 rounded-full bg-gold-500/60 mr-2 group-hover:scale-125 transition"></span>
-                            {{ $c }}
-                        </a>
-                        @endforeach
-                    @endif
-                </div>
-
-                <a href="{{ route('providers.index') }}"
-                   class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl text-dark-900 font-bold text-sm bg-gradient-to-r from-gold-400 via-gold-500 to-amber-500 hover:from-gold-300 hover:to-amber-400 transition-all duration-300 shadow-lg shadow-gold-500/25 hover:-translate-y-0.5">
-                    <i class="fas fa-compass"></i> Explorer l'annuaire
-                </a>
-            </div>
-
-            <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 reveal">
-                @forelse(($homeProviders ?? collect()) as $p)
-                <a href="{{ route('providers.show', $p->slug) }}" class="group rounded-2xl border border-white/10 bg-gradient-to-br from-dark-700/80 via-dark-700/60 to-dark-800/70 p-4.5 sm:p-5 hover:border-gold-500/35 hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-black/20">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-11 h-11 rounded-xl border border-white/10 bg-dark-600/80 flex items-center justify-center group-hover:border-gold-500/35 group-hover:bg-gold-500/10 transition">
-                            <i class="fas fa-store text-gold-400/70 group-hover:text-gold-300 transition"></i>
-                        </div>
-                        @if($p->is_verified)
-                        <span class="inline-flex items-center bg-emerald-500/15 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-400/35">
-                            <i class="fas fa-badge-check mr-1 text-[9px]"></i>Vérifié
-                        </span>
-                        @endif
-                    </div>
-                    <p class="text-white text-sm sm:text-[15px] font-semibold font-serif leading-snug line-clamp-2">{{ $p->name }}</p>
-                    <p class="text-gray-400 text-xs mt-1">{{ $p->category->name_fr ?? 'Prestataire' }}</p>
-                    <div class="mt-3 flex items-center justify-between">
-                        <div class="flex items-center gap-1">
-                            @for($i = 1; $i <= 5; $i++)
-                            <i class="fas fa-star text-[10px] {{ $i <= round((float) ($p->rating_avg ?? 0)) ? 'text-gold-400' : 'text-dark-500' }}"></i>
-                            @endfor
-                        </div>
-                        <span class="text-gray-400 text-[11px] font-medium">{{ number_format((float) ($p->rating_avg ?? 0), 1) }} ({{ (int) ($p->rating_count ?? 0) }})</span>
-                    </div>
-                </a>
-                @empty
-                <div class="sm:col-span-2 text-center text-gray-500 text-sm py-10 rounded-2xl border border-dashed border-white/10 bg-dark-800/40">
-                    Aucun prestataire actif pour le moment.
-                </div>
-                @endforelse
-            </div>
         </div>
     </div>
 </section>
@@ -2641,275 +1835,12 @@
     </div>
 </section>
 
-{{-- ══════════════════════════════════════════════════════════
-     FOOTER
-══════════════════════════════════════════════════════════ --}}
-<footer class="footer-ultra border-t border-white/[0.07]">
-    @php
-        $c = $siteBrand['contact'] ?? [];
-        $s = $siteBrand['social'] ?? [];
-        $socialRows = array_values(array_filter([
-            ['url' => $s['facebook_url'] ?? null, 'icon' => 'fa-facebook-f', 'label' => 'Facebook'],
-            ['url' => $s['instagram_url'] ?? null, 'icon' => 'fa-instagram', 'label' => 'Instagram'],
-            ['url' => $s['twitter_url'] ?? null, 'icon' => 'fa-twitter', 'label' => 'Twitter / X'],
-            ['url' => $s['linkedin_url'] ?? null, 'icon' => 'fa-linkedin-in', 'label' => 'LinkedIn'],
-            ['url' => $s['youtube_url'] ?? null, 'icon' => 'fa-youtube', 'label' => 'YouTube'],
-        ], fn ($row) => !empty($row['url'])));
-        $waHref = \App\Models\SiteSetting::whatsappHref($s['whatsapp_phone'] ?? null);
-        $mapHref = (!empty($c['latitude']) && !empty($c['longitude']))
-            ? 'https://www.google.com/maps?q='.urlencode($c['latitude'].','.$c['longitude'])
-            : null;
-        $footerBlurb = !empty($siteBrand['site_description'])
-            ? \Illuminate\Support\Str::limit(strip_tags($siteBrand['site_description']), 220)
-            : 'Le magazine de référence pour explorer la culture, l\'art de vivre et le tourisme en Côte d\'Ivoire.';
-    @endphp
-    <div class="footer-ultra-inner max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        {{-- Newsletter : variante bento (deux panneaux + accent) --}}
-        <div id="newsletter-footer" class="mb-12 sm:mb-14 scroll-mt-28">
-            <div class="overflow-hidden rounded-2xl border border-white/[0.09] bg-[#080706] shadow-2xl shadow-black/50 reveal">
-                <div class="grid lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/10">
-                    <div class="relative p-6 sm:p-8 lg:p-10">
-                        <div class="absolute left-0 top-8 bottom-8 w-1 rounded-full bg-gradient-to-b from-emerald-400/70 via-amber-400/50 to-amber-600/30 pointer-events-none" aria-hidden="true"></div>
-                        <div class="pl-5 sm:pl-6">
-                            <p class="text-[10px] font-plus font-bold uppercase tracking-[0.28em] text-emerald-400/85 mb-4">Inscription</p>
-                            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-white mb-3 leading-tight tracking-tight">
-                                Ne manquez rien de l’Ivoire
-                            </h2>
-                            <p class="text-gray-500 text-sm sm:text-[0.9375rem] font-plus leading-relaxed max-w-md">
-                                Articles, adresses et événements sélectionnés pour vous, directement dans votre boîte mail.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="p-6 sm:p-8 lg:p-10 bg-white/[0.02] flex flex-col justify-center">
-                        @if (session('newsletter_success'))
-                            <div class="rounded-lg border border-emerald-500/35 bg-emerald-500/[0.08] px-4 py-3 text-sm text-emerald-100 mb-4 font-plus">
-                                {{ session('newsletter_success') }}
-                            </div>
-                        @endif
-                        @if (session('newsletter_info'))
-                            <div class="rounded-lg border border-amber-500/35 bg-amber-500/[0.08] px-4 py-3 text-sm text-amber-50 mb-4 font-plus">
-                                {{ session('newsletter_info') }}
-                            </div>
-                        @endif
-                        @if (session('newsletter_error'))
-                            <div class="rounded-lg border border-rose-500/35 bg-rose-500/[0.08] px-4 py-3 text-sm text-rose-100 mb-4 font-plus">
-                                {{ session('newsletter_error') }}
-                            </div>
-                        @endif
-                        <form method="post" action="{{ route('newsletter.subscribe') }}" class="space-y-3">
-                            @csrf
-                            <label for="newsletter-email" class="sr-only">Adresse e-mail</label>
-                            <input type="email" name="newsletter_email" id="newsletter-email" required maxlength="255"
-                                   value="{{ old('newsletter_email') }}"
-                                   placeholder="votre@email.com"
-                                   autocomplete="email"
-                                   class="w-full rounded-lg border border-white/12 bg-black/50 px-4 py-3.5 text-sm text-white placeholder:text-gray-600 outline-none transition focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-500/25 font-plus">
-                            <button type="submit"
-                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3.5 text-sm font-bold text-black hover:bg-gray-100 transition font-plus">
-                                <i class="fas fa-arrow-right text-xs"></i>
-                                S’abonner
-                            </button>
-                        </form>
-                        @error('newsletter_email')
-                            <p class="text-rose-400 text-xs mt-2 font-plus">{{ $message }}</p>
-                        @enderror
-                        <p class="text-gray-600 text-[11px] mt-4 font-plus leading-relaxed">
-                            Pas de spam — désinscription en un clic à tout moment.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Colonnes : séparateurs verticaux, style magazine --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-0 mb-12 pt-2 border-t border-white/5">
-
-            <div class="lg:col-span-3 lg:pr-8 lg:border-r border-white/5">
-                <a href="{{ route('home') }}" class="footer-logo-link mb-4 group">
-                    @if(!empty($siteBrand['logo_url']))
-                        <div class="footer-logo-ring shrink-0">
-                            <div class="footer-logo-inner h-16 w-16 border border-white/10 bg-white/[0.04] flex items-center justify-center p-0.5">
-                                <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
-                            </div>
-                        </div>
-                    @else
-                        <div class="footer-logo-ring shrink-0">
-                            <div class="footer-logo-inner h-16 w-16 bg-gradient-to-br from-emerald-400 to-amber-500 flex items-center justify-center">
-                                <i class="fas fa-gem text-black text-sm"></i>
-                            </div>
-                        </div>
-                    @endif
-                    <div class="min-w-0">
-                        <p class="text-white font-serif font-semibold leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
-                        <p class="text-gray-600 text-[10px] tracking-[0.16em] uppercase truncate font-plus mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
-                    </div>
-                </a>
-                <p class="text-gray-500 text-xs leading-relaxed mb-5 font-plus">
-                    {{ $footerBlurb }}
-                </p>
-                @if(count($socialRows) > 0 || $waHref)
-                    <p class="text-gray-600 text-[9px] uppercase tracking-[0.18em] mb-2.5 font-plus font-semibold">Réseaux</p>
-                    <div class="social-links-wrap flex flex-wrap gap-2">
-                        @foreach($socialRows as $row)
-                            <a href="{{ $row['url'] }}" target="_blank" rel="noopener noreferrer" title="{{ $row['label'] }}"
-                               class="social-icon-ultra h-10 w-10 rounded-md border border-white/10 bg-white/[0.03] flex items-center justify-center text-gray-500 hover:text-white hover:border-white/25 hover:bg-white/[0.06] transition text-sm">
-                                <i class="fab {{ $row['icon'] }}"></i>
-                            </a>
-                        @endforeach
-                        @if($waHref)
-                            <a href="{{ $waHref }}" target="_blank" rel="noopener noreferrer" title="WhatsApp"
-                               class="social-icon-ultra social-icon-wa h-10 w-10 rounded-md border border-emerald-500/25 bg-emerald-500/[0.07] flex items-center justify-center text-emerald-400/90 hover:text-emerald-300 transition text-sm">
-                                <i class="fab fa-whatsapp"></i>
-                            </a>
-                        @endif
-                    </div>
-                @endif
-            </div>
-
-            <div class="lg:col-span-3 lg:px-8 lg:border-r border-white/5">
-                <h4 class="text-white font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400/90 mb-4">Magazine</h4>
-                <ul class="space-y-0.5 font-plus">
-                    <li><a href="{{ route('articles.index') }}" class="footer-v2-link">Tous les articles</a></li>
-                    <li><a href="{{ route('discoveries.index') }}" class="footer-v2-link">Découvertes</a></li>
-                    <li><a href="{{ route('events.index') }}" class="footer-v2-link">Événements</a></li>
-                    @foreach($homeCategories->take(3) as $cat)
-                    <li><a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}" class="footer-v2-link">{{ $cat->name_fr }}</a></li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <div class="lg:col-span-3 lg:px-8 lg:border-r border-white/5">
-                <h4 class="text-white font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400/90 mb-4">Annuaire</h4>
-                <ul class="space-y-0.5 font-plus">
-                    <li><a href="{{ route('providers.index') }}" class="footer-v2-link">Tous les prestataires</a></li>
-                    @foreach($homeProviderCategories->take(4) as $pc)
-                    <li><a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}" class="footer-v2-link">{{ $pc->name_fr }}</a></li>
-                    @endforeach
-                    <li><a href="{{ route('register') }}" class="footer-v2-link">Devenir prestataire</a></li>
-                </ul>
-            </div>
-
-            <div class="lg:col-span-3 lg:pl-8">
-                <h4 class="text-white font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400/90 mb-4">Contact</h4>
-                <ul class="space-y-0.5 font-plus mb-5">
-                    @forelse($infoPages as $infoPage)
-                    <li><a href="{{ route('information.show', $infoPage) }}" class="footer-v2-link">{{ $infoPage->title_fr }}</a></li>
-                    @empty
-                    <li class="text-gray-600 italic text-xs py-1">Pages d’information à configurer.</li>
-                    @endforelse
-                </ul>
-                <div class="space-y-2.5 text-[11px] text-gray-500 font-plus border-t border-white/5 pt-4">
-                    @if(!empty($c['phone_1']))
-                        <p><span class="text-gray-600">Tél.</span> <a href="tel:{{ preg_replace('/\s+/', '', $c['phone_1']) }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['phone_1'] }}</a></p>
-                    @endif
-                    @if(!empty($c['phone_2']))
-                        <p><span class="text-gray-600">Tél. 2</span> <a href="tel:{{ preg_replace('/\s+/', '', $c['phone_2']) }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['phone_2'] }}</a></p>
-                    @endif
-                    @if(!empty($c['email_primary']))
-                        <p><a href="mailto:{{ $c['email_primary'] }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['email_primary'] }}</a></p>
-                    @endif
-                    @if(!empty($c['email_secondary']))
-                        <p><a href="mailto:{{ $c['email_secondary'] }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['email_secondary'] }}</a></p>
-                    @endif
-                    @if(!empty($c['contact_form_email']))
-                        <p><span class="text-gray-600">Formulaire</span> <a href="mailto:{{ $c['contact_form_email'] }}" class="text-gray-300 hover:text-amber-300 transition break-all">{{ $c['contact_form_email'] }}</a></p>
-                    @endif
-                    @if(!empty($c['address']))
-                        <p class="text-gray-400 leading-snug">
-                            @if($mapHref)
-                                <a href="{{ $mapHref }}" target="_blank" rel="noopener noreferrer" class="hover:text-amber-300 transition">{{ $c['address'] }}</a>
-                            @else
-                                {{ $c['address'] }}
-                            @endif
-                        </p>
-                    @endif
-                    @if(!empty($c['opening_hours']))
-                        <p class="whitespace-pre-line text-gray-500 leading-relaxed">{{ $c['opening_hours'] }}</p>
-                    @endif
-                    @if(empty($c['phone_1']) && empty($c['phone_2']) && empty($c['email_primary']) && empty($c['email_secondary']) && empty($c['contact_form_email']) && empty($c['address']) && empty($c['opening_hours']))
-                        <p class="text-gray-600 italic text-xs">Coordonnées à renseigner dans l’administration.</p>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10">
-            <p class="text-[11px] text-gray-600 font-plus tracking-wide text-center sm:text-left">&copy; {{ date('Y') }} {{ $siteBrand['site_name'] }} — Tous droits réservés</p>
-            <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-plus">
-                @if($infoLegal)
-                <a href="{{ route('information.show', $infoLegal) }}" class="text-gray-500 hover:text-white transition underline-offset-4 hover:underline">Mentions légales</a>
-                @endif
-                @if($infoGuide)
-                <a href="{{ route('information.show', $infoGuide) }}" class="text-gray-500 hover:text-white transition underline-offset-4 hover:underline">CGU</a>
-                @endif
-                <a href="{{ route('login') }}" class="text-amber-400/90 hover:text-amber-300 font-semibold transition">
-                    Espace membres →
-                </a>
-            </div>
-        </div>
-    </div>
-</footer>
+@include('partials.homepage-footer')
 
 {{-- ══════════════════════════════════════════════════════════
      SCRIPTS
 ══════════════════════════════════════════════════════════ --}}
 <script>
-    function openContactModal() {
-        const el = document.getElementById('contact-modal');
-        if (!el) return;
-        el.classList.remove('hidden');
-        el.classList.add('flex', 'items-center', 'justify-center');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeContactModal() {
-        const el = document.getElementById('contact-modal');
-        if (!el) return;
-        el.classList.add('hidden');
-        el.classList.remove('flex', 'items-center', 'justify-center');
-        document.body.style.overflow = '';
-    }
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeContactModal();
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        if (document.getElementById('contact-modal-autoopen')) {
-            openContactModal();
-        }
-    });
-
-    // Header scroll effect
-    const header  = document.getElementById('main-header');
-    function topBarHeight() {
-        const topBar = document.getElementById('home-top-bar');
-        if (topBar && topBar.offsetParent !== null) {
-            return topBar.offsetHeight;
-        }
-        const flash = document.getElementById('home-contact-flash-mobile');
-
-        return flash ? flash.offsetHeight : 0;
-    }
-
-    function syncHeaderTop() {
-        if (!header) return;
-        const scrolled = window.scrollY > 80;
-        if (scrolled) {
-            header.classList.add('header-scrolled');
-            header.style.top = '0';
-        } else {
-            header.classList.remove('header-scrolled');
-            header.style.top = topBarHeight() + 'px';
-        }
-    }
-
-    window.addEventListener('scroll', syncHeaderTop);
-    window.addEventListener('load', syncHeaderTop);
-    syncHeaderTop();
-
     // Reveal on scroll
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
@@ -3141,17 +2072,6 @@
         });
     })();
 
-    // ── Theme toggle ──────────────────────────────────────────────────────
-    (function () {
-        const btn = document.getElementById('theme-toggle');
-        if (!btn) return;
-        btn.addEventListener('click', () => {
-            const html = document.documentElement;
-            const going_light = html.classList.contains('dark');
-            html.classList.toggle('dark', !going_light);
-            localStorage.setItem('tiTheme', going_light ? 'light' : 'dark');
-        });
-    })();
 </script>
 
 @include('partials.image-protection')

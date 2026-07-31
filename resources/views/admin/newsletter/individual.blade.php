@@ -6,7 +6,7 @@
 @section('content')
 
     <div class="mb-6">
-        <a href="{{ route('admin.newsletter.index') }}" class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-amber-400 transition">
+        <a href="{{ route('admin.newsletter.index') }}" class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-orange-400 transition">
             <i class="fas fa-arrow-left text-xs"></i>
             Retour à la newsletter
         </a>
@@ -29,7 +29,7 @@
     @endif
 
     <div class="grid gap-6 lg:grid-cols-3">
-        <div class="lg:col-span-1 bg-slate-900 border border-slate-800 rounded-xl p-5 h-fit">
+        <div class="lg:col-span-1 bg-green-900 border border-slate-800 rounded-xl p-5 h-fit">
             <h2 class="text-white font-semibold text-sm mb-4">Destinataire</h2>
             <dl class="space-y-3 text-sm">
                 <div>
@@ -59,7 +59,7 @@
             </dl>
         </div>
 
-        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="lg:col-span-2 bg-green-900 border border-slate-800 rounded-xl p-5">
             <h2 class="text-white font-semibold text-lg mb-1">Message individuel</h2>
             <p class="text-slate-400 text-xs leading-relaxed mb-5">
                 Ce message est envoyé <strong class="text-slate-300">uniquement à cette adresse</strong>. Il est enregistré dans l’historique (type individuel).
@@ -89,12 +89,12 @@
                     <legend class="block text-xs text-slate-400 mb-1">Format *</legend>
                     <div class="flex flex-wrap gap-4 text-sm text-slate-300">
                         <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="content_format" value="plain" class="text-amber-500 bg-slate-800 border-slate-600"
+                            <input type="radio" name="content_format" value="plain" class="text-orange-500 bg-slate-800 border-slate-600"
                                    @checked(old('content_format', 'plain') === 'plain')>
                             Texte simple
                         </label>
                         <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="content_format" value="html" class="text-amber-500 bg-slate-800 border-slate-600"
+                            <input type="radio" name="content_format" value="html" class="text-orange-500 bg-slate-800 border-slate-600"
                                    @checked(old('content_format') === 'html')>
                             HTML
                         </label>
@@ -112,7 +112,7 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-800/80">
                     <button type="submit"
-                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 text-sm font-bold rounded-lg transition">
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-400 text-slate-900 text-sm font-bold rounded-lg transition">
                         <i class="fas fa-paper-plane"></i>
                         Envoyer à {{ $subscriber->email }}
                     </button>

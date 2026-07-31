@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
                 <h2 class="text-white text-lg font-semibold">{{ $provider->name }}</h2>
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h3 class="text-white font-semibold mb-4">Articles sponsorisés</h3>
         @if($articles->isEmpty())
             <p class="text-slate-500 text-sm">Aucun article lié.</p>
@@ -28,19 +28,19 @@
                 @csrf
                 @method('PATCH')
                 <div class="mb-4 flex flex-wrap items-center gap-2">
-                    <select name="target_provider_id" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
+                    <select name="target_provider_id" class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
                         @foreach($providers as $target)
                             <option value="{{ $target->id }}" @selected((int) $target->id === (int) $provider->id)>{{ $target->name }}</option>
                         @endforeach
                     </select>
-                    <button class="bg-amber-500 hover:bg-amber-600 text-white text-xs px-3 py-2 rounded">Réattribuer en masse</button>
+                    <button class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-2 rounded">Réattribuer en masse</button>
                 </div>
                 <div class="space-y-3">
                 @foreach($articles as $article)
                     <div class="rounded-lg border border-slate-800 bg-slate-800/30 p-4">
                         <div class="min-w-0 flex items-start gap-3">
                             <input type="checkbox" name="article_ids[]" value="{{ $article->id }}"
-                                   class="mt-1 rounded border-slate-600 bg-slate-800 text-amber-500">
+                                   class="mt-1 rounded border-slate-600 bg-slate-800 text-orange-500">
                             <div>
                                 <p class="text-white font-medium truncate">{{ $article->title_fr }}</p>
                                 <p class="text-slate-500 text-xs mt-1">Statut: {{ $article->status }} · {{ $article->published_at?->translatedFormat('d M Y H:i') ?? 'Non publié' }}</p>
@@ -53,7 +53,7 @@
         @endif
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h3 class="text-white font-semibold mb-4">Événements</h3>
         @if($events->isEmpty())
             <p class="text-slate-500 text-sm">Aucun événement lié.</p>
@@ -62,19 +62,19 @@
                 @csrf
                 @method('PATCH')
                 <div class="mb-4 flex flex-wrap items-center gap-2">
-                    <select name="target_provider_id" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
+                    <select name="target_provider_id" class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
                         @foreach($providers as $target)
                             <option value="{{ $target->id }}" @selected((int) $target->id === (int) $provider->id)>{{ $target->name }}</option>
                         @endforeach
                     </select>
-                    <button class="bg-amber-500 hover:bg-amber-600 text-white text-xs px-3 py-2 rounded">Réattribuer en masse</button>
+                    <button class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-2 rounded">Réattribuer en masse</button>
                 </div>
                 <div class="space-y-3">
                 @foreach($events as $event)
                     <div class="rounded-lg border border-slate-800 bg-slate-800/30 p-4">
                         <div class="min-w-0 flex items-start gap-3">
                             <input type="checkbox" name="event_ids[]" value="{{ $event->id }}"
-                                   class="mt-1 rounded border-slate-600 bg-slate-800 text-amber-500">
+                                   class="mt-1 rounded border-slate-600 bg-slate-800 text-orange-500">
                             <div>
                                 <p class="text-white font-medium truncate">{{ $event->title_fr }}</p>
                                 <p class="text-slate-500 text-xs mt-1">Statut: {{ $event->status }} · {{ $event->starts_at?->translatedFormat('d M Y H:i') ?? 'Date non définie' }}</p>
@@ -87,7 +87,7 @@
         @endif
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h3 class="text-white font-semibold mb-4">Photos / Médias</h3>
 
         {{-- Erreurs de validation --}}
@@ -108,15 +108,15 @@
             <div class="flex flex-wrap items-center gap-3">
                 <label class="flex items-center gap-2 cursor-pointer group">
                     <span class="text-slate-400 text-sm group-hover:text-slate-200 transition">
-                        <i class="fas fa-cloud-arrow-up mr-1 text-amber-400/70"></i>Photos à ajouter :
+                        <i class="fas fa-cloud-arrow-up mr-1 text-orange-400/70"></i>Photos à ajouter :
                     </span>
                     <input type="file" name="media_files[]" multiple accept="image/*"
                            id="prov-media-upload"
                            onchange="previewProvMedia(this)"
-                           class="text-slate-300 text-xs file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-amber-500 file:text-white file:text-xs file:font-semibold file:cursor-pointer hover:file:bg-amber-600 file:transition">
+                           class="text-slate-300 text-xs file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-orange-500 file:text-white file:text-xs file:font-semibold file:cursor-pointer hover:file:bg-orange-600 file:transition">
                 </label>
                 <button type="submit"
-                        class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition">
+                        class="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition">
                     <i class="fas fa-upload mr-1.5"></i>Enregistrer
                 </button>
             </div>
@@ -150,7 +150,7 @@
                             <i class="fas fa-times text-xs"></i>
                         </button>
                     </form>
-                    <div class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-black/50 text-slate-300 text-[10px] truncate opacity-0 group-hover:opacity-100 transition">
+                    <div class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-green-950/50 text-slate-300 text-[10px] truncate opacity-0 group-hover:opacity-100 transition">
                         {{ $item->original_name }}
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                     @csrf
                     @method('PATCH')
                     <div class="mb-3 flex flex-wrap items-center gap-2">
-                        <select name="target_provider_id" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
+                        <select name="target_provider_id" class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
                             @foreach($providers as $target)
                                 <option value="{{ $target->id }}" @selected((int) $target->id === (int) $provider->id)>{{ $target->name }}</option>
                             @endforeach
@@ -175,7 +175,7 @@
                     @foreach($mediaItems as $item)
                         <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-800/30 p-3 cursor-pointer hover:border-slate-600 transition">
                             <input type="checkbox" name="media_ids[]" value="{{ $item->id }}"
-                                   class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                                   class="rounded border-slate-600 bg-slate-800 text-orange-500">
                             @if(in_array($item->type, ['photo', 'image']))
                                 <img src="{{ $item->url }}" alt="" class="w-14 h-10 rounded object-cover border border-slate-700">
                             @endif

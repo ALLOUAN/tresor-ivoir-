@@ -3,7 +3,7 @@
 <div id="dash-panel" class="fixed inset-0 z-[200] hidden" role="dialog" aria-modal="true">
 
     {{-- Backdrop --}}
-    <div id="dash-panel-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div id="dash-panel-backdrop" class="absolute inset-0 bg-green-950/60 backdrop-blur-sm"></div>
 
     {{-- Panel glissant depuis la droite --}}
     <div id="dash-panel-inner"
@@ -11,15 +11,15 @@
                 transform translate-x-full transition-transform duration-300 ease-out">
 
         {{-- ── Colonne sidebar (gauche) ────────────────────────────────── --}}
-        <div class="w-64 shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto">
+        <div class="w-64 shrink-0 bg-green-900 border-r border-slate-800 flex flex-col overflow-y-auto">
 
             {{-- Marque --}}
             <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-800">
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 shrink-0">
+                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 shrink-0">
                     <i class="fas fa-gem text-white text-base"></i>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-amber-400 font-bold text-sm leading-tight truncate">Trésors d'Ivoire</p>
+                    <p class="text-orange-400 font-bold text-sm leading-tight truncate">Trésors d'Ivoire</p>
                     <p class="text-slate-500 text-xs truncate">Magazine Premium</p>
                 </div>
             </div>
@@ -27,9 +27,9 @@
             {{-- Rôle --}}
             <div class="px-5 py-3 border-b border-slate-800">
                 <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full
-                    {{ auth()->user()->role === 'admin'    ? 'bg-red-900/50 text-red-300'     :
-                      (auth()->user()->role === 'editor'   ? 'bg-blue-900/50 text-blue-300'   :
-                      (auth()->user()->role === 'provider' ? 'bg-purple-900/50 text-purple-300' :
+                    {{ auth()->user()->role === 'admin'    ? 'bg-orange-900/50 text-orange-300'     :
+                      (auth()->user()->role === 'editor'   ? 'bg-green-900/50 text-green-300'   :
+                      (auth()->user()->role === 'provider' ? 'bg-orange-900/50 text-orange-300' :
                        'bg-emerald-900/50 text-emerald-300')) }}">
                     <i class="fas fa-user text-[10px]"></i>
                     {{ ucfirst(auth()->user()->role) }}
@@ -109,7 +109,7 @@
             {{-- Footer utilisateur --}}
             <div class="border-t border-slate-800 p-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                         {{ strtoupper(substr(auth()->user()->first_name ?? '', 0, 1) . substr(auth()->user()->last_name ?? '', 0, 1)) }}
                     </div>
                     <div class="flex-1 min-w-0">
@@ -128,7 +128,7 @@
         </div>
 
         {{-- ── Zone de contenu (droite) ────────────────────────────────── --}}
-        <div class="flex-1 bg-slate-950 flex flex-col overflow-hidden">
+        <div class="flex-1 bg-green-950 flex flex-col overflow-hidden">
 
             {{-- Barre titre --}}
             <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 shrink-0">
@@ -142,7 +142,7 @@
             {{-- Contenu AJAX --}}
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 text-white" id="dash-panel-content">
                 <div class="flex items-center justify-center h-48">
-                    <i class="fas fa-spinner fa-spin text-amber-400 text-2xl"></i>
+                    <i class="fas fa-spinner fa-spin text-orange-400 text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -153,11 +153,11 @@
     .dp-nav-link {
         display: flex; align-items: center; gap: 0.625rem;
         width: 100%; padding: 0.5rem 0.75rem; border-radius: 0.5rem;
-        font-size: 0.875rem; color: #94a3b8; text-align: left;
+        font-size: 0.875rem; color: #544f47; text-align: left;
         transition: background .15s, color .15s; cursor: pointer; background: none; border: none;
     }
-    .dp-nav-link:hover { background: #1e293b; color: #fff; }
-    .dp-nav-link.dp-active { background: rgba(245,158,11,0.12); color: #fbbf24; font-weight: 500; }
+    .dp-nav-link:hover { background: rgba(0,0,0,0.04); color: #1c1915; }
+    .dp-nav-link.dp-active { background: rgba(242, 121, 15,0.12); color: #fa9a3c; font-weight: 500; }
 </style>
 
 <script>
@@ -187,7 +187,7 @@
 
     async function loadContent(url, pageTitle) {
         if (title && pageTitle) title.textContent = pageTitle;
-        content.innerHTML = '<div class="flex items-center justify-center h-48"><i class="fas fa-spinner fa-spin text-amber-400 text-2xl"></i></div>';
+        content.innerHTML = '<div class="flex items-center justify-center h-48"><i class="fas fa-spinner fa-spin text-orange-400 text-2xl"></i></div>';
         try {
             const res  = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' }, credentials: 'same-origin' });
             const html = await res.text();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark">
+<html lang="fr" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,8 +20,8 @@
                         sans:  ['Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        gold: { 400: '#f5b942', 500: '#e8a020', 600: '#c4811a' },
-                        dark: { 800: '#141410', 900: '#0d0d0b' },
+                        gold: { 400: '#fa9a3c', 500: '#f2790f', 600: '#d4630a' },
+                        dark: { 800: '#e9e5d9', 900: '#e9e5d9' },
                     }
                 }
             }
@@ -29,12 +29,12 @@
     </script>
     @include('partials.theme-light-bridge')
     <style>
-        html:not(.dark) [style*="background:#141410"] { background:#ffffff !important; }
-        html:not(.dark) [style*="background:#0d0d0b"] { background:#f8f5ee !important; }
-        html:not(.dark) input[style*="background:#0d0d0b"] { background:#ffffff !important; color:#1c1915 !important; border-color:#d6d0c5 !important; }
+        html:not(.dark) [style*="background:#e9e5d9"] { background:#e9e5d9 !important; }
+        html:not(.dark) [style*="background:#e9e5d9"] { background:#e9e5d9 !important; }
+        html:not(.dark) input[style*="background:#e9e5d9"] { background:#e9e5d9 !important; color:#1c1915 !important; border-color:#c2b89e !important; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 font-sans" style="background:#0d0d0b">
+<body class="min-h-screen flex items-center justify-center p-4 font-sans" style="background:#e9e5d9">
 
     <div class="w-full max-w-md py-8">
 
@@ -45,16 +45,16 @@
                     <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
                 </div>
             @else
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 mb-4">
                     <i class="fas fa-gem text-black text-2xl"></i>
                 </div>
             @endif
-            <h1 class="text-2xl font-bold font-serif" style="color:#f5b942">{{ $siteBrand['site_name'] }}</h1>
+            <h1 class="text-2xl font-bold font-serif" style="color:#fa9a3c">{{ $siteBrand['site_name'] }}</h1>
             <p class="text-gray-500 text-sm mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}</p>
         </div>
 
         {{-- Card --}}
-        <div class="rounded-2xl border border-white/10 p-8 shadow-2xl" style="background:#141410">
+        <div class="rounded-2xl border border-white/10 p-8 shadow-2xl" style="background:#e9e5d9">
 
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-xl bg-gold-500/15 flex items-center justify-center">
@@ -99,18 +99,18 @@
                         Adresse e-mail <span class="text-red-400">*</span>
                     </label>
                     <div class="relative">
-                        <i class="fas fa-at absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
+                        <i class="fas fa-at absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
                         <input id="email" name="email" type="email" required autofocus
                                value="{{ old('email') }}" placeholder="vous@exemple.ci"
-                               class="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-500/30 @error('email') ring-1 ring-red-500/60 @enderror"
-                               style="background:#0d0d0b; border: 1px solid rgba(255,255,255,0.1)">
+                               class="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none focus:ring-2 focus:ring-orange-500/30 @error('email') ring-1 ring-red-500/60 @enderror"
+                               style="background:#e9e5d9; border: 1px solid rgba(255,255,255,0.1)">
                     </div>
                     @error('email')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <button type="submit"
                         class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2"
-                        style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
+                        style="background: linear-gradient(135deg,#fa9a3c,#f2790f); box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
                     <i class="fas fa-paper-plane text-xs"></i>
                     Envoyer le lien de réinitialisation
                 </button>
@@ -120,7 +120,7 @@
         </div>
 
         <p class="text-center text-sm text-gray-600 mt-6">
-            <a href="{{ route('login') }}" class="text-yellow-400 hover:text-yellow-300 font-medium transition inline-flex items-center gap-1.5">
+            <a href="{{ route('login') }}" class="text-orange-400 hover:text-orange-300 font-medium transition inline-flex items-center gap-1.5">
                 <i class="fas fa-arrow-left text-xs"></i>Retour à la connexion
             </a>
         </p>

@@ -32,7 +32,7 @@
 
     <div class="mb-6 flex flex-wrap items-center gap-3 text-xs text-slate-500">
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700/80 text-slate-400">
-            <i class="fas fa-palette text-amber-400/80"></i> Interface dédiée à cette page
+            <i class="fas fa-palette text-orange-400/80"></i> Interface dédiée à cette page
         </span>
         @if($slug)
             <span>{{ $slug->label() }}</span>
@@ -56,7 +56,7 @@
             @include('admin.system.information-center.forms.privacy-policy', ['page' => $page])
             @break
         @default
-            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-6 sm:p-8">
+            <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden p-6 sm:p-8">
                 @include('admin.system.information-center.forms.default', ['page' => $page])
             </div>
     @endswitch

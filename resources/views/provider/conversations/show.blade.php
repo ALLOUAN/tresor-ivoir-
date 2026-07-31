@@ -5,12 +5,12 @@
 
 @section('content')
 <div class="mb-4">
-    <a href="{{ route('provider.conversations.index') }}" class="text-amber-400 hover:text-amber-300 text-sm transition">
+    <a href="{{ route('provider.conversations.index') }}" class="text-orange-400 hover:text-orange-300 text-sm transition">
         ← Retour à la messagerie
     </a>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between gap-3">
         <div>
             <p class="text-white font-semibold">{{ $conversation->subject ?: 'Conversation sans sujet' }}</p>
@@ -27,12 +27,12 @@
         </span>
     </div>
 
-    <div class="px-5 py-4 space-y-3 max-h-[60vh] overflow-y-auto bg-slate-950/30">
+    <div class="px-5 py-4 space-y-3 max-h-[60vh] overflow-y-auto bg-green-950/30">
         @forelse($messages as $message)
             @php $mine = (int) $message->sender_id === (int) auth()->id(); @endphp
             <div class="flex {{ $mine ? 'justify-end' : 'justify-start' }}">
-                <div class="max-w-2xl rounded-xl px-4 py-3 text-sm {{ $mine ? 'bg-amber-500/20 border border-amber-500/35 text-amber-100' : 'bg-slate-800 border border-slate-700 text-slate-200' }}">
-                    <p class="text-[11px] {{ $mine ? 'text-amber-300/90' : 'text-slate-400' }} mb-1">
+                <div class="max-w-2xl rounded-xl px-4 py-3 text-sm {{ $mine ? 'bg-orange-500/20 border border-orange-500/35 text-orange-100' : 'bg-slate-800 border border-slate-700 text-slate-200' }}">
+                    <p class="text-[11px] {{ $mine ? 'text-orange-300/90' : 'text-slate-400' }} mb-1">
                         {{ $message->sender->full_name }} · {{ $message->created_at?->translatedFormat('d M Y H:i') }}
                     </p>
                     <p class="whitespace-pre-line leading-relaxed">{{ $message->body }}</p>
@@ -89,7 +89,7 @@
                        class="block w-full text-xs text-slate-300 file:mr-3 file:rounded file:border-0 file:bg-slate-700 file:px-3 file:py-1.5 file:text-slate-200 hover:file:bg-slate-600">
             </div>
             <div class="flex justify-end">
-                <button class="bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-lg px-4 py-2 text-sm">
+                <button class="bg-orange-500 hover:bg-orange-600 text-black font-semibold rounded-lg px-4 py-2 text-sm">
                     Envoyer
                 </button>
             </div>
@@ -97,8 +97,8 @@
     </div>
 </div>
 
-<div id="edit-message-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/70 px-4">
-    <div class="w-full max-w-xl rounded-xl border border-slate-700 bg-slate-900 p-4 shadow-2xl">
+<div id="edit-message-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-green-950/70 px-4">
+    <div class="w-full max-w-xl rounded-xl border border-slate-700 bg-green-900 p-4 shadow-2xl">
         <div class="flex items-center justify-between gap-3 mb-3">
             <h3 class="text-slate-100 font-semibold">Modifier le message</h3>
             <button type="button" id="edit-message-close" class="h-8 w-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
@@ -113,7 +113,7 @@
                       placeholder="Modifier votre message..."></textarea>
             <div class="flex items-center justify-end gap-2">
                 <button type="button" id="edit-message-cancel" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm">Annuler</button>
-                <button type="submit" class="px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-black text-sm font-semibold">Enregistrer</button>
+                <button type="submit" class="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-black text-sm font-semibold">Enregistrer</button>
             </div>
         </form>
     </div>

@@ -5,14 +5,14 @@
 
 @section('content')
 <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">Tous</p><p class="text-white text-2xl font-bold mt-1">{{ number_format($counts['all']) }}</p></div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">En attente</p><p class="text-amber-400 text-2xl font-bold mt-1">{{ number_format($counts['pending']) }}</p></div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">Approuvés</p><p class="text-emerald-400 text-2xl font-bold mt-1">{{ number_format($counts['approved']) }}</p></div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">Rejetés</p><p class="text-red-400 text-2xl font-bold mt-1">{{ number_format($counts['rejected']) }}</p></div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">Signalés</p><p class="text-violet-400 text-2xl font-bold mt-1">{{ number_format($counts['flagged']) }}</p></div>
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">Tous</p><p class="text-white text-2xl font-bold mt-1">{{ number_format($counts['all']) }}</p></div>
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">En attente</p><p class="text-orange-400 text-2xl font-bold mt-1">{{ number_format($counts['pending']) }}</p></div>
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">Approuvés</p><p class="text-emerald-400 text-2xl font-bold mt-1">{{ number_format($counts['approved']) }}</p></div>
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">Rejetés</p><p class="text-red-400 text-2xl font-bold mt-1">{{ number_format($counts['rejected']) }}</p></div>
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4"><p class="text-slate-500 text-xs">Signalés</p><p class="text-green-400 text-2xl font-bold mt-1">{{ number_format($counts['flagged']) }}</p></div>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold">Liste des avis</h2>
         <form method="GET" action="{{ route('admin.reviews.index') }}" class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -24,7 +24,7 @@
                 @endforeach
             </select>
             <div class="flex items-center gap-2">
-                <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Filtrer</button>
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Filtrer</button>
                 <a href="{{ route('admin.reviews.index') }}" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Reset</a>
             </div>
         </form>
@@ -35,7 +35,7 @@
             <div class="px-5 py-4">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <p class="text-white font-medium">{{ $review->author_name ?: ($review->user->full_name ?? 'Anonyme') }} · <span class="text-amber-400">{{ $review->rating }}★</span></p>
+                        <p class="text-white font-medium">{{ $review->author_name ?: ($review->user->full_name ?? 'Anonyme') }} · <span class="text-orange-400">{{ $review->rating }}★</span></p>
                         <p class="text-slate-400 text-xs mt-0.5">Prestataire: {{ $review->provider->name ?? '—' }}</p>
                         @if($review->title)<p class="text-slate-200 text-sm mt-2 font-medium">{{ $review->title }}</p>@endif
                         <p class="text-slate-300 text-sm mt-1">{{ $review->comment }}</p>
@@ -54,7 +54,7 @@
                             </form>
                         @endif
                         <form method="POST" action="{{ route('admin.reviews.flag', $review) }}">@csrf @method('PATCH')
-                            <button class="bg-violet-600 hover:bg-violet-500 text-white text-xs px-3 py-1.5 rounded">Signaler</button>
+                            <button class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded">Signaler</button>
                         </form>
                         <form method="POST" action="{{ route('admin.reviews.destroy', $review) }}" onsubmit="return confirm('Supprimer cet avis ?');">@csrf @method('DELETE')
                             <button class="bg-red-700 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded">Supprimer</button>

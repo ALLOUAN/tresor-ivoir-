@@ -24,11 +24,11 @@
      data-form-context="{{ e(old('_form_context', '')) }}"
      data-edit-slide-id="{{ e((string) old('edit_slide_id', '')) }}"></div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
-    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-violet-700 via-violet-600 to-indigo-600">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
+    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-green-700 via-green-600 to-green-600">
         <div>
             <h2 class="text-white font-semibold text-lg tracking-tight">Gestion des Slides (Images &amp; Vidéos)</h2>
-            <p class="text-violet-100/80 text-xs mt-0.5">Titre, visibilité, ordre — image ou vidéo responsive par breakpoint.</p>
+            <p class="text-green-100/80 text-xs mt-0.5">Titre, visibilité, ordre — image ou vidéo responsive par breakpoint.</p>
         </div>
         <button type="button" onclick="openCreateSlideModal()"
                 class="inline-flex items-center justify-center gap-2 shrink-0 bg-white/15 hover:bg-white/25 border border-white/20 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
@@ -37,11 +37,11 @@
     </div>
 
     <div class="px-5 py-4 border-b border-slate-800">
-        <div class="rounded-lg border border-sky-500/30 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
-            <p class="font-medium text-sky-200 mb-2 flex items-center gap-2">
-                <i class="fas fa-circle-info text-sky-300"></i> Dimensions requises des images
+        <div class="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-100">
+            <p class="font-medium text-green-200 mb-2 flex items-center gap-2">
+                <i class="fas fa-circle-info text-green-300"></i> Dimensions requises des images
             </p>
-            <ul class="list-disc list-inside space-y-0.5 text-sky-100/90 text-xs sm:text-sm">
+            <ul class="list-disc list-inside space-y-0.5 text-green-100/90 text-xs sm:text-sm">
                 <li><span class="font-medium text-white">Desktop :</span> cible 1920×800 — accepté entre env. 1600×600 et 4096×2000&nbsp;px</li>
                 <li><span class="font-medium text-white">Tablette :</span> cible 1024×600 — min. env. 900×500&nbsp;px</li>
                 <li><span class="font-medium text-white">Mobile :</span> cible 768×500 — min. env. 640×400&nbsp;px</li>
@@ -59,9 +59,9 @@
                 <div class="flex gap-2 shrink-0">
                     @if($slide->isVideo())
                         {{-- Vignette vidéo --}}
-                        <div class="relative w-22 h-14 sm:w-24 sm:h-14 rounded-lg overflow-hidden bg-amber-900/30 border border-amber-500/30 shrink-0 flex flex-col items-center justify-center gap-1">
-                            <i class="fas fa-film text-amber-400 text-xl"></i>
-                            <span class="text-amber-300/80 text-[10px] font-medium uppercase tracking-wide">Vidéo</span>
+                        <div class="relative w-22 h-14 sm:w-24 sm:h-14 rounded-lg overflow-hidden bg-orange-900/30 border border-orange-500/30 shrink-0 flex flex-col items-center justify-center gap-1">
+                            <i class="fas fa-film text-orange-400 text-xl"></i>
+                            <span class="text-orange-300/80 text-[10px] font-medium uppercase tracking-wide">Vidéo</span>
                         </div>
                         @foreach([
                             ['url' => $slide->video_desktop_url, 'label' => 'D'],
@@ -104,15 +104,15 @@
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $slide->is_active ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-600/30 text-slate-300 border border-slate-600/40' }}">
                             {{ $slide->is_active ? 'Actif' : 'Inactif' }}
                         </span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-600/25 text-sky-200 border border-sky-500/35">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600/25 text-green-200 border border-green-500/35">
                             Ordre : {{ $slide->display_order }}
                         </span>
                         @if($slide->isVideo())
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-500/20 text-orange-300 border border-orange-500/30">
                                 <i class="fas fa-film text-[10px]"></i> Vidéo
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-300 border border-green-500/30">
                                 <i class="fas fa-image text-[10px]"></i> Image
                             </span>
                         @endif
@@ -135,7 +135,7 @@
                             data-video-mobile-url="{{ e($slide->video_mobile_url ?? '') }}"
                             data-display-order="{{ $slide->display_order }}"
                             data-is-active="{{ $slide->is_active ? '1' : '0' }}"
-                            class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600/90 hover:bg-blue-500 text-white transition"
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-green-600/90 hover:bg-green-500 text-white transition"
                             title="Modifier">
                         <i class="fas fa-pen"></i>
                     </button>
@@ -143,7 +143,7 @@
                         @csrf
                         @method('PATCH')
                         <button type="submit"
-                                class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/90 hover:bg-amber-400 text-white transition"
+                                class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/90 hover:bg-orange-400 text-white transition"
                                 title="{{ $slide->is_active ? 'Désactiver sur le site' : 'Activer sur le site' }}">
                             <i class="fas {{ $slide->is_active ? 'fa-eye' : 'fa-eye-slash' }}"></i>
                         </button>
@@ -163,7 +163,7 @@
             <div class="text-center py-14 text-slate-500 border border-dashed border-slate-700 rounded-xl">
                 <i class="fas fa-images text-3xl mb-3 text-slate-600"></i>
                 <p>Aucun slide pour le moment.</p>
-                <button type="button" onclick="openCreateSlideModal()" class="mt-4 text-violet-400 hover:text-violet-300 text-sm font-medium">Ajouter le premier slide</button>
+                <button type="button" onclick="openCreateSlideModal()" class="mt-4 text-green-400 hover:text-green-300 text-sm font-medium">Ajouter le premier slide</button>
             </div>
         @endforelse
     </div>
@@ -174,10 +174,10 @@
 </div>
 
 <div id="create-slide-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/70" onclick="closeCreateSlideModal()"></div>
+    <div class="absolute inset-0 bg-green-950/70" onclick="closeCreateSlideModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
-        <div class="w-full max-w-5xl bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-indigo-500 to-violet-600">
+        <div class="w-full max-w-5xl bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
                 <h2 class="text-white font-semibold">Ajouter un nouveau slide</h2>
                 <button type="button" onclick="closeCreateSlideModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -186,7 +186,7 @@
                 @include('admin.system.partials.slide-form-fields')
                 <div class="md:col-span-2 flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeCreateSlideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter le slide</button>
+                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter le slide</button>
                 </div>
             </form>
         </div>
@@ -194,10 +194,10 @@
 </div>
 
 <div id="edit-slide-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/70" onclick="closeEditSlideModal()"></div>
+    <div class="absolute inset-0 bg-green-950/70" onclick="closeEditSlideModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
-        <div class="w-full max-w-5xl bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-indigo-500 to-violet-600">
+        <div class="w-full max-w-5xl bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
                 <h2 class="text-white font-semibold">Modifier le slide</h2>
                 <button type="button" onclick="closeEditSlideModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -207,7 +207,7 @@
                 @include('admin.system.partials.slide-form-fields', ['isEdit' => true])
                 <div class="md:col-span-2 flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeEditSlideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
+                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
                 </div>
             </form>
         </div>

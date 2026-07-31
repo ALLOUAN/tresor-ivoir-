@@ -11,11 +11,11 @@
 @endphp
 
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
-<div class="xl:col-span-2 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+<div class="xl:col-span-2 bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
     <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between gap-4 bg-slate-800/40">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-amber-600/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-                <i class="fas fa-screwdriver-wrench text-amber-300"></i>
+            <div class="w-10 h-10 rounded-lg bg-orange-600/20 border border-orange-500/40 flex items-center justify-center shrink-0">
+                <i class="fas fa-screwdriver-wrench text-orange-300"></i>
             </div>
             <div>
                 <h2 class="text-white font-semibold text-lg">Maintenance du site</h2>
@@ -61,7 +61,7 @@
             </div>
             <label class="inline-flex items-center gap-3 cursor-pointer shrink-0">
                 <input type="checkbox" name="maintenance_mode" value="1"
-                       class="h-5 w-5 rounded border-slate-600 bg-slate-800 text-violet-600 focus:ring-violet-500"
+                       class="h-5 w-5 rounded border-slate-600 bg-slate-800 text-green-600 focus:ring-green-500"
                        @checked($errors->any() ? old('maintenance_mode') === '1' : $settings->maintenance_mode)>
                 <span class="text-sm text-slate-300">Activer</span>
             </label>
@@ -103,7 +103,7 @@
 
         <div class="pt-2">
             <button type="submit"
-                    class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+                    class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-floppy-disk"></i>
                 Enregistrer les paramètres
             </button>
@@ -111,14 +111,14 @@
     </form>
 </div>
     <div class="space-y-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+        <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
             <div class="px-5 py-4 border-b border-slate-800 bg-slate-800/40">
                 <h3 class="text-white font-semibold text-base">Résumé</h3>
             </div>
             <div class="p-5 space-y-3 text-sm">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                     <span class="text-slate-400">Statut</span>
-                    <span class="font-semibold {{ $settings->maintenance_mode ? 'text-amber-300' : 'text-emerald-300' }}">
+                    <span class="font-semibold {{ $settings->maintenance_mode ? 'text-orange-300' : 'text-emerald-300' }}">
                         {{ $settings->maintenance_mode ? 'Maintenance' : 'En ligne' }}
                     </span>
                 </div>
@@ -137,15 +137,15 @@
             </div>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+        <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
             <div class="p-6 text-center">
-                <div class="w-14 h-14 mx-auto rounded-full bg-blue-600/15 border border-blue-500/30 flex items-center justify-center mb-3">
-                    <i class="fas fa-eye text-blue-300 text-xl"></i>
+                <div class="w-14 h-14 mx-auto rounded-full bg-green-600/15 border border-green-500/30 flex items-center justify-center mb-3">
+                    <i class="fas fa-eye text-green-300 text-xl"></i>
                 </div>
                 <h3 class="text-white font-semibold text-lg">Prévisualiser</h3>
                 <p class="text-slate-400 text-sm mt-2">Voir la page de maintenance telle que les visiteurs la verront.</p>
                 <a href="{{ route('admin.administration.maintenance.preview') }}" target="_blank"
-                   class="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-blue-300 hover:text-blue-200 transition">
+                   class="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-green-300 hover:text-green-200 transition">
                     <i class="fas fa-up-right-from-square text-xs"></i>
                     Voir la page
                 </a>

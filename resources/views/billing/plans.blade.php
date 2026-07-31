@@ -9,11 +9,11 @@
     $currentCode = $currentSubscription?->plan?->code;
     $currentOrder = $planOrder[$currentCode] ?? -1;
     $icons       = ['bronze' => 'fa-seedling', 'silver' => 'fa-star', 'gold' => 'fa-gem'];
-    $iconColors  = ['bronze' => 'text-emerald-400', 'silver' => 'text-amber-400', 'gold' => 'text-violet-400'];
+    $iconColors  = ['bronze' => 'text-emerald-400', 'silver' => 'text-orange-400', 'gold' => 'text-green-400'];
 @endphp
 
 {{-- Abonnement actuel --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6">
+<div class="bg-green-900 border border-slate-800 rounded-xl p-5 mb-6">
     <h2 class="text-white font-semibold mb-3">Abonnement actuel</h2>
 
     @if($currentSubscription)
@@ -24,7 +24,7 @@
         @endphp
 
         <div class="border rounded-lg px-4 py-2.5 text-sm mb-4
-            {{ $isCritical ? 'border-red-500/40 bg-red-500/10 text-red-300' : ($isWarning ? 'border-amber-500/40 bg-amber-500/10 text-amber-300' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300') }}">
+            {{ $isCritical ? 'border-red-500/40 bg-red-500/10 text-red-300' : ($isWarning ? 'border-orange-500/40 bg-orange-500/10 text-orange-300' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300') }}">
             <i class="fas {{ $isCritical ? 'fa-triangle-exclamation' : ($isWarning ? 'fa-clock' : 'fa-circle-check') }} mr-1.5"></i>
             @if($isCritical) Abonnement expiré — renouvellement requis.
             @elseif($isWarning) Expire dans {{ $remaining }} jour(s) — pensez à renouveler.
@@ -59,14 +59,14 @@
         $isUpgrade   = $currentOrder >= 0 && $pOrder > $currentOrder;
         $isDowngrade = $currentOrder >= 0 && $pOrder < $currentOrder;
         $icon        = $icons[$plan->code] ?? 'fa-star';
-        $iconColor   = $iconColors[$plan->code] ?? 'text-amber-400';
+        $iconColor   = $iconColors[$plan->code] ?? 'text-orange-400';
     @endphp
 
-    <div class="bg-slate-900 border rounded-xl p-5 flex flex-col
-        {{ $isCurrent ? 'border-amber-500/50' : 'border-slate-800' }}">
+    <div class="bg-green-900 border rounded-xl p-5 flex flex-col
+        {{ $isCurrent ? 'border-orange-500/50' : 'border-slate-800' }}">
 
         @if($isCurrent)
-        <div class="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1 self-start mb-3">
+        <div class="text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 rounded-full px-3 py-1 self-start mb-3">
             Plan actuel
         </div>
         @endif
@@ -106,12 +106,12 @@
 
         @if($isCurrent)
             <a href="{{ route('provider.billing.checkout', $plan) }}"
-               class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-amber-500 hover:bg-amber-600 text-white transition">
+               class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-600 text-white transition">
                 Renouveler
             </a>
         @elseif($isUpgrade)
             <a href="{{ route('provider.billing.checkout', $plan) }}"
-               class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-700 text-white transition">
+               class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-green-600 hover:bg-green-700 text-white transition">
                 <i class="fas fa-arrow-up text-xs mr-1"></i> Passer à ce forfait
             </a>
         @elseif($isDowngrade)
@@ -121,7 +121,7 @@
             </a>
         @else
             <a href="{{ route('provider.billing.checkout', $plan) }}"
-               class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-amber-500 hover:bg-amber-600 text-white transition">
+               class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-600 text-white transition">
                 Sélectionner
             </a>
         @endif

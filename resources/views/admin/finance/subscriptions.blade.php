@@ -9,16 +9,16 @@
 @endphp
 
 <div class="flex items-center gap-3 mb-6">
-    <button type="button" id="open-create-subscription-modal" class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+    <button type="button" id="open-create-subscription-modal" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
         Créer un nouvel abonnement
     </button>
     <span class="text-slate-500 text-sm">Cliquez pour ouvrir le formulaire de création.</span>
 </div>
 
 <div id="create-subscription-modal" class="fixed inset-0 z-50 {{ $showCreateSubscriptionModal ? '' : 'hidden' }}">
-    <div id="create-subscription-overlay" class="absolute inset-0 bg-black/70"></div>
+    <div id="create-subscription-overlay" class="absolute inset-0 bg-green-950/70"></div>
     <div class="relative min-h-full flex items-center justify-center p-4">
-        <div class="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl">
+        <div class="w-full max-w-3xl bg-green-900 border border-slate-700 rounded-2xl shadow-2xl">
             <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
                 <h2 class="text-white font-semibold">Créer un nouvel abonnement</h2>
                 <button type="button" id="close-create-subscription-modal" class="text-slate-400 hover:text-white text-lg">
@@ -89,7 +89,7 @@
                     <textarea name="cancellation_reason" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" placeholder="Seulement si statut annulé">{{ old('cancellation_reason') }}</textarea>
                 </div>
                 <div class="md:col-span-2 flex items-center gap-2">
-                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Créer abonnement</button>
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Créer abonnement</button>
                     <button type="button" id="cancel-create-subscription-modal" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
                 </div>
             </form>
@@ -98,28 +98,28 @@
 </div>
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">Total abonnements</p>
         <p class="text-white text-2xl font-bold mt-1">{{ number_format($stats['total']) }}</p>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">Actifs</p>
         <p class="text-emerald-400 text-2xl font-bold mt-1">{{ number_format($stats['active']) }}</p>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">Renouvellement auto</p>
-        <p class="text-blue-400 text-2xl font-bold mt-1">{{ number_format($stats['renewing']) }}</p>
+        <p class="text-green-400 text-2xl font-bold mt-1">{{ number_format($stats['renewing']) }}</p>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <p class="text-slate-500 text-xs">Expire sous 30 jours</p>
-        <p class="text-amber-400 text-2xl font-bold mt-1">{{ number_format($stats['expiring_soon']) }}</p>
+        <p class="text-orange-400 text-2xl font-bold mt-1">{{ number_format($stats['expiring_soon']) }}</p>
     </div>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6">
+<div class="bg-green-900 border border-slate-800 rounded-xl p-5 mb-6">
     <div class="flex items-center justify-between mb-3">
         <h2 class="text-white font-semibold">Abonnements expirant bientôt (30 jours)</h2>
-        <a href="{{ route('admin.subscriptions.index', ['expiring_soon' => 1]) }}" class="text-amber-400 text-xs hover:text-amber-300">Voir uniquement ceux-ci</a>
+        <a href="{{ route('admin.subscriptions.index', ['expiring_soon' => 1]) }}" class="text-orange-400 text-xs hover:text-orange-300">Voir uniquement ceux-ci</a>
     </div>
     <div class="space-y-2">
         @forelse($expiringSoonSubscriptions as $expiring)
@@ -139,7 +139,7 @@
                         <option value="6">+6 mois</option>
                         <option value="12">+12 mois</option>
                     </select>
-                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
                         Prolonger
                     </button>
                 </form>
@@ -150,7 +150,7 @@
     </div>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold">Abonnements</h2>
         <form method="GET" action="{{ route('admin.subscriptions.index') }}" class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -172,7 +172,7 @@
                 Expirent bientôt (30 jours)
             </label>
             <div class="md:col-span-4 flex items-center gap-2">
-                <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Filtrer</button>
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Filtrer</button>
                 <a href="{{ route('admin.subscriptions.index') }}" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Réinitialiser</a>
             </div>
         </form>
@@ -204,7 +204,7 @@
                             {{ optional($subscription->ends_at)->format('d/m/Y') ?? '-' }}
                             @if($subscription->last_edited_at && $subscription->last_edited_at->gt(now()->subDays(7)))
                                 <div class="mt-1">
-                                    <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                                    <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
                                         Modifié récemment - {{ $subscription->last_edited_at->format('d/m/Y H:i') }} par {{ $subscription->lastEditedBy->full_name ?? 'admin' }}
                                     </span>
                                 </div>
@@ -234,9 +234,9 @@
                     </tr>
 
                     <div id="edit-subscription-modal-{{ $subscription->id }}" class="fixed inset-0 z-50 hidden">
-                        <div class="edit-subscription-overlay absolute inset-0 bg-black/70"></div>
+                        <div class="edit-subscription-overlay absolute inset-0 bg-green-950/70"></div>
                         <div class="relative min-h-full flex items-center justify-center p-4">
-                            <div class="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl">
+                            <div class="w-full max-w-3xl bg-green-900 border border-slate-700 rounded-2xl shadow-2xl">
                                 <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
                                     <h2 class="text-white font-semibold">Modifier abonnement</h2>
                                     <button type="button" class="close-edit-subscription-modal text-slate-400 hover:text-white text-lg" data-target="edit-subscription-modal-{{ $subscription->id }}">
@@ -306,7 +306,7 @@
                                         <textarea name="cancellation_reason" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ $subscription->cancellation_reason }}</textarea>
                                     </div>
                                     <div class="md:col-span-2 flex items-center gap-2">
-                                        <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
+                                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
                                         <button type="button" class="close-edit-subscription-modal bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg" data-target="edit-subscription-modal-{{ $subscription->id }}">Annuler</button>
                                     </div>
                                 </form>

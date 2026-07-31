@@ -4,7 +4,7 @@
 @section('page-title', 'Mes factures')
 
 @section('content')
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold">Historique des factures</h2>
         <p class="text-slate-400 text-sm mt-1">Retrouvez ici toutes vos factures d'abonnement.</p>

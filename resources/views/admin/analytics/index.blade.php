@@ -19,16 +19,16 @@
             <input type="date" name="to" id="to" value="{{ $to->toDateString() }}"
                    class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
         </div>
-        <button type="submit" class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
+        <button type="submit" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
             <i class="fas fa-filter text-xs"></i> Appliquer
         </button>
     </form>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-white font-semibold text-sm mb-4 flex items-center gap-2">
-            <i class="fas fa-newspaper text-amber-400"></i> Articles (période)
+            <i class="fas fa-newspaper text-orange-400"></i> Articles (période)
         </h2>
         @if(! $hasArticleAnalytics)
             <p class="text-slate-500 text-sm">Table des métriques articles absente.</p>
@@ -78,9 +78,9 @@
         @endif
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-white font-semibold text-sm mb-4 flex items-center gap-2">
-            <i class="fas fa-store text-violet-400"></i> Prestataires (période)
+            <i class="fas fa-store text-green-400"></i> Prestataires (période)
         </h2>
         @if(! $hasProviderAnalytics)
             <p class="text-slate-500 text-sm">Table des métriques prestataires absente.</p>

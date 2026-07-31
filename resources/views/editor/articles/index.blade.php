@@ -5,7 +5,7 @@
 
 @section('header-actions')
 <a href="{{ route('editor.articles.create') }}"
-   class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+   class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouvel article
 </a>
 @endsection
@@ -13,7 +13,7 @@
 @section('content')
 
 {{-- Status tabs --}}
-<div class="flex items-center gap-1 overflow-x-auto mb-6 bg-slate-900/50 border border-slate-800 rounded-xl p-1">
+<div class="flex items-center gap-1 overflow-x-auto mb-6 bg-green-900/50 border border-slate-800 rounded-xl p-1">
     @php $tabs = [''=>'Tous','draft'=>'Brouillons','review'=>'En révision','published'=>'Publiés','archived'=>'Archivés']; @endphp
     @foreach($tabs as $val => $label)
     <a href="{{ route('editor.articles.index', $val ? ['status' => $val] : []) }}"
@@ -28,7 +28,7 @@
 </div>
 
 {{-- Table --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
@@ -57,7 +57,7 @@
                                 <p class="text-white font-medium text-sm line-clamp-1">{{ $article->title_fr }}</p>
                                 <div class="flex items-center gap-2 mt-0.5">
                                     @if($article->is_featured)
-                                    <span class="text-amber-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>À la une</span>
+                                    <span class="text-orange-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>À la une</span>
                                     @endif
                                     @if($article->reading_time)
                                     <span class="text-slate-600 text-[10px]">{{ $article->reading_time }} min</span>
@@ -70,7 +70,7 @@
                         </div>
                     </td>
                     <td class="px-5 py-4 hidden md:table-cell">
-                        <span class="text-amber-400/80 text-xs">{{ $article->category->name_fr ?? '—' }}</span>
+                        <span class="text-orange-400/80 text-xs">{{ $article->category->name_fr ?? '—' }}</span>
                     </td>
                     <td class="px-5 py-4 hidden lg:table-cell text-slate-400 text-xs">
                         {{ $article->author->full_name ?? 'N/A' }}
@@ -79,7 +79,7 @@
                         @php $statusMap = [
                             'published' => ['bg-emerald-900/40 text-emerald-300 border-emerald-800', 'Publié'],
                             'draft'     => ['bg-slate-800 text-slate-400 border-slate-700', 'Brouillon'],
-                            'review'    => ['bg-amber-900/40 text-amber-300 border-amber-800', 'En révision'],
+                            'review'    => ['bg-orange-900/40 text-orange-300 border-orange-800', 'En révision'],
                             'archived'  => ['bg-slate-800 text-slate-500 border-slate-700', 'Archivé'],
                         ]; [$cls, $lbl] = $statusMap[$article->status] ?? ['bg-slate-800 text-slate-400', $article->status]; @endphp
                         <span class="inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium border {{ $cls }}">{{ $lbl }}</span>
@@ -91,12 +91,12 @@
                         <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
                             @if($article->status === 'published')
                             <a href="{{ route('articles.show', $article->slug_fr) }}" target="_blank"
-                               class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-blue-900/50 flex items-center justify-center text-slate-400 hover:text-blue-300 transition" title="Voir">
+                               class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-green-900/50 flex items-center justify-center text-slate-400 hover:text-green-300 transition" title="Voir">
                                 <i class="fas fa-eye text-xs"></i>
                             </a>
                             @endif
                             <a href="{{ route('editor.articles.edit', $article) }}"
-                               class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/50 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Modifier">
+                               class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/50 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Modifier">
                                 <i class="fas fa-pen text-xs"></i>
                             </a>
                             {{-- Quick status change --}}
@@ -104,7 +104,7 @@
                             <form method="POST" action="{{ route('editor.articles.status', $article) }}" class="inline">
                                 @csrf @method('PATCH')
                                 <input type="hidden" name="status" value="review">
-                                <button class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/50 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Soumettre">
+                                <button class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/50 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Soumettre">
                                     <i class="fas fa-paper-plane text-xs"></i>
                                 </button>
                             </form>
@@ -134,7 +134,7 @@
                         <i class="fas fa-newspaper text-3xl mb-3 block text-slate-700"></i>
                         Aucun article
                         @if($status) avec le statut "{{ $tabs[$status] ?? $status }}"@endif.
-                        <a href="{{ route('editor.articles.create') }}" class="text-amber-400 hover:underline ml-1">Créer le premier</a>
+                        <a href="{{ route('editor.articles.create') }}" class="text-orange-400 hover:underline ml-1">Créer le premier</a>
                     </td>
                 </tr>
                 @endforelse

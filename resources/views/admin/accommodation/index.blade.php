@@ -9,7 +9,7 @@
     <i class="fas fa-eye"></i> Voir le site
 </a>
 <a href="{{ route('admin.accommodations.create') }}"
-   class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+   class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouvel hébergement
 </a>
 @endsection
@@ -25,7 +25,7 @@
 
 {{-- Stats ─────────────────────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
         <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center shrink-0">
             <i class="fas fa-hotel text-slate-300 text-sm"></i>
         </div>
@@ -34,7 +34,7 @@
             <p class="text-slate-500 text-xs mt-0.5">Total</p>
         </div>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
         <div class="w-9 h-9 rounded-lg bg-emerald-900/40 flex items-center justify-center shrink-0">
             <i class="fas fa-circle-check text-emerald-400 text-sm"></i>
         </div>
@@ -43,16 +43,16 @@
             <p class="text-slate-500 text-xs mt-0.5">Actifs</p>
         </div>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-amber-900/40 flex items-center justify-center shrink-0">
-            <i class="fas fa-star text-amber-400 text-sm"></i>
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-orange-900/40 flex items-center justify-center shrink-0">
+            <i class="fas fa-star text-orange-400 text-sm"></i>
         </div>
         <div>
             <p class="text-2xl font-bold text-white leading-none">{{ $counts['featured'] }}</p>
             <p class="text-slate-500 text-xs mt-0.5">En vedette</p>
         </div>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
         <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center shrink-0">
             <i class="fas fa-bed text-slate-400 text-sm"></i>
         </div>
@@ -70,11 +70,11 @@
     <div class="flex-1 min-w-[200px]">
         <input type="text" name="q" value="{{ $search }}"
                placeholder="Rechercher un hébergement…"
-               class="w-full bg-slate-900 border border-slate-800 focus:border-amber-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+               class="w-full bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
     </div>
 
     <select name="city_id"
-            class="bg-slate-900 border border-slate-800 focus:border-amber-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition">
+            class="bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition">
         <option value="">Toutes les villes</option>
         @foreach($cities as $city)
             <option value="{{ $city->id }}" {{ $cityId == $city->id ? 'selected' : '' }}>
@@ -84,7 +84,7 @@
     </select>
 
     <select name="type"
-            class="bg-slate-900 border border-slate-800 focus:border-amber-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition">
+            class="bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition">
         <option value="">Tous les types</option>
         @foreach(['hotel'=>'Hôtel','resort'=>'Resort','guesthouse'=>"Maison d'hôtes",'hostel'=>'Auberge de jeunesse','auberge'=>'Auberge','villa'=>'Villa','eco_lodge'=>'Éco-lodge'] as $val => $lbl)
             <option value="{{ $val }}" {{ $type === $val ? 'selected' : '' }}>{{ $lbl }}</option>
@@ -121,8 +121,8 @@
         <a href="{{ route('admin.accommodations.index', ['type'=>$tval]) }}"
            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition
                   {{ $type === $tval
-                     ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                     : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-amber-500/30 hover:text-slate-300' }}">
+                     ? 'bg-orange-500/20 border-orange-500/40 text-orange-300'
+                     : 'bg-green-900 border-slate-700 text-slate-400 hover:border-orange-500/30 hover:text-slate-300' }}">
             <i class="fas {{ $typeIcons[$tval] ?? 'fa-hotel' }} text-[10px]"></i>
             {{ ['hotel'=>'Hôtels','resort'=>'Resorts','villa'=>'Villas','eco_lodge'=>'Éco-lodges','guesthouse'=>"Maisons d'hôtes"][$tval] }}
             <span class="ml-0.5 opacity-60">{{ $tcount }}</span>
@@ -133,18 +133,18 @@
 
 {{-- Grille de cartes ──────────────────────────────────────────────────────── --}}
 @if($accommodations->isEmpty())
-    <div class="bg-slate-900 border border-slate-800 rounded-xl py-20 text-center">
+    <div class="bg-green-900 border border-slate-800 rounded-xl py-20 text-center">
         <i class="fas fa-hotel text-4xl text-slate-700 mb-4 block"></i>
         <p class="text-slate-500 text-sm">Aucun hébergement trouvé.</p>
         <a href="{{ route('admin.accommodations.create') }}"
-           class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black text-xs font-semibold rounded-lg transition">
+           class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black text-xs font-semibold rounded-lg transition">
             <i class="fas fa-plus"></i> Créer le premier
         </a>
     </div>
 @else
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         @foreach($accommodations as $acc)
-        <div class="group bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl overflow-hidden transition flex flex-col">
+        <div class="group bg-green-900 border border-slate-800 hover:border-slate-700 rounded-xl overflow-hidden transition flex flex-col">
 
             {{-- Image --}}
             <div class="relative h-44 bg-slate-800 overflow-hidden shrink-0">
@@ -160,17 +160,17 @@
                 @endif
 
                 {{-- Overlay gradient --}}
-                <div class="absolute inset-0 bg-linear-to-t from-slate-900/80 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-linear-to-t from-green-900/80 via-transparent to-transparent"></div>
 
                 {{-- Badges top --}}
                 <div class="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold
-                                 bg-black/50 backdrop-blur-sm border border-white/10 text-white">
+                                 bg-green-950/50 backdrop-blur-sm border border-white/10 text-white">
                         {{ $acc->type_label }}
                     </span>
                     @if($acc->stars > 0)
                     <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-semibold
-                                 bg-amber-500/80 backdrop-blur-sm text-black">
+                                 bg-orange-500/80 backdrop-blur-sm text-black">
                         @for($s=0;$s<$acc->stars;$s++)<i class="fas fa-star text-[8px]"></i>@endfor
                     </span>
                     @endif
@@ -184,7 +184,7 @@
                     </span>
                     @endif
                     @if($acc->is_featured)
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/80 backdrop-blur-sm text-black">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-orange-500/80 backdrop-blur-sm text-black">
                         <i class="fas fa-star text-[8px] mr-0.5"></i>Vedette
                     </span>
                     @endif
@@ -193,7 +193,7 @@
                 {{-- Prix bottom-left --}}
                 @if($acc->starting_price_xof)
                 <div class="absolute bottom-2.5 left-2.5">
-                    <span class="text-[11px] font-semibold text-white bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
+                    <span class="text-[11px] font-semibold text-white bg-green-950/50 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
                         À partir de {{ number_format($acc->starting_price_xof, 0, ',', ' ') }} XOF
                     </span>
                 </div>
@@ -202,7 +202,7 @@
                 {{-- Nb médias bottom-right --}}
                 @if($acc->media_count > 0)
                 <div class="absolute bottom-2.5 right-2.5">
-                    <span class="text-[11px] text-slate-300 bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
+                    <span class="text-[11px] text-slate-300 bg-green-950/50 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
                         <i class="fas fa-images text-[9px] mr-0.5"></i>{{ $acc->media_count }}
                     </span>
                 </div>
@@ -214,7 +214,7 @@
 
                 {{-- Ville --}}
                 <div class="flex items-center gap-1 text-slate-500 text-[11px] mb-1.5">
-                    <i class="fas fa-location-dot text-amber-400/70"></i>
+                    <i class="fas fa-location-dot text-orange-400/70"></i>
                     <span>{{ $acc->city?->name ?? '—' }}</span>
                     @if($acc->quartier)
                         <span class="text-slate-700">·</span>
@@ -274,9 +274,9 @@
                         <form method="POST" action="{{ route('admin.accommodations.toggle-featured', $acc) }}" class="inline">
                             @csrf @method('PATCH')
                             <button type="submit"
-                                    class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center transition"
+                                    class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center transition"
                                     title="{{ $acc->is_featured ? 'Retirer vedette' : 'Mettre en vedette' }}">
-                                <i class="fas fa-star text-xs {{ $acc->is_featured ? 'text-amber-400' : 'text-slate-500' }}"></i>
+                                <i class="fas fa-star text-xs {{ $acc->is_featured ? 'text-orange-400' : 'text-slate-500' }}"></i>
                             </button>
                         </form>
                     </div>
@@ -284,7 +284,7 @@
                     {{-- Édition --}}
                     <div class="flex items-center gap-1">
                         <a href="{{ route('admin.accommodations.edit', $acc) }}"
-                           class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition"
+                           class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition"
                            title="Modifier">
                             <i class="fas fa-pen text-xs"></i>
                         </a>
@@ -308,7 +308,7 @@
 {{-- Pagination ──────────────────────────────────────────────────────────── --}}
 @if($accommodations->hasPages())
 <div class="mt-5 flex items-center justify-between text-xs text-slate-500
-            bg-slate-900 border border-slate-800 rounded-xl px-5 py-3">
+            bg-green-900 border border-slate-800 rounded-xl px-5 py-3">
     <span>{{ $accommodations->firstItem() }}–{{ $accommodations->lastItem() }} sur {{ $accommodations->total() }}</span>
     <div class="flex gap-1">
         @if(!$accommodations->onFirstPage())

@@ -14,12 +14,12 @@
 @if(!$provider)
 {{-- No provider profile yet --}}
 <div class="max-w-lg mx-auto text-center py-16">
-    <div class="w-20 h-20 rounded-full bg-amber-900/30 flex items-center justify-center mx-auto mb-4">
-        <i class="fas fa-store text-amber-400 text-3xl"></i>
+    <div class="w-20 h-20 rounded-full bg-orange-900/30 flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-store text-orange-400 text-3xl"></i>
     </div>
     <h2 class="text-white text-xl font-bold mb-2">Aucune fiche prestataire</h2>
     <p class="text-slate-400 text-sm mb-6">Votre compte n'est pas encore lié à un établissement. Créez votre fiche pour apparaître dans l'annuaire.</p>
-    <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-xl transition">
+    <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-xl transition">
         <i class="fas fa-circle-plus"></i> Créer ma fiche
     </a>
 </div>
@@ -29,13 +29,13 @@
 @if($subscription)
 @php
 $planCode = strtolower($subscription->plan->code ?? 'bronze');
-$bannerColors = ['gold'=>'from-amber-700/40 to-amber-900/20 border-amber-600/40','silver'=>'from-slate-500/30 to-slate-700/20 border-slate-500/40','bronze'=>'from-amber-900/30 to-slate-800/20 border-amber-800/40'];
+$bannerColors = ['gold'=>'from-orange-700/40 to-orange-900/20 border-orange-600/40','silver'=>'from-slate-500/30 to-slate-700/20 border-slate-500/40','bronze'=>'from-orange-900/30 to-slate-800/20 border-orange-800/40'];
 $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 @endphp
 <div class="bg-gradient-to-r {{ $bc }} border rounded-xl p-5 mb-6 flex items-center justify-between">
     <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
-            <i class="fas fa-gem text-amber-400 text-xl"></i>
+        <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
+            <i class="fas fa-gem text-orange-400 text-xl"></i>
         </div>
         <div>
             <p class="text-white font-semibold">Forfait {{ ucfirst($planCode) }}</p>
@@ -45,12 +45,12 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
             </p>
         </div>
     </div>
-    <a href="{{ route('provider.billing.plans') }}" class="shrink-0 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium rounded-lg transition">
+    <a href="{{ route('provider.billing.plans') }}" class="shrink-0 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded-lg transition">
         Gérer l'abonnement
     </a>
 </div>
 @else
-<div class="bg-slate-900 border border-dashed border-slate-700 rounded-xl p-5 mb-6 flex items-center justify-between">
+<div class="bg-green-900 border border-dashed border-slate-700 rounded-xl p-5 mb-6 flex items-center justify-between">
     <div class="flex items-center gap-3">
         <i class="fas fa-gem text-slate-600 text-xl"></i>
         <div>
@@ -58,7 +58,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
             <p class="text-slate-500 text-xs">Souscrivez un forfait pour bénéficier de plus de visibilité.</p>
         </div>
     </div>
-    <a href="{{ route('provider.billing.plans') }}" class="shrink-0 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium rounded-lg transition">
+    <a href="{{ route('provider.billing.plans') }}" class="shrink-0 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded-lg transition">
         Voir les forfaits
     </a>
 </div>
@@ -68,15 +68,15 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
     @php
     $stat_cards = [
-        ['label' => 'Vues de la fiche',    'value' => number_format($stats['views']),          'icon' => 'fa-eye',            'color' => 'text-blue-400',   'bg' => 'bg-blue-900/20'],
+        ['label' => 'Vues de la fiche',    'value' => number_format($stats['views']),          'icon' => 'fa-eye',            'color' => 'text-green-400',   'bg' => 'bg-green-900/20'],
         ['label' => 'Clics téléphone',     'value' => number_format($stats['clicks_phone']),   'icon' => 'fa-phone',          'color' => 'text-emerald-400','bg' => 'bg-emerald-900/20'],
-        ['label' => 'Clics site web',      'value' => number_format($stats['clicks_website']), 'icon' => 'fa-globe',          'color' => 'text-violet-400', 'bg' => 'bg-violet-900/20'],
-        ['label' => 'Note moyenne',        'value' => number_format($stats['rating_avg'], 1),  'icon' => 'fa-star',           'color' => 'text-amber-400',  'bg' => 'bg-amber-900/20'],
+        ['label' => 'Clics site web',      'value' => number_format($stats['clicks_website']), 'icon' => 'fa-globe',          'color' => 'text-green-400', 'bg' => 'bg-green-900/20'],
+        ['label' => 'Note moyenne',        'value' => number_format($stats['rating_avg'], 1),  'icon' => 'fa-star',           'color' => 'text-orange-400',  'bg' => 'bg-orange-900/20'],
         ['label' => 'Nombre d\'avis',      'value' => number_format($stats['rating_count']),   'icon' => 'fa-comments',       'color' => 'text-rose-400',   'bg' => 'bg-rose-900/20'],
     ];
     @endphp
     @foreach($stat_cards as $card)
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <div class="flex items-center justify-between mb-3">
             <div class="w-8 h-8 rounded-lg {{ $card['bg'] }} flex items-center justify-center">
                 <i class="fas {{ $card['icon'] }} {{ $card['color'] }} text-sm"></i>
@@ -90,20 +90,20 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 
 {{-- ── Modern charts ───────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
-    <div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-fuchsia-500/20 rounded-xl p-5 shadow-lg shadow-fuchsia-900/20">
+    <div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-green-500/20 rounded-xl p-5 shadow-lg shadow-green-900/20">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-white font-semibold text-sm">Répartition des interactions</h3>
-            <span class="text-[10px] px-2 py-1 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-400/20">Doughnut</span>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-green-500/15 text-green-300 border border-green-400/20">Doughnut</span>
         </div>
         <div class="max-w-[340px] mx-auto">
             <canvas id="providerDashboardInteractions" height="220"></canvas>
         </div>
     </div>
 
-    <div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-blue-500/20 rounded-xl p-5 shadow-lg shadow-blue-900/20">
+    <div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-green-500/20 rounded-xl p-5 shadow-lg shadow-green-900/20">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-white font-semibold text-sm">Vue globale performance</h3>
-            <span class="text-[10px] px-2 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-400/20">Snapshot</span>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-green-500/15 text-green-300 border border-green-400/20">Snapshot</span>
         </div>
         <canvas id="providerDashboardOverview" height="220"></canvas>
     </div>
@@ -113,15 +113,15 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
 
     {{-- Recent reviews --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
             <h2 class="text-white font-semibold text-sm flex items-center gap-2">
-                <i class="fas fa-star text-amber-400"></i> Derniers avis approuvés
+                <i class="fas fa-star text-orange-400"></i> Derniers avis approuvés
                 @if($pending_reviews > 0)
                 <span class="bg-rose-500 text-white text-xs px-2 py-0.5 rounded-full" title="{{ $pending_reviews }} en attente">{{ $pending_reviews }} en attente</span>
                 @endif
             </h2>
-            <a href="#" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir tout →</a>
+            <a href="#" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
         </div>
         <div class="divide-y divide-slate-800">
             @forelse($recent_reviews as $review)
@@ -129,7 +129,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
                 <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center gap-1">
                         @for($i = 1; $i <= 5; $i++)
-                        <i class="fas fa-star text-xs {{ $i <= $review->rating ? 'text-amber-400' : 'text-slate-700' }}"></i>
+                        <i class="fas fa-star text-xs {{ $i <= $review->rating ? 'text-orange-400' : 'text-slate-700' }}"></i>
                         @endfor
                     </div>
                     <span class="text-slate-500 text-xs">{{ $review->created_at->diffForHumans() }}</span>
@@ -149,17 +149,17 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
     </div>
 
     {{-- Invoices --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
             <h2 class="text-white font-semibold text-sm flex items-center gap-2">
-                <i class="fas fa-file-invoice text-violet-400"></i> Dernières factures
+                <i class="fas fa-file-invoice text-green-400"></i> Dernières factures
             </h2>
-            <a href="#" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir tout →</a>
+            <a href="#" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
         </div>
         <div class="divide-y divide-slate-800">
             @forelse($invoices as $invoice)
             @php
-            $statusColors = ['paid'=>['text-emerald-400','bg-emerald-900/30'],'pending'=>['text-amber-400','bg-amber-900/30'],'overdue'=>['text-red-400','bg-red-900/30'],'cancelled'=>['text-slate-400','bg-slate-800']];
+            $statusColors = ['paid'=>['text-emerald-400','bg-emerald-900/30'],'pending'=>['text-orange-400','bg-orange-900/30'],'overdue'=>['text-red-400','bg-red-900/30'],'cancelled'=>['text-slate-400','bg-slate-800']];
             [$ic, $ibg] = $statusColors[$invoice->status] ?? ['text-slate-400','bg-slate-800'];
             @endphp
             <div class="px-5 py-3 flex items-center justify-between gap-3 hover:bg-slate-800/40 transition">
@@ -172,7 +172,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs {{ $ic }} {{ $ibg }}">
                         {{ ucfirst($invoice->status) }}
                     </span>
-                    <a href="#" class="text-slate-600 hover:text-amber-400 text-xs transition" title="Télécharger">
+                    <a href="#" class="text-slate-600 hover:text-orange-400 text-xs transition" title="Télécharger">
                         <i class="fas fa-download"></i>
                     </a>
                 </div>
@@ -188,9 +188,9 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 </div>
 
 {{-- ── Provider info card ──────────────────────────────────────────────── --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-start gap-5">
+<div class="bg-green-900 border border-slate-800 rounded-xl p-5 flex items-start gap-5">
     <div class="w-14 h-14 rounded-xl bg-slate-800 flex items-center justify-center shrink-0">
-        <i class="fas fa-store text-amber-400 text-xl"></i>
+        <i class="fas fa-store text-orange-400 text-xl"></i>
     </div>
     <div class="flex-1 min-w-0">
         <div class="flex items-start justify-between gap-3">
@@ -199,7 +199,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
                 <p class="text-slate-400 text-sm">{{ $provider->category->name ?? 'Non catégorisé' }}</p>
             </div>
             @php
-            $pstatusColors = ['active'=>'text-emerald-400 bg-emerald-900/30','pending'=>'text-amber-400 bg-amber-900/30','suspended'=>'text-red-400 bg-red-900/30','inactive'=>'text-slate-400 bg-slate-800'];
+            $pstatusColors = ['active'=>'text-emerald-400 bg-emerald-900/30','pending'=>'text-orange-400 bg-orange-900/30','suspended'=>'text-red-400 bg-red-900/30','inactive'=>'text-slate-400 bg-slate-800'];
             @endphp
             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium {{ $pstatusColors[$provider->status] ?? 'text-slate-400 bg-slate-800' }}">
                 {{ ucfirst($provider->status) }}
@@ -214,7 +214,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
             <span><i class="fas fa-phone mr-1"></i>{{ $provider->phone }}</span>
             @endif
             @if($provider->website)
-            <a href="{{ $provider->website }}" target="_blank" class="text-amber-400 hover:text-amber-300 transition">
+            <a href="{{ $provider->website }}" target="_blank" class="text-orange-400 hover:text-orange-300 transition">
                 <i class="fas fa-globe mr-1"></i>Site web
             </a>
             @endif
@@ -248,89 +248,122 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
     const overviewEl = document.getElementById('providerDashboardOverview');
     if (!interactionsEl || !overviewEl || typeof Chart === 'undefined') return;
 
-    const surface = '#0f172a';
-    const baseTooltip = {
-        backgroundColor: surface,
-        titleColor: '#f8fafc',
-        bodyColor: '#cbd5e1',
-        borderColor: 'rgba(148,163,184,0.25)',
-        borderWidth: 1,
-        padding: 10,
-    };
+    {{-- Chart.js dessine sur <canvas> : ces couleurs échappent au pont CSS mode-clair,
+         donc on les recalcule depuis l'état réel du thème et on reconstruit au changement. --}}
+    function isDarkMode() {
+        return document.getElementById('html-root')?.classList.contains('dark') ?? true;
+    }
+    function palette() {
+        const dark = isDarkMode();
+        return {
+            surface: dark ? '#e9e5d9' : '#e9e5d9',
+            ring: dark ? 'rgba(255, 255, 255,0.9)' : 'rgba(255,255,255,0.9)',
+            legend: dark ? '#cbd5e1' : '#44413a',
+            tick: dark ? '#94a3b8' : '#544f47',
+            grid: dark ? 'rgba(148,163,184,0.14)' : 'rgba(28,25,21,0.08)',
+            tooltipTitle: dark ? '#f8fafc' : '#1c1915',
+            tooltipBody: dark ? '#cbd5e1' : '#44413a',
+            tooltipBorder: dark ? 'rgba(148,163,184,0.25)' : 'rgba(28,25,21,0.14)',
+        };
+    }
 
-    new Chart(interactionsEl, {
-        type: 'doughnut',
-        data: {
-            labels: ['Vues', 'Clics téléphone', 'Clics site web'],
-            datasets: [{
-                data: @json($dashboardInteractionsData),
-                backgroundColor: [
-                    'rgba(59,130,246,0.92)',
-                    'rgba(16,185,129,0.92)',
-                    'rgba(168,85,247,0.92)',
-                ],
-                borderColor: 'rgba(15,23,42,0.9)',
-                borderWidth: 3,
-                hoverOffset: 8,
-                cutout: '66%',
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { color: '#cbd5e1', usePointStyle: true, boxWidth: 8, boxHeight: 8 },
-                },
-                tooltip: baseTooltip,
+    const interactionsData = @json($dashboardInteractionsData);
+    const overviewData = @json($dashboardOverviewData);
+    let interactionsChart, overviewChart;
+
+    function build() {
+        const p = palette();
+        const baseTooltip = {
+            backgroundColor: p.surface,
+            titleColor: p.tooltipTitle,
+            bodyColor: p.tooltipBody,
+            borderColor: p.tooltipBorder,
+            borderWidth: 1,
+            padding: 10,
+        };
+
+        interactionsChart?.destroy();
+        interactionsChart = new Chart(interactionsEl, {
+            type: 'doughnut',
+            data: {
+                labels: ['Vues', 'Clics téléphone', 'Clics site web'],
+                datasets: [{
+                    data: interactionsData,
+                    backgroundColor: [
+                        'rgba(59,130,246,0.92)',
+                        'rgba(16,185,129,0.92)',
+                        'rgba(168,85,247,0.92)',
+                    ],
+                    borderColor: p.ring,
+                    borderWidth: 3,
+                    hoverOffset: 8,
+                    cutout: '66%',
+                }],
             },
-        },
-    });
-
-    const overviewCtx = overviewEl.getContext('2d');
-    const gradBlue = overviewCtx.createLinearGradient(0, 0, 0, 220);
-    gradBlue.addColorStop(0, 'rgba(59,130,246,0.9)');
-    gradBlue.addColorStop(1, 'rgba(59,130,246,0.45)');
-
-    const gradAmber = overviewCtx.createLinearGradient(0, 0, 0, 220);
-    gradAmber.addColorStop(0, 'rgba(245,158,11,0.95)');
-    gradAmber.addColorStop(1, 'rgba(245,158,11,0.5)');
-
-    new Chart(overviewEl, {
-        type: 'bar',
-        data: {
-            labels: ['Vues', 'Tel.', 'Web', 'Avis', 'Note x10'],
-            datasets: [{
-                data: @json($dashboardOverviewData),
-                backgroundColor: [gradBlue, gradBlue, gradBlue, gradAmber, gradAmber],
-                borderRadius: 8,
-                borderSkipped: false,
-                maxBarThickness: 30,
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: baseTooltip,
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: { color: '#94a3b8', font: { size: 10 } },
-                    border: { display: false },
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: { color: 'rgba(148,163,184,0.14)', drawBorder: false },
-                    ticks: { color: '#94a3b8', font: { size: 10 } },
-                    border: { display: false },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: p.legend, usePointStyle: true, boxWidth: 8, boxHeight: 8 },
+                    },
+                    tooltip: baseTooltip,
                 },
             },
-        },
-    });
+        });
+
+        const overviewCtx = overviewEl.getContext('2d');
+        const gradBlue = overviewCtx.createLinearGradient(0, 0, 0, 220);
+        gradBlue.addColorStop(0, 'rgba(59,130,246,0.9)');
+        gradBlue.addColorStop(1, 'rgba(59,130,246,0.45)');
+
+        const gradAmber = overviewCtx.createLinearGradient(0, 0, 0, 220);
+        gradAmber.addColorStop(0, 'rgba(242, 121, 15,0.95)');
+        gradAmber.addColorStop(1, 'rgba(242, 121, 15,0.5)');
+
+        overviewChart?.destroy();
+        overviewChart = new Chart(overviewEl, {
+            type: 'bar',
+            data: {
+                labels: ['Vues', 'Tel.', 'Web', 'Avis', 'Note x10'],
+                datasets: [{
+                    data: overviewData,
+                    backgroundColor: [gradBlue, gradBlue, gradBlue, gradAmber, gradAmber],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    maxBarThickness: 30,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: baseTooltip,
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: p.tick, font: { size: 10 } },
+                        border: { display: false },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: p.grid, drawBorder: false },
+                        ticks: { color: p.tick, font: { size: 10 } },
+                        border: { display: false },
+                    },
+                },
+            },
+        });
+    }
+
+    build();
+    const htmlRoot = document.getElementById('html-root');
+    if (htmlRoot) {
+        new MutationObserver(build).observe(htmlRoot, { attributes: true, attributeFilter: ['class'] });
+    }
 })();
 </script>
 @endif

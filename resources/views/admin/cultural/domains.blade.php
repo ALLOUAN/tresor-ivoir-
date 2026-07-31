@@ -5,7 +5,7 @@
 
 @section('header-actions')
 <button onclick="document.getElementById('modal-domain-create').classList.remove('hidden')"
-    class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+    class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouveau domaine
 </button>
 @endsection
@@ -23,7 +23,7 @@
 {{-- Domaines racines + sous-domaines --}}
 <div class="space-y-4">
     @forelse($roots as $root)
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
 
         {{-- Racine --}}
         <div class="flex items-center gap-4 px-5 py-4 border-b border-slate-800">
@@ -61,21 +61,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div><label class="text-xs text-slate-400 mb-1 block">Nom</label>
                         <input type="text" name="name" value="{{ $root->name }}" required
-                            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                            class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                     <div><label class="text-xs text-slate-400 mb-1 block">Icône FontAwesome</label>
                         <input type="text" name="icon" value="{{ $root->icon }}" placeholder="fas fa-music"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                            class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                     <div><label class="text-xs text-slate-400 mb-1 block">Couleur (hex)</label>
                         <input type="text" name="color" value="{{ $root->color }}" placeholder="#8B5CF6"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                            class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                     <div class="md:col-span-3"><label class="text-xs text-slate-400 mb-1 block">Description</label>
                         <input type="text" name="description" value="{{ $root->description }}"
-                            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                            class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                     <div class="md:col-span-3 flex justify-end gap-2">
                         <button type="button" onclick="closeEditDomainModal('root-{{ $root->id }}')"
                             class="px-3 py-1.5 bg-slate-700 text-slate-300 text-xs rounded-lg transition">Annuler</button>
                         <button type="submit"
-                            class="px-4 py-1.5 bg-amber-500 text-black font-semibold text-xs rounded-lg transition">Enregistrer</button>
+                            class="px-4 py-1.5 bg-orange-500 text-black font-semibold text-xs rounded-lg transition">Enregistrer</button>
                     </div>
                 </div>
             </form>
@@ -118,18 +118,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div><label class="text-xs text-slate-400 mb-1 block">Nom</label>
                             <input type="text" name="name" value="{{ $child->name }}" required
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                                class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                         <div><label class="text-xs text-slate-400 mb-1 block">Icône</label>
                             <input type="text" name="icon" value="{{ $child->icon }}"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                                class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                         <div><label class="text-xs text-slate-400 mb-1 block">Couleur</label>
                             <input type="text" name="color" value="{{ $child->color }}"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                                class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                         <div class="md:col-span-3 flex justify-end gap-2">
                             <button type="button" onclick="closeEditDomainModal('child-{{ $child->id }}')"
                                 class="px-3 py-1.5 bg-slate-700 text-slate-300 text-xs rounded-lg">Annuler</button>
                             <button type="submit"
-                                class="px-4 py-1.5 bg-amber-500 text-black font-semibold text-xs rounded-lg">Enregistrer</button>
+                                class="px-4 py-1.5 bg-orange-500 text-black font-semibold text-xs rounded-lg">Enregistrer</button>
                         </div>
                     </div>
                 </form>
@@ -141,7 +141,7 @@
         {{-- Ajouter sous-domaine --}}
         <div class="px-5 py-3 pl-12 bg-slate-800/20">
             <button onclick="document.getElementById('add-sub-{{ $root->id }}').classList.toggle('hidden')"
-                class="text-xs text-slate-500 hover:text-amber-400 transition flex items-center gap-1.5">
+                class="text-xs text-slate-500 hover:text-orange-400 transition flex items-center gap-1.5">
                 <i class="fas fa-plus text-[10px]"></i> Ajouter un sous-domaine
             </button>
             <form id="add-sub-{{ $root->id }}" method="POST" action="{{ route('admin.cultural.domains.store') }}" class="hidden mt-3">
@@ -149,17 +149,17 @@
                 <input type="hidden" name="parent_id" value="{{ $root->id }}">
                 <div class="flex gap-2">
                     <input type="text" name="name" placeholder="Nom du sous-domaine…" required maxlength="100"
-                        class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                        class="flex-1 bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     <input type="text" name="icon" placeholder="fas fa-…" maxlength="80"
-                        class="w-32 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                        class="w-32 bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     <button type="submit"
-                        class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">Ajouter</button>
+                        class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">Ajouter</button>
                 </div>
             </form>
         </div>
     </div>
     @empty
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center text-slate-600">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-12 text-center text-slate-600">
         <i class="fas fa-layer-group text-4xl mb-3 block"></i>
         Aucun domaine culturel.
     </div>
@@ -167,11 +167,11 @@
 </div>
 
 {{-- Modal création domaine racine --}}
-<div id="modal-domain-create" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg">
+<div id="modal-domain-create" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-green-950/70 backdrop-blur-sm">
+    <div class="bg-green-900 border border-slate-700 rounded-2xl w-full max-w-lg">
         <div class="flex items-center justify-between p-5 border-b border-slate-800">
             <h3 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-layer-group text-amber-400"></i> Nouveau domaine racine
+                <i class="fas fa-layer-group text-orange-400"></i> Nouveau domaine racine
             </h3>
             <button onclick="document.getElementById('modal-domain-create').classList.add('hidden')"
                 class="text-slate-500 hover:text-white transition"><i class="fas fa-times"></i></button>
@@ -182,7 +182,7 @@
                 <div class="col-span-2">
                     <label class="text-xs text-slate-400 mb-1 block">Nom <span class="text-red-400">*</span></label>
                     <input type="text" name="name" required maxlength="100"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 mb-1 block">Icône FontAwesome</label>
@@ -209,7 +209,7 @@
                 <button type="button" onclick="document.getElementById('modal-domain-create').classList.add('hidden')"
                     class="px-4 py-2 bg-slate-800 text-slate-300 text-xs rounded-lg">Annuler</button>
                 <button type="submit"
-                    class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">Créer</button>
+                    class="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">Créer</button>
             </div>
         </form>
     </div>

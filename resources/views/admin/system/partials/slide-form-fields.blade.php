@@ -17,18 +17,18 @@
     <div class="flex gap-3" id="{{ $prefix }}media_type_group">
         <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="radio" name="media_type" id="{{ $prefix }}type_image" value="image"
-                   class="accent-violet-500 w-4 h-4"
+                   class="accent-green-500 w-4 h-4"
                    {{ (!$isEdit || !$isVideo) ? 'checked' : '' }}>
             <span class="flex items-center gap-1.5 text-sm text-slate-300 group-has-[:checked]:text-white">
-                <i class="fas fa-image text-violet-400 w-4 text-center"></i> Image
+                <i class="fas fa-image text-green-400 w-4 text-center"></i> Image
             </span>
         </label>
         <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="radio" name="media_type" id="{{ $prefix }}type_video" value="video"
-                   class="accent-amber-500 w-4 h-4"
+                   class="accent-orange-500 w-4 h-4"
                    {{ ($isEdit && $isVideo) ? 'checked' : '' }}>
             <span class="flex items-center gap-1.5 text-sm text-slate-300 group-has-[:checked]:text-white">
-                <i class="fas fa-film text-amber-400 w-4 text-center"></i> Vidéo
+                <i class="fas fa-film text-orange-400 w-4 text-center"></i> Vidéo
             </span>
         </label>
     </div>
@@ -72,18 +72,18 @@
             <img id="{{ $prefix }}preview_mobile" src="" alt="" class="w-full max-h-24 object-cover rounded hidden">
         </div>
         {{-- Aperçus vidéo --}}
-        <div class="border border-amber-500/20 rounded-lg p-2 bg-amber-500/5 {{ !$isVideo ? 'hidden' : '' }}" id="{{ $prefix }}preview_vid_desktop_wrap">
+        <div class="border border-orange-500/20 rounded-lg p-2 bg-orange-500/5 {{ !$isVideo ? 'hidden' : '' }}" id="{{ $prefix }}preview_vid_desktop_wrap">
             <p class="text-xs text-slate-400 mb-1">Aperçu Vidéo — Desktop</p>
             <video id="{{ $prefix }}preview_video_desktop" src="" class="w-full max-h-24 object-cover rounded hidden" muted></video>
-            <p id="{{ $prefix }}preview_vid_desktop_name" class="text-xs text-amber-300 mt-1 truncate hidden"></p>
+            <p id="{{ $prefix }}preview_vid_desktop_name" class="text-xs text-orange-300 mt-1 truncate hidden"></p>
         </div>
-        <div class="border border-amber-500/20 rounded-lg p-2 bg-amber-500/5 {{ !$isVideo ? 'hidden' : '' }}" id="{{ $prefix }}preview_vid_tablet_wrap">
+        <div class="border border-orange-500/20 rounded-lg p-2 bg-orange-500/5 {{ !$isVideo ? 'hidden' : '' }}" id="{{ $prefix }}preview_vid_tablet_wrap">
             <p class="text-xs text-slate-400 mb-1">Aperçu Vidéo — Tablette</p>
-            <p id="{{ $prefix }}preview_vid_tablet_name" class="text-xs text-amber-300 truncate hidden"></p>
+            <p id="{{ $prefix }}preview_vid_tablet_name" class="text-xs text-orange-300 truncate hidden"></p>
         </div>
-        <div class="border border-amber-500/20 rounded-lg p-2 bg-amber-500/5 {{ !$isVideo ? 'hidden' : '' }}" id="{{ $prefix }}preview_vid_mobile_wrap">
+        <div class="border border-orange-500/20 rounded-lg p-2 bg-orange-500/5 {{ !$isVideo ? 'hidden' : '' }}" id="{{ $prefix }}preview_vid_mobile_wrap">
             <p class="text-xs text-slate-400 mb-1">Aperçu Vidéo — Mobile</p>
-            <p id="{{ $prefix }}preview_vid_mobile_name" class="text-xs text-amber-300 truncate hidden"></p>
+            <p id="{{ $prefix }}preview_vid_mobile_name" class="text-xs text-orange-300 truncate hidden"></p>
         </div>
     </div>
 @endif
@@ -92,11 +92,11 @@
 <div id="{{ $prefix }}image_fields" class="{{ $isVideo ? 'hidden' : '' }} md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
         <label class="block text-sm text-slate-300 mb-1">
-            Image Desktop <span class="text-violet-400">{{ $isEdit ? '' : '*' }}</span>
+            Image Desktop <span class="text-green-400">{{ $isEdit ? '' : '*' }}</span>
         </label>
         <input type="file" name="desktop_image" id="{{ $prefix }}desktop_image"
                accept="image/jpeg,image/png,image/webp"
-               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-violet-600 file:px-3 file:py-2 file:text-white file:text-xs"
+               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-green-600 file:px-3 file:py-2 file:text-white file:text-xs"
                {{ ($isEdit || $isVideo) ? '' : 'required' }}>
         <p class="text-slate-500 text-xs mt-1">JPEG, PNG, WebP — max 8 Mo. Cible 1920×800 px.</p>
     </div>
@@ -104,14 +104,14 @@
         <label class="block text-sm text-slate-300 mb-1">Image Tablette</label>
         <input type="file" name="tablet_image" id="{{ $prefix }}tablet_image"
                accept="image/jpeg,image/png,image/webp"
-               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-violet-600 file:px-3 file:py-2 file:text-white file:text-xs">
+               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-green-600 file:px-3 file:py-2 file:text-white file:text-xs">
         <p class="text-slate-500 text-xs mt-1">Optionnel — max 6 Mo. Cible 1024×600 px.</p>
     </div>
     <div>
         <label class="block text-sm text-slate-300 mb-1">Image Mobile</label>
         <input type="file" name="mobile_image" id="{{ $prefix }}mobile_image"
                accept="image/jpeg,image/png,image/webp"
-               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-violet-600 file:px-3 file:py-2 file:text-white file:text-xs">
+               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-green-600 file:px-3 file:py-2 file:text-white file:text-xs">
         <p class="text-slate-500 text-xs mt-1">Optionnel — max 4 Mo. Cible 768×500 px.</p>
     </div>
     @if($isEdit)
@@ -121,33 +121,33 @@
 
 {{-- ══════════ CHAMPS VIDÉO ══════════ --}}
 <div id="{{ $prefix }}video_fields" class="{{ !$isVideo ? 'hidden' : '' }} md:col-span-2">
-    <div class="rounded-lg border border-amber-500/25 bg-amber-500/5 px-4 py-3 mb-3 text-xs text-amber-200/80">
-        <i class="fas fa-circle-info text-amber-400 mr-1"></i>
+    <div class="rounded-lg border border-orange-500/25 bg-orange-500/5 px-4 py-3 mb-3 text-xs text-orange-200/80">
+        <i class="fas fa-circle-info text-orange-400 mr-1"></i>
         Formats acceptés : <strong>MP4</strong> (H.264) ou <strong>WebM</strong>. Vidéos muettes, lecture en boucle automatique.
         Desktop : 1920×800 — Tablette : 1024×600 — Mobile : 768×500.
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
             <label class="block text-sm text-slate-300 mb-1">
-                Vidéo Desktop <span class="text-amber-400">{{ $isEdit ? '' : '*' }}</span>
+                Vidéo Desktop <span class="text-orange-400">{{ $isEdit ? '' : '*' }}</span>
             </label>
             <input type="file" name="video_desktop" id="{{ $prefix }}video_desktop"
                    accept="video/mp4,video/webm"
-                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-amber-600 file:px-3 file:py-2 file:text-white file:text-xs">
+                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-orange-600 file:px-3 file:py-2 file:text-white file:text-xs">
             <p class="text-slate-500 text-xs mt-1">Max 100 Mo — 1920×800 px recommandé.</p>
         </div>
         <div>
             <label class="block text-sm text-slate-300 mb-1">Vidéo Tablette</label>
             <input type="file" name="video_tablet" id="{{ $prefix }}video_tablet"
                    accept="video/mp4,video/webm"
-                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-amber-600 file:px-3 file:py-2 file:text-white file:text-xs">
+                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-orange-600 file:px-3 file:py-2 file:text-white file:text-xs">
             <p class="text-slate-500 text-xs mt-1">Optionnel — max 50 Mo — 1024×600 px.</p>
         </div>
         <div>
             <label class="block text-sm text-slate-300 mb-1">Vidéo Mobile</label>
             <input type="file" name="video_mobile" id="{{ $prefix }}video_mobile"
                    accept="video/mp4,video/webm"
-                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-amber-600 file:px-3 file:py-2 file:text-white file:text-xs">
+                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-orange-600 file:px-3 file:py-2 file:text-white file:text-xs">
             <p class="text-slate-500 text-xs mt-1">Optionnel — max 30 Mo — 768×500 px.</p>
         </div>
     </div>
@@ -167,7 +167,7 @@
 <div class="md:col-span-2">
     <label class="inline-flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
         <input type="checkbox" name="is_active" id="{{ $prefix }}is_active" value="1" checked
-               class="rounded border-slate-600 bg-slate-800 text-amber-500">
+               class="rounded border-slate-600 bg-slate-800 text-orange-500">
         Slide actif (visible sur le site)
     </label>
 </div>

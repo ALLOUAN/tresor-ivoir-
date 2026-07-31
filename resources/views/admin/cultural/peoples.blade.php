@@ -5,7 +5,7 @@
 
 @section('header-actions')
 <button onclick="openPeopleModal()"
-    class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+    class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouveau peuple
 </button>
 @endsection
@@ -19,9 +19,9 @@
     @foreach([
         ['fas fa-people-group', 'text-slate-300',   $counts['total'],    'Total'],
         ['fas fa-circle-check', 'text-emerald-400', $counts['active'],   'Actifs'],
-        ['fas fa-star',         'text-amber-400',   $counts['featured'], 'En vedette'],
+        ['fas fa-star',         'text-orange-400',   $counts['featured'], 'En vedette'],
     ] as [$icon, $color, $val, $lbl])
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <i class="{{ $icon }} {{ $color }} text-sm mb-2 block"></i>
         <p class="text-2xl font-bold text-white">{{ $val }}</p>
         <p class="text-slate-500 text-xs mt-0.5">{{ $lbl }}</p>
@@ -32,9 +32,9 @@
 {{-- Filtres --}}
 <form method="GET" action="{{ route('admin.cultural.peoples.index') }}" class="mb-5 flex gap-2">
     <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher un peuple…"
-        class="flex-1 bg-slate-900 border border-slate-800 focus:border-amber-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+        class="flex-1 bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
     <select name="zone"
-        class="bg-slate-900 border border-slate-800 focus:border-amber-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+        class="bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
         <option value="">Toutes zones</option>
         @foreach(['Nord','Sud','Est','Ouest','Centre'] as $z)
         <option value="{{ $z }}" {{ $zone === $z ? 'selected' : '' }}>{{ $z }}</option>
@@ -52,7 +52,7 @@
 @endif
 
 {{-- Table --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
@@ -79,7 +79,7 @@
                             <div>
                                 <p class="text-white font-medium">{{ $people->name }}</p>
                                 @if($people->is_featured)
-                                <span class="text-amber-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>En vedette</span>
+                                <span class="text-orange-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>En vedette</span>
                                 @endif
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                     <td class="px-5 py-4 hidden md:table-cell">
                         @if($people->zone_geographique)
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[11px]">
-                            <i class="fas fa-map-location-dot text-amber-400/60 text-[9px]"></i>
+                            <i class="fas fa-map-location-dot text-orange-400/60 text-[9px]"></i>
                             {{ $people->zone_geographique }}
                         </span>
                         @endif
@@ -115,7 +115,7 @@
                                 @csrf @method('PATCH')
                                 <button type="submit" title="{{ $people->is_featured ? 'Retirer vedette' : 'Mettre en vedette' }}"
                                     class="w-7 h-7 rounded-lg flex items-center justify-center transition
-                                        {{ $people->is_featured ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-800 text-slate-600 hover:text-amber-400' }}">
+                                        {{ $people->is_featured ? 'bg-orange-500/20 text-orange-400' : 'bg-slate-800 text-slate-600 hover:text-orange-400' }}">
                                     <i class="fas fa-star text-xs"></i>
                                 </button>
                             </form>
@@ -144,12 +144,12 @@
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Nom</label>
                                     <input type="text" name="name" value="{{ $people->name }}" required maxlength="100"
-                                        class="w-full bg-slate-900 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-green-900 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Zone géographique</label>
                                     <select name="zone_geographique"
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                         <option value="">—</option>
                                         @foreach(['Nord','Sud','Est','Ouest','Centre'] as $z)
                                         <option value="{{ $z }}" {{ $people->zone_geographique === $z ? 'selected' : '' }}>{{ $z }}</option>
@@ -159,38 +159,38 @@
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Famille linguistique</label>
                                     <input type="text" name="famille_linguistique" value="{{ $people->famille_linguistique }}" maxlength="100"
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Langue principale</label>
                                     <input type="text" name="langue_principale" value="{{ $people->langue_principale }}" maxlength="100"
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Population estimée</label>
                                     <input type="number" name="population_estimee" value="{{ $people->population_estimee }}" min="0"
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Capitale culturelle</label>
                                     <input type="text" name="capitale_culturelle" value="{{ $people->capitale_culturelle }}" maxlength="100"
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div class="md:col-span-3">
                                     <label class="text-xs text-slate-400 mb-1 block">Description</label>
                                     <textarea name="description" rows="3"
-                                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ $people->description }}</textarea>
+                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ $people->description }}</textarea>
                                 </div>
                                 <div class="md:col-span-3 flex items-center justify-between">
                                     <div class="flex items-center gap-4">
                                         <label class="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
                                             <input type="checkbox" name="is_active" value="1" {{ $people->is_active ? 'checked' : '' }}
-                                                class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                                                class="rounded border-slate-600 bg-slate-800 text-orange-500">
                                             Actif
                                         </label>
                                         <label class="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
                                             <input type="checkbox" name="is_featured" value="1" {{ $people->is_featured ? 'checked' : '' }}
-                                                class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                                                class="rounded border-slate-600 bg-slate-800 text-orange-500">
                                             En vedette
                                         </label>
                                     </div>
@@ -200,7 +200,7 @@
                                             Annuler
                                         </button>
                                         <button type="submit"
-                                            class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+                                            class="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
                                             Enregistrer
                                         </button>
                                     </div>
@@ -225,11 +225,11 @@
 {{ $peoples->links() }}
 
 {{-- Modal création --}}
-<div id="modal-people-create" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+<div id="modal-people-create" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-green-950/70 backdrop-blur-sm">
+    <div class="bg-green-900 border border-slate-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between p-5 border-b border-slate-800">
             <h3 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-people-group text-amber-400"></i> Nouveau peuple
+                <i class="fas fa-people-group text-orange-400"></i> Nouveau peuple
             </h3>
             <button onclick="closePeopleModal()" class="text-slate-500 hover:text-white transition"><i class="fas fa-times"></i></button>
         </div>
@@ -239,7 +239,7 @@
                 <div class="md:col-span-2">
                     <label class="text-xs text-slate-400 mb-1 block">Nom <span class="text-red-400">*</span></label>
                     <input type="text" name="name" required maxlength="100"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 mb-1 block">Zone géographique</label>
@@ -288,11 +288,11 @@
                 </div>
                 <div class="md:col-span-2 flex items-center gap-4">
                     <label class="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
-                        <input type="checkbox" name="is_active" value="1" checked class="rounded border-slate-600 bg-slate-700 text-amber-500">
+                        <input type="checkbox" name="is_active" value="1" checked class="rounded border-slate-600 bg-slate-700 text-orange-500">
                         Actif
                     </label>
                     <label class="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
-                        <input type="checkbox" name="is_featured" value="1" class="rounded border-slate-600 bg-slate-700 text-amber-500">
+                        <input type="checkbox" name="is_featured" value="1" class="rounded border-slate-600 bg-slate-700 text-orange-500">
                         En vedette
                     </label>
                 </div>
@@ -301,7 +301,7 @@
                 <button type="button" onclick="closePeopleModal()"
                     class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">Annuler</button>
                 <button type="submit"
-                    class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">Créer le peuple</button>
+                    class="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">Créer le peuple</button>
             </div>
         </form>
     </div>

@@ -37,32 +37,32 @@
 @endif
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-    <div class="premium-shimmer-card bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-700/70 rounded-2xl p-4 shadow-xl shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-500/70 hover:shadow-2xl hover:shadow-slate-900/40">
+    <div class="premium-shimmer-card bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-slate-700/70 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-500/70 hover:shadow-2xl hover:shadow-green-900/40">
         <p class="text-slate-500 text-xs uppercase tracking-wider">Tous</p>
         <p class="text-white text-2xl font-bold mt-1">{{ number_format($counts['all']) }}</p>
     </div>
-    <div class="premium-shimmer-card bg-linear-to-br from-amber-900/25 via-slate-900 to-slate-950 border border-amber-500/25 rounded-2xl p-4 shadow-xl shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:shadow-2xl hover:shadow-amber-900/30">
-        <p class="text-amber-200/70 text-xs uppercase tracking-wider">En attente</p>
-        <p class="text-amber-300 text-2xl font-bold mt-1">{{ number_format($counts['pending']) }}</p>
+    <div class="premium-shimmer-card bg-linear-to-br from-orange-900/25 via-green-900 to-green-950 border border-orange-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-400/40 hover:shadow-2xl hover:shadow-orange-900/30">
+        <p class="text-orange-200/70 text-xs uppercase tracking-wider">En attente</p>
+        <p class="text-orange-300 text-2xl font-bold mt-1">{{ number_format($counts['pending']) }}</p>
     </div>
-    <div class="premium-shimmer-card bg-linear-to-br from-emerald-900/20 via-slate-900 to-slate-950 border border-emerald-500/25 rounded-2xl p-4 shadow-xl shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:shadow-2xl hover:shadow-emerald-900/30">
+    <div class="premium-shimmer-card bg-linear-to-br from-emerald-900/20 via-green-900 to-green-950 border border-emerald-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:shadow-2xl hover:shadow-emerald-900/30">
         <p class="text-emerald-200/70 text-xs uppercase tracking-wider">Approuvés</p>
         <p class="text-emerald-300 text-2xl font-bold mt-1">{{ number_format($counts['approved']) }}</p>
     </div>
-    <div class="premium-shimmer-card bg-linear-to-br from-rose-900/20 via-slate-900 to-slate-950 border border-rose-500/25 rounded-2xl p-4 shadow-xl shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-rose-400/40 hover:shadow-2xl hover:shadow-rose-900/30">
+    <div class="premium-shimmer-card bg-linear-to-br from-rose-900/20 via-green-900 to-green-950 border border-rose-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-rose-400/40 hover:shadow-2xl hover:shadow-rose-900/30">
         <p class="text-rose-200/70 text-xs uppercase tracking-wider">Rejetés</p>
         <p class="text-rose-300 text-2xl font-bold mt-1">{{ number_format($counts['rejected']) }}</p>
     </div>
 </div>
 
-<div class="bg-linear-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-700/70 rounded-2xl overflow-hidden shadow-xl shadow-black/25 divide-y divide-slate-800/80">
+<div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-slate-700/70 rounded-2xl overflow-hidden shadow-xl shadow-green-950/25 divide-y divide-slate-800/80">
     @forelse($reviews as $review)
         <div class="px-5 py-5 transition-all duration-300 hover:bg-slate-800/20">
             <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                     <div class="flex flex-wrap items-center gap-2">
                         <p class="text-white font-semibold truncate">{{ $review->author_name ?: ($review->user->full_name ?? 'Anonyme') }}</p>
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-amber-500/15 border border-amber-400/30 text-amber-300">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-orange-500/15 border border-orange-400/30 text-orange-300">
                             <i class="fas fa-star text-[10px]"></i>{{ $review->rating }}/5
                         </span>
                     </div>
@@ -70,9 +70,9 @@
                     @if($review->replies->isNotEmpty())
                         <div class="mt-3 space-y-2">
                             @foreach($review->replies as $reply)
-                                <div class="p-3 bg-slate-800/85 border border-slate-700 rounded-xl text-xs text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/30 hover:shadow-lg hover:shadow-amber-900/15">
+                                <div class="p-3 bg-slate-800/85 border border-slate-700 rounded-xl text-xs text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-400/30 hover:shadow-lg hover:shadow-orange-900/15">
                                     <div class="flex items-center justify-between gap-2">
-                                        <p class="text-amber-300 font-semibold tracking-wide uppercase text-[10px]">Votre réponse</p>
+                                        <p class="text-orange-300 font-semibold tracking-wide uppercase text-[10px]">Votre réponse</p>
                                         <form method="POST" action="{{ route('provider.reviews.reply.destroy', [$review, $reply]) }}"
                                               onsubmit="return confirm('Supprimer cette réponse ?');">
                                             @csrf
@@ -92,7 +92,7 @@
                         </div>
                     @endif
                 </div>
-                <span class="px-2.5 py-1 rounded-full text-xs {{ $review->status === 'approved' ? 'bg-emerald-500/20 text-emerald-300' : ($review->status === 'pending' ? 'bg-amber-500/20 text-amber-300' : 'bg-red-500/20 text-red-300') }}">
+                <span class="px-2.5 py-1 rounded-full text-xs {{ $review->status === 'approved' ? 'bg-emerald-500/20 text-emerald-300' : ($review->status === 'pending' ? 'bg-orange-500/20 text-orange-300' : 'bg-red-500/20 text-red-300') }}">
                     {{ $review->status }}
                 </span>
             </div>
@@ -114,7 +114,7 @@
                     </p>
                 @else
                     <div class="mb-2 flex items-center gap-2">
-                        <span class="inline-flex items-center gap-2 text-xs px-2.5 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 shadow-sm shadow-amber-900/20">
+                        <span class="inline-flex items-center gap-2 text-xs px-2.5 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-300 shadow-sm shadow-orange-900/20">
                             <i class="fas fa-reply"></i>
                             Répondre à cet avis
                         </span>
@@ -123,9 +123,9 @@
                         @csrf
                         <textarea name="reply_text" rows="2" maxlength="1000"
                                   placeholder="Répondre à cet avis..."
-                                  class="w-full max-w-2xl bg-slate-800/90 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/35 focus:border-amber-500/40">{{ old('reply_text') }}</textarea>
+                                  class="w-full max-w-2xl bg-slate-800/90 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/35 focus:border-orange-500/40">{{ old('reply_text') }}</textarea>
                         <div class="flex flex-wrap items-center gap-2">
-                            <button class="inline-flex items-center gap-1.5 bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg shadow-amber-900/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-amber-900/40">
+                            <button class="inline-flex items-center gap-1.5 bg-linear-to-r from-orange-500 to-orange-500 hover:from-orange-400 hover:to-orange-400 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg shadow-orange-900/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-900/40">
                                 <i class="fas fa-paper-plane"></i>
                                 Répondre
                             </button>
@@ -141,7 +141,7 @@
         </div>
     @endforelse
 
-    <div class="px-5 py-4 border-t border-slate-800 bg-slate-900/60">
+    <div class="px-5 py-4 border-t border-slate-800 bg-green-900/60">
         {{ $reviews->links() }}
     </div>
 </div>

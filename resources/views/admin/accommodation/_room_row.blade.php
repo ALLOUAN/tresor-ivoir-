@@ -4,7 +4,7 @@
         <input type="text" name="room_name[]"
                value="{{ $r['name'] ?? '' }}"
                placeholder="Chambre Standard"
-               class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
+               class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
         <button type="button" onclick="this.closest('.room-row').remove()"
                 class="w-8 h-9 rounded-lg bg-slate-700 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
             <i class="fas fa-times text-xs"></i>
@@ -55,11 +55,11 @@
             {{-- Étiquette + bouton ajouter URL --}}
             <div class="flex items-center justify-between mb-1.5">
                 <span class="text-[11px] text-slate-500 flex items-center gap-1">
-                    <i class="fas fa-images text-[9px] text-amber-400/60"></i>
+                    <i class="fas fa-images text-[9px] text-orange-400/60"></i>
                     Photos de la chambre
                 </span>
                 <button type="button" onclick="addRoomPhotoRow(this)"
-                        class="inline-flex items-center gap-1 text-[10px] text-amber-400 hover:text-amber-300 transition">
+                        class="inline-flex items-center gap-1 text-[10px] text-orange-400 hover:text-orange-300 transition">
                     <i class="fas fa-plus text-[8px]"></i>Ajouter URL
                 </button>
             </div>
@@ -80,7 +80,7 @@
                     </div>
                     <input type="text" value="{{ $photoUrl }}"
                            placeholder="https://…/photo.jpg"
-                           class="photo-url-field flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-1.5 text-xs text-slate-100 outline-none transition"
+                           class="photo-url-field flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-1.5 text-xs text-slate-100 outline-none transition"
                            oninput="syncRoomPhotos(this)">
                     <button type="button" onclick="removeRoomPhotoRow(this)"
                             class="w-8 h-[34px] rounded-lg bg-slate-700 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
@@ -93,7 +93,7 @@
             {{-- Upload fichiers --}}
             <label class="flex items-center gap-2 cursor-pointer group">
                 <span class="text-[11px] text-slate-500 group-hover:text-slate-300 transition flex items-center gap-1">
-                    <i class="fas fa-cloud-arrow-up text-[9px] text-amber-400/60"></i> Uploader des photos
+                    <i class="fas fa-cloud-arrow-up text-[9px] text-orange-400/60"></i> Uploader des photos
                 </span>
                 <input type="file" name="room_photo_files[{{ $i }}][]"
                        multiple accept="image/*"

@@ -5,13 +5,13 @@
 
 @section('header-actions')
 <a href="{{ route('editor.events.create') }}"
-   class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+   class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouvel événement
 </a>
 @endsection
 
 @section('content')
-<div class="flex items-center gap-1 overflow-x-auto mb-6 bg-slate-900/50 border border-slate-800 rounded-xl p-1">
+<div class="flex items-center gap-1 overflow-x-auto mb-6 bg-green-900/50 border border-slate-800 rounded-xl p-1">
     @php $tabs = [''=>'Tous','draft'=>'Brouillons','published'=>'Publiés','cancelled'=>'Annulés','past'=>'Passés']; @endphp
     @foreach($tabs as $val => $label)
     <a href="{{ route('editor.events.index', $val ? ['status' => $val] : []) }}"
@@ -25,7 +25,7 @@
     @endforeach
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
@@ -46,7 +46,7 @@
                         <p class="text-slate-500 text-xs mt-0.5">{{ $event->city ?: 'Ville non précisée' }}</p>
                     </td>
                     <td class="px-5 py-4 hidden md:table-cell">
-                        <span class="text-amber-400/80 text-xs">{{ $event->category->name_fr ?? '—' }}</span>
+                        <span class="text-orange-400/80 text-xs">{{ $event->category->name_fr ?? '—' }}</span>
                     </td>
                     <td class="px-5 py-4 hidden lg:table-cell text-slate-400 text-xs">
                         {{ $event->starts_at?->format('d/m/Y H:i') ?: '—' }}
@@ -64,7 +64,7 @@
                     <td class="px-5 py-4">
                         <div class="flex items-center justify-end gap-1">
                             <a href="{{ route('editor.events.edit', $event) }}"
-                               class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/50 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Modifier">
+                               class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/50 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Modifier">
                                 <i class="fas fa-pen text-xs"></i>
                             </a>
                             <form method="POST" action="{{ route('editor.events.destroy', $event) }}"
@@ -81,7 +81,7 @@
                 <tr>
                     <td colspan="6" class="px-5 py-16 text-center text-slate-500">
                         Aucun événement trouvé.
-                        <a href="{{ route('editor.events.create') }}" class="text-amber-400 hover:underline ml-1">Créer le premier</a>
+                        <a href="{{ route('editor.events.create') }}" class="text-orange-400 hover:underline ml-1">Créer le premier</a>
                     </td>
                 </tr>
                 @endforelse

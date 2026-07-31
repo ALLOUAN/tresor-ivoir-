@@ -10,7 +10,7 @@
         <i class="fas fa-arrow-left"></i> Retour aux événements
     </a>
     <button onclick="openCatModal()"
-        class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+        class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
         <i class="fas fa-circle-plus"></i> Nouvelle catégorie
     </button>
 </div>
@@ -28,11 +28,11 @@
 {{-- Grille des catégories --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     @forelse($categories as $cat)
-    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition">
+    <div class="bg-green-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition">
         <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
-                    style="{{ $cat->color_hex ? 'background:' . $cat->color_hex . '22; color:' . $cat->color_hex : 'background:#1e293b; color:#94a3b8' }}">
+                    style="{{ $cat->color_hex ? 'background:' . $cat->color_hex . '22; color:' . $cat->color_hex : 'background:#e9e5d9; color:#94a3b8' }}">
                     <i class="{{ $cat->icon ?: 'fas fa-calendar' }}"></i>
                 </div>
                 <div>
@@ -61,7 +61,7 @@
 
         <div class="flex items-center justify-end gap-1 pt-3 border-t border-slate-800">
             <button onclick="openCatModal({{ $cat->toJson() }})"
-                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Modifier">
+                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Modifier">
                 <i class="fas fa-pen text-xs"></i>
             </button>
             <form method="POST" action="{{ route('admin.events.categories.destroy', $cat) }}"
@@ -74,7 +74,7 @@
         </div>
     </div>
     @empty
-    <div class="col-span-3 text-center py-16 text-slate-500 bg-slate-900 border border-slate-800 rounded-xl">
+    <div class="col-span-3 text-center py-16 text-slate-500 bg-green-900 border border-slate-800 rounded-xl">
         <i class="fas fa-folder-open text-4xl mb-3 block text-slate-700"></i>
         Aucune catégorie d'événement. Créez-en une !
     </div>
@@ -83,8 +83,8 @@
 
 {{-- Modal Créer / Modifier --}}
 <div id="catModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCatModal()"></div>
-    <div class="relative bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg shadow-2xl">
+    <div class="absolute inset-0 bg-green-950/70 backdrop-blur-sm" onclick="closeCatModal()"></div>
+    <div class="relative bg-green-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg shadow-2xl">
         <h3 id="catModalTitle" class="text-white font-semibold mb-5">Nouvelle catégorie</h3>
 
         <form id="catForm" method="POST" class="space-y-4">
@@ -95,13 +95,13 @@
                 <div class="col-span-2">
                     <label class="block text-xs text-slate-400 mb-1">Nom (français) <span class="text-red-400">*</span></label>
                     <input type="text" name="name_fr" id="cat_name_fr" required maxlength="150"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                 </div>
 
                 <div class="col-span-2">
                     <label class="block text-xs text-slate-400 mb-1">Nom (anglais)</label>
                     <input type="text" name="name_en" id="cat_name_en" maxlength="150"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                 </div>
 
                 <div>
@@ -119,9 +119,9 @@
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Couleur</label>
                     <div class="flex items-center gap-2">
-                        <input type="color" name="color_hex" id="cat_color_hex" value="#f59e0b"
+                        <input type="color" name="color_hex" id="cat_color_hex" value="#f2790f"
                             class="w-9 h-9 bg-slate-800 border border-slate-700 rounded-lg px-1 cursor-pointer shrink-0">
-                        <input type="text" id="cat_color_text" maxlength="7" placeholder="#f59e0b"
+                        <input type="text" id="cat_color_text" maxlength="7" placeholder="#f2790f"
                             class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-mono"
                             oninput="document.getElementById('cat_color_hex').value = this.value">
                     </div>
@@ -140,7 +140,7 @@
                     Annuler
                 </button>
                 <button type="submit"
-                    class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black text-sm font-semibold rounded-lg transition">
+                    class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black text-sm font-semibold rounded-lg transition">
                     Enregistrer
                 </button>
             </div>
@@ -167,7 +167,7 @@ function openCatModal(cat = null) {
         document.getElementById('cat_name_en').value   = cat.name_en || '';
         document.getElementById('cat_icon').value      = cat.icon || '';
         document.getElementById('cat_icon_preview').className = cat.icon || 'fas fa-calendar';
-        const color = cat.color_hex || '#f59e0b';
+        const color = cat.color_hex || '#f2790f';
         document.getElementById('cat_color_hex').value  = color;
         document.getElementById('cat_color_text').value = color;
         document.getElementById('cat_sort_order').value = cat.sort_order || 0;
@@ -177,8 +177,8 @@ function openCatModal(cat = null) {
         mf.innerHTML = '';
         form.reset();
         document.getElementById('cat_icon_preview').className = 'fas fa-calendar';
-        document.getElementById('cat_color_hex').value  = '#f59e0b';
-        document.getElementById('cat_color_text').value = '#f59e0b';
+        document.getElementById('cat_color_hex').value  = '#f2790f';
+        document.getElementById('cat_color_text').value = '#f2790f';
         document.getElementById('cat_sort_order').value = 0;
     }
 

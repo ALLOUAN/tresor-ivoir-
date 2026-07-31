@@ -8,8 +8,8 @@
 @endphp
 
 @if($editorMode === 'create')
-<div id="event-preview-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="event-preview-modal-title">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+<div id="event-preview-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-green-950/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="event-preview-modal-title">
+    <div class="bg-green-900 border border-slate-700 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
         <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
             <h2 id="event-preview-modal-title" class="text-sm font-semibold text-white">Prévisualisation</h2>
             <button type="button" onclick="closeEventPreviewModal()" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" aria-label="Fermer">
@@ -112,7 +112,7 @@
             const st = document.getElementById('autosaveStatus');
             if (st) {
                 st.textContent = 'Brouillon local enregistré';
-                st.classList.add('text-sky-400/90');
+                st.classList.add('text-green-400/90');
             }
         } catch (e) {}
     }
@@ -165,10 +165,10 @@
         const esc = function (s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
         body.innerHTML = '<h1 class="text-2xl font-bold text-white mb-2 font-serif">' + esc(title) + '</h1>'
             + '<p class="text-slate-500 text-sm mb-4">' + esc(starts) + (loc || city ? ' · ' + esc([loc, city].filter(Boolean).join(' · ')) : '') + '</p>'
-            + '<iframe class="w-full min-h-[280px] rounded-lg border border-slate-800 bg-slate-950" sandbox="" referrerpolicy="no-referrer" title="Aperçu contenu"></iframe>';
+            + '<iframe class="w-full min-h-[280px] rounded-lg border border-slate-800 bg-green-950" sandbox="" referrerpolicy="no-referrer" title="Aperçu contenu"></iframe>';
         const iframe = body.querySelector('iframe');
         if (iframe) {
-            iframe.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;padding:1rem;background:#0f172a;color:#e2e8f0;line-height:1.65;} a{color:#fbbf24;}</style><div class="c">' + html + '</div>';
+            iframe.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;padding:1rem;background:#e9e5d9;color:#1c1915;line-height:1.65;} a{color:#a54a0b;}</style><div class="c">' + html + '</div>';
         }
         modal.classList.remove('hidden');
         modal.classList.add('flex');

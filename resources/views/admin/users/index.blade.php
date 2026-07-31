@@ -14,8 +14,8 @@
 
     $roleBadgeClasses = [
         'admin' => 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-        'editor' => 'bg-blue-500/20 text-blue-300 border-blue-500/40',
-        'provider' => 'bg-violet-500/20 text-violet-300 border-violet-500/40',
+        'editor' => 'bg-green-500/20 text-green-300 border-green-500/40',
+        'provider' => 'bg-green-500/20 text-green-300 border-green-500/40',
         'visitor' => 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
     ];
 
@@ -29,7 +29,7 @@
     <button
         type="button"
         id="open-create-user-modal"
-        class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg"
+        class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg"
     >
         Creer un utilisateur
     </button>
@@ -37,9 +37,9 @@
 </div>
 
 <div id="create-user-modal" class="fixed inset-0 z-50 {{ $showCreateUserForm ? '' : 'hidden' }}">
-    <div id="create-user-modal-overlay" class="absolute inset-0 bg-black/70"></div>
+    <div id="create-user-modal-overlay" class="absolute inset-0 bg-green-950/70"></div>
     <div class="relative min-h-full flex items-center justify-center p-4">
-        <div class="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl">
+        <div class="w-full max-w-3xl bg-green-900 border border-slate-700 rounded-2xl shadow-2xl">
             <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
                 <div>
                     <h2 class="text-white font-semibold">Creer un utilisateur</h2>
@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="md:col-span-2 flex items-center gap-3">
-                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
                         Creer l'utilisateur
                     </button>
                     <button type="button" id="cancel-create-user-modal" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
@@ -122,7 +122,7 @@
     </div>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold">Liste des utilisateurs</h2>
         <p class="text-slate-400 text-sm mt-1">Modifiez le role et ajoutez des permissions specifiques par utilisateur.</p>
@@ -145,7 +145,7 @@
                 </select>
             </div>
             <div class="flex items-center gap-2">
-                <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
                     Filtrer
                 </button>
                 <a href="{{ route('admin.users.index') }}" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
@@ -184,7 +184,7 @@
                                 @method('PATCH')
                                 <select
                                     name="role"
-                                    class="bg-slate-800 border border-slate-700 text-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                    class="bg-slate-800 border border-slate-700 text-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                                     @if(auth()->id() === $u->id) disabled @endif
                                 >
                                     @foreach($roles as $role)
@@ -195,7 +195,7 @@
                                 </select>
                                 <button
                                     type="submit"
-                                    class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                    class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
                                     @if(auth()->id() === $u->id) disabled @endif
                                 >
                                     Mettre a jour role
@@ -213,7 +213,7 @@
                                     name="granted_permissions[]"
                                     multiple
                                     size="7"
-                                    class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                    class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
                                 >
                                     @foreach($permissionOptions as $group => $permissions)
                                         <optgroup label="{{ $group }}">
@@ -231,7 +231,7 @@
                                 <div class="flex items-center gap-2">
                                     <button
                                         type="submit"
-                                        class="bg-cyan-500 hover:bg-cyan-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition"
+                                        class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition"
                                     >
                                         Enregistrer permissions
                                     </button>

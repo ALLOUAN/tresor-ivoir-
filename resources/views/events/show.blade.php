@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark">
+<html lang="fr" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,7 @@
             inset: 0;
             z-index: -1;
             background:
-                radial-gradient(120% 80% at 0% 0%, rgba(232,160,32,0.14), transparent 48%),
+                radial-gradient(120% 80% at 0% 0%, rgba(242, 121, 15,0.14), transparent 48%),
                 radial-gradient(80% 70% at 100% 0%, rgba(120,90,40,0.08), transparent 55%);
             pointer-events: none;
         }
@@ -29,7 +29,7 @@
             border: 1px solid rgba(255,255,255,0.1);
             background:
                 linear-gradient(130deg, rgba(22,22,18,0.92), rgba(12,12,10,0.96)),
-                radial-gradient(circle at top right, rgba(232,160,32,0.12), transparent 45%);
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.12), transparent 45%);
             box-shadow: 0 24px 56px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.05);
         }
         .event-cover-frame {
@@ -48,30 +48,30 @@
         .event-cover-fallback {
             background:
                 linear-gradient(140deg, rgba(60,60,48,0.7), rgba(22,22,18,0.95)),
-                repeating-linear-gradient(45deg, rgba(232,160,32,0.09), rgba(232,160,32,0.09) 8px, transparent 8px, transparent 16px);
+                repeating-linear-gradient(45deg, rgba(242, 121, 15,0.09), rgba(242, 121, 15,0.09) 8px, transparent 8px, transparent 16px);
         }
         .event-stat-chip {
             border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.04);
+            background: rgba(233, 229, 217, 0.04);
         }
         .event-ticket-btn {
-            background: linear-gradient(135deg, #f5b942 0%, #e8a020 60%, #c4811a 100%);
-            box-shadow: 0 10px 26px rgba(232,160,32,0.25);
+            background: linear-gradient(135deg, #fa9a3c 0%, #f2790f 60%, #d4630a 100%);
+            box-shadow: 0 10px 26px rgba(242, 121, 15,0.25);
             transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
         }
         .event-ticket-btn:hover {
             transform: translateY(-1px);
             filter: brightness(1.04);
-            box-shadow: 0 14px 34px rgba(232,160,32,0.35);
+            box-shadow: 0 14px 34px rgba(242, 121, 15,0.35);
         }
         .related-card {
             border: 1px solid rgba(255,255,255,0.07);
-            background: linear-gradient(180deg, rgba(20,20,16,0.95), rgba(13,13,11,0.96));
+            background: linear-gradient(180deg, rgba(255, 255, 255,0.95), rgba(255, 255, 255,0.96));
             transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
         }
         .related-card:hover {
             transform: translateY(-3px);
-            border-color: rgba(232,160,32,0.45);
+            border-color: rgba(242, 121, 15,0.45);
             box-shadow: 0 16px 32px rgba(0,0,0,0.35);
         }
         html:not(.dark) body {
@@ -80,18 +80,18 @@
         }
         html:not(.dark) .event-detail-shell::before {
             background:
-                radial-gradient(120% 80% at 0% 0%, rgba(232,160,32,0.2), transparent 50%),
+                radial-gradient(120% 80% at 0% 0%, rgba(242, 121, 15,0.2), transparent 50%),
                 radial-gradient(80% 70% at 100% 0%, rgba(99,102,241,0.09), transparent 55%);
         }
         html:not(.dark) .event-hero {
-            border-color: rgba(15,23,42,0.12);
+            border-color: rgba(255, 255, 255,0.12);
             background:
                 linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,245,238,0.96)),
-                radial-gradient(circle at top right, rgba(232,160,32,0.16), transparent 50%);
-            box-shadow: 0 18px 40px rgba(15,23,42,0.14), inset 0 1px 0 rgba(255,255,255,0.85);
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.16), transparent 50%);
+            box-shadow: 0 18px 40px rgba(255, 255, 255,0.14), inset 0 1px 0 rgba(255,255,255,0.85);
         }
         html:not(.dark) .event-cover-frame {
-            border-color: rgba(15,23,42,0.12);
+            border-color: rgba(255, 255, 255,0.12);
             background: #ece7dc;
         }
         html:not(.dark) .event-cover-frame::after {
@@ -100,11 +100,11 @@
         html:not(.dark) .event-cover-fallback {
             background:
                 linear-gradient(140deg, rgba(243,236,224,0.95), rgba(228,220,204,0.96)),
-                repeating-linear-gradient(45deg, rgba(180,83,9,0.08), rgba(180,83,9,0.08) 8px, transparent 8px, transparent 16px);
+                repeating-linear-gradient(45deg, rgba(194, 94, 10,0.08), rgba(194, 94, 10,0.08) 8px, transparent 8px, transparent 16px);
         }
         html:not(.dark) .event-stat-chip {
-            border-color: rgba(15,23,42,0.14);
-            background: rgba(255,255,255,0.9);
+            border-color: rgba(255, 255, 255,0.14);
+            background: rgba(233, 229, 217, 0.9);
             color: #1f2937;
         }
         html:not(.dark) .event-hero h1 {
@@ -112,12 +112,12 @@
             text-shadow: none !important;
         }
         html:not(.dark) .event-hero .fa-image {
-            color: rgba(180,83,9,0.72) !important;
+            color: rgba(194, 94, 10,0.72) !important;
         }
         html:not(.dark) .event-hero .absolute span {
-            background: rgba(255,255,255,0.88) !important;
-            border-color: rgba(15,23,42,0.14) !important;
-            color: #92400e !important;
+            background: rgba(233, 229, 217, 0.88) !important;
+            border-color: rgba(255, 255, 255,0.14) !important;
+            color: #a3450a !important;
             text-shadow: none !important;
         }
         html:not(.dark) .prose-content {
@@ -125,10 +125,10 @@
         }
     </style>
 </head>
-<body class="bg-[#0d0d0b] text-white">
+<body class="bg-[#ffffff] text-white">
     @include('partials.public-top-nav')
     <div class="event-detail-shell max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        <a href="{{ route('events.index') }}" class="inline-flex items-center gap-2 text-amber-300 hover:text-amber-200 transition text-sm">
+        <a href="{{ route('events.index') }}" class="inline-flex items-center gap-2 text-orange-300 hover:text-orange-200 transition text-sm">
             <i class="fas fa-arrow-left text-[11px]"></i>
             Retour à l'agenda
         </a>
@@ -140,13 +140,13 @@
                 @else
                     <div class="event-cover-fallback h-full w-full flex items-center justify-center">
                         <div class="text-center px-5">
-                            <i class="fas fa-image text-amber-300/80 text-2xl mb-3"></i>
-                            <p class="text-[11px] uppercase tracking-[0.24em] text-amber-200/90 font-semibold [text-shadow:0_1px_4px_rgba(0,0,0,0.35)]">Aucune couverture</p>
+                            <i class="fas fa-image text-orange-300/80 text-2xl mb-3"></i>
+                            <p class="text-[11px] uppercase tracking-[0.24em] text-orange-200/90 font-semibold [text-shadow:0_1px_4px_rgba(0,0,0,0.35)]">Aucune couverture</p>
                         </div>
                     </div>
                 @endif
                 <div class="absolute bottom-3 left-3 z-[1]">
-                    <span class="inline-flex items-center rounded-full bg-black/60 border border-white/25 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-amber-100 font-semibold backdrop-blur [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">
+                    <span class="inline-flex items-center rounded-full bg-green-950/60 border border-white/25 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-orange-100 font-semibold backdrop-blur [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">
                         {{ $event->category->name_fr ?? 'Événement' }}
                     </span>
                 </div>
@@ -156,15 +156,15 @@
                 <h1 class="font-serif text-3xl sm:text-4xl font-bold leading-tight text-white [text-shadow:0_4px_16px_rgba(0,0,0,0.45)]">{{ $event->title_fr }}</h1>
                 <div class="mt-4 flex flex-wrap gap-2.5">
                     <span class="event-stat-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-gray-100">
-                        <i class="fas fa-calendar text-amber-400/80"></i>
+                        <i class="fas fa-calendar text-orange-400/80"></i>
                         {{ $event->starts_at?->format('d/m/Y H:i') }} @if($event->ends_at) - {{ $event->ends_at->format('d/m/Y H:i') }} @endif
                     </span>
                     <span class="event-stat-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-gray-100">
-                        <i class="fas fa-location-dot text-amber-400/80"></i>
+                        <i class="fas fa-location-dot text-orange-400/80"></i>
                         {{ $event->location_name ?: 'Lieu non précisé' }} · {{ $event->city ?: 'Côte d\'Ivoire' }}
                     </span>
                     <span class="event-stat-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-gray-100">
-                        <i class="fas fa-ticket text-amber-400/80"></i>
+                        <i class="fas fa-ticket text-orange-400/80"></i>
                         @if($event->is_free || (float) ($event->price ?? 0) <= 0)
                             Gratuit
                         @else
@@ -182,7 +182,7 @@
                                 @csrf
                                 <input type="hidden" name="type" value="event">
                                 <input type="hidden" name="id" value="{{ $event->id }}">
-                                <button type="submit" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs hover:bg-amber-500/30 transition">
+                                <button type="submit" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-orange-500/20 border border-orange-500/30 text-orange-300 text-xs hover:bg-orange-500/30 transition">
                                     <i class="fas fa-heart"></i> Ajouter à ma wishlist
                                 </button>
                             </form>
@@ -210,19 +210,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach($related as $r)
                         <a href="{{ route('events.show', $r->slug) }}" class="related-card rounded-xl overflow-hidden">
-                            <div class="h-32 bg-[#141410]">
+                            <div class="h-32 bg-[#ffffff]">
                                 @if(!empty($r->cover_url))
                                     <img src="{{ $r->cover_url }}" alt="{{ $r->cover_alt ?: $r->title_fr }}" class="h-full w-full object-cover" loading="lazy" decoding="async">
                                 @else
                                     <div class="event-cover-fallback h-full w-full flex items-center justify-center">
-                                        <i class="fas fa-image text-amber-300/70 text-lg"></i>
+                                        <i class="fas fa-image text-orange-300/70 text-lg"></i>
                                     </div>
                                 @endif
                             </div>
                             <div class="p-4">
-                                <p class="text-amber-400 text-xs uppercase">{{ $r->category->name_fr ?? 'Événement' }}</p>
+                                <p class="text-orange-400 text-xs uppercase">{{ $r->category->name_fr ?? 'Événement' }}</p>
                                 <p class="font-semibold mt-1">{{ $r->title_fr }}</p>
-                                <p class="text-amber-300 text-xs mt-1.5">
+                                <p class="text-orange-300 text-xs mt-1.5">
                                     @if($r->is_free || (float) ($r->price ?? 0) <= 0)
                                         Gratuit
                                     @else
@@ -237,10 +237,10 @@
             </div>
         @endif
     </div>
-    <footer class="border-t border-white/5 bg-[#0d0d0b] py-6 mt-10">
+    <footer class="border-t border-white/5 bg-[#ffffff] py-6 mt-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between text-xs text-gray-600">
             <span>&copy; {{ date('Y') }} {{ $siteBrand['site_name'] }}</span>
-            <a href="{{ route('events.index') }}" class="hover:text-amber-400 transition">← Retour aux événements</a>
+            <a href="{{ route('events.index') }}" class="hover:text-orange-400 transition">← Retour aux événements</a>
         </div>
     </footer>
 @include('partials.homepage-footer')

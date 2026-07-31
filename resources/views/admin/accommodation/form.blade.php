@@ -46,9 +46,9 @@
         <div class="xl:col-span-2 space-y-5">
 
             {{-- ① Infos générales ──────────────────────────────────── --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
                 <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-                    <i class="fas fa-hotel text-amber-400"></i> Informations générales
+                    <i class="fas fa-hotel text-orange-400"></i> Informations générales
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -59,13 +59,13 @@
                         <input type="text" name="name"
                                value="{{ old('name', $accommodation->name ?? '') }}"
                                required maxlength="150"
-                               class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                               class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                     </div>
 
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Type <span class="text-red-400">*</span></label>
                         <select name="type" required
-                                class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                             @foreach(['hotel'=>'Hôtel','resort'=>'Resort','guesthouse'=>"Maison d'hôtes",'hostel'=>'Auberge de jeunesse','auberge'=>'Auberge','villa'=>'Villa','eco_lodge'=>'Éco-lodge'] as $val => $lbl)
                                 <option value="{{ $val }}" {{ old('type', $accommodation->type ?? '') === $val ? 'selected' : '' }}>{{ $lbl }}</option>
                             @endforeach
@@ -75,7 +75,7 @@
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Étoiles</label>
                         <select name="stars"
-                                class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                             @for($s = 0; $s <= 5; $s++)
                                 <option value="{{ $s }}" {{ old('stars', $accommodation->stars ?? 0) == $s ? 'selected' : '' }}>
                                     {{ $s === 0 ? 'Sans étoile' : str_repeat('★', $s).' ('.$s.' étoile'.($s>1?'s':'').')' }}
@@ -87,7 +87,7 @@
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Ville <span class="text-red-400">*</span></label>
                         <select name="city_id" required
-                                class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                             <option value="">— Sélectionner une ville —</option>
                             @foreach($cities as $city)
                                 <option value="{{ $city->id }}" {{ old('city_id', $accommodation->city_id ?? '') == $city->id ? 'selected' : '' }}>
@@ -102,7 +102,7 @@
                         <input type="text" name="quartier"
                                value="{{ old('quartier', $accommodation->quartier ?? '') }}"
                                maxlength="100"
-                               class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                               class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                     </div>
 
                     <div class="md:col-span-2">
@@ -110,7 +110,7 @@
                         <input type="text" name="adresse"
                                value="{{ old('adresse', $accommodation->adresse ?? '') }}"
                                maxlength="255"
-                               class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                               class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                     </div>
 
                     <div>
@@ -118,7 +118,7 @@
                             Description courte <span class="text-slate-600">(max 300 car.)</span>
                         </label>
                         <textarea name="short_description" rows="2" maxlength="300"
-                                  class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-none">{{ old('short_description', $accommodation->short_description ?? '') }}</textarea>
+                                  class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-none">{{ old('short_description', $accommodation->short_description ?? '') }}</textarea>
                     </div>
 
                     <div>
@@ -129,14 +129,14 @@
                                 <input type="text" name="check_in_time"
                                        value="{{ old('check_in_time', substr($accommodation->check_in_time ?? '', 0, 5)) }}"
                                        placeholder="14:00" maxlength="5"
-                                       class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                       class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                             </div>
                             <div>
                                 <span class="text-[11px] text-slate-500 mb-1 block">Check-out</span>
                                 <input type="text" name="check_out_time"
                                        value="{{ old('check_out_time', substr($accommodation->check_out_time ?? '', 0, 5)) }}"
                                        placeholder="12:00" maxlength="5"
-                                       class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                       class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                             </div>
                         </div>
                     </div>
@@ -144,15 +144,15 @@
                     <div class="md:col-span-2">
                         <label class="block text-xs text-slate-400 mb-1">Description complète</label>
                         <textarea name="description" rows="5"
-                                  class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('description', $accommodation->description ?? '') }}</textarea>
+                                  class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('description', $accommodation->description ?? '') }}</textarea>
                     </div>
                 </div>
             </div>
 
             {{-- ② Localisation & Contact ────────────────────────────── --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
                 <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-                    <i class="fas fa-map-location-dot text-amber-400"></i> Localisation & Contact
+                    <i class="fas fa-map-location-dot text-orange-400"></i> Localisation & Contact
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -160,32 +160,32 @@
                         <input type="number" step="any" name="latitude"
                                value="{{ old('latitude', $accommodation->latitude ?? '') }}"
                                placeholder="5.3600"
-                               class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                               class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Longitude</label>
                         <input type="number" step="any" name="longitude"
                                value="{{ old('longitude', $accommodation->longitude ?? '') }}"
                                placeholder="-4.0083"
-                               class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                               class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Téléphone</label>
                         <input type="text" name="phone"
                                value="{{ old('phone', $accommodation->phone ?? '') }}"
                                maxlength="30"
-                               class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                               class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Email</label>
                         <input type="email" name="email"
                                value="{{ old('email', $accommodation->email ?? '') }}"
                                maxlength="150"
-                               class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                               class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs text-slate-400 mb-1">
-                            <i class="fas fa-globe text-amber-400/70 mr-1"></i>Site web
+                            <i class="fas fa-globe text-orange-400/70 mr-1"></i>Site web
                         </label>
                         <div class="flex gap-2">
                             <input type="url" name="website"
@@ -193,9 +193,9 @@
                                    maxlength="300" placeholder="https://…"
                                    id="website_input"
                                    oninput="toggleWebsiteBtn(this.value)"
-                                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                             <a id="website_btn" href="{{ $accommodation->website ?? '#' }}" target="_blank" rel="noopener"
-                               class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 hover:bg-amber-500/20 border border-slate-700 hover:border-amber-500/40 flex items-center justify-center text-slate-400 hover:text-amber-400 transition {{ ($isEdit && $accommodation->website) ? '' : 'hidden' }}">
+                               class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 hover:bg-orange-500/20 border border-slate-700 hover:border-orange-500/40 flex items-center justify-center text-slate-400 hover:text-orange-400 transition {{ ($isEdit && $accommodation->website) ? '' : 'hidden' }}">
                                 <i class="fas fa-arrow-up-right-from-square text-xs"></i>
                             </a>
                         </div>
@@ -204,9 +204,9 @@
             </div>
 
             {{-- ③ Images ───────────────────────────────────────────── --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
                 <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-                    <i class="fas fa-image text-amber-400"></i> Images
+                    <i class="fas fa-image text-orange-400"></i> Images
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -214,7 +214,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-xs text-slate-400">
-                                <i class="fas fa-panorama text-amber-400/60 mr-1"></i>Image de couverture
+                                <i class="fas fa-panorama text-orange-400/60 mr-1"></i>Image de couverture
                             </label>
                             <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-0.5">
                                 <button type="button" id="cover_btn_url" onclick="setImgMode('cover','url')"
@@ -232,11 +232,11 @@
                                    value="{{ old('cover_image', $accommodation->cover_image ?? '') }}"
                                    placeholder="https://… ou /storage/…" maxlength="500"
                                    oninput="previewImgUrl(this,'cover_preview')"
-                                   class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                         </div>
                         <div id="cover_file_wrap" class="hidden">
-                            <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-amber-500/50 rounded-xl p-4 cursor-pointer transition group">
-                                <i class="fas fa-cloud-arrow-up text-xl text-slate-600 group-hover:text-amber-400/70 mb-1.5 transition"></i>
+                            <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-orange-500/50 rounded-xl p-4 cursor-pointer transition group">
+                                <i class="fas fa-cloud-arrow-up text-xl text-slate-600 group-hover:text-orange-400/70 mb-1.5 transition"></i>
                                 <span class="text-slate-500 text-xs group-hover:text-slate-300 transition">Cliquez ou glissez</span>
                                 <input type="file" name="cover_image_file" accept="image/*" class="hidden"
                                        onchange="previewImgFile(this,'cover_preview')">
@@ -260,7 +260,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-xs text-slate-400">
-                                <i class="fas fa-image text-amber-400/60 mr-1"></i>Vignette (thumbnail)
+                                <i class="fas fa-image text-orange-400/60 mr-1"></i>Vignette (thumbnail)
                             </label>
                             <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-0.5">
                                 <button type="button" id="thumb_btn_url" onclick="setImgMode('thumb','url')"
@@ -278,11 +278,11 @@
                                    value="{{ old('thumbnail', $accommodation->thumbnail ?? '') }}"
                                    placeholder="https://… ou /storage/…" maxlength="500"
                                    oninput="previewImgUrl(this,'thumb_preview')"
-                                   class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                         </div>
                         <div id="thumb_file_wrap" class="hidden">
-                            <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-amber-500/50 rounded-xl p-4 cursor-pointer transition group">
-                                <i class="fas fa-cloud-arrow-up text-xl text-slate-600 group-hover:text-amber-400/70 mb-1.5 transition"></i>
+                            <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-orange-500/50 rounded-xl p-4 cursor-pointer transition group">
+                                <i class="fas fa-cloud-arrow-up text-xl text-slate-600 group-hover:text-orange-400/70 mb-1.5 transition"></i>
                                 <span class="text-slate-500 text-xs group-hover:text-slate-300 transition">Cliquez ou glissez</span>
                                 <input type="file" name="thumbnail_file" accept="image/*" class="hidden"
                                        onchange="previewImgFile(this,'thumb_preview')">
@@ -305,13 +305,13 @@
             </div>
 
             {{-- ④ Commodités ──────────────────────────────────────── --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
                 <div class="flex items-center justify-between mb-5">
                     <h2 class="text-white font-semibold flex items-center gap-2">
-                        <i class="fas fa-concierge-bell text-amber-400"></i> Commodités
+                        <i class="fas fa-concierge-bell text-orange-400"></i> Commodités
                     </h2>
                     <button type="button" onclick="addAmenityRow()"
-                            class="text-xs text-amber-400 hover:text-amber-300 transition flex items-center gap-1">
+                            class="text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
                         <i class="fas fa-plus text-[10px]"></i> Ajouter
                     </button>
                 </div>
@@ -323,11 +323,11 @@
                             <input type="text" name="amenity_icons[]"
                                    value="{{ $am['icon'] ?? 'fas fa-check' }}"
                                    placeholder="fas fa-wifi"
-                                   class="w-36 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-xs text-slate-100 outline-none transition font-mono">
+                                   class="w-36 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-xs text-slate-100 outline-none transition font-mono">
                             <input type="text" name="amenity_labels[]"
                                    value="{{ $am['label'] ?? '' }}"
                                    placeholder="Wi-Fi gratuit"
-                                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                             <button type="button" onclick="this.closest('.amenity-row').remove()"
                                     class="w-8 h-[38px] rounded-lg bg-slate-800 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
                                 <i class="fas fa-times text-xs"></i>
@@ -339,10 +339,10 @@
                         <div class="amenity-row flex gap-2">
                             <input type="text" name="amenity_icons[]"
                                    value="{{ old('amenity_icons.'.$idx, 'fas fa-check') }}"
-                                   class="w-36 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-xs text-slate-100 outline-none transition font-mono">
+                                   class="w-36 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-xs text-slate-100 outline-none transition font-mono">
                             <input type="text" name="amenity_labels[]"
                                    value="{{ $lbl }}"
-                                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                             <button type="button" onclick="this.closest('.amenity-row').remove()"
                                     class="w-8 h-[38px] rounded-lg bg-slate-800 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
                                 <i class="fas fa-times text-xs"></i>
@@ -352,18 +352,18 @@
                     @endif
                 </div>
                 <p class="text-[11px] text-slate-600 mt-3">
-                    <i class="fas fa-circle-info mr-1"></i>Icône : classe FontAwesome (ex: <code class="text-amber-400/70">fas fa-wifi</code>)
+                    <i class="fas fa-circle-info mr-1"></i>Icône : classe FontAwesome (ex: <code class="text-orange-400/70">fas fa-wifi</code>)
                 </p>
             </div>
 
             {{-- ⑤ Types de chambres ────────────────────────────────── --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
                 <div class="flex items-center justify-between mb-5">
                     <h2 class="text-white font-semibold flex items-center gap-2">
-                        <i class="fas fa-bed text-amber-400"></i> Types de chambres
+                        <i class="fas fa-bed text-orange-400"></i> Types de chambres
                     </h2>
                     <button type="button" onclick="addRoomRow()"
-                            class="text-xs text-amber-400 hover:text-amber-300 transition flex items-center gap-1">
+                            class="text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
                         <i class="fas fa-plus text-[10px]"></i> Ajouter
                     </button>
                 </div>
@@ -383,13 +383,13 @@
             </div>
 
             {{-- ⑥ Liens de réservation ─────────────────────────────── --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
                 <div class="flex items-center justify-between mb-5">
                     <h2 class="text-white font-semibold flex items-center gap-2">
-                        <i class="fas fa-bookmark text-amber-400"></i> Liens de réservation
+                        <i class="fas fa-bookmark text-orange-400"></i> Liens de réservation
                     </h2>
                     <button type="button" onclick="addBookingRow()"
-                            class="text-xs text-amber-400 hover:text-amber-300 transition flex items-center gap-1">
+                            class="text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
                         <i class="fas fa-plus text-[10px]"></i> Ajouter
                     </button>
                 </div>
@@ -409,9 +409,9 @@
             </div>
 
             {{-- ⑦ Galerie photos ───────────────────────────────────── --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
                 <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
-                    <i class="fas fa-photo-film text-amber-400"></i> Galerie photos
+                    <i class="fas fa-photo-film text-orange-400"></i> Galerie photos
                 </h2>
 
                 @if($isEdit && $accommodation->media->isNotEmpty())
@@ -434,8 +434,8 @@
                     </div>
                 @endif
 
-                <label class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-amber-500/50 rounded-xl p-6 cursor-pointer transition group">
-                    <i class="fas fa-cloud-arrow-up text-2xl text-slate-600 group-hover:text-amber-400/70 mb-2 transition"></i>
+                <label class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-orange-500/50 rounded-xl p-6 cursor-pointer transition group">
+                    <i class="fas fa-cloud-arrow-up text-2xl text-slate-600 group-hover:text-orange-400/70 mb-2 transition"></i>
                     <span class="text-slate-500 text-sm group-hover:text-slate-300 transition">Ajouter des photos</span>
                     <span class="text-slate-700 text-xs mt-1">JPG, PNG, WebP — plusieurs fichiers acceptés</span>
                     <input type="file" name="media_files[]" multiple accept="image/*" class="hidden"
@@ -450,16 +450,16 @@
         <div class="space-y-5">
 
             {{-- Publication --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 sticky top-4">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5 sticky top-4">
                 <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
-                    <i class="fas fa-sliders text-amber-400"></i> Publication
+                    <i class="fas fa-sliders text-orange-400"></i> Publication
                 </h2>
 
                 <div class="space-y-3 mb-4">
                     <label class="flex items-center gap-2.5 cursor-pointer group">
                         <input type="hidden" name="is_active" value="0">
                         <input type="checkbox" name="is_active" value="1"
-                               class="rounded border-slate-600 bg-slate-800 text-amber-500"
+                               class="rounded border-slate-600 bg-slate-800 text-orange-500"
                                {{ old('is_active', $accommodation->is_active ?? true) ? 'checked' : '' }}>
                         <span class="text-sm text-slate-300 group-hover:text-white transition">
                             Actif <span class="text-slate-500 text-xs">(visible sur le site)</span>
@@ -468,7 +468,7 @@
                     <label class="flex items-center gap-2.5 cursor-pointer group">
                         <input type="hidden" name="is_featured" value="0">
                         <input type="checkbox" name="is_featured" value="1"
-                               class="rounded border-slate-600 bg-slate-800 text-amber-500"
+                               class="rounded border-slate-600 bg-slate-800 text-orange-500"
                                {{ old('is_featured', $accommodation->is_featured ?? false) ? 'checked' : '' }}>
                         <span class="text-sm text-slate-300 group-hover:text-white transition">
                             En vedette
@@ -480,11 +480,11 @@
                     <label class="block text-xs text-slate-400 mb-1">Ordre d'affichage</label>
                     <input type="number" name="sort_order" min="0"
                            value="{{ old('sort_order', $accommodation->sort_order ?? 0) }}"
-                           class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                           class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                 </div>
 
                 <button type="submit"
-                        class="w-full px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold text-sm rounded-xl transition flex items-center justify-center gap-2">
+                        class="w-full px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-black font-bold text-sm rounded-xl transition flex items-center justify-center gap-2">
                     <i class="fas fa-save"></i>
                     {{ $isEdit ? 'Enregistrer' : 'Créer l\'hébergement' }}
                 </button>
@@ -495,9 +495,9 @@
             </div>
 
             {{-- Catégories --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
-                    <i class="fas fa-tags text-amber-400"></i> Catégories touristiques
+                    <i class="fas fa-tags text-orange-400"></i> Catégories touristiques
                 </h2>
                 @php $selectedCats = old('category_ids', $accommodation->category_ids ?? []); @endphp
                 <div class="space-y-1 max-h-64 overflow-y-auto pr-1">
@@ -505,7 +505,7 @@
                     <label class="flex items-center gap-2.5 cursor-pointer p-2 rounded-lg hover:bg-slate-800 transition">
                         <input type="checkbox" name="category_ids[]"
                                value="{{ $cat->id }}"
-                               class="rounded border-slate-600 bg-slate-800 text-amber-500 shrink-0"
+                               class="rounded border-slate-600 bg-slate-800 text-orange-500 shrink-0"
                                {{ in_array($cat->id, (array)$selectedCats) ? 'checked' : '' }}>
                         <span class="flex items-center gap-2 text-sm text-slate-300">
                             @if($cat->icon)
@@ -521,7 +521,7 @@
 
             {{-- Infos techniques (edit only) --}}
             @if($isEdit)
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <h2 class="text-white font-semibold mb-3 flex items-center gap-2 text-sm">
                     <i class="fas fa-code text-slate-500"></i> Infos techniques
                 </h2>
@@ -582,10 +582,10 @@
     <div class="amenity-row flex gap-2">
         <input type="text" name="amenity_icons[]" value="fas fa-check"
                placeholder="fas fa-wifi"
-               class="w-36 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-xs text-slate-100 outline-none font-mono">
+               class="w-36 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-xs text-slate-100 outline-none font-mono">
         <input type="text" name="amenity_labels[]"
                placeholder="Wi-Fi gratuit"
-               class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+               class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
         <button type="button" onclick="this.closest('.amenity-row').remove()"
                 class="w-8 h-[38px] rounded-lg bg-slate-800 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
             <i class="fas fa-times text-xs"></i>
@@ -598,7 +598,7 @@
         <div class="flex gap-2 items-center">
             <input type="text" name="room_name[]"
                    placeholder="Chambre Standard"
-                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
+                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
             <button type="button" onclick="this.closest('.room-row').remove()"
                     class="w-8 h-9 rounded-lg bg-slate-700 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
                 <i class="fas fa-times text-xs"></i>
@@ -639,11 +639,11 @@
             <div class="col-span-2">
                 <div class="flex items-center justify-between mb-1.5">
                     <span class="text-[11px] text-slate-500 flex items-center gap-1">
-                        <i class="fas fa-images text-[9px] text-amber-400/60"></i>
+                        <i class="fas fa-images text-[9px] text-orange-400/60"></i>
                         Photos de la chambre
                     </span>
                     <button type="button" onclick="addRoomPhotoRow(this)"
-                            class="inline-flex items-center gap-1 text-[10px] text-amber-400 hover:text-amber-300 transition">
+                            class="inline-flex items-center gap-1 text-[10px] text-orange-400 hover:text-orange-300 transition">
                         <i class="fas fa-plus text-[8px]"></i>Ajouter URL
                     </button>
                 </div>
@@ -651,7 +651,7 @@
                 <div class="room-photos-list space-y-1.5 mb-2"></div>
                 <label class="flex items-center gap-2 cursor-pointer group">
                     <span class="text-[11px] text-slate-500 group-hover:text-slate-300 transition flex items-center gap-1">
-                        <i class="fas fa-cloud-arrow-up text-[9px] text-amber-400/60"></i> Uploader des photos
+                        <i class="fas fa-cloud-arrow-up text-[9px] text-orange-400/60"></i> Uploader des photos
                     </span>
                     <input type="file" name="room_photo_files[__RIDX__][]"
                            multiple accept="image/*"
@@ -672,7 +672,7 @@
         <div class="flex gap-2 items-center">
             <input type="text" name="bl_provider[]"
                    placeholder="Booking.com"
-                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
+                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
             <button type="button" onclick="this.closest('.booking-row').remove()"
                     class="w-8 h-9 rounded-lg bg-slate-700 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
                 <i class="fas fa-times text-xs"></i>
@@ -696,7 +696,7 @@
             </div>
             <div class="flex items-center gap-2.5 pt-4">
                 <input type="checkbox" name="bl_official[]"
-                       class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                       class="rounded border-slate-600 bg-slate-800 text-orange-500">
                 <span class="text-xs text-slate-400">Site officiel de l'établissement</span>
             </div>
         </div>
@@ -874,7 +874,7 @@ function addRoomPhotoRow(btn) {
         + '<i class="fas fa-image text-slate-600 text-xs"></i>'
         + '</div>'
         + '<input type="text" placeholder="https://…/photo.jpg"'
-        + ' class="photo-url-field flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-1.5 text-xs text-slate-100 outline-none transition"'
+        + ' class="photo-url-field flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-1.5 text-xs text-slate-100 outline-none transition"'
         + ' oninput="syncRoomPhotos(this)">'
         + '<button type="button" onclick="removeRoomPhotoRow(this)"'
         + ' class="w-8 h-[34px] rounded-lg bg-slate-700 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">'

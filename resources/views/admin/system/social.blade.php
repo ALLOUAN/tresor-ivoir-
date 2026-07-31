@@ -6,10 +6,10 @@
 @section('content')
 @include('admin.system.partials.administration-settings-tabs', ['active' => 'social'])
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
     <div class="px-5 py-4 border-b border-slate-800 flex items-center gap-3 bg-slate-800/40">
-        <div class="w-10 h-10 rounded-lg bg-sky-600/20 border border-sky-500/40 flex items-center justify-center shrink-0">
-            <i class="fas fa-share-nodes text-sky-300"></i>
+        <div class="w-10 h-10 rounded-lg bg-green-600/20 border border-green-500/40 flex items-center justify-center shrink-0">
+            <i class="fas fa-share-nodes text-green-300"></i>
         </div>
         <div>
             <h2 class="text-white font-semibold text-lg">Réseaux sociaux</h2>
@@ -33,7 +33,7 @@
 
         <div>
             <label for="facebook_url" class="flex items-center gap-2 text-sm text-slate-300 mb-1">
-                <i class="fab fa-facebook text-blue-400 w-5 text-center"></i> Facebook
+                <i class="fab fa-facebook text-green-400 w-5 text-center"></i> Facebook
             </label>
             <input type="url" name="facebook_url" id="facebook_url" maxlength="500" placeholder="https://facebook.com/…"
                    value="{{ old('facebook_url', $social->facebook_url) }}"
@@ -51,7 +51,7 @@
 
         <div>
             <label for="linkedin_url" class="flex items-center gap-2 text-sm text-slate-300 mb-1">
-                <i class="fab fa-linkedin text-sky-400 w-5 text-center"></i> LinkedIn
+                <i class="fab fa-linkedin text-green-400 w-5 text-center"></i> LinkedIn
             </label>
             <input type="url" name="linkedin_url" id="linkedin_url" maxlength="500" placeholder="https://linkedin.com/…"
                    value="{{ old('linkedin_url', $social->linkedin_url) }}"
@@ -60,7 +60,7 @@
 
         <div>
             <label for="instagram_url" class="flex items-center gap-2 text-sm text-slate-300 mb-1">
-                <i class="fab fa-instagram text-pink-400 w-5 text-center"></i> Instagram
+                <i class="fab fa-instagram text-green-400 w-5 text-center"></i> Instagram
             </label>
             <input type="url" name="instagram_url" id="instagram_url" maxlength="500" placeholder="https://instagram.com/…"
                    value="{{ old('instagram_url', $social->instagram_url) }}"
@@ -88,7 +88,7 @@
 
         <div class="pt-2">
             <button type="submit"
-                    class="inline-flex items-center gap-2 bg-gradient-to-r from-rose-500 to-violet-600 hover:from-rose-400 hover:to-violet-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+                    class="inline-flex items-center gap-2 bg-gradient-to-r from-rose-500 to-green-600 hover:from-rose-400 hover:to-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-lock"></i>
                 Enregistrer
             </button>

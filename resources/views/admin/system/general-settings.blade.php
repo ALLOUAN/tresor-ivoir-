@@ -6,10 +6,10 @@
 @section('content')
 @include('admin.system.partials.administration-settings-tabs', ['active' => 'settings'])
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
     <div class="px-5 py-4 border-b border-slate-800 flex items-center gap-3 bg-slate-800/40">
-        <div class="w-10 h-10 rounded-lg bg-violet-600/20 border border-violet-500/40 flex items-center justify-center shrink-0">
-            <i class="fas fa-gear text-violet-300"></i>
+        <div class="w-10 h-10 rounded-lg bg-green-600/20 border border-green-500/40 flex items-center justify-center shrink-0">
+            <i class="fas fa-gear text-green-300"></i>
         </div>
         <div>
             <h2 class="text-white font-semibold text-lg">Paramètres généraux</h2>
@@ -60,7 +60,7 @@
                 </div>
             @endif
             <input type="file" name="site_logo" id="site_logo" accept="image/jpeg,image/png,image/webp"
-                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-violet-600 file:px-3 file:py-2 file:text-white file:text-xs">
+                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-green-600 file:px-3 file:py-2 file:text-white file:text-xs">
             <p class="text-slate-500 text-xs mt-1">JPEG, PNG ou WebP — max 2&nbsp;Mo. Laisser vide pour conserver le logo actuel.</p>
         </div>
 
@@ -72,7 +72,7 @@
                 </div>
             @endif
             <input type="file" name="favicon" id="favicon" accept="image/png,image/jpeg,image/webp,.ico"
-                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-violet-600 file:px-3 file:py-2 file:text-white file:text-xs">
+                   class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-green-600 file:px-3 file:py-2 file:text-white file:text-xs">
             <p class="text-slate-500 text-xs mt-1">PNG, JPEG, WebP ou ICO — max 512&nbsp;Ko.</p>
         </div>
 
@@ -126,7 +126,7 @@
             </div>
             <label class="inline-flex items-center gap-3 cursor-pointer shrink-0" title="Activer la page maintenance pour les visiteurs">
                 <input type="checkbox" name="maintenance_mode" value="1"
-                       class="h-5 w-5 rounded border-slate-600 bg-slate-800 text-violet-600 focus:ring-violet-500"
+                       class="h-5 w-5 rounded border-slate-600 bg-slate-800 text-green-600 focus:ring-green-500"
                        @checked($errors->any() ? old('maintenance_mode') === '1' : $settings->maintenance_mode)>
                 <span class="text-sm text-slate-400">Activer</span>
             </label>
@@ -134,7 +134,7 @@
 
         <div class="pt-2">
             <button type="submit"
-                    class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+                    class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-floppy-disk"></i>
                 Enregistrer les modifications
             </button>

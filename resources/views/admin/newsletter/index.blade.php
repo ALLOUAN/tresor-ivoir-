@@ -23,9 +23,9 @@
 
     {{-- ── Envoi d’un message à tous les abonnés actifs ───────────────────── --}}
     <div class="grid gap-6 lg:grid-cols-3 mb-8">
-        <div class="lg:col-span-1 bg-slate-900 border border-slate-800 rounded-xl p-5">
-            <div class="w-10 h-10 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center mb-3">
-                <i class="fas fa-paper-plane text-amber-300"></i>
+        <div class="lg:col-span-1 bg-green-900 border border-slate-800 rounded-xl p-5">
+            <div class="w-10 h-10 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center mb-3">
+                <i class="fas fa-paper-plane text-orange-300"></i>
             </div>
             <h2 class="text-white font-semibold text-base mb-2">Destinataires</h2>
             <p class="text-slate-500 text-xs uppercase tracking-wider mb-1">Abonnés actifs</p>
@@ -35,17 +35,17 @@
                     Chaque envoi part à <strong class="text-slate-300">toutes les adresses au statut « actif »</strong> (inscrites sur le site ou depuis l’espace membre).
                 </p>
             @else
-                <p class="text-amber-400/90 text-sm">Table absente ou aucune donnée — voir les alertes ci-dessous.</p>
+                <p class="text-orange-400/90 text-sm">Table absente ou aucune donnée — voir les alertes ci-dessous.</p>
             @endif
         </div>
-        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="lg:col-span-2 bg-green-900 border border-slate-800 rounded-xl p-5">
             <h2 class="text-white font-semibold text-lg mb-1 flex items-center gap-2">
-                <i class="fas fa-envelope text-sky-400"></i>
+                <i class="fas fa-envelope text-green-400"></i>
                 Envoyer un message aux abonnés
             </h2>
             <p class="text-slate-400 text-xs leading-relaxed mb-5">
                 Rédigez l’objet et le corps du mail. Choisissez <strong class="text-slate-300">texte simple</strong> (sécurisé, retours à la ligne conservés) ou <strong class="text-slate-300">HTML</strong> pour une mise en forme avancée.
-                Pour <strong class="text-slate-300">une seule adresse</strong>, utilisez le lien <span class="text-sky-400/90">Individuel</span> dans le tableau des inscrits.
+                Pour <strong class="text-slate-300">une seule adresse</strong>, utilisez le lien <span class="text-green-400/90">Individuel</span> dans le tableau des inscrits.
                 Configuration e-mail : <span class="text-slate-300">MAIL_*</span> dans <code class="text-[11px] bg-slate-800 px-1 rounded">.env</code>.
             </p>
             @if($hasSubscribers && $hasCampaigns && $activeCount > 0)
@@ -74,12 +74,12 @@
                         <legend class="block text-xs text-slate-400 mb-1">Format du message *</legend>
                         <div class="flex flex-wrap gap-4 text-sm text-slate-300">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="content_format" value="plain" class="text-amber-500 bg-slate-800 border-slate-600"
+                                <input type="radio" name="content_format" value="plain" class="text-orange-500 bg-slate-800 border-slate-600"
                                        @checked(old('content_format', 'plain') === 'plain')>
                                 Texte simple
                             </label>
                             <label class="inline-flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="content_format" value="html" class="text-amber-500 bg-slate-800 border-slate-600"
+                                <input type="radio" name="content_format" value="html" class="text-orange-500 bg-slate-800 border-slate-600"
                                        @checked(old('content_format') === 'html')>
                                 HTML
                             </label>
@@ -101,7 +101,7 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
                     </div>
                     <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-800/80">
                         <button type="submit"
-                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 text-sm font-bold rounded-lg transition">
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-400 text-slate-900 text-sm font-bold rounded-lg transition">
                             <i class="fas fa-paper-plane"></i>
                             Envoyer le message à {{ $activeCount }} abonné(s) actif(s)
                         </button>
@@ -110,15 +110,15 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
             @elseif($hasSubscribers && $activeCount === 0)
                 <p class="text-slate-500 text-sm">Aucun abonné actif : ajoutez des inscriptions depuis le site ou réactivez des comptes avant d’envoyer un message.</p>
             @elseif(! $hasCampaigns)
-                <p class="text-amber-400/90 text-sm">Table <code class="text-xs bg-slate-800 px-1 rounded">newsletter_campaigns</code> absente — exécutez les migrations.</p>
+                <p class="text-orange-400/90 text-sm">Table <code class="text-xs bg-slate-800 px-1 rounded">newsletter_campaigns</code> absente — exécutez les migrations.</p>
             @elseif(! $hasSubscribers)
-                <p class="text-amber-400/90 text-sm">Table <code class="text-xs bg-slate-800 px-1 rounded">newsletter_subscribers</code> absente — exécutez les migrations.</p>
+                <p class="text-orange-400/90 text-sm">Table <code class="text-xs bg-slate-800 px-1 rounded">newsletter_subscribers</code> absente — exécutez les migrations.</p>
             @endif
         </div>
     </div>
 
     @if($hasSubscribers && $subscribers)
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden mb-8">
+        <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden mb-8">
             <div class="px-5 py-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-slate-800/40">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
@@ -138,7 +138,7 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
             <div class="px-5 py-4 border-b border-slate-800 flex flex-wrap gap-3 text-xs">
                 <span class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300">Total <strong class="text-white">{{ $subscriberStats['total'] }}</strong></span>
                 <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300">Actifs <strong>{{ $subscriberStats['active'] }}</strong></span>
-                <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-200">En attente <strong>{{ $subscriberStats['pending'] }}</strong></span>
+                <span class="px-2.5 py-1 rounded-lg bg-orange-500/10 text-orange-200">En attente <strong>{{ $subscriberStats['pending'] }}</strong></span>
                 <span class="px-2.5 py-1 rounded-lg bg-slate-700 text-slate-400">Désinscrits <strong>{{ $subscriberStats['unsubscribed'] }}</strong></span>
                 <span class="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-200">Rebonds <strong>{{ $subscriberStats['bounced'] }}</strong></span>
             </div>
@@ -182,7 +182,7 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
                                 <td class="px-5 py-3">
                                     <span class="inline-flex px-2 py-0.5 rounded text-xs font-medium
                                         {{ $s->status === 'active' ? 'bg-emerald-500/15 text-emerald-300' : '' }}
-                                        {{ $s->status === 'pending' ? 'bg-amber-500/15 text-amber-200' : '' }}
+                                        {{ $s->status === 'pending' ? 'bg-orange-500/15 text-orange-200' : '' }}
                                         {{ $s->status === 'unsubscribed' ? 'bg-slate-700 text-slate-400' : '' }}
                                         {{ $s->status === 'bounced' ? 'bg-rose-500/15 text-rose-300' : '' }}">
                                         {{ $s->status }}
@@ -201,7 +201,7 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
                                 <td class="px-5 py-3 text-right">
                                     @if($s->status === 'active')
                                         <a href="{{ route('admin.newsletter.subscribers.message', $s) }}"
-                                           class="inline-flex items-center gap-1.5 text-xs font-medium text-sky-400 hover:text-sky-300 transition">
+                                           class="inline-flex items-center gap-1.5 text-xs font-medium text-green-400 hover:text-green-300 transition">
                                             <i class="fas fa-envelope text-[10px]"></i>
                                             Individuel
                                         </a>
@@ -219,16 +219,16 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
             </div>
         </div>
     @elseif(! $hasSubscribers)
-        <div class="mb-8 px-4 py-3 bg-amber-500/10 border border-amber-500/25 text-amber-100 text-sm rounded-xl">
-            Table <code class="text-xs bg-slate-900 px-1 rounded">newsletter_subscribers</code> absente — exécutez les migrations pour collecter les inscriptions.
+        <div class="mb-8 px-4 py-3 bg-orange-500/10 border border-orange-500/25 text-orange-100 text-sm rounded-xl">
+            Table <code class="text-xs bg-green-900 px-1 rounded">newsletter_subscribers</code> absente — exécutez les migrations pour collecter les inscriptions.
         </div>
     @endif
 
     @if($hasCampaigns)
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
             <div class="px-5 py-4 border-b border-slate-800 flex items-center gap-3 bg-slate-800/40">
-                <div class="w-10 h-10 rounded-lg bg-violet-500/15 border border-violet-500/30 flex items-center justify-center shrink-0">
-                    <i class="fas fa-clock-rotate-left text-violet-300"></i>
+                <div class="w-10 h-10 rounded-lg bg-green-500/15 border border-green-500/30 flex items-center justify-center shrink-0">
+                    <i class="fas fa-clock-rotate-left text-green-300"></i>
                 </div>
                 <div>
                     <h2 class="text-white font-semibold text-lg">Historique des messages envoyés</h2>
@@ -255,7 +255,7 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
                                     <span class="inline-flex px-2 py-0.5 rounded text-xs font-medium
                                         {{ $c->status === 'sent' ? 'bg-emerald-500/15 text-emerald-300' : '' }}
                                         {{ $c->status === 'draft' ? 'bg-slate-700 text-slate-400' : '' }}
-                                        {{ $c->status === 'sending' ? 'bg-amber-500/15 text-amber-200' : '' }}
+                                        {{ $c->status === 'sending' ? 'bg-orange-500/15 text-orange-200' : '' }}
                                         {{ $c->status === 'cancelled' ? 'bg-rose-500/15 text-rose-300' : '' }}">
                                         {{ $c->status }}
                                     </span>

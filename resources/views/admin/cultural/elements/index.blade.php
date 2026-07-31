@@ -5,7 +5,7 @@
 
 @section('header-actions')
 <a href="{{ route('admin.cultural.elements.create') }}"
-    class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+    class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouvel élément
 </a>
 @endsection
@@ -21,7 +21,7 @@
         ['fas fa-circle-check',  'text-emerald-400', $counts['active'],    'Actifs'],
         ['fas fa-triangle-exclamation', 'text-red-400', $counts['en_danger'], 'En danger / Disparus'],
     ] as [$icon, $color, $val, $lbl])
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <i class="{{ $icon }} {{ $color }} text-sm mb-2 block"></i>
         <p class="text-2xl font-bold text-white">{{ $val }}</p>
         <p class="text-slate-500 text-xs mt-0.5">{{ $lbl }}</p>
@@ -32,16 +32,16 @@
 {{-- Filtres --}}
 <form method="GET" action="{{ route('admin.cultural.elements.index') }}" class="mb-5 flex gap-2 flex-wrap">
     <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher un élément…"
-        class="flex-1 min-w-40 bg-slate-900 border border-slate-800 focus:border-amber-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+        class="flex-1 min-w-40 bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
     <select name="domain"
-        class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+        class="bg-green-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
         <option value="">Tous les domaines</option>
         @foreach($domains as $d)
         <option value="{{ $d->id }}" {{ $domainId == $d->id ? 'selected' : '' }}>{{ $d->name }}</option>
         @endforeach
     </select>
     <select name="risk"
-        class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+        class="bg-green-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
         <option value="">Tous risques</option>
         @foreach(['stable'=>'Stable','vulnerable'=>'Vulnérable','en_danger'=>'En danger','disparu'=>'Disparu'] as $val => $lbl)
         <option value="{{ $val }}" {{ $risk === $val ? 'selected' : '' }}>{{ $lbl }}</option>
@@ -59,7 +59,7 @@
 @endif
 
 {{-- Table --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
@@ -76,7 +76,7 @@
                 @php
                     $riskColors = [
                         'stable'     => 'bg-emerald-900/40 text-emerald-400',
-                        'vulnerable' => 'bg-yellow-900/40 text-yellow-400',
+                        'vulnerable' => 'bg-orange-900/40 text-orange-400',
                         'en_danger'  => 'bg-orange-900/40 text-orange-400',
                         'disparu'    => 'bg-red-900/40 text-red-400',
                     ];
@@ -95,7 +95,7 @@
                             <div>
                                 <p class="text-white font-medium">{{ $element->name }}</p>
                                 @if($element->is_featured)
-                                <span class="text-amber-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>En vedette</span>
+                                <span class="text-orange-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>En vedette</span>
                                 @endif
                             </div>
                         </div>
@@ -133,7 +133,7 @@
                                 @csrf @method('PATCH')
                                 <button type="submit"
                                     class="w-7 h-7 rounded-lg flex items-center justify-center transition
-                                        {{ $element->is_featured ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-800 text-slate-600 hover:text-amber-400' }}">
+                                        {{ $element->is_featured ? 'bg-orange-500/20 text-orange-400' : 'bg-slate-800 text-slate-600 hover:text-orange-400' }}">
                                     <i class="fas fa-star text-xs"></i>
                                 </button>
                             </form>

@@ -120,4 +120,14 @@ class Provider extends Model
     {
         return $this->hasMany(ProviderConversation::class);
     }
+
+    public function accommodation()
+    {
+        return $this->hasOne(Accommodation::class);
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

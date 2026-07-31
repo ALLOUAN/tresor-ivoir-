@@ -4,7 +4,7 @@
 @section('page-title', 'Configuration des paiements')
 
 @section('content')
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+<div class="bg-green-900 border border-slate-800 rounded-xl p-5">
     <form method="POST" action="{{ route('admin.payments.settings.save') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
         @csrf
         <div>
@@ -32,6 +32,25 @@
         </div>
 
         <div class="md:col-span-3 border-t border-slate-800 pt-4">
+            <h2 class="text-white text-sm font-semibold mb-3">Réservations d'hébergement</h2>
+            <p class="text-slate-500 text-xs mb-3">Acompte demandé au client à la réservation et commission retenue par la plateforme sur cet acompte.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Acompte demandé (%)</label>
+                    <input name="reservation_deposit_percent" type="number" step="0.01" min="1" max="100"
+                           value="{{ $settings['reservation_deposit_percent'] ?? '30' }}"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Commission plateforme sur l'acompte (%)</label>
+                    <input name="reservation_commission_percent" type="number" step="0.01" min="0" max="100"
+                           value="{{ $settings['reservation_commission_percent'] ?? '12' }}"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                </div>
+            </div>
+        </div>
+
+        <div class="md:col-span-3 border-t border-slate-800 pt-4">
             <h2 class="text-white text-sm font-semibold mb-3">Passerelles (API keys)</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <input name="gateway_orange_key" value="{{ $settings['gateway_orange_key'] ?? '' }}" placeholder="Orange API key" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
@@ -42,7 +61,7 @@
         </div>
 
         <div class="md:col-span-3">
-            <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Enregistrer la configuration</button>
+            <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Enregistrer la configuration</button>
         </div>
     </form>
 </div>

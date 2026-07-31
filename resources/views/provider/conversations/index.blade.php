@@ -30,13 +30,13 @@
         border: 1px solid rgba(244, 63, 94, 0.35);
     }
     .conversation-type-unread {
-        border-left-color: rgba(245, 158, 11, 0.95);
-        background: linear-gradient(90deg, rgba(245, 158, 11, 0.13), transparent 35%);
+        border-left-color: rgba(242, 121, 15, 0.95);
+        background: linear-gradient(90deg, rgba(242, 121, 15, 0.13), transparent 35%);
     }
     .conversation-type-unread .conversation-type-pill {
-        background: rgba(245, 158, 11, 0.2);
+        background: rgba(242, 121, 15, 0.2);
         color: rgb(251 191 36);
-        border: 1px solid rgba(245, 158, 11, 0.4);
+        border: 1px solid rgba(242, 121, 15, 0.4);
     }
     .conversation-type-closed {
         border-left-color: rgba(100, 116, 139, 0.9);
@@ -58,7 +58,7 @@
     }
 </style>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="lg:col-span-1 bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="lg:col-span-1 bg-green-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-white font-semibold mb-4">Nouvelle conversation</h2>
         <form method="POST" action="{{ route('provider.conversations.store') }}" enctype="multipart/form-data" class="space-y-3">
             @csrf
@@ -79,13 +79,13 @@
                 <input type="file" name="attachments[]" multiple
                        class="block w-full text-xs text-slate-300 file:mr-3 file:rounded file:border-0 file:bg-slate-700 file:px-3 file:py-1.5 file:text-slate-200 hover:file:bg-slate-600">
             </div>
-            <button class="w-full bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-lg px-4 py-2.5 text-sm">
+            <button class="w-full bg-orange-500 hover:bg-orange-600 text-black font-semibold rounded-lg px-4 py-2.5 text-sm">
                 Envoyer
             </button>
         </form>
     </div>
 
-    <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <div class="lg:col-span-2 bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="px-5 py-4 border-b border-slate-800">
             <h2 class="text-white font-semibold">Mes conversations</h2>
         </div>
@@ -134,11 +134,11 @@
                                 {{ $conversation->status === 'closed' ? 'Fermée' : 'Ouverte' }}
                             </span>
                             @if($conversation->unread_count > 0)
-                                <span data-unread-pill class="px-2 py-0.5 rounded-full bg-amber-500 text-black text-[11px] font-bold">
+                                <span data-unread-pill class="px-2 py-0.5 rounded-full bg-orange-500 text-black text-[11px] font-bold">
                                     {{ $conversation->unread_count }} non lu{{ $conversation->unread_count > 1 ? 's' : '' }}
                                 </span>
                             @else
-                                <span data-unread-pill class="hidden px-2 py-0.5 rounded-full bg-amber-500 text-black text-[11px] font-bold"></span>
+                                <span data-unread-pill class="hidden px-2 py-0.5 rounded-full bg-orange-500 text-black text-[11px] font-bold"></span>
                             @endif
                         </div>
                     </div>

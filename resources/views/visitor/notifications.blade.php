@@ -21,10 +21,10 @@
         </div>
     @endif
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
         @forelse($notifications as $notification)
             @php $data = $notification->data; @endphp
-            <div class="px-5 py-4 {{ $notification->read_at ? 'opacity-80' : 'bg-amber-900/10' }}">
+            <div class="px-5 py-4 {{ $notification->read_at ? 'opacity-80' : 'bg-orange-900/10' }}">
                 <div class="flex items-start justify-between gap-3">
                     <div>
                         <p class="text-white text-sm font-semibold">{{ $data['title'] ?? 'Notification' }}</p>

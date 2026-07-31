@@ -16,59 +16,59 @@
     @endphp
     <style>
         :root {
-            --ti-gold: #d9b24c;
+            --ti-gold: #e8862a;
             --ti-gold-soft: rgba(217, 178, 76, 0.18);
-            --ti-sunset: #f08a24;
+            --ti-sunset: #f2790f;
             --ti-palm: #2f7a3f;
             --ti-lagoon: #2c8da6;
         }
         .checkout-glass {
-            background: linear-gradient(145deg, rgba(20,20,18,0.9), rgba(12,12,10,0.88));
-            border: 1px solid rgba(255,255,255,0.09);
-            box-shadow: 0 18px 45px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.04);
-            backdrop-filter: blur(12px);
+            background:#e9e5d9;
+            border: 1px solid #d6cfba;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.06);
         }
         .checkout-title-icon {
-            box-shadow: 0 0 0 1px var(--ti-gold-soft), 0 8px 22px rgba(240,138,36,0.18);
+            box-shadow: 0 0 0 1px var(--ti-gold-soft), 0 8px 22px rgba(240,138,36,0.12);
         }
         .checkout-input {
-            background-color: #12110f !important;
-            color: #ffffff !important;
-            border-color: rgba(255,255,255,0.12) !important;
+            background-color:#e9e5d9 !important;
+            color: #1c1915 !important;
+            border-color: #c2b89e !important;
             transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
         }
         .checkout-input::placeholder {
-            color: #7a7a7a !important;
+            color: #665f52 !important;
         }
         .checkout-input:focus {
-            box-shadow: 0 0 0 3px rgba(44,141,166,0.2);
+            box-shadow: 0 0 0 3px rgba(44,141,166,0.15);
             transform: translateY(-1px);
         }
         .checkout-input:-webkit-autofill,
         .checkout-input:-webkit-autofill:hover,
         .checkout-input:-webkit-autofill:focus {
-            -webkit-text-fill-color: #ffffff !important;
-            box-shadow: 0 0 0px 1000px #12110f inset !important;
+            -webkit-text-fill-color: #1c1915 !important;
+            box-shadow: 0 0 0px 1000px #ffffff inset !important;
             transition: background-color 9999s ease-out 0s;
         }
         select.checkout-input option {
-            background: #ffffff;
-            color: #111111;
+            background:#e9e5d9;
+            color: #1c1915;
         }
         .checkout-submit {
             background: linear-gradient(135deg, var(--ti-gold) 0%, var(--ti-sunset) 55%, #f5b34b 100%);
             color: #16140f;
-            box-shadow: 0 10px 28px rgba(240,138,36,0.3), inset 0 -1px 0 rgba(0,0,0,0.2);
+            box-shadow: 0 10px 28px rgba(240,138,36,0.22);
         }
         .checkout-submit:hover {
             filter: saturate(1.08) brightness(1.03);
         }
         .checkout-badge-premium {
             border-color: rgba(217,178,76,0.35);
-            background: linear-gradient(135deg, rgba(217,178,76,0.17), rgba(240,138,36,0.12));
+            background: linear-gradient(135deg, rgba(217,178,76,0.14), rgba(240,138,36,0.09));
+            color: #1c1915;
         }
         .checkout-total {
-            color: #f5c96b;
+            color: #a54a0b;
         }
     </style>
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 items-start">
@@ -86,17 +86,17 @@
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cycle-option cursor-pointer">
                                 <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
-                                <div class="cycle-card rounded-xl border-2 border-[#d9b24c] bg-[#d9b24c]/10 p-3 text-center transition">
+                                <div class="cycle-card rounded-xl border-2 border-[#e8862a] bg-[#e8862a]/10 p-3 text-center transition">
                                     <p class="text-sm font-bold text-white">Mensuel</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-[#f7cf7a]">{{ number_format($monthlyPrice, 0, ',', ' ') }} FCFA</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-[#a54a0b]">{{ number_format($monthlyPrice, 0, ',', ' ') }} FCFA</p>
                                     <p class="text-xs text-gray-500">/ mois</p>
                                 </div>
                             </label>
                             <label class="cycle-option cursor-pointer">
                                 <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
-                                <div class="cycle-card rounded-xl border border-white/10 bg-dark-900 p-3 text-center transition hover:border-[#f08a24]/40">
+                                <div class="cycle-card rounded-xl border border-white/10 bg-dark-900 p-3 text-center transition hover:border-[#f2790f]/40">
                                     <p class="text-sm font-bold text-white">Annuel</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-[#f7cf7a]">{{ number_format($yearlyPrice, 0, ',', ' ') }} FCFA</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-[#a54a0b]">{{ number_format($yearlyPrice, 0, ',', ' ') }} FCFA</p>
                                     <p class="text-xs text-gray-500">/ an</p>
                                 </div>
                             </label>
@@ -109,9 +109,9 @@
                             @foreach($channels as $ch)
                                 <label class="channel-option cursor-pointer">
                                     <input type="radio" name="channel" value="{{ $ch['code'] }}" class="sr-only" {{ $loop->first ? 'checked' : '' }}>
-                                    <div class="channel-card rounded-xl border p-2.5 transition {{ $loop->first ? 'border-[#d9b24c] bg-[#d9b24c]/10' : 'border-white/10 bg-dark-900' }}">
+                                    <div class="channel-card rounded-xl border p-2.5 transition {{ $loop->first ? 'border-[#e8862a] bg-[#e8862a]/10' : 'border-white/10 bg-dark-900' }}">
                                         <div class="flex items-center gap-2">
-                                            <i class="fas {{ $ch['icon'] }} w-4 shrink-0 text-center text-xs text-[#f08a24]"></i>
+                                            <i class="fas {{ $ch['icon'] }} w-4 shrink-0 text-center text-xs text-[#f2790f]"></i>
                                             <div class="min-w-0">
                                                 <p class="text-xs font-semibold leading-tight text-white">{{ $ch['label'] }}</p>
                                                 <p class="truncate text-[10px] text-gray-500">{{ $ch['desc'] }}</p>
@@ -154,7 +154,7 @@
 
                     <div>
                         <label class="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-200">
-                            <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#d9b24c]/15 text-[#f5c96b]"><i class="fas fa-wallet"></i></span>
+                            <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#e8862a]/15 text-[#a54a0b]"><i class="fas fa-wallet"></i></span>
                             Moyen de paiement
                         </label>
                         <p class="mb-2 text-xs text-gray-500">Sélectionnez le canal utilisé pour le paiement en ligne.</p>
@@ -173,8 +173,8 @@
                     <label class="flex cursor-pointer items-start gap-3 select-none">
                         <input type="checkbox" id="cgu-check" class="mt-1 h-4 w-4 shrink-0 rounded border-white/20 bg-dark-900 text-[#2f7a3f] focus:ring-[#2f7a3f]/50">
                         <span class="text-sm leading-relaxed text-gray-400">
-                            J'accepte les <a href="#" class="font-medium text-[#f7cf7a] underline hover:text-[#fde3a7]">conditions générales</a>
-                            et la <a href="#" class="font-medium text-[#f7cf7a] underline hover:text-[#fde3a7]">politique de confidentialité</a>.
+                            J'accepte les <a href="#" class="font-medium text-[#a54a0b] underline hover:text-[#a3450a]">conditions générales</a>
+                            et la <a href="#" class="font-medium text-[#a54a0b] underline hover:text-[#a3450a]">politique de confidentialité</a>.
                         </span>
                     </label>
 
@@ -187,7 +187,7 @@
                     </button>
                 </div>
             @else
-                <div class="rounded-lg border border-amber-500/35 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+                <div class="rounded-lg border border-orange-500/35 bg-orange-500/10 px-4 py-3 text-sm text-orange-100">
                     <i class="fas fa-triangle-exclamation mr-2"></i>
                     La passerelle CinetPay n'est pas encore configurée. Utilisez le mode de simulation ci-dessous pour tester le flux de paiement.
                 </div>
@@ -331,7 +331,7 @@
                     <div class="flex items-center gap-3">
                         <span class="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white/15 text-lg"><i class="fas fa-box"></i></span>
                         <div>
-                            <p class="text-sm font-semibold text-[#fde3a7]/90">Forfait</p>
+                            <p class="text-sm font-semibold text-[#a54a0b]">Forfait</p>
                             <p class="text-lg font-bold leading-tight">{{ $plan->name_fr }}</p>
                         </div>
                     </div>
@@ -362,18 +362,18 @@
 
                 <div class="mt-5 flex flex-wrap gap-2">
                     <span class="inline-flex items-center gap-1 rounded-full bg-[#2f7a3f]/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-[#2f7a3f]/35"><i class="fas fa-shield-halved"></i> SSL</span>
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#2c8da6]/15 px-2.5 py-1 text-[11px] font-semibold text-cyan-200 ring-1 ring-[#2c8da6]/35"><i class="fas fa-lock"></i> Chiffré</span>
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#f08a24]/12 px-2.5 py-1 text-[11px] font-semibold text-[#f7cf7a] ring-1 ring-[#d9b24c]/40"><i class="fas fa-circle-check"></i> CynetPay</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#2c8da6]/15 px-2.5 py-1 text-[11px] font-semibold text-green-200 ring-1 ring-[#2c8da6]/35"><i class="fas fa-lock"></i> Chiffré</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#f2790f]/12 px-2.5 py-1 text-[11px] font-semibold text-[#a54a0b] ring-1 ring-[#e8862a]/40"><i class="fas fa-circle-check"></i> CynetPay</span>
                 </div>
             </div>
         </aside>
     </div>
 @else
     <div class="max-w-xl space-y-5">
-        <div class="rounded-xl border border-slate-800 bg-slate-900 p-5">
+        <div class="rounded-xl border border-slate-800 bg-green-900 p-5">
             <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/15">
-                    <i class="fas fa-gem text-sm text-amber-400"></i>
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-orange-500/15">
+                    <i class="fas fa-gem text-sm text-orange-400"></i>
                 </div>
                 <div>
                     <p class="font-bold text-white">{{ strtoupper($plan->code) }} — {{ $plan->name_fr }}</p>
@@ -383,23 +383,23 @@
         </div>
 
         @if($cinetPayConfigured)
-            <div class="space-y-5 rounded-xl border border-slate-800 bg-slate-900 p-5">
+            <div class="space-y-5 rounded-xl border border-slate-800 bg-green-900 p-5">
                 <div>
                     <label class="mb-2 block text-xs font-medium text-slate-300">Cycle de facturation</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cycle-option cursor-pointer">
                             <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
-                            <div class="cycle-card rounded-lg border border-amber-500 bg-amber-500/8 p-3 text-center transition hover:border-amber-500/70">
+                            <div class="cycle-card rounded-lg border border-orange-500 bg-orange-500/8 p-3 text-center transition hover:border-orange-500/70">
                                 <p class="text-sm font-bold text-white">Mensuel</p>
-                                <p class="mt-0.5 font-semibold text-amber-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA</p>
                                 <p class="text-xs text-slate-500">/ mois</p>
                             </div>
                         </label>
                         <label class="cycle-option cursor-pointer">
                             <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
-                            <div class="cycle-card rounded-lg border border-slate-700 p-3 text-center transition hover:border-amber-500/50">
+                            <div class="cycle-card rounded-lg border border-slate-700 p-3 text-center transition hover:border-orange-500/50">
                                 <p class="text-sm font-bold text-white">Annuel</p>
-                                <p class="mt-0.5 font-semibold text-amber-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} FCFA</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} FCFA</p>
                                 <p class="text-xs text-slate-500">/ an</p>
                             </div>
                         </label>
@@ -412,9 +412,9 @@
                         @foreach($channels as $ch)
                             <label class="channel-option cursor-pointer">
                                 <input type="radio" name="channel" value="{{ $ch['code'] }}" class="sr-only" {{ $loop->first ? 'checked' : '' }}>
-                                <div class="channel-card rounded-lg border p-2.5 transition {{ $loop->first ? 'border-amber-500 bg-amber-500/8' : 'border-slate-700' }}">
+                                <div class="channel-card rounded-lg border p-2.5 transition {{ $loop->first ? 'border-orange-500 bg-orange-500/8' : 'border-slate-700' }}">
                                     <div class="flex items-center gap-2">
-                                        <i class="fas {{ $ch['icon'] }} w-4 shrink-0 text-center text-xs text-amber-400"></i>
+                                        <i class="fas {{ $ch['icon'] }} w-4 shrink-0 text-center text-xs text-orange-400"></i>
                                         <div class="min-w-0">
                                             <p class="text-xs font-semibold leading-tight text-white">{{ $ch['label'] }}</p>
                                             <p class="truncate text-[10px] text-slate-500">{{ $ch['desc'] }}</p>
@@ -431,24 +431,24 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <input type="text" id="customer_name" placeholder="Prénom"
-                                   class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none">
+                                   class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                         </div>
                         <div>
                             <input type="text" id="customer_surname" placeholder="Nom"
-                                   class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none">
+                                   class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                         </div>
                     </div>
                     <input type="email" id="customer_email" value="{{ auth()->user()->email ?? '' }}" placeholder="Adresse e-mail"
-                           class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none">
+                           class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                     <input type="tel" id="customer_phone" placeholder="Téléphone (ex : +225 07 00 00 00 00)"
-                           class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none">
+                           class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                 </div>
 
                 <div>
                     <label class="mb-2 block text-xs font-medium text-slate-300">Code promo <span class="text-slate-500">(facultatif)</span></label>
                     <div class="flex gap-2">
                         <input type="text" id="promo-input" placeholder="EX : IVOIRE20"
-                               class="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm uppercase tracking-wider text-slate-100 placeholder:normal-case placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none">
+                               class="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm uppercase tracking-wider text-slate-100 placeholder:normal-case placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                         <button type="button" id="promo-btn" class="rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-slate-600">Appliquer</button>
                     </div>
                     <p id="promo-message" class="mt-1.5 hidden text-xs"></p>
@@ -470,10 +470,10 @@
                 </div>
 
                 <label class="flex cursor-pointer select-none items-start gap-2.5">
-                    <input type="checkbox" id="cgu-check" class="mt-0.5 h-4 w-4 shrink-0 accent-amber-500">
+                    <input type="checkbox" id="cgu-check" class="mt-0.5 h-4 w-4 shrink-0 accent-orange-500">
                     <span class="text-xs leading-relaxed text-slate-400">
                         J'accepte les
-                        <a href="#" class="text-amber-400 underline underline-offset-2 hover:text-amber-300">conditions générales d'utilisation</a>
+                        <a href="#" class="text-orange-400 underline underline-offset-2 hover:text-orange-300">conditions générales d'utilisation</a>
                         et confirme que les informations saisies sont exactes.
                     </span>
                 </label>
@@ -481,34 +481,34 @@
                 <div id="pay-error" class="hidden rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400"></div>
 
                 <button type="button" id="pay-btn"
-                        class="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-500 py-3 text-sm font-bold text-white transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-50">
+                        class="flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 text-sm font-bold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50">
                     <i class="fas fa-lock text-xs"></i>
                     <span id="pay-btn-label">Payer via CinetPay</span>
                 </button>
 
                 <p class="text-center text-[11px] text-slate-500">
-                    <i class="fas fa-shield-halved mr-1 text-amber-400/60"></i>
+                    <i class="fas fa-shield-halved mr-1 text-orange-400/60"></i>
                     Paiement sécurisé par CinetPay — vos données bancaires ne sont jamais transmises à notre serveur.
                 </p>
             </div>
         @else
-            <div class="flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
+            <div class="flex items-start gap-2.5 rounded-xl border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-300">
                 <i class="fas fa-triangle-exclamation mt-0.5 shrink-0"></i>
                 <span>La passerelle CinetPay n'est pas encore configurée. Utilisez le mode de simulation ci-dessous pour tester le flux de paiement.</span>
             </div>
 
-            <form method="POST" action="{{ route('subscriptions.process-offline', $plan) }}" class="space-y-5 rounded-xl border border-slate-800 bg-slate-900 p-5">
+            <form method="POST" action="{{ route('subscriptions.process-offline', $plan) }}" class="space-y-5 rounded-xl border border-slate-800 bg-green-900 p-5">
                 @csrf
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="mb-1.5 block text-xs font-medium text-slate-300">Prénom <span class="text-red-400">*</span></label>
                         <input type="text" name="first_name" required maxlength="100" value="{{ old('first_name', auth()->user()->first_name) }}"
-                               class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-amber-500/50 focus:outline-none">
+                               class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-orange-500/50 focus:outline-none">
                     </div>
                     <div>
                         <label class="mb-1.5 block text-xs font-medium text-slate-300">Nom <span class="text-red-400">*</span></label>
                         <input type="text" name="last_name" required maxlength="100" value="{{ old('last_name', auth()->user()->last_name) }}"
-                               class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-amber-500/50 focus:outline-none">
+                               class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-orange-500/50 focus:outline-none">
                     </div>
                 </div>
 
@@ -516,7 +516,7 @@
                     <label class="mb-1.5 block text-xs font-medium text-slate-300">Référence / numéro de paiement <span class="text-red-400">*</span></label>
                     <input type="text" name="payment_reference" required maxlength="120" value="{{ old('payment_reference') }}"
                            placeholder="Ex. : ID transaction Orange Money, Wave…"
-                           class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none">
+                           class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                     @error('payment_reference')<p class="mt-1 text-xs text-red-400">{{ $message }}</p>@enderror
                 </div>
 
@@ -525,17 +525,17 @@
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cycle-option cursor-pointer">
                             <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
-                            <div class="cycle-card rounded-lg border border-amber-500 bg-amber-500/8 p-3 text-center transition">
+                            <div class="cycle-card rounded-lg border border-orange-500 bg-orange-500/8 p-3 text-center transition">
                                 <p class="text-sm font-bold text-white">Mensuel</p>
-                                <p class="mt-0.5 font-semibold text-amber-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA</p>
                                 <p class="text-xs text-slate-500">/ mois</p>
                             </div>
                         </label>
                         <label class="cycle-option cursor-pointer">
                             <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
-                            <div class="cycle-card rounded-lg border border-slate-700 p-3 text-center transition hover:border-amber-500/50">
+                            <div class="cycle-card rounded-lg border border-slate-700 p-3 text-center transition hover:border-orange-500/50">
                                 <p class="text-sm font-bold text-white">Annuel</p>
-                                <p class="mt-0.5 font-semibold text-amber-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} FCFA</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} FCFA</p>
                                 <p class="text-xs text-slate-500">/ an</p>
                             </div>
                         </label>
@@ -544,7 +544,7 @@
 
                 <div>
                     <label class="mb-2 block text-xs font-medium text-slate-300">Méthode de paiement (simulation)</label>
-                    <select name="method" class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-amber-500/50 focus:outline-none">
+                    <select name="method" class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-orange-500/50 focus:outline-none">
                         <option value="orange_money">Orange Money</option>
                         <option value="mtn_momo">MTN MoMo</option>
                         <option value="wave">Wave</option>
@@ -558,7 +558,7 @@
                     <label class="mb-2 block text-xs font-medium text-slate-300">Code promo <span class="text-slate-500">(facultatif)</span></label>
                     <div class="flex gap-2">
                         <input type="text" id="promo-input" name="promo_code" placeholder="EX : IVOIRE20"
-                               class="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm uppercase tracking-wider text-slate-100 placeholder:normal-case placeholder:text-slate-500 focus:border-amber-500/50 focus:outline-none">
+                               class="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm uppercase tracking-wider text-slate-100 placeholder:normal-case placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                         <button type="button" id="promo-btn" class="rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-slate-600">Appliquer</button>
                     </div>
                     <p id="promo-message" class="mt-1.5 hidden text-xs"></p>
@@ -579,7 +579,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-500 py-3 text-sm font-bold text-white transition hover:bg-amber-600">
+                <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 text-sm font-bold text-white transition hover:bg-orange-600">
                     <i class="fas fa-vial text-xs"></i>
                     Simuler le paiement (mode test)
                 </button>
@@ -659,7 +659,7 @@
             if (promoMsg)   promoMsg.classList.add('hidden');
             if (els.discountRow) els.discountRow.classList.add('hidden');
             document.querySelectorAll('.cycle-card').forEach(c => {
-                c.classList.remove('border-2', 'border-[#1a7a3f]', 'bg-emerald-50/50', 'border-gold-500', 'bg-gold-500/10', 'border-[#d9b24c]', 'bg-[#d9b24c]/10', 'border-amber-500', 'bg-amber-500/8');
+                c.classList.remove('border-2', 'border-[#1a7a3f]', 'bg-emerald-50/50', 'border-gold-500', 'bg-gold-500/10', 'border-[#e8862a]', 'bg-[#e8862a]/10', 'border-orange-500', 'bg-orange-500/8');
                 c.classList.add('border');
                 if (isPublicCheckout) {
                     c.classList.add('border-white/10', 'bg-dark-900');
@@ -673,10 +673,10 @@
             if (card) {
                 if (isPublicCheckout) {
                     card.classList.remove('border', 'border-white/10', 'bg-dark-900');
-                    card.classList.add('border-2', 'border-[#d9b24c]', 'bg-[#d9b24c]/10');
+                    card.classList.add('border-2', 'border-[#e8862a]', 'bg-[#e8862a]/10');
                 } else {
                     card.classList.remove('border-slate-700');
-                    card.classList.add('border-amber-500', 'bg-amber-500/8');
+                    card.classList.add('border-orange-500', 'bg-orange-500/8');
                 }
             }
             updateSummary();
@@ -686,9 +686,9 @@
             const card = radio.closest('.cycle-option') && radio.closest('.cycle-option').querySelector('.cycle-card');
             if (card) {
                 if (isPublicCheckout) {
-                    card.classList.add('border-2', 'border-[#d9b24c]', 'bg-[#d9b24c]/10');
+                    card.classList.add('border-2', 'border-[#e8862a]', 'bg-[#e8862a]/10');
                 } else {
-                    card.classList.add('border-amber-500', 'bg-amber-500/8');
+                    card.classList.add('border-orange-500', 'bg-orange-500/8');
                     card.classList.remove('border-slate-700');
                 }
             }
@@ -699,7 +699,7 @@
         radio.addEventListener('change', () => {
             currentChannel = radio.value;
             document.querySelectorAll('.channel-card').forEach(c => {
-                c.classList.remove('border-[#4A90D9]', 'bg-blue-50/60', 'border-gold-500', 'bg-gold-500/10', 'border-[#d9b24c]', 'bg-[#d9b24c]/10', 'border-amber-500', 'bg-amber-500/8');
+                c.classList.remove('border-[#4A90D9]', 'bg-green-50/60', 'border-gold-500', 'bg-gold-500/10', 'border-[#e8862a]', 'bg-[#e8862a]/10', 'border-orange-500', 'bg-orange-500/8');
                 if (isPublicCheckout) {
                     c.classList.add('border-white/10', 'bg-dark-900');
                     c.classList.remove('border-slate-200', 'border-slate-700');
@@ -712,10 +712,10 @@
             if (chCard) {
                 if (isPublicCheckout) {
                     chCard.classList.remove('border-white/10', 'bg-dark-900');
-                    chCard.classList.add('border-[#d9b24c]', 'bg-[#d9b24c]/10');
+                    chCard.classList.add('border-[#e8862a]', 'bg-[#e8862a]/10');
                 } else {
                     chCard.classList.remove('border-slate-700');
-                    chCard.classList.add('border-amber-500', 'bg-amber-500/8');
+                    chCard.classList.add('border-orange-500', 'bg-orange-500/8');
                 }
             }
         });
@@ -734,7 +734,7 @@
 
             if (! code) {
                 msg.textContent = 'Saisissez un code promo.';
-                msg.className   = 'mt-1.5 text-xs text-amber-600';
+                msg.className   = 'mt-1.5 text-xs text-orange-600';
                 msg.classList.remove('hidden');
                 return;
             }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark">
+<html lang="fr" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,8 +20,8 @@
                         sans:  ['Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        gold: { 400: '#f5b942', 500: '#e8a020', 600: '#c4811a' },
-                        dark: { 800: '#141410', 900: '#0d0d0b' },
+                        gold: { 400: '#fa9a3c', 500: '#f2790f', 600: '#d4630a' },
+                        dark: { 800: '#e9e5d9', 900: '#e9e5d9' },
                     }
                 }
             }
@@ -32,7 +32,7 @@
         * { box-sizing: border-box; }
         body {
             background:
-                radial-gradient(900px 560px at 8% 10%, rgba(232,160,32,0.15), transparent 62%),
+                radial-gradient(900px 560px at 8% 10%, rgba(242, 121, 15,0.15), transparent 62%),
                 radial-gradient(760px 460px at 92% 88%, rgba(99,102,241,0.11), transparent 64%),
                 #0a0907;
         }
@@ -44,7 +44,7 @@
             position: absolute;
             inset: -16px;
             border-radius: 30px;
-            background: linear-gradient(145deg, rgba(232,160,32,0.2), rgba(255,255,255,0.03), rgba(232,160,32,0.08));
+            background: linear-gradient(145deg, rgba(242, 121, 15,0.2), rgba(255,255,255,0.03), rgba(242, 121, 15,0.08));
             filter: blur(16px);
             opacity: .45;
             pointer-events: none;
@@ -53,15 +53,15 @@
             position: relative;
             border: 1px solid rgba(255,255,255,0.12);
             background:
-                radial-gradient(110% 130% at 0% 0%, rgba(232,160,32,0.14), rgba(232,160,32,0.04) 45%, rgba(13,11,9,0.92) 100%),
+                radial-gradient(110% 130% at 0% 0%, rgba(242, 121, 15,0.14), rgba(242, 121, 15,0.04) 45%, rgba(13,11,9,0.92) 100%),
                 linear-gradient(145deg, rgba(20,18,14,0.9), rgba(13,11,9,0.94));
             box-shadow: 0 24px 56px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05);
             backdrop-filter: blur(8px);
         }
         .verify-badge {
-            background: linear-gradient(135deg,#f5b942,#e8a020);
+            background: linear-gradient(135deg,#fa9a3c,#f2790f);
             color: #111827;
-            box-shadow: 0 10px 24px rgba(232,160,32,0.34);
+            box-shadow: 0 10px 24px rgba(242, 121, 15,0.34);
         }
         .verify-input {
             border: 1px solid rgba(255,255,255,0.15);
@@ -71,28 +71,28 @@
         .verify-input::placeholder { color: #6b7280; }
         .verify-input:focus {
             outline: none;
-            border-color: rgba(232,160,32,0.55);
-            box-shadow: 0 0 0 4px rgba(232,160,32,0.14);
+            border-color: rgba(242, 121, 15,0.55);
+            box-shadow: 0 0 0 4px rgba(242, 121, 15,0.14);
         }
         .verify-step {
             border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.02);
+            background: rgba(233, 229, 217, 0.02);
         }
         html:not(.dark) body {
             background:
-                radial-gradient(900px 560px at 8% 10%, rgba(232,160,32,0.08), transparent 62%),
+                radial-gradient(900px 560px at 8% 10%, rgba(242, 121, 15,0.08), transparent 62%),
                 radial-gradient(760px 460px at 92% 88%, rgba(99,102,241,0.06), transparent 64%),
-                #f8f5ee;
+                #ffffff;
         }
         html:not(.dark) .verify-card {
             border-color: rgba(0,0,0,0.1);
             background:
-                radial-gradient(110% 130% at 0% 0%, rgba(232,160,32,0.08), rgba(232,160,32,0.03) 45%, rgba(255,255,255,0.95) 100%),
+                radial-gradient(110% 130% at 0% 0%, rgba(242, 121, 15,0.08), rgba(242, 121, 15,0.03) 45%, rgba(255,255,255,0.95) 100%),
                 linear-gradient(145deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98));
             box-shadow: 0 16px 36px rgba(0,0,0,0.08);
         }
         html:not(.dark) .verify-step { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); }
-        html:not(.dark) .verify-input { border-color: rgba(0,0,0,0.18); background: #ffffff; color: #1c1915; }
+        html:not(.dark) .verify-input { border-color: rgba(0,0,0,0.18); background:#e9e5d9; color: #1c1915; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 font-sans">
@@ -106,11 +106,11 @@
                     <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
                 </div>
             @else
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 mb-4">
                     <i class="fas fa-gem text-black text-2xl"></i>
                 </div>
             @endif
-            <h1 class="text-2xl font-bold font-serif" style="color:#f5b942">{{ $siteBrand['site_name'] }}</h1>
+            <h1 class="text-2xl font-bold font-serif" style="color:#fa9a3c">{{ $siteBrand['site_name'] }}</h1>
         </div>
 
         {{-- Card --}}
@@ -159,7 +159,7 @@
 
                 <button type="submit"
                         class="w-full py-2.5 rounded-xl mt-3 font-semibold text-sm text-black transition-all duration-200 hover:-translate-y-0.5"
-                        style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
+                        style="background: linear-gradient(135deg,#fa9a3c,#f2790f); box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
                     <i class="fas fa-check mr-1.5 text-xs"></i>
                     Vérifier le code
                 </button>

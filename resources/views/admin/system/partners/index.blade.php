@@ -5,7 +5,7 @@
 
 @section('header-actions')
     <a href="{{ route('admin.administration.partners.create') }}"
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-rose-500 hover:from-violet-500 hover:to-rose-400 shadow-lg shadow-rose-900/20 transition">
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-rose-500 hover:from-green-500 hover:to-rose-400 shadow-lg shadow-rose-900/20 transition">
         <i class="fas fa-plus"></i> Nouveau partenaire
     </a>
 @endsection
@@ -23,10 +23,10 @@
         @foreach([
             ['total', $stats['total'], 'fas fa-handshake', 'Total partenaires', 'border-slate-700'],
             ['active', $stats['active'], 'fas fa-circle-check', 'Actifs', 'border-emerald-800/50'],
-            ['featured', $stats['featured'], 'fas fa-star', 'En vedette', 'border-amber-800/50'],
-            ['types', $stats['types'], 'fas fa-tags', 'Types', 'border-violet-800/50'],
+            ['featured', $stats['featured'], 'fas fa-star', 'En vedette', 'border-orange-800/50'],
+            ['types', $stats['types'], 'fas fa-tags', 'Types', 'border-green-800/50'],
         ] as [$key, $count, $icon, $label, $border])
-            <div class="bg-slate-900 border {{ $border }} rounded-xl p-4">
+            <div class="bg-green-900 border {{ $border }} rounded-xl p-4">
                 <div class="flex items-center justify-between mb-2">
                     <i class="{{ $icon }} text-slate-400 text-sm"></i>
                 </div>
@@ -37,12 +37,12 @@
     </div>
 
     {{-- Filtres --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4 mb-5">
         <form method="GET" action="{{ route('admin.administration.partners') }}" class="flex flex-wrap gap-3 items-end">
             <div class="flex-1 min-w-[200px]">
                 <label class="block text-xs text-slate-500 mb-1">Recherche</label>
                 <input type="text" name="q" value="{{ $q }}" placeholder="Nom, email, contact, site web…"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 text-sm outline-none focus:border-amber-500/40">
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 text-sm outline-none focus:border-orange-500/40">
             </div>
             <div class="w-40">
                 <label class="block text-xs text-slate-500 mb-1">Type</label>
@@ -70,14 +70,14 @@
                 </select>
             </div>
             <button type="submit"
-                class="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-amber-500 hover:from-violet-500 hover:to-amber-400 transition">
+                class="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-orange-500 hover:from-green-500 hover:to-orange-400 transition">
                 Filtrer
             </button>
         </form>
     </div>
 
     {{-- Table --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
             <h2 class="text-white font-semibold text-sm">Liste des partenaires ({{ $partners->total() }})</h2>
         </div>
@@ -112,7 +112,7 @@
                             <td class="px-4 py-3 min-w-[160px]">
                                 <p class="text-white font-medium">{{ $partner->name }}</p>
                                 @if($partner->website_url)
-                                    <a href="{{ $partner->website_url }}" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 text-xs truncate block max-w-[220px]">
+                                    <a href="{{ $partner->website_url }}" target="_blank" rel="noopener" class="text-green-400 hover:text-green-300 text-xs truncate block max-w-[220px]">
                                         {{ $partner->website_url }}
                                     </a>
                                 @endif
@@ -139,7 +139,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" title="Basculer"
-                                        class="min-w-[3.25rem] px-2 py-1 rounded-full text-[11px] font-semibold transition {{ $partner->is_featured ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600' }}">
+                                        class="min-w-[3.25rem] px-2 py-1 rounded-full text-[11px] font-semibold transition {{ $partner->is_featured ? 'bg-green-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600' }}">
                                         {{ $partner->is_featured ? 'Oui' : 'Non' }}
                                     </button>
                                 </form>
@@ -149,7 +149,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" title="Basculer"
-                                        class="min-w-[3.25rem] px-2 py-1 rounded-full text-[11px] font-semibold transition {{ $partner->is_active ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600' }}">
+                                        class="min-w-[3.25rem] px-2 py-1 rounded-full text-[11px] font-semibold transition {{ $partner->is_active ? 'bg-green-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600' }}">
                                         {{ $partner->is_active ? 'Actif' : 'Off' }}
                                     </button>
                                 </form>
@@ -162,12 +162,12 @@
                                 <div class="flex items-center justify-end gap-1">
                                     @if($partner->website_url)
                                         <a href="{{ $partner->website_url }}" target="_blank" rel="noopener"
-                                            class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-blue-900/40 flex items-center justify-center text-slate-400 hover:text-blue-300 transition" title="Voir le site">
+                                            class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-green-900/40 flex items-center justify-center text-slate-400 hover:text-green-300 transition" title="Voir le site">
                                             <i class="fas fa-eye text-xs"></i>
                                         </a>
                                     @endif
                                     <a href="{{ route('admin.administration.partners.edit', $partner) }}"
-                                        class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Modifier">
+                                        class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Modifier">
                                         <i class="fas fa-pen text-xs"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.administration.partners.destroy', $partner) }}"
@@ -186,7 +186,7 @@
                             <td colspan="9" class="px-5 py-16 text-center text-slate-500">
                                 <i class="fas fa-handshake text-3xl mb-3 block text-slate-700"></i>
                                 Aucun partenaire pour le moment.
-                                <a href="{{ route('admin.administration.partners.create') }}" class="text-amber-400 hover:underline ml-1">Créer le premier</a>
+                                <a href="{{ route('admin.administration.partners.create') }}" class="text-orange-400 hover:underline ml-1">Créer le premier</a>
                             </td>
                         </tr>
                     @endforelse

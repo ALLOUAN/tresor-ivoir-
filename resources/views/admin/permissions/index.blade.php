@@ -10,8 +10,8 @@
     @php
     $roleStyles = [
         'admin'    => ['bg' => 'bg-rose-500',    'text' => 'Administrateur', 'icon' => 'fa-shield-halved'],
-        'editor'   => ['bg' => 'bg-blue-500',    'text' => 'Éditeur',        'icon' => 'fa-pen-nib'],
-        'provider' => ['bg' => 'bg-violet-500',  'text' => 'Prestataire',    'icon' => 'fa-store'],
+        'editor'   => ['bg' => 'bg-green-500',    'text' => 'Éditeur',        'icon' => 'fa-pen-nib'],
+        'provider' => ['bg' => 'bg-green-500',  'text' => 'Prestataire',    'icon' => 'fa-store'],
         'visitor'  => ['bg' => 'bg-emerald-500', 'text' => 'Visiteur',       'icon' => 'fa-user'],
     ];
     @endphp
@@ -39,22 +39,22 @@
 {{-- ── Permission matrix ────────────────────────────────────────────────── --}}
 <div class="space-y-6">
     @foreach($permissions as $group => $perms)
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
 
         {{-- Group header --}}
         <div class="flex items-center gap-3 px-5 py-3 bg-slate-800/60 border-b border-slate-800">
             <i class="fas
                 {{ match($group) {
-                    'Articles'      => 'fa-newspaper text-amber-400',
-                    'Événements'    => 'fa-calendar-days text-violet-400',
-                    'Prestataires'  => 'fa-store text-blue-400',
+                    'Articles'      => 'fa-newspaper text-orange-400',
+                    'Événements'    => 'fa-calendar-days text-green-400',
+                    'Prestataires'  => 'fa-store text-green-400',
                     'Utilisateurs'  => 'fa-users text-rose-400',
-                    'Avis'          => 'fa-star text-yellow-400',
+                    'Avis'          => 'fa-star text-orange-400',
                     'Paiements'     => 'fa-credit-card text-emerald-400',
-                    'Abonnements'   => 'fa-gem text-amber-300',
+                    'Abonnements'   => 'fa-gem text-orange-300',
                     'Factures'      => 'fa-file-invoice text-slate-300',
-                    'Newsletter'    => 'fa-envelope text-cyan-400',
-                    'Médias'        => 'fa-images text-pink-400',
+                    'Newsletter'    => 'fa-envelope text-green-400',
+                    'Médias'        => 'fa-images text-green-400',
                     default         => 'fa-cog text-slate-400',
                 } }}
                 text-sm"></i>
@@ -116,7 +116,7 @@
     $pct   = round($count / $total * 100);
     $s = $roleStyles[$role] ?? ['bg' => 'bg-slate-500', 'text' => ucfirst($role), 'icon' => 'fa-user'];
     @endphp
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <div class="flex items-center gap-2 mb-3">
             <div class="w-7 h-7 rounded-lg {{ $s['bg'] }} flex items-center justify-center">
                 <i class="fas {{ $s['icon'] }} text-white text-xs"></i>

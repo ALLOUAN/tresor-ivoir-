@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark">
+<html lang="fr" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,19 +14,19 @@
         .font-serif { font-family: 'Playfair Display', serif; }
         .city-card { transition: transform .2s ease, box-shadow .2s ease; }
         .city-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,.4); }
-        html:not(.dark) body { background: #f8f5f0; color: #1a1a1a; }
-        html:not(.dark) .city-card { background: #fff !important; border-color: rgba(0,0,0,.08) !important; }
+        html:not(.dark) body { background:#e9e5d9; color: #1c1915; }
+        html:not(.dark) .city-card { background:#f0ece1 !important; border-color: rgba(0,0,0,.12) !important; box-shadow: 0 8px 20px rgba(0,0,0,.05); }
     </style>
 </head>
-<body class="bg-[#0d0d0b] text-white min-h-screen">
+<body class="bg-[#ffffff] text-white min-h-screen">
 
 @include('partials.public-top-nav')
 
 {{-- Hero --}}
 <section class="relative py-20 overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-amber-900/20 to-transparent pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
     <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-        <p class="text-amber-400 text-sm font-medium uppercase tracking-widest mb-3">Découverte</p>
+        <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">Découverte</p>
         <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
             Régions Touristiques
         </h1>
@@ -47,7 +47,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($cities as $city)
         <a href="{{ route('tourist.city', $city->slug) }}"
-            class="city-card block bg-[#111110] border border-slate-800 rounded-2xl overflow-hidden group">
+            class="city-card block bg-[#ffffff] border border-slate-800 rounded-2xl overflow-hidden group">
             {{-- Cover image --}}
             <div class="relative h-48 overflow-hidden bg-slate-800">
                 @if($city->cover_image)
@@ -61,10 +61,10 @@
                     <i class="fas fa-city text-5xl text-slate-700"></i>
                 </div>
                 @endif
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-green-950/70 to-transparent"></div>
 
                 @if($city->is_featured)
-                <span class="absolute top-3 left-3 px-2.5 py-1 bg-amber-500 text-black text-xs font-bold rounded-full">
+                <span class="absolute top-3 left-3 px-2.5 py-1 bg-orange-500 text-black text-xs font-bold rounded-full">
                     <i class="fas fa-star mr-1"></i>À la une
                 </span>
                 @endif
@@ -79,7 +79,7 @@
             {{-- Info --}}
             <div class="p-4">
                 @if($city->region_administrative)
-                <p class="text-amber-400/80 text-xs font-medium mb-2">
+                <p class="text-orange-400/80 text-xs font-medium mb-2">
                     <i class="fas fa-map-marker-alt mr-1"></i>{{ $city->region_administrative }}
                 </p>
                 @endif
@@ -88,10 +88,10 @@
                 @endif
                 <div class="flex items-center justify-between">
                     <span class="text-slate-500 text-xs">
-                        <i class="fas fa-map-pin text-amber-400/60 mr-1"></i>
+                        <i class="fas fa-map-pin text-orange-400/60 mr-1"></i>
                         {{ $city->sites_count }} site(s) touristique(s)
                     </span>
-                    <span class="text-amber-400 text-xs group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                    <span class="text-orange-400 text-xs group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                         Explorer <i class="fas fa-arrow-right text-[10px]"></i>
                     </span>
                 </div>

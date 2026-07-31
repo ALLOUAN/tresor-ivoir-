@@ -11,7 +11,7 @@
         </div>
     @endif
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
         @forelse($favorites as $favorite)
             @php $item = $favorite->favoritable; @endphp
             <div class="px-5 py-4 flex items-center justify-between gap-3">

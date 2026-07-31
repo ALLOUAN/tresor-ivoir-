@@ -5,7 +5,7 @@
 
 @section('header-actions')
 <button onclick="openCatModal()"
-    class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+    class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouvelle catégorie
 </button>
 @endsection
@@ -24,7 +24,7 @@
 {{-- Grid --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     @forelse($categories as $cat)
-    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition group">
+    <div class="bg-green-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition group">
         <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
@@ -46,7 +46,7 @@
         @endif
         <div class="flex items-center justify-end gap-1 pt-2 border-t border-slate-800">
             <button onclick="openCatModal({{ $cat->toJson() }})"
-                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Modifier">
+                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Modifier">
                 <i class="fas fa-pen text-xs"></i>
             </button>
             <form method="POST" action="{{ route('admin.tourist.categories.destroy', $cat) }}"
@@ -68,8 +68,8 @@
 
 {{-- Modal --}}
 <div id="catModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCatModal()"></div>
-    <div class="relative bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg shadow-2xl">
+    <div class="absolute inset-0 bg-green-950/70 backdrop-blur-sm" onclick="closeCatModal()"></div>
+    <div class="relative bg-green-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg shadow-2xl">
         <h3 id="catModalTitle" class="text-white font-semibold mb-5">Nouvelle catégorie</h3>
         <form id="catForm" method="POST" class="space-y-4">
             @csrf
@@ -78,7 +78,7 @@
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Nom <span class="text-red-400">*</span></label>
                 <input type="text" name="name" id="cat_name" required maxlength="100"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -89,7 +89,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Couleur</label>
-                    <input type="color" name="color" id="cat_color" value="#f59e0b"
+                    <input type="color" name="color" id="cat_color" value="#f2790f"
                         class="w-full h-9 bg-slate-800 border border-slate-700 rounded-lg px-2 cursor-pointer">
                 </div>
             </div>
@@ -108,7 +108,7 @@
                 </div>
                 <label class="inline-flex items-center gap-2 text-sm text-slate-300 pb-2">
                     <input type="checkbox" name="is_active" id="cat_is_active" value="1" checked
-                        class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                        class="rounded border-slate-600 bg-slate-800 text-orange-500">
                     Active
                 </label>
             </div>
@@ -117,7 +117,7 @@
                 <button type="button" onclick="closeCatModal()"
                     class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded-lg transition">Annuler</button>
                 <button type="submit"
-                    class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black text-sm font-semibold rounded-lg transition">Enregistrer</button>
+                    class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black text-sm font-semibold rounded-lg transition">Enregistrer</button>
             </div>
         </form>
     </div>
@@ -139,7 +139,7 @@ function openCatModal(cat = null) {
         mf.innerHTML = '<input type="hidden" name="_method" value="PUT">';
         document.getElementById('cat_name').value        = cat.name || '';
         document.getElementById('cat_icon').value        = cat.icon || '';
-        document.getElementById('cat_color').value       = cat.color || '#f59e0b';
+        document.getElementById('cat_color').value       = cat.color || '#f2790f';
         document.getElementById('cat_description').value = cat.description || '';
         document.getElementById('cat_sort_order').value  = cat.sort_order || 0;
         document.getElementById('cat_is_active').checked = cat.is_active == 1;
@@ -149,7 +149,7 @@ function openCatModal(cat = null) {
         mf.innerHTML = '';
         form.reset();
         document.getElementById('cat_is_active').checked = true;
-        document.getElementById('cat_color').value = '#f59e0b';
+        document.getElementById('cat_color').value = '#f2790f';
     }
     const modal = document.getElementById('catModal');
     modal.classList.remove('hidden');

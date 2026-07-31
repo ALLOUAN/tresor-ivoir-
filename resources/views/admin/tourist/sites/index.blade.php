@@ -5,7 +5,7 @@
 
 @section('header-actions')
 <a href="{{ route('admin.tourist.sites.create') }}"
-    class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+    class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouveau site
 </a>
 @endsection
@@ -19,9 +19,9 @@
     @foreach([
         ['fas fa-map-pin',     'text-slate-300',   $counts['total'],    'Total'],
         ['fas fa-circle-check','text-emerald-400', $counts['active'],   'Actifs'],
-        ['fas fa-star',        'text-amber-400',   $counts['featured'], 'En vedette'],
+        ['fas fa-star',        'text-orange-400',   $counts['featured'], 'En vedette'],
     ] as [$icon, $color, $val, $lbl])
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <i class="{{ $icon }} {{ $color }} text-sm mb-2 block"></i>
         <p class="text-2xl font-bold text-white">{{ $val }}</p>
         <p class="text-slate-500 text-xs mt-0.5">{{ $lbl }}</p>
@@ -30,10 +30,10 @@
 </div>
 
 {{-- Filters --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-5">
+<div class="bg-green-900 border border-slate-800 rounded-xl p-4 mb-5">
     <form method="GET" action="{{ route('admin.tourist.sites.index') }}" class="flex flex-wrap gap-3 items-end">
         <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher un site…"
-            class="w-48 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+            class="w-48 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
         <select name="city"
             class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
             <option value="">Toutes les villes</option>
@@ -73,7 +73,7 @@
 @endif
 
 {{-- Table --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
@@ -101,7 +101,7 @@
                             <div class="min-w-0">
                                 <p class="text-white font-medium text-sm line-clamp-1">{{ $site->name }}</p>
                                 @if($site->is_featured)
-                                <span class="text-amber-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>En vedette</span>
+                                <span class="text-orange-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>En vedette</span>
                                 @endif
                             </div>
                         </div>
@@ -110,7 +110,7 @@
                         {{ $site->city->name ?? '—' }}
                     </td>
                     <td class="px-5 py-4 hidden lg:table-cell">
-                        <span class="text-amber-400/80 text-xs">{{ $site->category->name ?? '—' }}</span>
+                        <span class="text-orange-400/80 text-xs">{{ $site->category->name ?? '—' }}</span>
                     </td>
                     <td class="px-5 py-4 hidden sm:table-cell text-slate-500 text-xs">
                         <i class="fas fa-eye mr-1"></i>{{ number_format($site->views_count) }}
@@ -126,9 +126,9 @@
                             {{-- Vedette --}}
                             <form method="POST" action="{{ route('admin.tourist.sites.featured', $site) }}" class="inline">
                                 @csrf @method('PATCH')
-                                <button class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center transition"
+                                <button class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center transition"
                                     title="{{ $site->is_featured ? 'Retirer vedette' : 'Mettre en vedette' }}">
-                                    <i class="fas fa-star text-xs {{ $site->is_featured ? 'text-amber-400' : 'text-slate-400' }}"></i>
+                                    <i class="fas fa-star text-xs {{ $site->is_featured ? 'text-orange-400' : 'text-slate-400' }}"></i>
                                 </button>
                             </form>
                             {{-- Toggle actif --}}
@@ -141,12 +141,12 @@
                             </form>
                             {{-- Voir public --}}
                             <a href="{{ route('tourist.site', $site->slug) }}" target="_blank"
-                                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-blue-900/40 flex items-center justify-center text-slate-400 hover:text-blue-300 transition" title="Voir">
+                                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-green-900/40 flex items-center justify-center text-slate-400 hover:text-green-300 transition" title="Voir">
                                 <i class="fas fa-eye text-xs"></i>
                             </a>
                             {{-- Modifier --}}
                             <a href="{{ route('admin.tourist.sites.edit', $site) }}"
-                                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Modifier">
+                                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Modifier">
                                 <i class="fas fa-pen text-xs"></i>
                             </a>
                             {{-- Supprimer --}}

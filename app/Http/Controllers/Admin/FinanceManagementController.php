@@ -266,6 +266,9 @@ class FinanceManagementController extends Controller
             'cycle_monthly_active' => ['nullable', 'boolean'],
             'cycle_yearly_active' => ['nullable', 'boolean'],
             'cycle_yearly_savings_label' => ['nullable', 'string', 'max:20'],
+            // Réservations d'hébergement
+            'reservation_deposit_percent' => ['nullable', 'numeric', 'min:1', 'max:100'],
+            'reservation_commission_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ]);
 
         $booleanKeys = [

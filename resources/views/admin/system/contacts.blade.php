@@ -6,10 +6,10 @@
 @section('content')
 @include('admin.system.partials.administration-settings-tabs', ['active' => 'contacts'])
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
     <div class="px-5 py-4 border-b border-slate-800 flex items-center gap-3 bg-slate-800/40">
-        <div class="w-10 h-10 rounded-lg bg-sky-600/20 border border-sky-500/40 flex items-center justify-center shrink-0">
-            <i class="fas fa-envelope text-sky-300"></i>
+        <div class="w-10 h-10 rounded-lg bg-green-600/20 border border-green-500/40 flex items-center justify-center shrink-0">
+            <i class="fas fa-envelope text-green-300"></i>
         </div>
         <div>
             <h2 class="text-white font-semibold text-lg">Informations de contact</h2>
@@ -101,7 +101,7 @@
 
         <div class="pt-2">
             <button type="submit"
-                    class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-violet-600 hover:from-amber-400 hover:to-violet-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+                    class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-400 hover:to-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-lock"></i>
                 Enregistrer
             </button>

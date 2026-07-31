@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-white text-lg font-semibold">Informations de la fiche</h2>
         <p class="text-slate-400 text-sm mt-1">Mettez a jour les informations visibles sur votre fiche prestataire.</p>
 
@@ -79,7 +79,7 @@
 
             <div class="md:col-span-2">
                 <button type="submit"
-                    class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg">
+                    class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg">
                     <i class="fas fa-save"></i>
                     Enregistrer les informations
                 </button>
@@ -87,7 +87,7 @@
         </form>
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-white text-lg font-semibold">Horaires d'ouverture</h2>
         <p class="text-slate-400 text-sm mt-1">Configurez vos horaires par jour.</p>
 
@@ -97,7 +97,7 @@
 
             @foreach($days as $index => $label)
                 @php $hour = $hours[$index]; @endphp
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center p-3 rounded-lg border border-slate-800 bg-slate-950/40">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center p-3 rounded-lg border border-slate-800 bg-green-950/40">
                     <div class="text-sm text-slate-200 font-medium">{{ $label }}</div>
 
                     <input type="hidden" name="hours[{{ $index }}][day_of_week]" value="{{ $index }}">
@@ -105,7 +105,7 @@
                     <div class="md:col-span-1">
                         <label class="inline-flex items-center gap-2 text-xs text-slate-300">
                             <input type="checkbox" name="hours[{{ $index }}][is_closed]" value="1" @checked(old("hours.$index.is_closed", $hour->is_closed))
-                                class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                                class="rounded border-slate-600 bg-slate-800 text-orange-500">
                             Ferme
                         </label>
                     </div>
@@ -135,7 +135,7 @@
             @endforeach
 
             <button type="submit"
-                class="inline-flex items-center gap-2 bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg">
+                class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg">
                 <i class="fas fa-clock"></i>
                 Enregistrer les horaires
             </button>

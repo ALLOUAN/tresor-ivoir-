@@ -35,16 +35,16 @@
     @isset($element) @method('PUT') @endisset
 
     {{-- ── 1. Informations générales ──────────────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-            <i class="fas fa-info-circle text-amber-400"></i> Informations générales
+            <i class="fas fa-info-circle text-orange-400"></i> Informations générales
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Domaine culturel <span class="text-red-400">*</span></label>
                 <select name="domain_id" required
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     <option value="">— Choisir un domaine —</option>
                     @foreach($domains as $d)
                     <option value="{{ $d->id }}" {{ old('domain_id', $element->domain_id ?? '') == $d->id ? 'selected' : '' }}>
@@ -57,7 +57,7 @@
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Niveau de risque</label>
                 <select name="niveau_risque"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     @foreach(['stable'=>'Stable','vulnerable'=>'Vulnérable','en_danger'=>'En danger','disparu'=>'Disparu'] as $val => $lbl)
                     <option value="{{ $val }}" {{ old('niveau_risque', $element->niveau_risque ?? 'stable') === $val ? 'selected' : '' }}>{{ $lbl }}</option>
                     @endforeach
@@ -67,46 +67,46 @@
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Nom de l'élément <span class="text-red-400">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $element->name ?? '') }}" required maxlength="150"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Description courte <span class="text-slate-600">(max 300 car.)</span></label>
                 <input type="text" name="short_description" value="{{ old('short_description', $element->short_description ?? '') }}" maxlength="300"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Description complète</label>
                 <textarea name="description" rows="5"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('description', $element->description ?? '') }}</textarea>
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('description', $element->description ?? '') }}</textarea>
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Origine historique</label>
                 <textarea name="origine_historique" rows="3"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('origine_historique', $element->origine_historique ?? '') }}</textarea>
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('origine_historique', $element->origine_historique ?? '') }}</textarea>
             </div>
 
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Statut UNESCO</label>
                 <input type="text" name="unesco_status" value="{{ old('unesco_status', $element->unesco_status ?? '') }}" maxlength="100"
                     placeholder="Ex: Patrimoine culturel immatériel"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
             </div>
 
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Site web</label>
                 <input type="url" name="website" value="{{ old('website', $element->website ?? '') }}" maxlength="300"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
             </div>
         </div>
     </div>
 
     {{-- ── 2. Image principale ─────────────────────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-            <i class="fas fa-image text-amber-400"></i> Images
+            <i class="fas fa-image text-orange-400"></i> Images
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
@@ -128,24 +128,24 @@
             <div>
                 <label class="block text-xs text-slate-400 mb-2">Ou uploader une image thumbnail</label>
                 <input type="file" name="thumbnail_file" accept="image/*"
-                    class="w-full text-xs text-slate-400 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-amber-500 file:text-black file:font-semibold">
+                    class="w-full text-xs text-slate-400 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-orange-500 file:text-black file:font-semibold">
             </div>
             <div>
                 <label class="block text-xs text-slate-400 mb-2">Ou uploader une image bannière</label>
                 <input type="file" name="cover_image_file" accept="image/*"
-                    class="w-full text-xs text-slate-400 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-amber-500 file:text-black file:font-semibold">
+                    class="w-full text-xs text-slate-400 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-orange-500 file:text-black file:font-semibold">
             </div>
         </div>
     </div>
 
     {{-- ── 3. Peuples associés ─────────────────────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <div class="flex items-center justify-between mb-5">
             <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-people-group text-amber-400"></i> Peuples associés
+                <i class="fas fa-people-group text-orange-400"></i> Peuples associés
             </h2>
             <button type="button" onclick="addPeopleRow()"
-                class="text-xs text-amber-400 hover:text-amber-300 transition flex items-center gap-1">
+                class="text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
                 <i class="fas fa-plus text-[10px]"></i> Ajouter
             </button>
         </div>
@@ -192,16 +192,16 @@
     </div>
 
     {{-- ── 4. Villes touristiques liées ────────────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
-            <i class="fas fa-map-location-dot text-amber-400"></i> Villes touristiques liées
+            <i class="fas fa-map-location-dot text-orange-400"></i> Villes touristiques liées
         </h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
             @foreach($cities as $city)
             <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-800 transition">
                 <input type="checkbox" name="city_ids[]" value="{{ $city->id }}"
                     {{ in_array($city->id, old('city_ids', $element->city_ids ?? [])) ? 'checked' : '' }}
-                    class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                    class="rounded border-slate-600 bg-slate-800 text-orange-500">
                 <span class="text-slate-300 text-xs">{{ $city->name }}</span>
             </label>
             @endforeach
@@ -209,13 +209,13 @@
     </div>
 
     {{-- ── 5. Infos pratiques ──────────────────────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <div class="flex items-center justify-between mb-5">
             <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-circle-info text-amber-400"></i> Informations pratiques
+                <i class="fas fa-circle-info text-orange-400"></i> Informations pratiques
             </h2>
             <button type="button" onclick="addInfoRow()"
-                class="text-xs text-amber-400 hover:text-amber-300 transition flex items-center gap-1">
+                class="text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
                 <i class="fas fa-plus text-[10px]"></i> Ajouter
             </button>
         </div>
@@ -254,9 +254,9 @@
     {{-- ── 6. Médias existants ─────────────────────────────────────────────── --}}
     @isset($element)
     @if($element->media->isNotEmpty())
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
-            <i class="fas fa-photo-film text-amber-400"></i> Médias
+            <i class="fas fa-photo-film text-orange-400"></i> Médias
         </h2>
         <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             @foreach($element->media as $media)
@@ -289,31 +289,31 @@
     @endisset
 
     {{-- ── 7. Uploader des médias ──────────────────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
-            <i class="fas fa-cloud-arrow-up text-amber-400"></i> Ajouter des photos
+            <i class="fas fa-cloud-arrow-up text-orange-400"></i> Ajouter des photos
         </h2>
         <input type="file" name="media_files[]" accept="image/*" multiple
             class="w-full text-xs text-slate-400 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2
-                   file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-amber-500 file:text-black file:font-semibold">
+                   file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-orange-500 file:text-black file:font-semibold">
     </div>
 
     {{-- ── 8. Paramètres de publication ────────────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
-            <i class="fas fa-sliders text-amber-400"></i> Publication
+            <i class="fas fa-sliders text-orange-400"></i> Publication
         </h2>
         <div class="flex flex-wrap items-center gap-6">
             <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" name="is_active" value="1"
                     {{ old('is_active', $element->is_active ?? true) ? 'checked' : '' }}
-                    class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                    class="rounded border-slate-600 bg-slate-800 text-orange-500">
                 <span class="text-sm text-slate-300">Actif (visible publiquement)</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" name="is_featured" value="1"
                     {{ old('is_featured', $element->is_featured ?? false) ? 'checked' : '' }}
-                    class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                    class="rounded border-slate-600 bg-slate-800 text-orange-500">
                 <span class="text-sm text-slate-300">Mettre en vedette</span>
             </label>
             <div>
@@ -329,7 +329,7 @@
         <a href="{{ route('admin.cultural.elements.index') }}"
             class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded-xl transition">Annuler</a>
         <button type="submit"
-            class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black font-bold text-sm rounded-xl transition">
+            class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-black font-bold text-sm rounded-xl transition">
             {{ isset($element) ? 'Enregistrer les modifications' : 'Créer l\'élément' }}
         </button>
     </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark">
+<html lang="fr" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,9 +16,9 @@
                 extend: {
                     colors: {
                         amber: {
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
+                            400: '#fa9a3c',
+                            500: '#f2790f',
+                            600: '#9f4709',
                         }
                     }
                 }
@@ -28,11 +28,11 @@
     @include('partials.theme-light-bridge')
     <style>
         html:not(.dark) .bg-slate-800\/60 { background-color:rgba(0,0,0,0.04) !important; }
-        html:not(.dark) .border-slate-600 { border-color:#d6d0c5 !important; }
-        html:not(.dark) .placeholder-slate-500::placeholder { color:#9e9b90 !important; }
+        html:not(.dark) .border-slate-600 { border-color:#c2b89e !important; }
+        html:not(.dark) .placeholder-slate-500::placeholder { color:#665f52 !important; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+<body class="min-h-screen bg-green-950 flex items-center justify-center p-4">
 
     <div class="w-full max-w-md">
         {{-- Retour accueil --}}
@@ -51,16 +51,16 @@
                     <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
                 </div>
             @else
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-500 mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-500 mb-4">
                     <i class="fas fa-gem text-white text-2xl"></i>
                 </div>
             @endif
-            <h1 class="text-3xl font-bold text-amber-400 tracking-wide">{{ $siteBrand['site_name'] }}</h1>
+            <h1 class="text-3xl font-bold text-orange-400 tracking-wide">{{ $siteBrand['site_name'] }}</h1>
             <p class="text-slate-400 text-sm mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}</p>
         </div>
 
         {{-- Card --}}
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-8">
+        <div class="bg-green-900 border border-slate-700 rounded-2xl shadow-2xl p-8">
             <h2 class="text-white text-xl font-semibold mb-6">Connexion à votre espace</h2>
 
             @if ($errors->any())
@@ -97,7 +97,7 @@
                             autofocus
                             autocomplete="email"
                             placeholder="vous@exemple.ci"
-                            class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition @error('email') border-red-500 @enderror"
+                            class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition @error('email') border-red-500 @enderror"
                         >
                     </div>
                 </div>
@@ -108,7 +108,7 @@
                         <label for="password" class="block text-slate-300 text-sm font-medium">
                             Mot de passe
                         </label>
-                        <a href="{{ route('password.request') }}" class="text-xs text-amber-400 hover:text-amber-300 transition">
+                        <a href="{{ route('password.request') }}" class="text-xs text-orange-400 hover:text-orange-300 transition">
                             Mot de passe oublié ?
                         </a>
                     </div>
@@ -123,7 +123,7 @@
                             required
                             autocomplete="current-password"
                             placeholder="••••••••"
-                            class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                            class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                         >
                     </div>
                 </div>
@@ -131,13 +131,13 @@
                 {{-- Remember me --}}
                 <div class="flex items-center gap-2">
                     <input id="remember" name="remember" type="checkbox"
-                        class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-amber-500 focus:ring-amber-500">
+                        class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-orange-500 focus:ring-orange-500">
                     <label for="remember" class="text-slate-400 text-sm">Se souvenir de moi</label>
                 </div>
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 rounded-lg transition duration-150 flex items-center justify-center gap-2 text-sm">
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-lg transition duration-150 flex items-center justify-center gap-2 text-sm">
                     <i class="fas fa-sign-in-alt"></i>
                     Se connecter
                 </button>

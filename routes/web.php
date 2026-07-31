@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PermissionManagementController;
 use App\Http\Controllers\Admin\PlanManagementController;
 use App\Http\Controllers\Admin\ProviderManagementController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Admin\ReviewManagementController;
 use App\Http\Controllers\Admin\UserRoleManagementController;
 use App\Http\Controllers\ArticleCommentController;
@@ -38,6 +39,8 @@ use App\Http\Controllers\Provider\ProviderAnalyticsController;
 use App\Http\Controllers\Provider\ReviewController as ProviderReviewController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicContactController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ReservationPaymentController;
 use App\Http\Controllers\MediaPurchaseController;
 use App\Http\Controllers\PublicHomeGalleryController;
 use App\Http\Controllers\PublicNewsletterController;
@@ -219,6 +222,20 @@ Route::post('/galerie/achat/{media:uuid}/payer', [MediaPurchaseController::class
 Route::post('/contact', [PublicContactController::class, 'store'])
     ->name('contact.store')
     ->middleware('throttle:8,1');
+
+Route::post('/reservations', [ReservationController::class, 'store'])
+    ->name('reservations.store')
+    ->middleware('throttle:10,1');
+
+Route::post('/reservations/paiement/initier', [ReservationPaymentController::class, 'initiate'])
+    ->name('reservations.payment.initiate')
+    ->middleware('throttle:10,1');
+Route::get('/reservations/paiement/retour', [ReservationPaymentController::class, 'returnFromGateway'])
+    ->name('reservations.payment.return');
+Route::post('/reservations/paiement/webhook', [ReservationPaymentController::class, 'webhook'])
+    ->name('reservations.payment.webhook');
+Route::get('/reservations/{reservation}/confirmation', [ReservationPaymentController::class, 'confirmation'])
+    ->name('reservations.payment.confirmation');
 
 Route::post('/newsletter/subscribe', [PublicNewsletterController::class, 'subscribe'])
     ->name('newsletter.subscribe')
@@ -625,6 +642,13 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/hebergements/{accommodation}/toggle-actif', [AccommodationManagementController::class, 'toggleActive'])->name('accommodations.toggle-active');
         Route::patch('/hebergements/{accommodation}/toggle-vedette', [AccommodationManagementController::class, 'toggleFeatured'])->name('accommodations.toggle-featured');
         Route::delete('/hebergements/medias/{media}', [AccommodationManagementController::class, 'destroyMedia'])->name('accommodations.media.destroy');
+
+        // Réservations
+        Route::get('/reservations/export', [AdminReservationController::class, 'export'])->name('reservations.export');
+        Route::get('/reservations', [AdminReservationController::class, 'index'])->name('reservations.index');
+        Route::get('/reservations/{reservation}', [AdminReservationController::class, 'show'])->name('reservations.show');
+        Route::patch('/reservations/{reservation}', [AdminReservationController::class, 'update'])->name('reservations.update');
+        Route::delete('/reservations/{reservation}', [AdminReservationController::class, 'destroy'])->name('reservations.destroy');
     });
 
 // ── ÉDITEUR ───────────────────────────────────────────────────────────────

@@ -37,16 +37,16 @@
     @isset($site) @method('PUT') @endisset
 
     {{-- ── SECTION 1 : Informations générales ──────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-            <i class="fas fa-info-circle text-amber-400"></i> Informations générales
+            <i class="fas fa-info-circle text-orange-400"></i> Informations générales
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Ville <span class="text-red-400">*</span></label>
                 <select name="city_id" required
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     <option value="">— Choisir une ville —</option>
                     @foreach($cities as $c)
                     <option value="{{ $c->id }}" {{ old('city_id', $site->city_id ?? '') == $c->id ? 'selected' : '' }}>
@@ -59,7 +59,7 @@
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Catégorie <span class="text-red-400">*</span></label>
                 <select name="category_id" required
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     <option value="">— Choisir une catégorie —</option>
                     @foreach($categories as $cat)
                     <option value="{{ $cat->id }}" {{ old('category_id', $site->category_id ?? '') == $cat->id ? 'selected' : '' }}>
@@ -72,26 +72,26 @@
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Nom du site <span class="text-red-400">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $site->name ?? '') }}" required maxlength="150"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Description courte <span class="text-slate-600">(max 300 car.)</span></label>
                 <input type="text" name="short_description" value="{{ old('short_description', $site->short_description ?? '') }}" maxlength="300"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Description complète</label>
                 <textarea name="description" rows="5"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition resize-y">{{ old('description', $site->description ?? '') }}</textarea>
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition resize-y">{{ old('description', $site->description ?? '') }}</textarea>
             </div>
 
             {{-- ── Image principale (thumbnail) ──────────────────────── --}}
             <div class="md:col-span-2">
                 <div class="flex items-center justify-between mb-2">
                     <label class="text-xs text-slate-400">
-                        <i class="fas fa-image text-amber-400/70 mr-1"></i>
+                        <i class="fas fa-image text-orange-400/70 mr-1"></i>
                         Image principale <span class="text-slate-600">(affichée sur la carte et en haut du détail)</span>
                     </label>
                     <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-0.5">
@@ -124,12 +124,12 @@
                                 maxlength="500"
                                 placeholder="https://… (URL de l'image principale)"
                                 oninput="previewSiteThumb(this.value)"
-                                class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                         </div>
                         {{-- Mode Upload --}}
                         <div id="site_thumb_file_section" class="hidden">
-                            <label class="flex items-center gap-2 border border-dashed border-slate-700 hover:border-amber-500/50 rounded-lg px-3 py-3 cursor-pointer transition group">
-                                <i class="fas fa-cloud-arrow-up text-slate-600 group-hover:text-amber-400/70 transition"></i>
+                            <label class="flex items-center gap-2 border border-dashed border-slate-700 hover:border-orange-500/50 rounded-lg px-3 py-3 cursor-pointer transition group">
+                                <i class="fas fa-cloud-arrow-up text-slate-600 group-hover:text-orange-400/70 transition"></i>
                                 <div>
                                     <span class="text-slate-400 text-xs group-hover:text-slate-200 transition block">Choisir une image principale</span>
                                     <span class="text-slate-700 text-[10px]">JPG, PNG, WebP — max 5 Mo</span>
@@ -152,19 +152,19 @@
 
             <div>
                 <label class="block text-xs text-slate-400 mb-1">
-                    <i class="fas fa-globe text-amber-400/70 mr-1"></i>Site web officiel
+                    <i class="fas fa-globe text-orange-400/70 mr-1"></i>Site web officiel
                 </label>
                 <div class="flex gap-2 items-center">
                     <input type="url" name="website" id="site_website"
                         value="{{ old('website', $site->website ?? '') }}"
                         maxlength="300" placeholder="https://…"
                         oninput="toggleSiteWebsiteLink(this.value)"
-                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                     <a id="site_website_link"
                         href="{{ old('website', $site->website ?? '') ?: '#' }}"
                         target="_blank" rel="noopener"
                         style="{{ old('website', $site->website ?? '') ? 'display:flex' : 'display:none' }}"
-                        class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 hover:bg-amber-500/20 border border-slate-700 hover:border-amber-500/40 items-center justify-center text-slate-400 hover:text-amber-400 transition"
+                        class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 hover:bg-orange-500/20 border border-slate-700 hover:border-orange-500/40 items-center justify-center text-slate-400 hover:text-orange-400 transition"
                         title="Visiter le site">
                         <i class="fas fa-arrow-up-right-from-square text-xs"></i>
                     </a>
@@ -186,12 +186,12 @@
             <div class="flex items-end gap-5 pb-1">
                 <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', $site->is_active ?? true) ? 'checked' : '' }}
-                        class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                        class="rounded border-slate-600 bg-slate-800 text-orange-500">
                     Actif
                 </label>
                 <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                     <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $site->is_featured ?? false) ? 'checked' : '' }}
-                        class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                        class="rounded border-slate-600 bg-slate-800 text-orange-500">
                     En vedette
                 </label>
             </div>
@@ -205,9 +205,9 @@
     </div>
 
     {{-- ── SECTION 2 : Situation géographique ───────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-            <i class="fas fa-map-location-dot text-amber-400"></i> Situation géographique
+            <i class="fas fa-map-location-dot text-orange-400"></i> Situation géographique
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
@@ -276,13 +276,13 @@
     </div>
 
     {{-- ── SECTION 3 : Horaires d'ouverture ─────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <div class="flex items-center justify-between mb-5">
             <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-clock text-amber-400"></i> Horaires d'ouverture
+                <i class="fas fa-clock text-orange-400"></i> Horaires d'ouverture
             </h2>
             <button type="button" onclick="addScheduleRow()"
-                class="text-xs text-amber-400 hover:text-amber-300 transition flex items-center gap-1">
+                class="text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
                 <i class="fas fa-plus"></i> Ajouter un jour
             </button>
         </div>
@@ -305,7 +305,7 @@
                     </div>
                     <div class="col-span-2 flex items-center gap-2 text-xs text-slate-400">
                         <input type="checkbox" name="schedule_closed[{{ $i }}]" value="1" {{ ($s['closed'] ?? false) ? 'checked' : '' }}
-                            class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                            class="rounded border-slate-600 bg-slate-800 text-orange-500">
                         Fermé
                     </div>
                     <div class="col-span-1 flex justify-end">
@@ -322,13 +322,13 @@
     </div>
 
     {{-- ── SECTION 4 : Informations pratiques ──────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <div class="flex items-center justify-between mb-5">
             <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-circle-info text-amber-400"></i> Informations pratiques
+                <i class="fas fa-circle-info text-orange-400"></i> Informations pratiques
             </h2>
             <button type="button" onclick="addInfoRow()"
-                class="text-xs text-amber-400 hover:text-amber-300 transition flex items-center gap-1">
+                class="text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
                 <i class="fas fa-plus"></i> Ajouter une info
             </button>
         </div>
@@ -362,9 +362,9 @@
     </div>
 
     {{-- ── SECTION 5 : Photos & Vidéos ────────────────────────────────── --}}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
         <h2 class="text-white font-semibold mb-5 flex items-center gap-2">
-            <i class="fas fa-images text-amber-400"></i>
+            <i class="fas fa-images text-orange-400"></i>
             Photos & Vidéos
             @isset($site)
             <span class="text-slate-600 font-normal text-xs ml-1">({{ $site->media->count() }} fichier(s) existant(s))</span>
@@ -384,7 +384,7 @@
                     <i class="fas fa-play-circle text-3xl text-slate-400"></i>
                 </div>
                 @endif
-                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                <div class="absolute inset-0 bg-green-950/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                     <form method="POST" action="{{ route('admin.tourist.media.destroy', $m) }}">
                         @csrf @method('DELETE')
                         <button class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition">
@@ -392,7 +392,7 @@
                         </button>
                     </form>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 bg-black/60 px-2 py-1">
+                <div class="absolute bottom-0 left-0 right-0 bg-green-950/60 px-2 py-1">
                     <span class="text-[10px] text-slate-400">{{ $m->type === 'photo' ? '📷' : '🎬' }} {{ $m->caption ?: '—' }}</span>
                 </div>
             </div>
@@ -426,13 +426,13 @@
             {{-- Zone glisser-déposer upload multiple --}}
             <div id="media_upload_section">
                 <label
-                    class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-amber-500/60 rounded-2xl p-10 cursor-pointer transition-all group"
-                    ondragover="event.preventDefault(); this.classList.add('border-amber-500/60','bg-amber-500/5')"
-                    ondragleave="this.classList.remove('border-amber-500/60','bg-amber-500/5')"
+                    class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-2xl p-10 cursor-pointer transition-all group"
+                    ondragover="event.preventDefault(); this.classList.add('border-orange-500/60','bg-orange-500/5')"
+                    ondragleave="this.classList.remove('border-orange-500/60','bg-orange-500/5')"
                     ondrop="handleDrop(event)">
-                    <i class="fas fa-cloud-arrow-up text-5xl text-slate-600 group-hover:text-amber-400/80 transition mb-4"></i>
+                    <i class="fas fa-cloud-arrow-up text-5xl text-slate-600 group-hover:text-orange-400/80 transition mb-4"></i>
                     <p class="text-slate-300 text-sm font-semibold mb-1">
-                        Glissez vos photos ici ou <span class="text-amber-400 underline">parcourir</span>
+                        Glissez vos photos ici ou <span class="text-orange-400 underline">parcourir</span>
                     </p>
                     <p class="text-slate-600 text-xs">JPG · PNG · WebP — max 5 Mo par fichier — sélection multiple</p>
                     <input type="file" name="media_files[]" id="media_files_input"
@@ -489,7 +489,7 @@
                     </div>
                 </div>
                 <button type="button" onclick="addMediaRow()"
-                    class="mt-2 text-xs text-amber-400 hover:text-amber-300 transition flex items-center gap-1">
+                    class="mt-2 text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
                     <i class="fas fa-plus"></i> Ajouter une ligne
                 </button>
             </div>
@@ -503,7 +503,7 @@
             Annuler
         </a>
         <button type="submit"
-            class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-black text-sm font-semibold rounded-lg transition">
+            class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-black text-sm font-semibold rounded-lg transition">
             <i class="fas fa-floppy-disk mr-1.5"></i>
             {{ isset($site) ? 'Mettre à jour' : 'Créer le site' }}
         </button>
@@ -543,7 +543,7 @@ function addScheduleRow() {
         </div>
         <div class="col-span-2 flex items-center gap-2 text-xs text-slate-400">
             <input type="checkbox" name="schedule_closed[${idx}]" value="1"
-                class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                class="rounded border-slate-600 bg-slate-800 text-orange-500">
             Fermé
         </div>
         <div class="col-span-1 flex justify-end">
@@ -711,7 +711,7 @@ function previewMediaFiles(input) {
             div.className = 'relative rounded-xl overflow-hidden bg-slate-800 border border-slate-700';
             div.innerHTML = `
                 <img src="${e.target.result}" class="w-full h-20 object-cover">
-                <div class="absolute bottom-0 left-0 right-0 bg-black/70 px-1.5 py-1">
+                <div class="absolute bottom-0 left-0 right-0 bg-green-950/70 px-1.5 py-1">
                     <p class="text-[9px] text-slate-300 truncate">${file.name}</p>
                 </div>`;
             container.appendChild(div);
@@ -733,7 +733,7 @@ function clearMediaFiles() {
 // ── Glisser-déposer ────────────────────────────────────────────────────────
 function handleDrop(event) {
     event.preventDefault();
-    event.currentTarget.classList.remove('border-amber-500/60', 'bg-amber-500/5');
+    event.currentTarget.classList.remove('border-orange-500/60', 'bg-orange-500/5');
     const input = document.getElementById('media_files_input');
     const dt    = event.dataTransfer;
     if (!dt?.files?.length) return;

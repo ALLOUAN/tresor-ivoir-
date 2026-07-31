@@ -14,6 +14,7 @@ class Accommodation extends Model
 
     protected $fillable = [
         'city_id',
+        'provider_id',
         'name', 'slug', 'type', 'stars',
         'short_description', 'description',
         'adresse', 'quartier', 'latitude', 'longitude',
@@ -45,6 +46,11 @@ class Accommodation extends Model
     public function city(): BelongsTo
     {
         return $this->belongsTo(TouristCity::class, 'city_id');
+    }
+
+    public function provider(): BelongsTo
+    {
+        return $this->belongsTo(Provider::class);
     }
 
     public function media(): HasMany

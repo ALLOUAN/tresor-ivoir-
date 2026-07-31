@@ -5,11 +5,11 @@
 
 @section('header-actions')
 <div class="flex items-center gap-2 flex-wrap">
-    <span class="text-xs px-2 py-1 rounded-lg bg-amber-900/40 border border-amber-700/50 text-amber-200">
+    <span class="text-xs px-2 py-1 rounded-lg bg-orange-900/40 border border-orange-700/50 text-orange-200">
         <i class="fas fa-eye mr-1"></i> Aperçu — statut : {{ $article->status }}
     </span>
     <a href="{{ route('editor.articles.edit', $article) }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black text-xs font-semibold rounded-lg transition">
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-400 text-black text-xs font-semibold rounded-lg transition">
         <i class="fas fa-pen"></i> Continuer l'édition
     </a>
     @if($article->status === 'published')
@@ -28,14 +28,14 @@
     </div>
     <h1 class="text-3xl sm:text-4xl font-bold text-white font-serif leading-tight">{{ $article->title_fr }}</h1>
     @if($article->excerpt_fr)
-        <p class="text-slate-300 text-lg leading-relaxed border-l-2 border-amber-500/40 pl-4">{{ $article->excerpt_fr }}</p>
+        <p class="text-slate-300 text-lg leading-relaxed border-l-2 border-orange-500/40 pl-4">{{ $article->excerpt_fr }}</p>
     @endif
     @if($article->cover_url)
         <figure class="rounded-xl overflow-hidden border border-slate-800">
             <img src="{{ $article->cover_url }}" alt="{{ $article->cover_alt ?? '' }}" class="w-full max-h-[420px] object-cover">
         </figure>
     @endif
-    <div class="prose prose-invert prose-amber max-w-none text-slate-300 leading-relaxed [&_a]:text-amber-400 [&_blockquote]:border-amber-500/40">
+    <div class="prose prose-invert prose-amber max-w-none text-slate-300 leading-relaxed [&_a]:text-orange-400 [&_blockquote]:border-orange-500/40">
         {!! \App\Support\HtmlSanitizer::articleBody($article->content_fr) !!}
     </div>
 </article>

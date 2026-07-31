@@ -10,16 +10,16 @@
 
     @php
     $cards = [
-        ['label' => 'Utilisateurs',       'value' => number_format($stats['total_users']),          'sub' => '+' . $stats['users_today'] . ' aujourd\'hui',  'icon' => 'fa-users',          'color' => 'text-blue-400',   'bg' => 'bg-blue-900/20'],
-        ['label' => 'Prestataires actifs','value' => number_format($stats['active_providers']),     'sub' => $stats['pending_providers'] . ' en attente',    'icon' => 'fa-store',          'color' => 'text-violet-400', 'bg' => 'bg-violet-900/20'],
-        ['label' => 'Articles publiés',   'value' => number_format($stats['published_articles']),   'sub' => $stats['articles_review'] . ' en révision',     'icon' => 'fa-newspaper',      'color' => 'text-amber-400',  'bg' => 'bg-amber-900/20'],
+        ['label' => 'Utilisateurs',       'value' => number_format($stats['total_users']),          'sub' => '+' . $stats['users_today'] . ' aujourd\'hui',  'icon' => 'fa-users',          'color' => 'text-green-400',   'bg' => 'bg-green-900/20'],
+        ['label' => 'Prestataires actifs','value' => number_format($stats['active_providers']),     'sub' => $stats['pending_providers'] . ' en attente',    'icon' => 'fa-store',          'color' => 'text-green-400', 'bg' => 'bg-green-900/20'],
+        ['label' => 'Articles publiés',   'value' => number_format($stats['published_articles']),   'sub' => $stats['articles_review'] . ' en révision',     'icon' => 'fa-newspaper',      'color' => 'text-orange-400',  'bg' => 'bg-orange-900/20'],
         ['label' => 'Avis en attente',    'value' => number_format($stats['pending_reviews']),      'sub' => 'À modérer',                                    'icon' => 'fa-star-half-stroke','color' => 'text-rose-400',   'bg' => 'bg-rose-900/20'],
         ['label' => 'Abonnements actifs', 'value' => number_format($stats['active_subscriptions']), 'sub' => 'Forfaits en cours',                            'icon' => 'fa-gem',            'color' => 'text-emerald-400','bg' => 'bg-emerald-900/20'],
     ];
     @endphp
 
     @foreach($cards as $card)
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-3">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-3">
         <div class="flex items-center justify-between">
             <span class="text-slate-400 text-xs font-medium">{{ $card['label'] }}</span>
             <div class="w-8 h-8 rounded-lg {{ $card['bg'] }} flex items-center justify-center">
@@ -34,16 +34,57 @@
     @endforeach
 
     {{-- Revenue card (full width on small, spans 2 on xl) --}}
-    <div class="col-span-2 md:col-span-3 xl:col-span-5 bg-gradient-to-r from-amber-900/30 to-amber-800/10 border border-amber-700/30 rounded-xl p-4 flex items-center justify-between">
+    <div class="col-span-2 md:col-span-3 xl:col-span-5 bg-gradient-to-r from-orange-900/30 to-orange-800/10 border border-orange-700/30 rounded-xl p-4 flex items-center justify-between">
         <div>
-            <p class="text-amber-300 text-sm font-medium mb-1">Revenu du mois</p>
+            <p class="text-orange-300 text-sm font-medium mb-1">Revenu du mois</p>
             <p class="text-white text-3xl font-bold">
                 {{ number_format($stats['monthly_revenue'], 0, ',', ' ') }}
-                <span class="text-amber-400 text-lg font-normal">FCFA</span>
+                <span class="text-orange-400 text-lg font-normal">FCFA</span>
             </p>
         </div>
-        <div class="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center">
-            <i class="fas fa-coins text-amber-400 text-2xl"></i>
+        <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center">
+            <i class="fas fa-coins text-orange-400 text-2xl"></i>
+        </div>
+    </div>
+</div>
+
+{{-- ── Charts ──────────────────────────────────────────────────────────── --}}
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+
+    {{-- Revenue trend --}}
+    <div class="xl:col-span-2 bg-green-900 border border-slate-800 rounded-xl p-5">
+        @php
+            $revenueDelta = null;
+            $revVals = $revenue_by_month['values'];
+            $prevMonth = $revVals[count($revVals) - 2] ?? 0;
+            $curMonth = $revVals[count($revVals) - 1] ?? 0;
+            if ($prevMonth > 0) {
+                $revenueDelta = round(($curMonth - $prevMonth) / $prevMonth * 100, 1);
+            }
+        @endphp
+        <div class="flex items-start justify-between mb-1">
+            <div>
+                <h2 class="text-white font-semibold text-sm">Revenu — 12 derniers mois</h2>
+                <p class="text-slate-500 text-xs mt-0.5">Paiements complétés, par mois</p>
+            </div>
+            @if($revenueDelta !== null)
+            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold {{ $revenueDelta >= 0 ? 'bg-emerald-900/30 text-emerald-400' : 'bg-red-900/30 text-red-400' }}">
+                <i class="fas {{ $revenueDelta >= 0 ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down' }}"></i>
+                {{ $revenueDelta >= 0 ? '+' : '' }}{{ $revenueDelta }}%
+            </span>
+            @endif
+        </div>
+        <div class="h-64 mt-3">
+            <canvas id="chartRevenue"></canvas>
+        </div>
+    </div>
+
+    {{-- New signups trend --}}
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
+        <h2 class="text-white font-semibold text-sm">Nouvelles inscriptions</h2>
+        <p class="text-slate-500 text-xs mt-0.5">14 derniers jours</p>
+        <div class="h-64 mt-3">
+            <canvas id="chartSignups"></canvas>
         </div>
     </div>
 </div>
@@ -52,10 +93,10 @@
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
 
     {{-- Recent users --}}
-    <div class="xl:col-span-2 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <div class="xl:col-span-2 bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
             <h2 class="text-white font-semibold text-sm">Derniers utilisateurs inscrits</h2>
-            <a href="#" class="text-amber-400 hover:text-amber-300 text-xs transition">Voir tout →</a>
+            <a href="#" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -109,62 +150,60 @@
     <div class="space-y-4">
 
         {{-- Providers by status --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h2 class="text-white font-semibold text-sm mb-4">Prestataires par statut</h2>
-            <div class="space-y-3">
-                @php
-                $statusColors = ['active'=>['bar'=>'bg-emerald-500','text'=>'text-emerald-400'],'pending'=>['bar'=>'bg-amber-500','text'=>'text-amber-400'],'suspended'=>['bar'=>'bg-red-500','text'=>'text-red-400'],'inactive'=>['bar'=>'bg-slate-600','text'=>'text-slate-400']];
+            @php
+                $statusMeta = [
+                    'active'    => ['label' => 'Actifs',     'color' => '#059669'],
+                    'pending'   => ['label' => 'En attente', 'color' => '#9f4709'],
+                    'suspended' => ['label' => 'Suspendus',  'color' => '#ef4444'],
+                    'inactive'  => ['label' => 'Inactifs',   'color' => '#64748b'],
+                ];
                 $total_providers = $providers_by_status->sum() ?: 1;
-                @endphp
-                @forelse($providers_by_status as $status => $count)
-                @php $cols = $statusColors[$status] ?? ['bar'=>'bg-slate-500','text'=>'text-slate-400']; @endphp
-                <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="text-slate-300 text-xs capitalize">{{ $status }}</span>
-                        <span class="{{ $cols['text'] }} text-xs font-semibold">{{ $count }}</span>
-                    </div>
-                    <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                        <div class="{{ $cols['bar'] }} h-full rounded-full" style="width: {{ round($count / $total_providers * 100) }}%"></div>
-                    </div>
-                </div>
-                @empty
-                <p class="text-slate-500 text-xs">Aucune donnée.</p>
-                @endforelse
+            @endphp
+            @if($providers_by_status->sum() > 0)
+            <div class="h-10">
+                <canvas id="chartProviderStatus"></canvas>
             </div>
+            <div class="grid grid-cols-2 gap-2 mt-4">
+                @foreach($providers_by_status as $status => $count)
+                @php $meta = $statusMeta[$status] ?? ['label' => ucfirst($status), 'color' => '#64748b']; @endphp
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="w-2 h-2 rounded-full shrink-0" style="background:{{ $meta['color'] }}"></span>
+                    <span class="text-slate-400 flex-1 truncate">{{ $meta['label'] }}</span>
+                    <span class="text-white font-semibold">{{ $count }}</span>
+                </div>
+                @endforeach
+            </div>
+            @else
+            <p class="text-slate-500 text-xs">Aucune donnée.</p>
+            @endif
         </div>
 
         {{-- Subscriptions by plan --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-            <h2 class="text-white font-semibold text-sm mb-4">Abonnements actifs</h2>
-            @php
-            $planColors = ['bronze'=>'text-amber-700','silver'=>'text-slate-300','gold'=>'text-amber-400'];
-            @endphp
-            <div class="space-y-2">
-                @forelse($subscriptions_by_plan as $plan => $count)
-                <div class="flex items-center justify-between bg-slate-800 rounded-lg px-3 py-2">
-                    <span class="{{ $planColors[strtolower($plan)] ?? 'text-slate-300' }} text-sm font-medium capitalize">
-                        <i class="fas fa-gem mr-1.5 text-xs"></i>{{ $plan }}
-                    </span>
-                    <span class="text-white text-sm font-bold">{{ $count }}</span>
-                </div>
-                @empty
-                <p class="text-slate-500 text-xs">Aucun abonnement actif.</p>
-                @endforelse
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
+            <h2 class="text-white font-semibold text-sm mb-4">Abonnements actifs par forfait</h2>
+            @if($subscriptions_by_plan->sum() > 0)
+            <div style="height: {{ max(120, $subscriptions_by_plan->count() * 44) }}px">
+                <canvas id="chartSubscriptionPlans"></canvas>
             </div>
+            @else
+            <p class="text-slate-500 text-xs">Aucun abonnement actif.</p>
+            @endif
         </div>
 
         {{-- Quick actions --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h2 class="text-white font-semibold text-sm mb-3">Actions rapides</h2>
             <div class="space-y-2">
                 <a href="#" class="flex items-center gap-2 text-slate-400 hover:text-white text-sm transition">
-                    <i class="fas fa-user-plus text-amber-400 w-4"></i> Créer un utilisateur
+                    <i class="fas fa-user-plus text-orange-400 w-4"></i> Créer un utilisateur
                 </a>
                 <a href="#" class="flex items-center gap-2 text-slate-400 hover:text-white text-sm transition">
                     <i class="fas fa-circle-check text-emerald-400 w-4"></i> Valider des prestataires
                 </a>
                 <a href="{{ route('admin.newsletter.index') }}" class="flex items-center gap-2 text-slate-400 hover:text-white text-sm transition">
-                    <i class="fas fa-envelope-open-text text-blue-400 w-4"></i> Envoyer newsletter
+                    <i class="fas fa-envelope-open-text text-green-400 w-4"></i> Envoyer newsletter
                 </a>
             </div>
         </div>
@@ -172,7 +211,7 @@
 </div>
 
 {{-- ── Pending reviews ────────────────────────────────────────────────── --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold text-sm flex items-center gap-2">
             <i class="fas fa-star-half-stroke text-rose-400"></i>
@@ -181,7 +220,7 @@
             <span class="bg-rose-500 text-white text-xs px-2 py-0.5 rounded-full">{{ $stats['pending_reviews'] }}</span>
             @endif
         </h2>
-        <a href="#" class="text-amber-400 hover:text-amber-300 text-xs transition">Gérer →</a>
+        <a href="#" class="text-orange-400 hover:text-orange-300 text-xs transition">Gérer →</a>
     </div>
     <div class="divide-y divide-slate-800">
         @forelse($pending_reviews as $review)
@@ -190,12 +229,12 @@
                 <div class="flex items-center gap-2 mb-1">
                     <span class="text-white text-sm font-medium">{{ $review->user->first_name ?? 'Anonyme' }}</span>
                     <span class="text-slate-500 text-xs">→</span>
-                    <span class="text-amber-400 text-sm">{{ $review->provider->business_name ?? '—' }}</span>
+                    <span class="text-orange-400 text-sm">{{ $review->provider->business_name ?? '—' }}</span>
                 </div>
                 <p class="text-slate-400 text-xs truncate">{{ $review->comment }}</p>
                 <div class="flex items-center gap-1 mt-1.5">
                     @for($i = 1; $i <= 5; $i++)
-                    <i class="fas fa-star text-xs {{ $i <= $review->rating ? 'text-amber-400' : 'text-slate-700' }}"></i>
+                    <i class="fas fa-star text-xs {{ $i <= $review->rating ? 'text-orange-400' : 'text-slate-700' }}"></i>
                     @endfor
                     <span class="text-slate-500 text-xs ml-1">{{ $review->created_at->diffForHumans() }}</span>
                 </div>
@@ -219,3 +258,271 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+{{--
+    Les couleurs Chart.js sont dessinées sur un <canvas> : elles échappent totalement
+    aux règles CSS (partials/theme-light-bridge.blade.php), qui ne peuvent recolorer
+    que du texte HTML. Le site n'a plus qu'un seul thème (clair) ; isDarkMode()
+    retourne donc toujours false et les graphiques utilisent la palette claire.
+--}}
+function isDarkMode() {
+    return document.getElementById('html-root')?.classList.contains('dark') ?? true;
+}
+
+function chartPalette() {
+    const dark = isDarkMode();
+    return {
+        surface: dark ? '#e9e5d9' : '#e9e5d9',
+        grid: dark ? 'rgba(148,163,184,0.14)' : 'rgba(28,25,21,0.08)',
+        tick: dark ? '#94a3b8' : '#544f47',
+        tickStrong: dark ? '#e2e8f0' : '#1c1915',
+        tooltipTitle: dark ? '#f8fafc' : '#1c1915',
+        tooltipBody: dark ? '#cbd5e1' : '#44413a',
+        tooltipBorder: dark ? 'rgba(148,163,184,0.25)' : 'rgba(28,25,21,0.14)',
+    };
+}
+
+function baseChartDefaults(p) {
+    return {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: p.surface,
+                titleColor: p.tooltipTitle,
+                bodyColor: p.tooltipBody,
+                borderColor: p.tooltipBorder,
+                borderWidth: 1,
+                padding: 10,
+                displayColors: false,
+                titleFont: { weight: '600' },
+            },
+        },
+        scales: {
+            x: {
+                grid: { display: false },
+                ticks: { color: p.tick, font: { size: 10 } },
+                border: { display: false },
+            },
+            y: {
+                grid: { color: p.grid, drawBorder: false },
+                ticks: { color: p.tick, font: { size: 10 } },
+                border: { display: false },
+                beginAtZero: true,
+            },
+        },
+    };
+}
+
+const revenueLabels = @json($revenue_by_month['labels']);
+const revenueValues = @json($revenue_by_month['values']);
+const signupsLabels = @json($signups_by_day['labels']);
+const signupsValues = @json($signups_by_day['values']);
+const statusData = @json($providers_by_status);
+const statusMeta = {
+    active:    { label: 'Actifs',     color: '#059669' },
+    pending:   { label: 'En attente', color: '#9f4709' },
+    suspended: { label: 'Suspendus',  color: '#ef4444' },
+    inactive:  { label: 'Inactifs',   color: '#64748b' },
+};
+const planData = @json($subscriptions_by_plan);
+const planMeta = {
+    bronze: { label: 'Bronze', color: '#a54a0b' },
+    silver: { label: 'Argent', color: '#0891b2' },
+    gold:   { label: 'Or',     color: '#a16207' },
+};
+
+const dashboardCharts = {};
+
+function buildRevenueChart() {
+    const canvas = document.getElementById('chartRevenue');
+    if (!canvas) return;
+    dashboardCharts.revenue?.destroy();
+    const p = chartPalette();
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+    gradient.addColorStop(0, 'rgba(242, 121, 15,0.4)');
+    gradient.addColorStop(1, 'rgba(242, 121, 15,0.02)');
+
+    dashboardCharts.revenue = new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: revenueLabels,
+            datasets: [{
+                data: revenueValues,
+                borderColor: '#f2790f',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointRadius: 0,
+                pointHoverRadius: 5,
+                pointBackgroundColor: '#fa9a3c',
+                pointHoverBorderWidth: 2,
+                pointHoverBorderColor: p.surface,
+                fill: true,
+                tension: 0.4,
+            }],
+        },
+        options: {
+            ...baseChartDefaults(p),
+            plugins: {
+                ...baseChartDefaults(p).plugins,
+                tooltip: {
+                    ...baseChartDefaults(p).plugins.tooltip,
+                    callbacks: {
+                        label: (ctx) => new Intl.NumberFormat('fr-FR').format(ctx.parsed.y) + ' FCFA',
+                    },
+                },
+            },
+            scales: {
+                ...baseChartDefaults(p).scales,
+                y: {
+                    ...baseChartDefaults(p).scales.y,
+                    ticks: {
+                        ...baseChartDefaults(p).scales.y.ticks,
+                        callback: (v) => new Intl.NumberFormat('fr-FR', { notation: 'compact' }).format(v),
+                    },
+                },
+            },
+        },
+    });
+}
+
+function buildSignupsChart() {
+    const canvas = document.getElementById('chartSignups');
+    if (!canvas) return;
+    dashboardCharts.signups?.destroy();
+    const p = chartPalette();
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+    gradient.addColorStop(0, 'rgba(59,130,246,0.95)');
+    gradient.addColorStop(1, 'rgba(59,130,246,0.45)');
+
+    dashboardCharts.signups = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: signupsLabels,
+            datasets: [{
+                data: signupsValues,
+                backgroundColor: gradient,
+                borderRadius: 4,
+                borderSkipped: false,
+                maxBarThickness: 18,
+                hoverBackgroundColor: '#60a5fa',
+            }],
+        },
+        options: {
+            ...baseChartDefaults(p),
+            scales: {
+                ...baseChartDefaults(p).scales,
+                y: { ...baseChartDefaults(p).scales.y, ticks: { ...baseChartDefaults(p).scales.y.ticks, precision: 0 } },
+            },
+        },
+    });
+}
+
+function buildProviderStatusChart() {
+    const canvas = document.getElementById('chartProviderStatus');
+    if (!canvas) return;
+    dashboardCharts.providerStatus?.destroy();
+    const p = chartPalette();
+    const statusDatasets = Object.entries(statusData).map(([status, count]) => ({
+        label: statusMeta[status]?.label ?? status,
+        data: [count],
+        backgroundColor: statusMeta[status]?.color ?? '#64748b',
+        borderRadius: 4,
+        borderSkipped: false,
+        borderWidth: 2,
+        borderColor: p.surface,
+    }));
+
+    dashboardCharts.providerStatus = new Chart(canvas, {
+        type: 'bar',
+        data: { labels: ['Prestataires'], datasets: statusDatasets },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: p.surface,
+                    titleColor: p.tooltipTitle,
+                    bodyColor: p.tooltipBody,
+                    borderColor: p.tooltipBorder,
+                    borderWidth: 1,
+                    padding: 10,
+                    callbacks: { title: (items) => statusDatasets[items[0].datasetIndex].label },
+                },
+            },
+            scales: {
+                x: { stacked: true, display: false },
+                y: { stacked: true, display: false },
+            },
+        },
+    });
+}
+
+function buildPlansChart() {
+    const canvas = document.getElementById('chartSubscriptionPlans');
+    if (!canvas) return;
+    dashboardCharts.plans?.destroy();
+    const p = chartPalette();
+    const planLabels = Object.keys(planData).map((k) => planMeta[k.toLowerCase()]?.label ?? k);
+    const planColors = Object.keys(planData).map((k) => planMeta[k.toLowerCase()]?.color ?? '#64748b');
+
+    dashboardCharts.plans = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: planLabels,
+            datasets: [{
+                data: Object.values(planData),
+                backgroundColor: planColors,
+                borderRadius: 4,
+                borderSkipped: false,
+                maxBarThickness: 22,
+            }],
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: p.surface,
+                    titleColor: p.tooltipTitle,
+                    bodyColor: p.tooltipBody,
+                    borderColor: p.tooltipBorder,
+                    borderWidth: 1,
+                    padding: 10,
+                    displayColors: false,
+                },
+            },
+            scales: {
+                x: { grid: { color: p.grid, drawBorder: false }, ticks: { color: p.tick, font: { size: 10 }, precision: 0 }, border: { display: false }, beginAtZero: true },
+                y: { grid: { display: false }, ticks: { color: p.tickStrong, font: { size: 12, weight: '600' } }, border: { display: false } },
+            },
+        },
+    });
+}
+
+function buildAllDashboardCharts() {
+    buildRevenueChart();
+    buildSignupsChart();
+    buildProviderStatusChart();
+    buildPlansChart();
+}
+
+buildAllDashboardCharts();
+
+const htmlRoot = document.getElementById('html-root');
+if (htmlRoot) {
+    new MutationObserver(buildAllDashboardCharts).observe(htmlRoot, { attributes: true, attributeFilter: ['class'] });
+}
+</script>
+@endpush

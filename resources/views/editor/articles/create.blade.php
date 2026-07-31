@@ -28,7 +28,7 @@
 @endif
 
 {{-- Lang tabs --}}
-<div class="flex items-center gap-1 mb-6 bg-slate-900/50 border border-slate-800 rounded-xl p-1 w-fit">
+<div class="flex items-center gap-1 mb-6 bg-green-900/50 border border-slate-800 rounded-xl p-1 w-fit">
     <button type="button" onclick="switchLang('fr')" id="tab-fr"
         class="px-4 py-2 rounded-lg text-xs font-medium transition lang-tab bg-slate-700 text-white">
         🇫🇷 Français
@@ -47,63 +47,63 @@
         {{-- FR panel --}}
         <div id="panel-fr" class="space-y-5">
             {{-- Title FR --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <label class="block text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Titre (FR) <span class="text-red-400">*</span></label>
                 <input type="text" name="title_fr" id="title_fr" value="{{ old('title_fr', $article->title_fr ?? null) }}"
                     placeholder="Ex: Les palais royaux d'Abomey…"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-white text-base outline-none transition placeholder-slate-600"
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-3 text-white text-base outline-none transition placeholder-slate-600"
                     oninput="autoSlug(this.value, 'slug_fr')">
                 @error('title_fr') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Slug FR --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <label class="block text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Slug FR</label>
                 <div class="flex items-center gap-2">
                     <span class="text-slate-600 text-xs shrink-0">/articles/</span>
                     <input type="text" name="slug_fr" id="slug_fr" value="{{ old('slug_fr', $article->slug_fr ?? null) }}"
                         placeholder="titre-de-l-article"
-                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600 font-mono">
+                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600 font-mono">
                 </div>
                 @error('slug_fr') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Excerpt FR --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <label class="block text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Résumé (FR)</label>
                 <textarea name="excerpt_fr" id="excerpt_fr" rows="3" placeholder="Un court résumé accrocheur…"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y">{{ old('excerpt_fr', $article->excerpt_fr ?? null) }}</textarea>
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y">{{ old('excerpt_fr', $article->excerpt_fr ?? null) }}</textarea>
                 @error('excerpt_fr') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Content FR --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <div class="flex items-center justify-between mb-2">
                     <label class="block text-xs text-slate-400 font-medium uppercase tracking-wider">Contenu (FR)</label>
                     <span id="wordCount-fr" class="text-slate-600 text-xs">0 mots</span>
                 </div>
                 <textarea name="content_fr" id="content_fr" rows="20"
                     placeholder="Rédigez votre article ici…"
-                    class="rich-editor w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y leading-relaxed">{{ old('content_fr', $article->content_fr ?? null) }}</textarea>
+                    class="rich-editor w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y leading-relaxed">{{ old('content_fr', $article->content_fr ?? null) }}</textarea>
                 @error('content_fr') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- SEO FR --}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <i class="fas fa-magnifying-glass text-amber-500/60"></i> SEO (FR)
+                    <i class="fas fa-magnifying-glass text-orange-500/60"></i> SEO (FR)
                 </h3>
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs text-slate-500 mb-1.5">Titre SEO</label>
                         <input type="text" name="meta_title_fr" value="{{ old('meta_title_fr', $article->meta_title_fr ?? null) }}"
                             placeholder="Laissez vide pour utiliser le titre principal"
-                            class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600">
+                            class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-500 mb-1.5">Méta description</label>
                         <textarea name="meta_desc_fr" rows="2" placeholder="Description pour les moteurs de recherche (max 160 car.)…"
-                            class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-none">{{ old('meta_desc_fr', $article->meta_desc_fr ?? null) }}</textarea>
+                            class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-none">{{ old('meta_desc_fr', $article->meta_desc_fr ?? null) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -111,55 +111,55 @@
 
         {{-- EN panel --}}
         <div id="panel-en" class="space-y-5 hidden">
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <label class="block text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Title (EN)</label>
                 <input type="text" name="title_en" value="{{ old('title_en', $article->title_en ?? null) }}"
                     placeholder="e.g. The Royal Palaces of Abomey…"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-white text-base outline-none transition placeholder-slate-600"
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-3 text-white text-base outline-none transition placeholder-slate-600"
                     oninput="autoSlug(this.value, 'slug_en')">
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <label class="block text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Slug EN</label>
                 <div class="flex items-center gap-2">
                     <span class="text-slate-600 text-xs shrink-0">/articles/</span>
                     <input type="text" name="slug_en" id="slug_en" value="{{ old('slug_en', $article->slug_en ?? null) }}"
                         placeholder="article-title"
-                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600 font-mono">
+                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600 font-mono">
                 </div>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <label class="block text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Excerpt (EN)</label>
                 <textarea name="excerpt_en" rows="3" placeholder="A short catchy summary…"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y">{{ old('excerpt_en', $article->excerpt_en ?? null) }}</textarea>
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y">{{ old('excerpt_en', $article->excerpt_en ?? null) }}</textarea>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <div class="flex items-center justify-between mb-2">
                     <label class="block text-xs text-slate-400 font-medium uppercase tracking-wider">Content (EN)</label>
                     <span id="wordCount-en" class="text-slate-600 text-xs">0 words</span>
                 </div>
                 <textarea name="content_en" id="content_en" rows="20"
                     placeholder="Write your article here…"
-                    class="rich-editor w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y leading-relaxed">{{ old('content_en', $article->content_en ?? null) }}</textarea>
+                    class="rich-editor w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-3 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-y leading-relaxed">{{ old('content_en', $article->content_en ?? null) }}</textarea>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
                 <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <i class="fas fa-magnifying-glass text-amber-500/60"></i> SEO (EN)
+                    <i class="fas fa-magnifying-glass text-orange-500/60"></i> SEO (EN)
                 </h3>
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs text-slate-500 mb-1.5">SEO Title</label>
                         <input type="text" name="meta_title_en" value="{{ old('meta_title_en', $article->meta_title_en ?? null) }}"
                             placeholder="Leave empty to use main title"
-                            class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600">
+                            class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-500 mb-1.5">Meta description</label>
                         <textarea name="meta_desc_en" rows="2" placeholder="Description for search engines (max 160 chars)…"
-                            class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-none">{{ old('meta_desc_en', $article->meta_desc_en ?? null) }}</textarea>
+                            class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-4 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600 resize-none">{{ old('meta_desc_en', $article->meta_desc_en ?? null) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -171,15 +171,15 @@
     <div class="space-y-5">
 
         {{-- Publish --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fas fa-paper-plane text-amber-500/60"></i> Publication
+                <i class="fas fa-paper-plane text-orange-500/60"></i> Publication
             </h3>
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs text-slate-500 mb-1.5">Statut</label>
                     <select name="status"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
                         <option value="draft" {{ old('status', $article->status ?? 'draft')==='draft' ? 'selected':'' }}>Brouillon</option>
                         <option value="review" {{ old('status', $article->status ?? null)==='review' ? 'selected':'' }}>Soumettre pour révision</option>
                         @if(auth()->user()->isAdmin())
@@ -191,7 +191,7 @@
                 <div>
                     <label class="block text-xs text-slate-500 mb-1.5">Mode de publication</label>
                     <select name="publication_mode" id="publication_mode"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition"
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition"
                         onchange="togglePublicationMode()">
                         <option value="now" {{ old('publication_mode', (($article->scheduled_at ?? null) ? 'schedule' : 'now')) === 'now' ? 'selected' : '' }}>Publier / soumettre maintenant</option>
                         <option value="schedule" {{ old('publication_mode', (($article->scheduled_at ?? null) ? 'schedule' : 'now')) === 'schedule' ? 'selected' : '' }}>Planifier la publication</option>
@@ -200,12 +200,12 @@
                 <div>
                     <label class="block text-xs text-slate-500 mb-1.5">Date de publication</label>
                     <input type="datetime-local" name="published_at" value="{{ old('published_at', isset($article) && $article->published_at ? $article->published_at->format('Y-m-d\TH:i') : null) }}"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
                 </div>
                 <div id="scheduled_at_group">
                     <label class="block text-xs text-slate-500 mb-1.5">Publication planifiée</label>
                     <input type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at', isset($article) && $article->scheduled_at ? $article->scheduled_at->format('Y-m-d\TH:i') : null) }}"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
                     @error('scheduled_at') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -215,24 +215,24 @@
                     <i class="fas fa-floppy-disk mr-1"></i> {{ $isEdit ? 'Enregistrer' : 'Brouillon' }}
                 </button>
                 <button type="submit" name="status" value="review"
-                    class="flex-1 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-black text-xs font-semibold rounded-lg transition">
+                    class="flex-1 px-3 py-2 bg-orange-500 hover:bg-orange-600 text-black text-xs font-semibold rounded-lg transition">
                     <i class="fas fa-paper-plane mr-1"></i> {{ $isEdit ? 'Mettre à jour' : 'Soumettre' }}
                 </button>
             </div>
             <p id="autosaveStatus" class="text-xs text-slate-600 mt-2 min-h-[1.25rem]" aria-live="polite"></p>
-            <button type="button" class="text-[11px] text-slate-500 hover:text-amber-400/90 mt-1 underline"
+            <button type="button" class="text-[11px] text-slate-500 hover:text-orange-400/90 mt-1 underline"
                     onclick="try { localStorage.removeItem('tresor_editor_article_draft_v1'); document.getElementById('autosaveStatus').textContent='Brouillon local effacé'; } catch(e) {}">
                 Effacer le brouillon local
             </button>
         </div>
 
         {{-- Category --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fas fa-folder text-amber-500/60"></i> Rubrique <span class="text-red-400">*</span>
+                <i class="fas fa-folder text-orange-500/60"></i> Rubrique <span class="text-red-400">*</span>
             </h3>
             <select name="category_id"
-                class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
+                class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
                 <option value="">— Choisir une rubrique —</option>
                 @foreach($categories as $cat)
                 <option value="{{ $cat->id }}" {{ old('category_id', $article->category_id ?? null) == $cat->id ? 'selected' : '' }}>
@@ -245,9 +245,9 @@
 
         {{-- Uploaders --}}
         @if(($uploaders ?? collect())->isNotEmpty())
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fas fa-users text-amber-500/60"></i> Uploader(s) associé(s)
+                <i class="fas fa-users text-orange-500/60"></i> Uploader(s) associé(s)
             </h3>
             <p class="text-[11px] text-slate-600 mb-3">Sélectionnez un ou plusieurs comptes associés à cette publication.</p>
             @php $selectedUploaders = old('uploader_ids', $selectedUploaderIds ?? []); @endphp
@@ -257,7 +257,7 @@
                     <span class="text-xs text-slate-300 truncate">{{ $uploader->full_name }} <span class="text-slate-500">({{ $uploader->role }})</span></span>
                     <input type="checkbox" name="uploader_ids[]" value="{{ $uploader->id }}"
                         {{ in_array($uploader->id, $selectedUploaders) ? 'checked' : '' }}
-                        class="w-3.5 h-3.5 accent-amber-500 rounded">
+                        class="w-3.5 h-3.5 accent-orange-500 rounded">
                 </label>
                 @endforeach
             </div>
@@ -267,16 +267,16 @@
         @endif
 
         {{-- Cover --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fas fa-image text-amber-500/60"></i> Image de couverture
+                <i class="fas fa-image text-orange-500/60"></i> Image de couverture
             </h3>
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs text-slate-500 mb-1.5">URL de l'image</label>
                     <input type="url" name="cover_url" id="cover_url" value="{{ old('cover_url', $article->cover_url ?? null) }}"
                         placeholder="https://…"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600"
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600"
                         oninput="previewCover(this.value)">
                 </div>
                 <div>
@@ -293,22 +293,22 @@
                     <label class="block text-xs text-slate-500 mb-1.5">Texte alternatif</label>
                     <input type="text" name="cover_alt" value="{{ old('cover_alt', $article->cover_alt ?? null) }}"
                         placeholder="Description de l'image…"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600">
                 </div>
             </div>
         </div>
 
         {{-- Gallery images --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fas fa-images text-amber-500/60"></i> Galerie associée à l'article
+                <i class="fas fa-images text-orange-500/60"></i> Galerie associée à l'article
             </h3>
             @if(($galleryImages ?? collect())->isNotEmpty())
             <div class="grid grid-cols-2 gap-3 mb-4">
                 @foreach($galleryImages as $media)
                 <label class="group relative rounded-lg overflow-hidden border border-slate-800 cursor-pointer">
                     <img src="{{ $media->url }}" alt="{{ $media->alt_text ?: ($article->title_fr ?? '') }}" class="w-full h-24 object-cover group-hover:opacity-80 transition">
-                    <span class="absolute inset-x-0 bottom-0 bg-black/70 text-[10px] text-white px-2 py-1 truncate">{{ $media->original_name }}</span>
+                    <span class="absolute inset-x-0 bottom-0 bg-green-950/70 text-[10px] text-white px-2 py-1 truncate">{{ $media->original_name }}</span>
                     <span class="absolute top-1.5 right-1.5 inline-flex items-center gap-1 rounded-full bg-rose-500/90 px-2 py-0.5 text-[10px] font-semibold text-white">
                         <input type="checkbox" name="remove_media_ids[]" value="{{ $media->id }}" class="accent-rose-400 w-3 h-3">
                         Suppr.
@@ -336,9 +336,9 @@
 
         {{-- Tags --}}
         @if($tags->isNotEmpty())
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fas fa-tags text-amber-500/60"></i> Tags
+                <i class="fas fa-tags text-orange-500/60"></i> Tags
             </h3>
             @php $selectedTags = old('tags', $selectedTags ?? []); @endphp
             <div class="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-1">
@@ -346,7 +346,7 @@
                 <label class="flex items-center gap-1.5 cursor-pointer group">
                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
                         {{ in_array($tag->id, $selectedTags) ? 'checked' : '' }}
-                        class="w-3.5 h-3.5 accent-amber-500 rounded">
+                        class="w-3.5 h-3.5 accent-orange-500 rounded">
                     <span class="text-slate-400 text-xs group-hover:text-white transition">{{ $tag->name_fr }}</span>
                 </label>
                 @endforeach
@@ -355,9 +355,9 @@
         @endif
 
         {{-- Badges --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fas fa-certificate text-amber-500/60"></i> Badges
+                <i class="fas fa-certificate text-orange-500/60"></i> Badges
             </h3>
             <div class="space-y-3">
                 <label class="flex items-center justify-between cursor-pointer">
@@ -369,7 +369,7 @@
                         <input type="hidden" name="is_featured" value="0">
                         <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $article->is_featured ?? false) ? 'checked':'' }}
                             class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-700 peer-checked:bg-amber-500 rounded-full transition peer cursor-pointer"
+                        <div class="w-9 h-5 bg-slate-700 peer-checked:bg-orange-500 rounded-full transition peer cursor-pointer"
                              onclick="this.previousElementSibling.click()"></div>
                         <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4 pointer-events-none"></div>
                     </div>
@@ -383,7 +383,7 @@
                         <input type="hidden" name="is_destination" value="0">
                         <input type="checkbox" name="is_destination" value="1" {{ old('is_destination', $article->is_destination ?? false) ? 'checked':'' }}
                             class="sr-only peer" id="toggle-dest">
-                        <div class="w-9 h-5 bg-slate-700 peer-checked:bg-blue-500 rounded-full transition cursor-pointer"
+                        <div class="w-9 h-5 bg-slate-700 peer-checked:bg-green-500 rounded-full transition cursor-pointer"
                              onclick="document.getElementById('toggle-dest').click()"></div>
                         <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4 pointer-events-none"></div>
                     </div>
@@ -397,7 +397,7 @@
                         <input type="hidden" name="is_sponsored" value="0">
                         <input type="checkbox" name="is_sponsored" id="is_sponsored" value="1" {{ old('is_sponsored', $article->is_sponsored ?? false) ? 'checked':'' }}
                             class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-700 peer-checked:bg-purple-500 rounded-full transition cursor-pointer"
+                        <div class="w-9 h-5 bg-slate-700 peer-checked:bg-green-500 rounded-full transition cursor-pointer"
                              onclick="document.getElementById('is_sponsored').click()"></div>
                         <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4 pointer-events-none"></div>
                     </div>
@@ -406,7 +406,7 @@
             <div id="sponsor_group" class="mt-4 {{ old('is_sponsored', $article->is_sponsored ?? false) ? '' : 'hidden' }}">
                 <label class="block text-xs text-slate-500 mb-1.5">Sponsor <span class="text-red-400">*</span></label>
                 <select name="sponsor_id"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-purple-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-green-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition">
                     <option value="">— Choisir un sponsor —</option>
                     @foreach(($sponsors ?? collect()) as $sponsor)
                     <option value="{{ $sponsor->id }}" {{ (string) old('sponsor_id', $article->sponsor_id ?? null) === (string) $sponsor->id ? 'selected' : '' }}>
@@ -419,14 +419,14 @@
         </div>
 
         {{-- Reading time --}}
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fas fa-clock text-amber-500/60"></i> Temps de lecture
+                <i class="fas fa-clock text-orange-500/60"></i> Temps de lecture
             </h3>
             <div class="flex items-center gap-2">
                 <input type="number" name="reading_time" id="reading_time" value="{{ old('reading_time', $article->reading_time ?? null) }}"
                     min="1" max="120" placeholder="auto"
-                    class="w-20 bg-slate-800 border border-slate-700 focus:border-amber-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition text-center">
+                    class="w-20 bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition text-center">
                 <span class="text-slate-500 text-xs">minutes (laissez vide pour auto)</span>
             </div>
         </div>

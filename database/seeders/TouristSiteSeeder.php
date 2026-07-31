@@ -427,7 +427,10 @@ class TouristSiteSeeder extends Seeder
             $data['city_id']     = $cityId;
             $data['category_id'] = $catId;
 
-            $site = TouristSite::updateOrCreate(['slug' => $data['slug']], $data);
+            $site = TouristSite::withTrashed()->updateOrCreate(['slug' => $data['slug']], $data);
+            if ($site->trashed()) {
+                $site->restore();
+            }
 
             // Médias
             if ($site->wasRecentlyCreated && !empty($mediaData)) {

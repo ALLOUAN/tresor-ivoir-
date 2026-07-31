@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark">
+<html lang="fr" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +22,7 @@
             inset: 0;
             z-index: -1;
             background:
-                radial-gradient(120% 80% at 5% 0%, rgba(232,160,32,0.12), transparent 50%),
+                radial-gradient(120% 80% at 5% 0%, rgba(242, 121, 15,0.12), transparent 50%),
                 radial-gradient(110% 70% at 90% 8%, rgba(148, 163, 184, 0.08), transparent 50%);
             pointer-events: none;
         }
@@ -30,7 +30,7 @@
             border: 1px solid rgba(255,255,255,0.09);
             background:
                 linear-gradient(130deg, rgba(24,24,21,0.86), rgba(14,14,12,0.94)),
-                radial-gradient(circle at top right, rgba(232,160,32,0.1), transparent 40%);
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%);
             box-shadow: 0 25px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
         }
         .events-filter-panel {
@@ -41,25 +41,25 @@
         }
         .events-input {
             border: 1px solid rgba(255,255,255,0.10);
-            background: rgba(28,28,22,0.86);
+            background: rgba(233, 229, 217, 0.86);
             transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
         }
         .events-input:focus {
             outline: none;
-            border-color: rgba(232,160,32,0.5);
-            box-shadow: 0 0 0 3px rgba(232,160,32,0.14);
+            border-color: rgba(242, 121, 15,0.5);
+            box-shadow: 0 0 0 3px rgba(242, 121, 15,0.14);
             background: rgba(34,34,28,0.95);
         }
         .event-card {
             border: 1px solid rgba(255,255,255,0.07);
-            background: linear-gradient(180deg, rgba(20,20,16,0.96), rgba(14,14,12,0.96));
+            background: linear-gradient(180deg, rgba(255, 255, 255,0.96), rgba(14,14,12,0.96));
             box-shadow: 0 12px 36px rgba(0,0,0,0.3);
             transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color .25s ease, box-shadow .3s ease;
         }
         .event-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(232,160,32,0.45);
-            box-shadow: 0 18px 48px rgba(0,0,0,0.4), 0 0 20px rgba(232,160,32,0.14);
+            border-color: rgba(242, 121, 15,0.45);
+            box-shadow: 0 18px 48px rgba(0,0,0,0.4), 0 0 20px rgba(242, 121, 15,0.14);
         }
         .event-cover {
             position: relative;
@@ -82,8 +82,8 @@
         }
         .event-cover-missing {
             background:
-                linear-gradient(140deg, rgba(56,56,46,0.7), rgba(28,28,22,0.95)),
-                repeating-linear-gradient(45deg, rgba(232,160,32,0.1), rgba(232,160,32,0.1) 8px, transparent 8px, transparent 16px);
+                linear-gradient(140deg, rgba(56,56,46,0.7), rgba(255, 255, 255,0.95)),
+                repeating-linear-gradient(45deg, rgba(242, 121, 15,0.1), rgba(242, 121, 15,0.1) 8px, transparent 8px, transparent 16px);
         }
         .event-cta-row {
             display: flex;
@@ -105,8 +105,8 @@
             min-height: 2rem;
             padding: 0.38rem 0.7rem;
             border-radius: 0.7rem;
-            border: 1px solid rgba(232,160,32,0.35);
-            background: linear-gradient(145deg, rgba(232,160,32,0.22), rgba(255,255,255,0.08));
+            border: 1px solid rgba(242, 121, 15,0.35);
+            background: linear-gradient(145deg, rgba(242, 121, 15,0.22), rgba(255,255,255,0.08));
             color: #f8d79a;
             font-size: 11px;
             font-weight: 800;
@@ -126,8 +126,8 @@
             font-size: 11px;
             font-weight: 800;
             color: #1b1408;
-            background: linear-gradient(135deg, #f4c65a 0%, #e8a020 65%, #cb8517 100%);
-            box-shadow: 0 10px 20px rgba(232,160,32,0.28);
+            background: linear-gradient(135deg, #f4c65a 0%, #f2790f 65%, #cb8517 100%);
+            box-shadow: 0 10px 20px rgba(242, 121, 15,0.28);
             transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
         }
         .event-ticket-btn-modern::after {
@@ -142,13 +142,13 @@
         .event-ticket-btn-modern:hover {
             transform: translateY(-1px);
             filter: brightness(1.03);
-            box-shadow: 0 14px 24px rgba(232,160,32,0.35);
+            box-shadow: 0 14px 24px rgba(242, 121, 15,0.35);
         }
         .event-ticket-btn-modern:hover::after {
             transform: translateX(130%);
         }
         .group:hover .event-cta-row {
-            border-color: rgba(232,160,32,0.35);
+            border-color: rgba(242, 121, 15,0.35);
             box-shadow: 0 10px 22px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
             transform: translateY(-1px);
         }
@@ -158,38 +158,38 @@
         }
         @keyframes pricePulseSoft {
             0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25); }
-            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(232,160,32,0.22); }
+            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(242, 121, 15,0.22); }
         }
         html:not(.dark) .events-hero {
             border-color: rgba(0,0,0,0.1);
             background:
                 linear-gradient(130deg, rgba(255,255,255,0.96), rgba(247,243,235,0.98)),
-                radial-gradient(circle at top right, rgba(232,160,32,0.1), transparent 40%);
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%);
             box-shadow: 0 14px 30px rgba(0,0,0,0.07);
         }
         html:not(.dark) .events-filter-panel {
             border-color: rgba(0,0,0,0.1);
-            background: rgba(255,255,255,0.94);
+            background: rgba(233, 229, 217, 0.94);
             box-shadow: 0 10px 24px rgba(0,0,0,0.06);
         }
         html:not(.dark) .events-input {
             border-color: rgba(0,0,0,0.12);
-            background: #ffffff;
+            background:#e9e5d9;
             color: #1c1915;
         }
-        html:not(.dark) .events-input::placeholder { color:#7c796f; }
+        html:not(.dark) .events-input::placeholder { color:#5c574e; }
         html:not(.dark) .event-card {
             border-color: rgba(0,0,0,0.1);
-            background: linear-gradient(180deg, #ffffff, #f8f4ec);
+            background: linear-gradient(180deg, #e9e5d9, #f8f4ec);
             box-shadow: 0 10px 24px rgba(0,0,0,0.06);
         }
         html:not(.dark) .event-card:hover {
-            border-color: rgba(180,83,9,0.35);
-            box-shadow: 0 14px 28px rgba(180,83,9,0.14);
+            border-color: rgba(194, 94, 10,0.35);
+            box-shadow: 0 14px 28px rgba(194, 94, 10,0.14);
         }
         html:not(.dark) .event-cover {
             border-bottom-color: rgba(0,0,0,0.08);
-            background: #f4f0e8;
+            background:#e9e5d9;
         }
         html:not(.dark) .event-cover::after {
             background: linear-gradient(to top, rgba(255,255,255,0.92), rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.06));
@@ -197,31 +197,31 @@
         html:not(.dark) .event-cover-missing {
             background:
                 linear-gradient(140deg, rgba(240,235,226,0.9), rgba(231,224,214,0.92)),
-                repeating-linear-gradient(45deg, rgba(180,83,9,0.12), rgba(180,83,9,0.12) 8px, transparent 8px, transparent 16px);
+                repeating-linear-gradient(45deg, rgba(194, 94, 10,0.12), rgba(194, 94, 10,0.12) 8px, transparent 8px, transparent 16px);
         }
         html:not(.dark) .event-cta-row {
             border-color: rgba(0,0,0,0.08);
             background: linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.92));
         }
         html:not(.dark) .event-price-badge-modern {
-            border-color: rgba(180,83,9,0.28);
-            background: linear-gradient(145deg, rgba(245,158,11,0.24), rgba(255,255,255,0.95));
-            color: #78350f;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(180,83,9,0.14);
+            border-color: rgba(194, 94, 10,0.28);
+            background: linear-gradient(145deg, rgba(242, 121, 15,0.24), rgba(255,255,255,0.95));
+            color: #7a3c08;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(194, 94, 10,0.14);
         }
     </style>
 </head>
-<body class="bg-[#0d0d0b] text-white">
+<body class="bg-[#ffffff] text-white">
     @include('partials.public-top-nav')
     <div class="events-shell max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <section class="events-hero rounded-2xl p-5 sm:p-8 mb-6 sm:mb-7">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
-                    <p class="text-amber-300/90 text-[11px] tracking-[.26em] uppercase mb-2 font-semibold">Agenda culturel</p>
+                    <p class="text-orange-300/90 text-[11px] tracking-[.26em] uppercase mb-2 font-semibold">Agenda culturel</p>
                     <h1 class="font-serif text-3xl sm:text-4xl lg:text-[2.65rem] font-bold leading-tight">Agenda des événements</h1>
                     <p class="text-gray-400 mt-2 text-sm sm:text-base">Explorez les rendez-vous à venir avec une expérience de lecture premium.</p>
                 </div>
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-sm text-amber-300 hover:text-amber-200 hover:border-amber-400/45 hover:bg-amber-500/10 transition">
+                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-sm text-orange-300 hover:text-orange-200 hover:border-orange-400/45 hover:bg-orange-500/10 transition">
                     <i class="fas fa-arrow-left text-[11px]"></i>
                     Retour accueil
                 </a>
@@ -248,11 +248,11 @@
                 <option value="all" @selected($period === 'all')>Tous</option>
             </select>
             <div class="md:col-span-5 flex flex-wrap gap-2">
-                <button class="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold px-4 py-2.5 rounded-xl text-sm transition">
+                <button class="inline-flex items-center gap-1.5 bg-orange-500 hover:bg-orange-400 text-black font-semibold px-4 py-2.5 rounded-xl text-sm transition">
                     <i class="fas fa-sliders text-[11px]"></i>
                     Filtrer
                 </button>
-                <a href="{{ route('events.index') }}" class="inline-flex items-center gap-1.5 bg-[#1c1c16] hover:bg-[#252520] border border-white/10 px-4 py-2.5 rounded-xl text-sm transition">
+                <a href="{{ route('events.index') }}" class="inline-flex items-center gap-1.5 bg-[#ffffff] hover:bg-[#ffffff] border border-white/10 px-4 py-2.5 rounded-xl text-sm transition">
                     <i class="fas fa-rotate-right text-[11px]"></i>
                     Réinitialiser
                 </a>
@@ -268,13 +268,13 @@
                         @else
                             <div class="event-cover-missing h-full w-full flex items-center justify-center">
                                 <div class="text-center px-4">
-                                    <i class="fas fa-image text-amber-300/75 text-xl mb-2"></i>
-                                    <p class="text-[11px] uppercase tracking-[0.2em] text-amber-200/85 font-semibold">Couverture requise</p>
+                                    <i class="fas fa-image text-orange-300/75 text-xl mb-2"></i>
+                                    <p class="text-[11px] uppercase tracking-[0.2em] text-orange-200/85 font-semibold">Couverture requise</p>
                                 </div>
                             </div>
                         @endif
                         <div class="absolute top-3 left-3 z-[1]">
-                            <span class="inline-flex items-center rounded-full bg-black/50 border border-white/20 px-2.5 py-1 text-[10px] uppercase tracking-wide text-amber-200 font-semibold backdrop-blur">
+                            <span class="inline-flex items-center rounded-full bg-green-950/50 border border-white/20 px-2.5 py-1 text-[10px] uppercase tracking-wide text-orange-200 font-semibold backdrop-blur">
                                 {{ $event->category->name_fr ?? 'Événement' }}
                             </span>
                         </div>
@@ -282,11 +282,11 @@
                     <div class="p-4">
                         <h2 class="text-lg font-semibold leading-snug">{{ $event->title_fr }}</h2>
                         <p class="text-gray-400 text-sm mt-3 flex items-center gap-1.5">
-                            <i class="fas fa-calendar text-[11px] text-amber-400/70"></i>
+                            <i class="fas fa-calendar text-[11px] text-orange-400/70"></i>
                             {{ $event->starts_at?->format('d/m/Y H:i') }}
                         </p>
                         <p class="text-gray-500 text-sm mt-1.5 flex items-center gap-1.5">
-                            <i class="fas fa-location-dot text-[11px] text-amber-400/70"></i>
+                            <i class="fas fa-location-dot text-[11px] text-orange-400/70"></i>
                             {{ $event->city ?: 'Côte d\'Ivoire' }}
                         </p>
                         <div class="event-cta-row">

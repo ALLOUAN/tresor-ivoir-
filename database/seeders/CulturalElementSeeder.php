@@ -605,7 +605,10 @@ class CulturalElementSeeder extends Seeder
             unset($el['slug']);
             $el['slug'] = $slug;
 
-            CulturalElement::updateOrCreate(['slug' => $slug], $el);
+            $element = CulturalElement::withTrashed()->updateOrCreate(['slug' => $slug], $el);
+            if ($element->trashed()) {
+                $element->restore();
+            }
             $count++;
         }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accommodation;
 use App\Models\Article;
 use App\Models\Event;
 use App\Models\Invoice;
@@ -28,7 +29,7 @@ class ProviderManagementController extends Controller
         $category = $request->get('category');
 
         $query = Provider::query()
-            ->with(['category', 'user'])
+            ->with(['category', 'user', 'accommodation'])
             ->withCount(['sponsoredArticles', 'events', 'media'])
             ->latest();
 
@@ -50,6 +51,7 @@ class ProviderManagementController extends Controller
 
         $providers = $query->paginate(20)->withQueryString();
         $categories = ProviderCategory::query()->orderBy('name_fr')->get();
+        $accommodations = Accommodation::query()->orderBy('name')->get(['id', 'name', 'provider_id']);
 
         $counts = [
             'all' => Provider::count(),
@@ -59,7 +61,7 @@ class ProviderManagementController extends Controller
             'featured' => Provider::where('is_featured', true)->count(),
         ];
 
-        return view('admin.providers.index', compact('providers', 'categories', 'counts', 'status', 'search', 'category'));
+        return view('admin.providers.index', compact('providers', 'categories', 'accommodations', 'counts', 'status', 'search', 'category'));
     }
 
     public function store(Request $request)
@@ -80,6 +82,7 @@ class ProviderManagementController extends Controller
             'status' => 'required|in:pending,active,suspended',
             'is_featured' => 'nullable|boolean',
             'is_verified' => 'nullable|boolean',
+            'accommodation_id' => 'nullable|exists:accommodations,id',
         ]);
 
         DB::transaction(function () use ($data) {
@@ -107,7 +110,7 @@ class ProviderManagementController extends Controller
                 $i++;
             }
 
-            Provider::create([
+            $provider = Provider::create([
                 'user_id' => $user->id,
                 'category_id' => $data['category_id'],
                 'name' => $data['name'],
@@ -122,6 +125,8 @@ class ProviderManagementController extends Controller
                 'is_featured' => ! empty($data['is_featured']),
                 'is_verified' => ! empty($data['is_verified']),
             ]);
+
+            $this->syncAccommodationLink($provider, isset($data['accommodation_id']) ? (int) $data['accommodation_id'] : null);
         });
 
         return redirect()->route('admin.providers.index')->with('success', 'Prestataire créé avec succès.');
@@ -146,6 +151,7 @@ class ProviderManagementController extends Controller
             'is_featured' => 'nullable|boolean',
             'is_verified' => 'nullable|boolean',
             'edit_provider_id' => 'nullable|integer',
+            'accommodation_id' => 'nullable|exists:accommodations,id',
         ]);
 
         DB::transaction(function () use ($provider, $data) {
@@ -175,9 +181,24 @@ class ProviderManagementController extends Controller
                 'is_featured' => ! empty($data['is_featured']),
                 'is_verified' => ! empty($data['is_verified']),
             ]);
+
+            $this->syncAccommodationLink($provider, isset($data['accommodation_id']) ? (int) $data['accommodation_id'] : null);
         });
 
         return redirect()->route('admin.providers.index')->with('success', 'Prestataire modifié avec succès.');
+    }
+
+    /**
+     * Relie (ou délie) l'hébergement choisi à ce prestataire — un hébergement ne peut être
+     * lié qu'à un seul prestataire à la fois (contrainte unique sur accommodations.provider_id).
+     */
+    private function syncAccommodationLink(Provider $provider, ?int $accommodationId): void
+    {
+        Accommodation::where('provider_id', $provider->id)->update(['provider_id' => null]);
+
+        if ($accommodationId) {
+            Accommodation::where('id', $accommodationId)->update(['provider_id' => $provider->id]);
+        }
     }
 
     public function validateProvider(Provider $provider)

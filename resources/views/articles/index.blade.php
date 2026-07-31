@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,8 +19,8 @@
                         elegant: ['Cormorant Garamond', 'Georgia', 'serif'],
                     },
                     colors: {
-                        gold: { 300:'#fcd68a', 400:'#f5b942', 500:'#e8a020', 600:'#c4811a' },
-                        dark: { 500:'#2e2e26', 600:'#252520', 700:'#1c1c16', 800:'#141410', 900:'#0d0d0b' },
+                        gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
+                        dark: { 500:'#e9e5d9', 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
                     }
                 }
             }
@@ -38,8 +38,8 @@
             position: relative;
             border: 1px solid rgba(255,255,255,0.08);
             background:
-                linear-gradient(140deg, rgba(20,20,16,0.94), rgba(12,12,10,0.97)),
-                radial-gradient(100% 70% at 0% 0%, rgba(232,160,32,0.12), transparent 55%);
+                linear-gradient(140deg, rgba(255, 255, 255,0.94), rgba(12,12,10,0.97)),
+                radial-gradient(100% 70% at 0% 0%, rgba(242, 121, 15,0.12), transparent 55%);
             box-shadow: 0 24px 52px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
             overflow: hidden;
         }
@@ -47,7 +47,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(120deg, rgba(232,160,32,0.08), transparent 35%, rgba(255,255,255,0.02));
+            background: linear-gradient(120deg, rgba(242, 121, 15,0.08), transparent 35%, rgba(255,255,255,0.02));
             pointer-events: none;
         }
         .agenda-card {
@@ -60,8 +60,8 @@
         }
         .agenda-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(232,160,32,0.45);
-            box-shadow: 0 18px 42px rgba(0,0,0,0.4), 0 0 22px rgba(232,160,32,0.14);
+            border-color: rgba(242, 121, 15,0.45);
+            box-shadow: 0 18px 42px rgba(0,0,0,0.4), 0 0 22px rgba(242, 121, 15,0.14);
         }
         .agenda-card-cover {
             position: relative;
@@ -81,8 +81,8 @@
             position: relative;
             border-bottom: 1px solid rgba(255,255,255,0.08);
             background:
-                linear-gradient(130deg, rgba(20,20,16,0.92), rgba(13,13,11,0.97)),
-                radial-gradient(110% 90% at 0% 0%, rgba(232,160,32,0.14), transparent 55%),
+                linear-gradient(130deg, rgba(255, 255, 255,0.92), rgba(255, 255, 255,0.97)),
+                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.14), transparent 55%),
                 radial-gradient(90% 80% at 100% 10%, rgba(120,90,40,0.08), transparent 50%);
             overflow: hidden;
         }
@@ -92,7 +92,7 @@
             inset: 0;
             background:
                 linear-gradient(120deg, rgba(255,255,255,0.03), transparent 35%, rgba(255,255,255,0.015)),
-                repeating-linear-gradient(90deg, transparent 0, transparent 62px, rgba(232,160,32,0.02) 62px, rgba(232,160,32,0.02) 63px);
+                repeating-linear-gradient(90deg, transparent 0, transparent 62px, rgba(242, 121, 15,0.02) 62px, rgba(242, 121, 15,0.02) 63px);
             pointer-events: none;
             opacity: .8;
         }
@@ -104,22 +104,22 @@
         }
         .articles-search-input {
             border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(28,28,22,0.88);
+            background: rgba(233, 229, 217, 0.88);
             transition: border-color .2s ease, box-shadow .2s ease;
         }
         .articles-search-input:focus {
-            border-color: rgba(232,160,32,0.5);
-            box-shadow: 0 0 0 3px rgba(232,160,32,0.14);
+            border-color: rgba(242, 121, 15,0.5);
+            box-shadow: 0 0 0 3px rgba(242, 121, 15,0.14);
         }
         .articles-search-btn {
-            background: linear-gradient(135deg, #f5b942 0%, #e8a020 55%, #c4811a 100%);
-            box-shadow: 0 8px 20px rgba(232,160,32,0.28);
+            background: linear-gradient(135deg, #fa9a3c 0%, #f2790f 55%, #d4630a 100%);
+            box-shadow: 0 8px 20px rgba(242, 121, 15,0.28);
             transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
         }
         .articles-search-btn:hover {
             transform: translateY(-1px);
             filter: brightness(1.04);
-            box-shadow: 0 12px 26px rgba(232,160,32,0.35);
+            box-shadow: 0 12px 26px rgba(242, 121, 15,0.35);
         }
         .category-chip {
             position: relative;
@@ -147,16 +147,16 @@
             width: 0;
             height: 2px;
             border-radius: 2px;
-            background: linear-gradient(90deg, #c4811a, #f5b942, #e8a020);
+            background: linear-gradient(90deg, #d4630a, #fa9a3c, #f2790f);
             transition: width .24s ease;
-            box-shadow: 0 0 10px rgba(232,160,32,0.45);
+            box-shadow: 0 0 10px rgba(242, 121, 15,0.45);
         }
         .category-chip:hover {
             transform: translateY(-1px);
             color: #ffffff;
-            border-color: rgba(232,160,32,0.3);
+            border-color: rgba(242, 121, 15,0.3);
             background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
-            box-shadow: 0 0 14px rgba(232,160,32,0.14);
+            box-shadow: 0 0 14px rgba(242, 121, 15,0.14);
         }
         .category-chip:hover::before {
             transform: translateX(130%);
@@ -165,10 +165,10 @@
             width: 72%;
         }
         .category-chip.is-active {
-            border-color: rgba(232,160,32,0.52);
-            background: linear-gradient(135deg, #f5b942, #e8a020);
+            border-color: rgba(242, 121, 15,0.52);
+            background: linear-gradient(135deg, #fa9a3c, #f2790f);
             color: #090705;
-            box-shadow: 0 8px 20px rgba(232,160,32,0.3);
+            box-shadow: 0 8px 20px rgba(242, 121, 15,0.3);
         }
         .category-chip.is-active::after {
             width: 76%;
@@ -190,9 +190,9 @@
         }
         .footer-ultra {
             position: relative;
-            background-color: #060504;
+            background-color:#e9e5d9;
             background-image:
-                radial-gradient(ellipse 90% 50% at 50% -20%, rgba(232, 160, 32, 0.09), transparent 55%),
+                radial-gradient(ellipse 90% 50% at 50% -20%, rgba(242, 121, 15, 0.09), transparent 55%),
                 radial-gradient(ellipse 50% 40% at 100% 100%, rgba(99, 102, 241, 0.05), transparent 45%);
         }
         .footer-ultra::before {
@@ -212,7 +212,7 @@
             transition: color .18s ease, padding-left .18s ease;
         }
         .footer-v2-link:hover {
-            color: #fde68a;
+            color: #fdbe7b;
             padding-left: 0.35rem;
         }
         .social-links-wrap {
@@ -231,7 +231,7 @@
             position: absolute;
             inset: -1px;
             border-radius: inherit;
-            background: conic-gradient(from 180deg, rgba(232,160,32,0.0), rgba(232,160,32,0.45), rgba(255,255,255,0.16), rgba(232,160,32,0.0));
+            background: conic-gradient(from 180deg, rgba(242, 121, 15,0.0), rgba(242, 121, 15,0.45), rgba(255,255,255,0.16), rgba(242, 121, 15,0.0));
             opacity: 0;
             transform: rotate(0deg);
             transition: opacity .28s ease;
@@ -255,7 +255,7 @@
         }
         .social-icon-ultra:hover {
             transform: translateY(-3px) scale(1.06);
-            box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 0 18px rgba(232,160,32,0.22);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 0 18px rgba(242, 121, 15,0.22);
         }
         .social-icon-ultra:hover::before {
             opacity: 0.9;
@@ -282,7 +282,7 @@
             position: relative;
             border-radius: 0.7rem;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.14), rgba(232,160,32,0.25));
+            background: linear-gradient(135deg, rgba(242, 121, 15,0.55), rgba(255,255,255,0.14), rgba(242, 121, 15,0.25));
             box-shadow: 0 8px 26px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
             transition: transform .32s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .32s ease;
             animation: footerLogoFloat 5.4s ease-in-out infinite;
@@ -292,7 +292,7 @@
             position: absolute;
             inset: -3px;
             border-radius: inherit;
-            background: conic-gradient(from 180deg, rgba(232,160,32,0), rgba(232,160,32,0.45), rgba(255,255,255,0.1), rgba(232,160,32,0));
+            background: conic-gradient(from 180deg, rgba(242, 121, 15,0), rgba(242, 121, 15,0.45), rgba(255,255,255,0.1), rgba(242, 121, 15,0));
             opacity: 0.4;
             filter: blur(5px);
             animation: footerLogoSpin 8s linear infinite;
@@ -301,12 +301,12 @@
         .footer-logo-inner {
             border-radius: calc(0.7rem - 2px);
             overflow: hidden;
-            background: rgba(13,13,11,0.9);
+            background: rgba(233, 229, 217, 0.9);
             transition: transform .32s cubic-bezier(0.2, 0.8, 0.2, 1), filter .32s ease;
         }
         .footer-logo-link:hover .footer-logo-ring {
             transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.42), 0 0 22px rgba(232,160,32,0.25), 0 0 0 1px rgba(255,255,255,0.08) inset;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.42), 0 0 22px rgba(242, 121, 15,0.25), 0 0 0 1px rgba(255,255,255,0.08) inset;
         }
         .footer-logo-link:hover .footer-logo-ring::before {
             opacity: 0.82;
@@ -331,58 +331,58 @@
             border-bottom-color: rgba(0,0,0,0.08);
             background:
                 linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.98)),
-                radial-gradient(110% 90% at 0% 0%, rgba(232,160,32,0.10), transparent 55%);
+                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.10), transparent 55%);
         }
         html:not(.dark) .articles-search-shell {
             border-color: rgba(0,0,0,0.08);
-            background: rgba(255,255,255,0.9);
+            background: rgba(233, 229, 217, 0.9);
             box-shadow: 0 10px 22px rgba(0,0,0,0.06);
         }
         html:not(.dark) .articles-search-input {
             border-color: rgba(0,0,0,0.1);
-            background: #ffffff;
+            background:#e9e5d9;
             color: #1c1915;
         }
-        html:not(.dark) .articles-search-input::placeholder { color:#7c796f; }
-        html:not(.dark) .articles-hero p.text-amber-300 { color:#92400e !important; }
-        html:not(.dark) .articles-hero p.text-gray-500 { color:#6b6860 !important; }
+        html:not(.dark) .articles-search-input::placeholder { color:#5c574e; }
+        html:not(.dark) .articles-hero p.text-orange-300 { color:#a3450a !important; }
+        html:not(.dark) .articles-hero p.text-gray-500 { color:#544f47 !important; }
         html:not(.dark) .categories-strip {
             border-color: rgba(0,0,0,0.1);
-            background: rgba(255,255,255,0.92);
+            background: rgba(233, 229, 217, 0.92);
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
         html:not(.dark) .category-chip {
             border-color: rgba(0,0,0,0.12);
-            background: rgba(255,255,255,0.9);
+            background: rgba(233, 229, 217, 0.9);
             color: #2d2a23;
         }
         html:not(.dark) .category-chip:hover {
             color: #1c1915;
-            border-color: rgba(180,83,9,0.35);
-            background: rgba(245,158,11,0.10);
-            box-shadow: 0 0 14px rgba(180,83,9,0.12);
+            border-color: rgba(194, 94, 10,0.35);
+            background: rgba(242, 121, 15,0.10);
+            box-shadow: 0 0 14px rgba(194, 94, 10,0.12);
         }
         html:not(.dark) .category-chip.is-active {
-            border-color: rgba(180,83,9,0.45);
-            background: linear-gradient(135deg, #f5b942, #e8a020);
+            border-color: rgba(194, 94, 10,0.45);
+            background: linear-gradient(135deg, #fa9a3c, #f2790f);
             color: #1c1915;
-            box-shadow: 0 8px 18px rgba(180,83,9,0.2);
+            box-shadow: 0 8px 18px rgba(194, 94, 10,0.2);
         }
         html:not(.dark) .agenda-panel {
             border-color: rgba(0,0,0,0.1);
             background:
                 linear-gradient(140deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98)),
-                radial-gradient(100% 70% at 0% 0%, rgba(232,160,32,0.08), transparent 55%);
+                radial-gradient(100% 70% at 0% 0%, rgba(242, 121, 15,0.08), transparent 55%);
             box-shadow: 0 16px 30px rgba(0,0,0,0.07);
         }
         html:not(.dark) .agenda-card {
             border-color: rgba(0,0,0,0.1);
-            background: linear-gradient(180deg, #ffffff, #f8f4ec);
+            background: linear-gradient(180deg, #e9e5d9, #f8f4ec);
             box-shadow: 0 12px 24px rgba(0,0,0,0.06);
         }
     </style>
 </head>
-<body class="bg-[#0d0d0b] text-white min-h-screen">
+<body class="bg-[#ffffff] text-white min-h-screen">
 @include('partials.public-top-nav')
 
 {{-- ── Page header ──────────────────────────────────────────────── --}}
@@ -390,7 +390,7 @@
     <div class="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
-                <p class="text-amber-300 text-xs tracking-[.25em] uppercase mb-2 font-semibold">Magazine</p>
+                <p class="text-orange-300 text-xs tracking-[.25em] uppercase mb-2 font-semibold">Magazine</p>
                 <h1 class="font-serif text-3xl sm:text-4xl font-bold">
                     @if($active_category)
                         {{ $active_category->name_fr }}
@@ -434,27 +434,27 @@
     @if(!$active_category && !$search && $featured->isNotEmpty())
     <div class="mb-12">
         <h2 class="font-serif text-xl font-bold mb-6 flex items-center gap-2">
-            <i class="fas fa-star text-amber-400 text-base"></i> À la une
+            <i class="fas fa-star text-orange-400 text-base"></i> À la une
         </h2>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             @foreach($featured as $i => $art)
             @php $contributors = $art->display_uploaders; @endphp
             <a href="{{ route('articles.show', $art->slug_fr) }}"
-               class="article-card group {{ $i === 0 ? 'lg:col-span-2 lg:row-span-2' : '' }} block relative overflow-hidden rounded-2xl bg-[#1c1c16]">
+               class="article-card group {{ $i === 0 ? 'lg:col-span-2 lg:row-span-2' : '' }} block relative overflow-hidden rounded-2xl bg-[#ffffff]">
                 <div class="overflow-hidden {{ $i === 0 ? 'h-72 lg:h-full min-h-[280px]' : 'h-44' }}">
                     @if($art->cover_url)
                     <img src="{{ $art->cover_url }}" alt="{{ $art->cover_alt }}"
                          class="card-img w-full h-full object-cover">
                     @else
-                    <div class="card-img w-full h-full bg-gradient-to-br from-[#1c1c16] to-[#252520] flex items-center justify-center">
+                    <div class="card-img w-full h-full bg-gradient-to-br from-[#ffffff] to-[#ffffff] flex items-center justify-center">
                         <i class="fas fa-image text-[#333] text-3xl"></i>
                     </div>
                     @endif
                 </div>
-                <div class="absolute inset-0 bg-linear-to-t from-black/95 via-black/30 to-transparent"></div>
+                <div class="absolute inset-0 bg-linear-to-t from-green-950/95 via-green-950/30 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                    <span class="text-amber-400 text-[11px] uppercase tracking-widest">{{ $art->category->name_fr ?? '—' }}</span>
-                    <h3 class="font-serif font-bold mt-1 group-hover:text-amber-300 transition leading-snug {{ $i === 0 ? 'text-lg sm:text-xl' : 'text-sm' }}">
+                    <span class="text-orange-400 text-[11px] uppercase tracking-widest">{{ $art->category->name_fr ?? '—' }}</span>
+                    <h3 class="font-serif font-bold mt-1 group-hover:text-orange-300 transition leading-snug {{ $i === 0 ? 'text-lg sm:text-xl' : 'text-sm' }}">
                         {{ $art->title_fr }}
                     </h3>
                     <div class="flex items-center gap-2 text-xs text-gray-400 mt-2">
@@ -468,7 +468,7 @@
                     @if($contributors->isNotEmpty())
                     <div class="mt-2 flex flex-wrap gap-1.5">
                         @foreach($contributors->take(3) as $contributor)
-                        <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-200">
+                        <span class="inline-flex items-center rounded-full border border-orange-500/25 bg-orange-500/10 px-2 py-0.5 text-[10px] font-medium text-orange-200">
                             {{ $contributor->full_name }}
                         </span>
                         @endforeach
@@ -476,7 +476,7 @@
                     @endif
                 </div>
                 @if($art->is_featured)
-                <span class="absolute top-3 left-3 bg-amber-500 text-black text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                <span class="absolute top-3 left-3 bg-orange-500 text-black text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">
                     <i class="fas fa-star mr-0.5 text-[9px]"></i>À la une
                 </span>
                 @endif
@@ -516,7 +516,7 @@
                 @if($contributors->isNotEmpty())
                 <div class="mt-2 flex flex-wrap gap-1">
                     @foreach($contributors->take(2) as $contributor)
-                    <span class="inline-flex items-center rounded-full border border-amber-500/25 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-medium text-amber-200">
+                    <span class="inline-flex items-center rounded-full border border-orange-500/25 bg-orange-500/10 px-1.5 py-0.5 text-[9px] font-medium text-orange-200">
                         {{ $contributor->first_name }}
                     </span>
                     @endforeach
@@ -539,7 +539,7 @@
     <section class="agenda-panel mt-10 rounded-2xl p-4 sm:p-6">
         <div class="relative z-[1]">
             <h2 class="font-serif text-xl sm:text-2xl font-bold mb-5 flex items-center gap-2.5">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-300">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-orange-500/30 bg-orange-500/10 text-orange-300">
                     <i class="fas fa-calendar-days text-sm"></i>
                 </span>
                 Tous les événements
@@ -557,13 +557,13 @@
                         @endif
                     </div>
                     <div class="p-4">
-                        <p class="text-amber-300 text-[11px] uppercase tracking-[0.14em]">{{ $event->category->name_fr ?? 'Événement' }}</p>
+                        <p class="text-orange-300 text-[11px] uppercase tracking-[0.14em]">{{ $event->category->name_fr ?? 'Événement' }}</p>
                         <h3 class="text-white font-semibold mt-1.5 leading-snug">{{ $event->title_fr }}</h3>
                         <p class="text-gray-400 text-sm mt-2">{{ $event->starts_at?->format('d/m/Y H:i') }} · {{ $event->city ?: 'Côte d\'Ivoire' }}</p>
                     </div>
                 </a>
             @empty
-                <div class="col-span-full rounded-xl border border-white/8 bg-[#141410] p-6 text-center text-gray-500">
+                <div class="col-span-full rounded-xl border border-white/8 bg-[#ffffff] p-6 text-center text-gray-500">
                     Aucun événement publié pour le moment.
                 </div>
             @endforelse
@@ -577,27 +577,27 @@
     <div class="flex justify-center mt-10">
         <div class="flex items-center gap-1">
             @if($articles->onFirstPage())
-            <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1c1c16] text-gray-600 text-sm cursor-not-allowed">
+            <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#ffffff] text-gray-600 text-sm cursor-not-allowed">
                 <i class="fas fa-chevron-left text-xs"></i>
             </span>
             @else
-            <a href="{{ $articles->previousPageUrl() }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1c1c16] hover:bg-[#252520] text-gray-300 text-sm transition">
+            <a href="{{ $articles->previousPageUrl() }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#ffffff] hover:bg-[#ffffff] text-gray-300 text-sm transition">
                 <i class="fas fa-chevron-left text-xs"></i>
             </a>
             @endif
 
             @foreach($articles->getUrlRange(max(1, $articles->currentPage()-2), min($articles->lastPage(), $articles->currentPage()+2)) as $page => $url)
-            <a href="{{ $url }}" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm transition {{ $page === $articles->currentPage() ? 'bg-amber-500 text-black font-bold' : 'bg-[#1c1c16] hover:bg-[#252520] text-gray-300' }}">
+            <a href="{{ $url }}" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm transition {{ $page === $articles->currentPage() ? 'bg-orange-500 text-black font-bold' : 'bg-[#ffffff] hover:bg-[#ffffff] text-gray-300' }}">
                 {{ $page }}
             </a>
             @endforeach
 
             @if($articles->hasMorePages())
-            <a href="{{ $articles->nextPageUrl() }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1c1c16] hover:bg-[#252520] text-gray-300 text-sm transition">
+            <a href="{{ $articles->nextPageUrl() }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#ffffff] hover:bg-[#ffffff] text-gray-300 text-sm transition">
                 <i class="fas fa-chevron-right text-xs"></i>
             </a>
             @else
-            <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#1c1c16] text-gray-600 text-sm cursor-not-allowed">
+            <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#ffffff] text-gray-600 text-sm cursor-not-allowed">
                 <i class="fas fa-chevron-right text-xs"></i>
             </span>
             @endif

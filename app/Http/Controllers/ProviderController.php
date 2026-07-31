@@ -70,11 +70,13 @@ class ProviderController extends Controller
         $provider = Provider::with([
             'category', 'tags', 'hours',
             'approvedReviews.user', 'approvedReviews.reply',
-            'media',
+            'media', 'accommodation.media',
         ])
             ->where('slug', $slug)
             ->where('status', 'active')
             ->firstOrFail();
+
+        $accommodation = $provider->accommodation;
 
         $provider->increment('views_count');
 
@@ -113,6 +115,6 @@ class ProviderController extends Controller
             'clean' => $approvedReviews->whereNotNull('rating_clean')->count(),
         ];
 
-        return view('providers.show', compact('provider', 'related', 'canReview', 'ratingBreakdown', 'ratingBreakdownCounts', 'isFavorited'));
+        return view('providers.show', compact('provider', 'accommodation', 'related', 'canReview', 'ratingBreakdown', 'ratingBreakdownCounts', 'isFavorited'));
     }
 }

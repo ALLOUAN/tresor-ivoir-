@@ -4,7 +4,7 @@
         <input type="text" name="bl_provider[]"
                value="{{ $bl['provider_name'] ?? '' }}"
                placeholder="Booking.com"
-               class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
+               class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
         <button type="button" onclick="this.closest('.booking-row').remove()"
                 class="w-8 h-9 rounded-lg bg-slate-700 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
             <i class="fas fa-times text-xs"></i>
@@ -35,7 +35,7 @@
         <div class="flex items-center gap-2.5 pt-4">
             <input type="checkbox" name="bl_official[]"
                    value="{{ $i }}"
-                   class="rounded border-slate-600 bg-slate-800 text-amber-500"
+                   class="rounded border-slate-600 bg-slate-800 text-orange-500"
                    {{ !empty($bl['is_official']) ? 'checked' : '' }}>
             <span class="text-xs text-slate-400">Site officiel de l'établissement</span>
         </div>

@@ -15,10 +15,10 @@
 
 @section('content')
 <div class="max-w-5xl mx-auto">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
         @forelse($notifications as $notification)
             @php $data = $notification->data; @endphp
-            <div class="px-5 py-4 {{ $notification->read_at ? 'opacity-80' : 'bg-amber-900/10' }}">
+            <div class="px-5 py-4 {{ $notification->read_at ? 'opacity-80' : 'bg-orange-900/10' }}">
                 <div class="flex items-start justify-between gap-3">
                     <div>
                         <p class="text-white text-sm font-semibold">{{ $data['title'] ?? 'Notification' }}</p>
@@ -38,7 +38,7 @@
                             <form method="POST" action="{{ route('admin.notifications.read', $notification) }}">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="text-xs px-3 py-1.5 rounded bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30">Marquer lu</button>
+                                <button type="submit" class="text-xs px-3 py-1.5 rounded bg-orange-500/15 hover:bg-orange-500/25 text-orange-300 border border-orange-500/30">Marquer lu</button>
                             </form>
                         @endif
                     </div>

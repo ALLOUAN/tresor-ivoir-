@@ -1,7 +1,6 @@
 <script>
     (function () {
-        if (localStorage.getItem('tiTheme') === 'light') {
-            document.getElementById('html-root')?.classList.remove('dark');
-        }
+        document.getElementById('html-root')?.classList.remove('dark');
+        try { localStorage.removeItem('tiTheme'); } catch (e) {}
     })();
 </script>

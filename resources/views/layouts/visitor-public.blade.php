@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark">
+<html lang="fr" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,8 +22,8 @@
                         plus: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        gold: { 300:'#fcd68a', 400:'#f5b942', 500:'#e8a020', 600:'#c4811a' },
-                        dark: { 600:'#252520', 700:'#1c1c16', 800:'#141410', 900:'#0d0d0b' },
+                        gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
+                        dark: { 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
                     }
                 }
             }
@@ -31,20 +31,20 @@
     </script>
     @stack('styles')
     <style>
-        html:not(.dark) body                    { background-color:#f8f5ee!important; color:#1c1915!important; }
+        html:not(.dark) body                    { background-color:#e9e5d9!important; color:#1c1915!important; }
         html:not(.dark) .text-white             { color:#1c1915!important; }
         html:not(.dark) .text-slate-100         { color:#1c1915!important; }
         html:not(.dark) .text-slate-200         { color:#2d2a23!important; }
         html:not(.dark) .text-slate-300         { color:#44413a!important; }
-        html:not(.dark) .text-slate-400         { color:#6b6860!important; }
-        html:not(.dark) .text-slate-500         { color:#9e9b90!important; }
-        html:not(.dark) .text-slate-600         { color:#7c796f!important; }
-        html:not(.dark) .bg-slate-900           { background-color:#ffffff!important; }
-        html:not(.dark) .bg-slate-800           { background-color:#f4f0e8!important; }
-        html:not(.dark) .bg-slate-700           { background-color:#e8e3da!important; }
-        html:not(.dark) .border-slate-800       { border-color:#e8e3da!important; }
-        html:not(.dark) .border-slate-700       { border-color:#d6d0c5!important; }
-        html:not(.dark) .divide-slate-800>*+*   { border-color:#e8e3da!important; }
+        html:not(.dark) .text-slate-400         { color:#544f47!important; }
+        html:not(.dark) .text-slate-500         { color:#665f52!important; }
+        html:not(.dark) .text-slate-600         { color:#5c574e!important; }
+        html:not(.dark) .bg-green-900           { background-color:#e9e5d9!important; }
+        html:not(.dark) .bg-slate-800           { background-color:#e9e5d9!important; }
+        html:not(.dark) .bg-slate-700           { background-color:#d6cfba!important; }
+        html:not(.dark) .border-slate-800       { border-color:#d6cfba!important; }
+        html:not(.dark) .border-slate-700       { border-color:#c2b89e!important; }
+        html:not(.dark) .divide-slate-800>*+*   { border-color:#d6cfba!important; }
         html:not(.dark) .border-white\/10       { border-color:rgba(0,0,0,.1)!important; }
         html:not(.dark) .border-white\/6        { border-color:rgba(0,0,0,.06)!important; }
         html:not(.dark) .bg-white\/2            { background-color:rgba(0,0,0,.02)!important; }
@@ -55,13 +55,13 @@
         html:not(.dark) .bg-emerald-900\/30     { background-color:rgba(209,250,229,.6)!important; border-color:rgba(16,185,129,.3)!important; }
         html:not(.dark) .bg-rose-900\/30        { background-color:rgba(255,228,230,.6)!important; border-color:rgba(244,63,94,.3)!important; }
         /* Welcome banner on visitor dashboard */
-        html:not(.dark) .from-amber-900\/30     { --tw-gradient-from:rgba(254,243,199,.7)!important; }
-        html:not(.dark) .to-slate-900           { --tw-gradient-to:#ffffff!important; }
+        html:not(.dark) .from-orange-900\/30     { --tw-gradient-from:rgba(254,243,199,.7)!important; }
+        html:not(.dark) .to-green-900           { --tw-gradient-to:#ffffff!important; }
         /* Hover states on cards */
-        html:not(.dark) .hover\:border-amber-600\/50:hover { border-color:rgba(217,119,6,.35)!important; }
+        html:not(.dark) .hover\:border-orange-600\/50:hover { border-color:rgba(224, 110, 14,.35)!important; }
     </style>
 </head>
-<body class="bg-[#0d0d0b] text-white min-h-screen flex flex-col font-sans">
+<body class="bg-[#ffffff] text-white min-h-screen flex flex-col font-sans">
 
     @include('partials.public-top-nav')
 

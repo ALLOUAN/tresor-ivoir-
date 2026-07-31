@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark">
+<html lang="fr" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,8 +20,8 @@
                         sans:  ['Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        gold: { 400: '#f5b942', 500: '#e8a020', 600: '#c4811a' },
-                        dark: { 800: '#141410', 900: '#0d0d0b' },
+                        gold: { 400: '#fa9a3c', 500: '#f2790f', 600: '#d4630a' },
+                        dark: { 800: '#e9e5d9', 900: '#e9e5d9' },
                     }
                 }
             }
@@ -32,7 +32,7 @@
         * { box-sizing: border-box; }
         body {
             background:
-                radial-gradient(900px 500px at 12% 8%, rgba(232,160,32,0.14), transparent 60%),
+                radial-gradient(900px 500px at 12% 8%, rgba(242, 121, 15,0.14), transparent 60%),
                 radial-gradient(700px 420px at 88% 90%, rgba(99,102,241,0.10), transparent 62%),
                 #0a0907;
         }
@@ -44,7 +44,7 @@
             position: absolute;
             inset: -14px;
             border-radius: 28px;
-            background: linear-gradient(135deg, rgba(232,160,32,0.18), rgba(255,255,255,0.03), rgba(232,160,32,0.08));
+            background: linear-gradient(135deg, rgba(242, 121, 15,0.18), rgba(255,255,255,0.03), rgba(242, 121, 15,0.08));
             filter: blur(14px);
             opacity: .45;
             pointer-events: none;
@@ -60,7 +60,7 @@
             max-width: 100%;
             justify-self: stretch;
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(232,160,32,0.12), transparent 58%),
+                radial-gradient(120% 120% at 0% 0%, rgba(242, 121, 15,0.12), transparent 58%),
                 linear-gradient(155deg, rgba(25,22,18,0.9), rgba(12,10,8,0.9));
         }
         .aside-panel::after {
@@ -76,8 +76,8 @@
             display: inline-flex;
             align-items: center;
             gap: .4rem;
-            border: 1px solid rgba(232,160,32,0.3);
-            background: rgba(232,160,32,0.09);
+            border: 1px solid rgba(242, 121, 15,0.3);
+            background: rgba(242, 121, 15,0.09);
             color: #f3d8a0;
             border-radius: 999px;
             padding: .28rem .62rem;
@@ -102,7 +102,7 @@
             position: relative;
             border-radius: .9rem;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(232,160,32,0.55), rgba(255,255,255,0.18), rgba(232,160,32,0.22));
+            background: linear-gradient(135deg, rgba(242, 121, 15,0.55), rgba(255,255,255,0.18), rgba(242, 121, 15,0.22));
             box-shadow: 0 8px 20px rgba(0,0,0,0.35);
         }
         .aside-logo-inner {
@@ -111,7 +111,7 @@
         }
         .aside-title {
             margin: 0;
-            color: #f5b942;
+            color: #fa9a3c;
             font-size: 1.06rem;
             line-height: 1.2;
             font-weight: 700;
@@ -129,7 +129,7 @@
         }
         .aside-summary {
             border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.02);
+            background: rgba(233, 229, 217, 0.02);
             border-radius: .85rem;
             padding: .65rem .8rem;
         }
@@ -138,9 +138,9 @@
             gap: .45rem;
         }
         .account-type-card {
-            border: 1px solid rgba(232,160,32,0.35);
+            border: 1px solid rgba(242, 121, 15,0.35);
             background:
-                radial-gradient(120% 140% at 50% 0%, rgba(232,160,32,0.2), rgba(232,160,32,0.08) 45%, rgba(232,160,32,0.03) 100%);
+                radial-gradient(120% 140% at 50% 0%, rgba(242, 121, 15,0.2), rgba(242, 121, 15,0.08) 45%, rgba(242, 121, 15,0.03) 100%);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 12px 30px rgba(0,0,0,0.32);
         }
         .account-type-kicker {
@@ -148,16 +148,14 @@
             letter-spacing: .22em;
             text-transform: uppercase;
             font-weight: 900;
-            color: #f8cf77;
-            text-shadow: 0 0 16px rgba(232,160,32,0.35);
+            color: #a3450a;
         }
         .account-type-value {
             margin-top: .35rem;
             font-size: clamp(1.8rem, 3vw, 2.35rem);
             line-height: 1.05;
             font-weight: 900;
-            color: #fff;
-            text-shadow: 0 3px 18px rgba(0,0,0,0.35), 0 0 20px rgba(232,160,32,0.18);
+            color: #1c1915;
         }
         .account-type-note {
             margin-top: .4rem;
@@ -166,8 +164,8 @@
             letter-spacing: .03em;
         }
         .stat-chip {
-            border: 1px solid rgba(232,160,32,0.25);
-            background: linear-gradient(135deg, rgba(232,160,32,0.16), rgba(232,160,32,0.06));
+            border: 1px solid rgba(242, 121, 15,0.25);
+            background: linear-gradient(135deg, rgba(242, 121, 15,0.16), rgba(242, 121, 15,0.06));
             color: #f5d28e;
             border-radius: .7rem;
             font-size: .72rem;
@@ -191,13 +189,13 @@
             border: 1px solid rgba(255,255,255,0.12);
         }
         .field-input:focus {
-            border-color: rgba(232,160,32,0.5);
-            box-shadow: 0 0 0 3px rgba(232,160,32,0.12);
+            border-color: rgba(242, 121, 15,0.5);
+            box-shadow: 0 0 0 3px rgba(242, 121, 15,0.12);
         }
         .plan-card input[type="radio"]:checked + label {
-            border-color: rgba(232,160,32,0.62);
-            background: linear-gradient(140deg, rgba(232,160,32,0.18), rgba(232,160,32,0.06));
-            box-shadow: 0 10px 24px rgba(0,0,0,0.34), 0 0 0 1px rgba(232,160,32,0.2) inset;
+            border-color: rgba(242, 121, 15,0.62);
+            background: linear-gradient(140deg, rgba(242, 121, 15,0.18), rgba(242, 121, 15,0.06));
+            box-shadow: 0 10px 24px rgba(0,0,0,0.34), 0 0 0 1px rgba(242, 121, 15,0.2) inset;
         }
         .step-panel {
             transition: opacity .35s ease, transform .35s ease;
@@ -212,30 +210,30 @@
             transform: translateX(0);
         }
         .payment-card {
-            border: 1px solid rgba(232,160,32,0.22);
+            border: 1px solid rgba(242, 121, 15,0.22);
             background:
-                radial-gradient(110% 150% at 0% 0%, rgba(232,160,32,0.12), rgba(232,160,32,0.03) 42%, rgba(12,10,8,0.9) 100%),
+                radial-gradient(110% 150% at 0% 0%, rgba(242, 121, 15,0.12), rgba(242, 121, 15,0.03) 42%, rgba(12,10,8,0.9) 100%),
                 linear-gradient(145deg, rgba(18,16,13,0.9), rgba(11,10,8,0.94));
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
             border-radius: 14px;
             padding: 1.25rem;
         }
         .payment-step-badge {
-            background: linear-gradient(135deg, #f5b942, #e8a020);
+            background: linear-gradient(135deg, #fa9a3c, #f2790f);
             color: #111827;
-            box-shadow: 0 6px 18px rgba(232,160,32,0.28);
+            box-shadow: 0 6px 18px rgba(242, 121, 15,0.28);
         }
         .payment-step-title {
-            color: #f5d28e;
+            color: #a3450a;
         }
         .payment-label {
-            color: #e5e7eb;
+            color: #2d2a23;
         }
         .payment-note {
-            color: #9ca3af;
+            color: #544f47;
         }
         .payment-icon {
-            color: rgba(245,185,66,0.55);
+            color: #a54a0b;
         }
         .payment-field {
             border: 1px solid rgba(255,255,255,0.14);
@@ -247,15 +245,15 @@
             color: #6b7280;
         }
         .payment-field:focus {
-            border-color: rgba(232,160,32,0.5);
-            box-shadow: 0 0 0 3px rgba(232,160,32,0.14);
+            border-color: rgba(242, 121, 15,0.5);
+            box-shadow: 0 0 0 3px rgba(242, 121, 15,0.14);
             outline: none;
         }
         html:not(.dark) body {
             background:
-                radial-gradient(900px 500px at 12% 8%, rgba(232,160,32,0.08), transparent 60%),
+                radial-gradient(900px 500px at 12% 8%, rgba(242, 121, 15,0.08), transparent 60%),
                 radial-gradient(700px 420px at 88% 90%, rgba(99,102,241,0.06), transparent 62%),
-                #f8f5ee;
+                #ffffff;
         }
         html:not(.dark) .glass-panel {
             border-color: rgba(0,0,0,0.1);
@@ -264,12 +262,12 @@
         }
         html:not(.dark) .aside-panel {
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(232,160,32,0.08), transparent 58%),
+                radial-gradient(120% 120% at 0% 0%, rgba(242, 121, 15,0.08), transparent 58%),
                 linear-gradient(155deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98));
         }
         html:not(.dark) .field-input,
         html:not(.dark) .payment-field {
-            background: #ffffff;
+            background:#e9e5d9;
             color: #1c1915;
             border-color: rgba(0,0,0,0.16);
         }
@@ -298,7 +296,7 @@
                                     </div>
                                 @else
                                     <div class="aside-logo-wrap">
-                                        <div class="aside-logo-inner inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600">
+                                        <div class="aside-logo-inner inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600">
                                             <i class="fas fa-gem text-black text-xl"></i>
                                         </div>
                                     </div>
@@ -314,9 +312,9 @@
                             </div>
                         </div>
                         <div class="aside-chip-list">
-                            <p class="stat-chip"><i class="fas fa-check text-amber-300 mr-2"></i>Création rapide</p>
-                            <p class="stat-chip"><i class="fas fa-check text-amber-300 mr-2"></i>Choix du forfait</p>
-                            <p class="stat-chip"><i class="fas fa-check text-amber-300 mr-2"></i>Activation immédiate</p>
+                            <p class="stat-chip"><i class="fas fa-check text-orange-300 mr-2"></i>Création rapide</p>
+                            <p class="stat-chip"><i class="fas fa-check text-orange-300 mr-2"></i>Choix du forfait</p>
+                            <p class="stat-chip"><i class="fas fa-check text-orange-300 mr-2"></i>Activation immédiate</p>
                         </div>
                     </div>
                 </aside>
@@ -325,7 +323,7 @@
                 <p class="text-gray-500 text-sm mb-6">Rejoignez la communauté Trésor Ivoire.</p>
 
             @if(session('info'))
-                <div class="mb-5 p-3 rounded-lg border border-sky-500/30 bg-sky-500/10 text-sky-200 text-sm">{{ session('info') }}</div>
+                <div class="mb-5 p-3 rounded-lg border border-green-500/30 bg-green-500/10 text-green-200 text-sm">{{ session('info') }}</div>
             @endif
 
             {{-- Erreurs globales --}}
@@ -382,7 +380,7 @@
                                                 <span class="block text-xs text-gray-500 truncate">{{ $plan->benefits_text }}</span>
                                             @endif
                                         </span>
-                                        <span class="shrink-0 text-xs font-semibold text-amber-300">
+                                        <span class="shrink-0 text-xs font-semibold text-orange-300">
                                             {{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA/mois
                                         </span>
                                     </label>
@@ -399,7 +397,7 @@
                     <div>
                         <label for="first_name" class="block text-xs font-medium text-gray-400 mb-1.5">Prénom <span class="text-red-400">*</span></label>
                         <div class="relative">
-                            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
+                            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
                             <input id="first_name" name="first_name" type="text" required maxlength="80"
                                    value="{{ old('first_name') }}" autocomplete="given-name" placeholder="Jean"
                                    class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('first_name') border-red-500/60 @enderror">
@@ -409,7 +407,7 @@
                     <div>
                         <label for="last_name" class="block text-xs font-medium text-gray-400 mb-1.5">Nom <span class="text-red-400">*</span></label>
                         <div class="relative">
-                            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
+                            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
                             <input id="last_name" name="last_name" type="text" required maxlength="80"
                                    value="{{ old('last_name') }}" autocomplete="family-name" placeholder="Kouassi"
                                    class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('last_name') border-red-500/60 @enderror">
@@ -423,7 +421,7 @@
                 <div>
                     <label for="email" class="block text-xs font-medium text-gray-400 mb-1.5">Adresse e-mail <span class="text-red-400">*</span></label>
                     <div class="relative">
-                        <i class="fas fa-at absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
+                        <i class="fas fa-at absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
                         <input id="email" name="email" type="email" required maxlength="255"
                                value="{{ old('email') }}" autocomplete="email" placeholder="vous@exemple.ci"
                                class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('email') border-red-500/60 @enderror">
@@ -435,7 +433,7 @@
                 <div>
                     <label for="phone" class="block text-xs font-medium text-gray-400 mb-1.5">Téléphone <span class="text-gray-600">(facultatif)</span></label>
                     <div class="relative">
-                        <i class="fas fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
+                        <i class="fas fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
                         <input id="phone" name="phone" type="tel" maxlength="20"
                                value="{{ old('phone') }}" autocomplete="tel" placeholder="+225 07 00 00 00 00"
                                class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('phone') border-red-500/60 @enderror">
@@ -449,7 +447,7 @@
                 <div>
                     <label for="password" class="block text-xs font-medium text-gray-400 mb-1.5">Mot de passe <span class="text-red-400">*</span></label>
                     <div class="relative">
-                        <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
+                        <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
                         <input id="password" name="password" type="password" required
                                autocomplete="new-password" placeholder="8 caractères minimum"
                                class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('password') border-red-500/60 @enderror">
@@ -461,7 +459,7 @@
                 <div>
                     <label for="password_confirmation" class="block text-xs font-medium text-gray-400 mb-1.5">Confirmer le mot de passe <span class="text-red-400">*</span></label>
                     <div class="relative">
-                        <i class="fas fa-lock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500/40 text-xs"></i>
+                        <i class="fas fa-lock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
                         <input id="password_confirmation" name="password_confirmation" type="password" required
                                autocomplete="new-password" placeholder="Répétez le mot de passe"
                                class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none">
@@ -472,7 +470,7 @@
                 {{-- Submit --}}
                     <button type="button" id="go-to-payment"
                             class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2 mt-2"
-                            style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
+                            style="background: linear-gradient(135deg,#fa9a3c,#f2790f); box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
                         <i class="fas fa-user-plus text-xs"></i>
                         Créer mon compte
                     </button>
@@ -516,7 +514,7 @@
                         </button>
                         <button type="submit"
                                 class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2"
-                                style="background: linear-gradient(135deg,#f5b942,#e8a020); box-shadow: 0 4px 20px rgba(232,160,32,0.3)">
+                                style="background: linear-gradient(135deg,#fa9a3c,#f2790f); box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
                             <i class="fas fa-check-circle text-xs"></i>
                             Confirmer le paiement
                         </button>
@@ -529,7 +527,7 @@
         {{-- Lien connexion --}}
         <p class="text-center text-sm text-gray-600 mt-6">
             Déjà inscrit ?
-            <a href="{{ route('login') }}" class="text-yellow-400 hover:text-yellow-300 font-medium transition">Se connecter</a>
+            <a href="{{ route('login') }}" class="text-orange-400 hover:text-orange-300 font-medium transition">Se connecter</a>
         </p>
         <p class="text-center text-gray-700 text-xs mt-3">
             &copy; {{ date('Y') }} {{ $siteBrand['site_name'] }}

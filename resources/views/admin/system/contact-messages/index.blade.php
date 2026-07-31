@@ -19,32 +19,32 @@
 @endphp
 
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
-    <div class="bg-gradient-to-br from-violet-900/40 to-slate-900 border border-violet-500/30 rounded-xl p-4">
-        <p class="text-violet-300/80 text-xs font-medium">Total</p>
+    <div class="bg-gradient-to-br from-green-900/40 to-green-900 border border-green-500/30 rounded-xl p-4">
+        <p class="text-green-300/80 text-xs font-medium">Total</p>
         <p class="text-white text-2xl font-bold mt-1">{{ number_format($stats['total']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-rose-900/40 to-slate-900 border border-rose-500/30 rounded-xl p-4">
+    <div class="bg-gradient-to-br from-rose-900/40 to-green-900 border border-rose-500/30 rounded-xl p-4">
         <p class="text-rose-300/80 text-xs font-medium">Nouveaux</p>
         <p class="text-rose-200 text-2xl font-bold mt-1">{{ number_format($stats['new']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-amber-900/40 to-slate-900 border border-amber-500/30 rounded-xl p-4">
-        <p class="text-amber-300/80 text-xs font-medium">En cours</p>
-        <p class="text-amber-200 text-2xl font-bold mt-1">{{ number_format($stats['in_progress']) }}</p>
+    <div class="bg-gradient-to-br from-orange-900/40 to-green-900 border border-orange-500/30 rounded-xl p-4">
+        <p class="text-orange-300/80 text-xs font-medium">En cours</p>
+        <p class="text-orange-200 text-2xl font-bold mt-1">{{ number_format($stats['in_progress']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-emerald-900/40 to-slate-900 border border-emerald-500/30 rounded-xl p-4">
+    <div class="bg-gradient-to-br from-emerald-900/40 to-green-900 border border-emerald-500/30 rounded-xl p-4">
         <p class="text-emerald-300/80 text-xs font-medium">Traités</p>
         <p class="text-emerald-200 text-2xl font-bold mt-1">{{ number_format($stats['done']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-sky-900/40 to-slate-900 border border-sky-500/30 rounded-xl p-4 col-span-2 sm:col-span-1 lg:col-span-1">
-        <p class="text-sky-300/80 text-xs font-medium">Ce mois</p>
-        <p class="text-sky-200 text-2xl font-bold mt-1">{{ number_format($stats['this_month']) }}</p>
+    <div class="bg-gradient-to-br from-green-900/40 to-green-900 border border-green-500/30 rounded-xl p-4 col-span-2 sm:col-span-1 lg:col-span-1">
+        <p class="text-green-300/80 text-xs font-medium">Ce mois</p>
+        <p class="text-green-200 text-2xl font-bold mt-1">{{ number_format($stats['this_month']) }}</p>
     </div>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20 mb-6">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20 mb-6">
     <div class="px-5 py-4 border-b border-slate-800 flex items-center gap-3 bg-slate-800/40">
-        <div class="w-10 h-10 rounded-lg bg-amber-600/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-            <i class="fas fa-filter text-amber-300 text-sm"></i>
+        <div class="w-10 h-10 rounded-lg bg-orange-600/20 border border-orange-500/40 flex items-center justify-center shrink-0">
+            <i class="fas fa-filter text-orange-300 text-sm"></i>
         </div>
         <div>
             <h2 class="text-white font-semibold">Filtres de recherche</h2>
@@ -86,7 +86,7 @@
         </div>
         <div class="mt-4 flex flex-wrap items-center gap-2">
             <button type="submit"
-                    class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-violet-600 hover:from-amber-400 hover:to-violet-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+                    class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-400 hover:to-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-filter"></i>
                 Filtrer
             </button>
@@ -99,10 +99,10 @@
     </form>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
     <div class="px-5 py-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <h2 class="text-white font-semibold">Liste des contacts</h2>
-        <span class="text-xs font-semibold text-sky-300 bg-sky-500/15 border border-sky-500/30 px-3 py-1 rounded-full">
+        <span class="text-xs font-semibold text-green-300 bg-green-500/15 border border-green-500/30 px-3 py-1 rounded-full">
             {{ $messages->total() }} résultat(s)
         </span>
     </div>
@@ -142,7 +142,7 @@
                             @if($message->status === \App\Models\ContactMessage::STATUS_NEW)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/35">Nouveau</span>
                             @elseif($message->status === \App\Models\ContactMessage::STATUS_IN_PROGRESS)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-200 border border-amber-500/35">En cours</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-200 border border-orange-500/35">En cours</span>
                             @else
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-500/35">Traité</span>
                             @endif
@@ -152,7 +152,7 @@
                         </td>
                         <td class="px-5 py-3 align-top text-right whitespace-nowrap">
                             <a href="{{ route('admin.administration.contact-messages.show', $message) }}"
-                               class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-sky-500/15 text-sky-400 hover:bg-sky-500/25 border border-sky-500/30 transition mr-1"
+                               class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-green-500/15 text-green-400 hover:bg-green-500/25 border border-green-500/30 transition mr-1"
                                title="Voir">
                                 <i class="fas fa-eye text-xs"></i>
                             </a>

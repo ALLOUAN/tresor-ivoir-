@@ -5,11 +5,11 @@
 
 @section('header-actions')
 <div class="flex items-center gap-2 flex-wrap">
-    <span class="text-xs px-2 py-1 rounded-lg bg-amber-900/40 border border-amber-700/50 text-amber-200">
+    <span class="text-xs px-2 py-1 rounded-lg bg-orange-900/40 border border-orange-700/50 text-orange-200">
         <i class="fas fa-eye mr-1"></i> Aperçu — statut : {{ $event->status }}
     </span>
     <a href="{{ route('editor.events.edit', $event) }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black text-xs font-semibold rounded-lg transition">
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-400 text-black text-xs font-semibold rounded-lg transition">
         <i class="fas fa-pen"></i> Continuer l'édition
     </a>
     @if($event->status === 'published')
@@ -39,7 +39,7 @@
             <span class="text-slate-600"> · </span>{{ $event->city }}
         @endif
     </p>
-    <p class="text-amber-300 text-sm font-semibold">
+    <p class="text-orange-300 text-sm font-semibold">
         <i class="fas fa-ticket mr-1"></i>
         @if($event->is_free || (float) ($event->price ?? 0) <= 0)
             Gratuit
@@ -52,13 +52,13 @@
             <img src="{{ $event->cover_url }}" alt="{{ $event->cover_alt ?? '' }}" class="w-full max-h-[360px] object-cover">
         </figure>
     @endif
-    <div class="prose prose-invert prose-amber max-w-none text-slate-300 leading-relaxed [&_a]:text-amber-400">
+    <div class="prose prose-invert prose-amber max-w-none text-slate-300 leading-relaxed [&_a]:text-orange-400">
         {!! \App\Support\HtmlSanitizer::articleBody($event->description_fr ?? '') !!}
     </div>
     @if($event->ticket_url)
         <p>
             <a href="{{ $event->ticket_url }}" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold rounded-lg transition">
+               class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-400 text-black text-sm font-semibold rounded-lg transition">
                 Billetterie
             </a>
         </p>

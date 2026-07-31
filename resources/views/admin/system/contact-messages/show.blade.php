@@ -15,7 +15,7 @@
 @include('admin.system.partials.administration-settings-tabs', ['active' => 'contact-messages'])
 
 <div class="max-w-3xl space-y-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-black/20">
+    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
         <div class="px-5 py-4 border-b border-slate-800 flex flex-wrap items-start justify-between gap-4">
             <div class="min-w-0">
                 <p class="text-slate-500 text-xs uppercase tracking-wide">Objet</p>
@@ -35,17 +35,17 @@
                 </span>
                 <div class="min-w-0">
                     <p class="text-white font-semibold">{{ $contactMessage->name }}</p>
-                    <a href="mailto:{{ $contactMessage->email }}" class="text-sky-400 hover:text-sky-300 text-sm break-all">{{ $contactMessage->email }}</a>
+                    <a href="mailto:{{ $contactMessage->email }}" class="text-green-400 hover:text-green-300 text-sm break-all">{{ $contactMessage->email }}</a>
                 </div>
             </div>
             <div>
                 <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">Message</p>
-                <div class="rounded-lg border border-slate-800 bg-slate-950/80 px-4 py-3 text-slate-200 text-sm whitespace-pre-wrap break-words">{{ $contactMessage->message }}</div>
+                <div class="rounded-lg border border-slate-800 bg-green-950/80 px-4 py-3 text-slate-200 text-sm whitespace-pre-wrap break-words">{{ $contactMessage->message }}</div>
             </div>
         </div>
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 sm:p-6">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5 sm:p-6">
         <h3 class="text-white font-semibold text-sm mb-4">Statut</h3>
         <form method="POST" action="{{ route('admin.administration.contact-messages.update', $contactMessage) }}" class="flex flex-wrap items-end gap-3">
             @csrf
@@ -55,7 +55,7 @@
                     <option value="{{ $value }}" @selected($contactMessage->status === $value)>{{ $label }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-violet-600 hover:from-amber-400 hover:to-violet-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+            <button type="submit" class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-400 hover:to-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-floppy-disk"></i>
                 Enregistrer
             </button>

@@ -6,25 +6,25 @@
 @section('content')
 <div class="space-y-5">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
             <p class="text-slate-500 text-xs">Total publications</p>
             <p class="text-white text-2xl font-bold mt-1">{{ number_format($totalPublications) }}</p>
         </div>
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
             <p class="text-slate-500 text-xs">Publiées</p>
             <p class="text-emerald-400 text-2xl font-bold mt-1">{{ number_format($publishedCount) }}</p>
         </div>
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
             <p class="text-slate-500 text-xs">Articles / Événements</p>
             <p class="text-white text-2xl font-bold mt-1">{{ number_format($articles->count()) }} / {{ number_format($events->count()) }}</p>
         </div>
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 md:col-span-3">
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-4 md:col-span-3">
             <p class="text-slate-500 text-xs">Photos publiées visibles</p>
-            <p class="text-amber-300 text-2xl font-bold mt-1">{{ number_format($publishedPhotos->count()) }}</p>
+            <p class="text-orange-300 text-2xl font-bold mt-1">{{ number_format($publishedPhotos->count()) }}</p>
         </div>
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-white font-semibold mb-1">Photos publiées</h2>
         <p class="text-slate-400 text-sm mb-4">Photos de votre fiche + couvertures de vos articles et événements.</p>
 
@@ -50,7 +50,7 @@
         @endif
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-white font-semibold">Articles publiés / en brouillon</h2>
         <p class="text-slate-400 text-sm mt-1">Toutes vos publications sponsorisées liées à votre fiche.</p>
 
@@ -72,7 +72,7 @@
                             </span>
                             @if($article->slug_fr)
                                 <a href="{{ route('articles.show', $article->slug_fr) }}" target="_blank"
-                                   class="text-xs text-amber-300 hover:text-amber-200">Voir</a>
+                                   class="text-xs text-orange-300 hover:text-orange-200">Voir</a>
                             @endif
                         </div>
                     </div>
@@ -81,7 +81,7 @@
         @endif
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
         <h2 class="text-white font-semibold mb-1">Événements publiés / en brouillon</h2>
         <p class="text-slate-400 text-sm mb-4">Événements liés à votre établissement.</p>
 
@@ -103,7 +103,7 @@
                             </span>
                             @if($event->slug)
                                 <a href="{{ route('events.show', $event->slug) }}" target="_blank"
-                                   class="text-xs text-amber-300 hover:text-amber-200">Voir</a>
+                                   class="text-xs text-orange-300 hover:text-orange-200">Voir</a>
                             @endif
                         </div>
                     </div>

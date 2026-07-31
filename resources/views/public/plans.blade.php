@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="dark scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,7 @@
     <title>Nos offres — {{ $siteBrand['site_name'] }}</title>
     <meta name="description" content="Choisissez le plan qui correspond à votre activité et boostez votre visibilité sur {{ $siteBrand['site_name'] }}.">
     @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -22,8 +23,8 @@
                         sans:    ['Inter', 'system-ui', 'sans-serif'],
                     },
                     colors: {
-                        gold: { 300:'#fcd68a', 400:'#f5b942', 500:'#e8a020', 600:'#c4811a' },
-                        dark: { 600:'#252520', 700:'#1c1c16', 800:'#141410', 900:'#0d0d0b' },
+                        gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
+                        dark: { 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
                     }
                 }
             }
@@ -32,35 +33,35 @@
     <style>
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0d0d0b; }
-        ::-webkit-scrollbar-thumb { background: #e8a020; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background:#e9e5d9; }
+        ::-webkit-scrollbar-thumb { background: #f2790f; border-radius: 3px; }
         .plan-card { transition: transform .3s ease, box-shadow .3s ease; }
         .plan-card:hover { transform: translateY(-6px); }
-        .plan-popular { box-shadow: 0 0 0 2px #e8a020, 0 20px 60px rgba(232,160,32,0.15); }
+        .plan-popular { box-shadow: 0 0 0 2px #f2790f, 0 20px 60px rgba(242, 121, 15,0.15); }
         .toggle-btn { transition: all .25s ease; }
-        .toggle-btn.active { background: #e8a020; color: #0d0d0b; }
+        .toggle-btn.active { background: #f2790f; color: #ffffff; }
         .price-monthly, .price-yearly { transition: opacity .2s ease; }
-        .feature-check { color: #e8a020; }
+        .feature-check { color: #f2790f; }
         .feature-cross { color: #4b5563; }
     </style>
 </head>
 <body class="bg-dark-900 text-white antialiased font-sans">
 
 @if(session('info'))
-<div class="fixed top-16 left-0 right-0 z-40 px-4 py-2 text-center text-sm bg-sky-900/90 text-sky-100 border-b border-sky-700/50">{{ session('info') }}</div>
+<div class="fixed top-16 left-0 right-0 z-40 px-4 py-2 text-center text-sm bg-green-900/90 text-green-100 border-b border-green-700/50">{{ session('info') }}</div>
 @endif
 @if(session('error'))
 <div class="fixed top-16 left-0 right-0 z-40 px-4 py-2 text-center text-sm bg-red-900/90 text-red-100 border-b border-red-700/50">{{ session('error') }}</div>
 @endif
 
 {{-- NAV MINIMALISTE --}}
-<nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/5" style="background:rgba(13,13,11,0.95);backdrop-filter:blur(12px)">
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/5" style="background:rgba(233, 229, 217, 0.95);backdrop-filter:blur(12px)">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a href="{{ route('home') }}" class="flex items-center gap-2.5">
             @if(!empty($siteBrand['logo_url']))
                 <img src="{{ $siteBrand['logo_url'] }}" alt="" class="h-8 w-auto">
             @else
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
                     <i class="fas fa-gem text-black text-xs"></i>
                 </div>
             @endif
@@ -68,15 +69,15 @@
         </a>
         <div class="flex items-center gap-3">
             <a href="{{ route('login') }}" class="text-sm text-gray-400 hover:text-white transition px-3 py-1.5">Connexion</a>
-            <a href="{{ route('register') }}" class="text-sm font-semibold text-dark-900 px-4 py-2 rounded-lg" style="background:#e8a020">Créer un compte</a>
+            <a href="{{ route('register') }}" class="text-sm font-semibold text-dark-900 px-4 py-2 rounded-lg" style="background:#f2790f">Créer un compte</a>
         </div>
     </div>
 </nav>
 
 {{-- HERO --}}
 <section class="pt-32 pb-16 text-center relative overflow-hidden">
-    <div class="absolute inset-0 opacity-5" style="background-image:repeating-linear-gradient(45deg,#e8a020 0,#e8a020 1px,transparent 0,transparent 50%);background-size:20px 20px"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(232,160,32,0.07),transparent 70%)"></div>
+    <div class="absolute inset-0 opacity-5" style="background-image:repeating-linear-gradient(45deg,#f2790f 0,#f2790f 1px,transparent 0,transparent 50%);background-size:20px 20px"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(242, 121, 15,0.07),transparent 70%)"></div>
     <div class="relative max-w-2xl mx-auto px-4">
         <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Visibilité & croissance</p>
         <h1 class="font-serif text-4xl sm:text-5xl font-bold mb-4 leading-tight">Choisissez votre offre</h1>
@@ -115,8 +116,8 @@
         @php
             $isPopular  = $plan->code === 'silver' || ($i === 1 && $plans->count() >= 2);
             $icons      = ['fa-seedling','fa-star','fa-gem'];
-            $iconColors = ['text-emerald-400','text-gold-400','text-violet-400'];
-            $badgeBg    = ['bg-emerald-500/10 border-emerald-500/20 text-emerald-300','bg-gold-500/10 border-gold-500/20 text-gold-300','bg-violet-500/10 border-violet-500/20 text-violet-300'];
+            $iconColors = ['text-emerald-400','text-gold-400','text-green-400'];
+            $badgeBg    = ['bg-emerald-500/10 border-emerald-500/20 text-emerald-300','bg-gold-500/10 border-gold-500/20 text-gold-300','bg-green-500/10 border-green-500/20 text-green-300'];
             $icon       = $icons[$i % 3];
             $iconColor  = $iconColors[$i % 3];
             $badge      = $badgeBg[$i % 3];
@@ -203,7 +204,7 @@
                {{ $isPopular
                    ? 'text-dark-900 hover:opacity-90'
                    : 'border border-gold-500/30 text-gold-300 hover:border-gold-400/60 hover:bg-gold-500/5' }}"
-               @if($isPopular) style="background:linear-gradient(135deg,#f5b942,#e8a020)" @endif>
+               @if($isPopular) style="background:linear-gradient(135deg,#fa9a3c,#f2790f)" @endif>
                 @guest Choisir ce plan @else Souscrire maintenant @endguest
                 <i class="fas fa-arrow-right text-xs ml-1"></i>
             </a>

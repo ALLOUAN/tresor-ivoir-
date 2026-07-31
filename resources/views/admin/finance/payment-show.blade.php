@@ -4,10 +4,10 @@
 @section('page-title', 'Détail de transaction')
 
 @section('content')
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+<div class="bg-green-900 border border-slate-800 rounded-xl p-5">
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-white font-semibold">Transaction {{ $payment->gateway_txn_id ?: '#'.$payment->id }}</h2>
-        <a href="{{ route('admin.payments.index') }}" class="text-amber-400 text-sm">Retour aux paiements</a>
+        <a href="{{ route('admin.payments.index') }}" class="text-orange-400 text-sm">Retour aux paiements</a>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
         <div class="bg-slate-800 rounded-lg p-4">

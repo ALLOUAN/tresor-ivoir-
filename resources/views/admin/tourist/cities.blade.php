@@ -9,7 +9,7 @@
     <i class="fas fa-eye"></i> Voir le site
 </a>
 <button onclick="openCityModal()"
-    class="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs rounded-lg transition">
+    class="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">
     <i class="fas fa-circle-plus"></i> Nouvelle ville
 </button>
 @endsection
@@ -23,9 +23,9 @@
     @foreach([
         ['fas fa-city',       'text-slate-300',   $counts['total'],    'Total'],
         ['fas fa-circle-check','text-emerald-400', $counts['active'],   'Actives'],
-        ['fas fa-star',        'text-amber-400',   $counts['featured'], 'En vedette'],
+        ['fas fa-star',        'text-orange-400',   $counts['featured'], 'En vedette'],
     ] as [$icon, $color, $val, $lbl])
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
         <i class="{{ $icon }} {{ $color }} text-sm mb-2 block"></i>
         <p class="text-2xl font-bold text-white">{{ $val }}</p>
         <p class="text-slate-500 text-xs mt-0.5">{{ $lbl }}</p>
@@ -36,7 +36,7 @@
 {{-- Search --}}
 <form method="GET" action="{{ route('admin.tourist.cities.index') }}" class="mb-5 flex gap-2">
     <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher une ville…"
-        class="flex-1 bg-slate-900 border border-slate-800 focus:border-amber-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+        class="flex-1 bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
     <button class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
         <i class="fas fa-search"></i>
     </button>
@@ -50,7 +50,7 @@
 @endif
 
 {{-- Table --}}
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
@@ -77,7 +77,7 @@
                             <div>
                                 <p class="text-white font-medium">{{ $city->name }}</p>
                                 @if($city->is_featured)
-                                <span class="text-amber-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>En vedette</span>
+                                <span class="text-orange-400 text-[10px]"><i class="fas fa-star mr-0.5"></i>En vedette</span>
                                 @endif
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                         <span class="text-slate-600">{{ $city->region_administrative ?? '' }}</span>
                     </td>
                     <td class="px-5 py-4">
-                        <span class="text-amber-400 font-semibold">{{ $city->sites_count }}</span>
+                        <span class="text-orange-400 font-semibold">{{ $city->sites_count }}</span>
                         <span class="text-slate-600 text-xs ml-1">site(s)</span>
                     </td>
                     <td class="px-5 py-4">
@@ -101,9 +101,9 @@
                             {{-- Featured toggle --}}
                             <form method="POST" action="{{ route('admin.tourist.cities.featured', $city) }}" class="inline">
                                 @csrf @method('PATCH')
-                                <button class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition"
+                                <button class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition"
                                     title="{{ $city->is_featured ? 'Retirer vedette' : 'Mettre en vedette' }}">
-                                    <i class="fas fa-star text-xs {{ $city->is_featured ? 'text-amber-400' : '' }}"></i>
+                                    <i class="fas fa-star text-xs {{ $city->is_featured ? 'text-orange-400' : '' }}"></i>
                                 </button>
                             </form>
                             {{-- Active toggle --}}
@@ -116,7 +116,7 @@
                             </form>
                             {{-- Edit --}}
                             <button onclick='openCityModal(@json($city))'
-                                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-amber-900/40 flex items-center justify-center text-slate-400 hover:text-amber-300 transition" title="Modifier">
+                                class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Modifier">
                                 <i class="fas fa-pen text-xs"></i>
                             </button>
                             {{-- Delete --}}
@@ -158,8 +158,8 @@
 
 {{-- Modal Créer / Modifier Ville --}}
 <div id="cityModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCityModal()"></div>
-    <div class="relative bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="absolute inset-0 bg-green-950/70 backdrop-blur-sm" onclick="closeCityModal()"></div>
+    <div class="relative bg-green-900 border border-slate-700 rounded-2xl p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
         <h3 id="cityModalTitle" class="text-white font-semibold mb-5">Nouvelle ville</h3>
         <form id="cityForm" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @csrf
@@ -168,19 +168,19 @@
             <div>
                 <label class="block text-xs text-slate-400 mb-1">Nom de la ville <span class="text-red-400">*</span></label>
                 <input type="text" name="name" id="city_name" required maxlength="100"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
             </div>
 
             <div>
                 <label class="block text-xs text-slate-400 mb-1">District</label>
                 <input type="text" name="district" id="city_district" maxlength="100"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Région administrative</label>
                 <input type="text" name="region_administrative" id="city_region" maxlength="100"
-                    class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                    class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
             </div>
 
             <div>
@@ -198,7 +198,7 @@
             <div class="md:col-span-2">
                 <div class="flex items-center justify-between mb-2">
                     <label class="text-xs text-slate-400">
-                        <i class="fas fa-panorama text-amber-400/70 mr-1"></i>
+                        <i class="fas fa-panorama text-orange-400/70 mr-1"></i>
                         Bannière principale <span class="text-slate-600">(haut de la page ville)</span>
                     </label>
                     {{-- Toggle URL / Upload --}}
@@ -221,13 +221,13 @@
                     <input type="url" name="cover_image" id="city_cover" maxlength="500"
                         placeholder="https://… (URL de la bannière)"
                         oninput="previewCityBanner(this.value)"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                 </div>
 
                 {{-- Mode Upload --}}
                 <div id="cover_file_section" class="hidden">
-                    <label class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-amber-500/50 rounded-xl p-5 cursor-pointer transition group">
-                        <i class="fas fa-cloud-arrow-up text-2xl text-slate-600 group-hover:text-amber-400/70 mb-2 transition"></i>
+                    <label class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-orange-500/50 rounded-xl p-5 cursor-pointer transition group">
+                        <i class="fas fa-cloud-arrow-up text-2xl text-slate-600 group-hover:text-orange-400/70 mb-2 transition"></i>
                         <span class="text-slate-500 text-xs group-hover:text-slate-300 transition">Cliquez pour choisir ou glissez une image</span>
                         <span class="text-slate-700 text-[10px] mt-1">JPG, PNG, WebP — max 5 Mo</span>
                         <input type="file" name="cover_image_file" id="city_cover_file"
@@ -240,11 +240,11 @@
                 {{-- Aperçu bannière --}}
                 <div id="city_banner_preview" class="hidden mt-2 w-full h-36 rounded-xl overflow-hidden border border-slate-700 relative bg-slate-800">
                     <img id="city_banner_img" src="" alt="Aperçu bannière" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-end p-3">
+                    <div class="absolute inset-0 bg-linear-to-t from-green-950/70 to-transparent flex items-end p-3">
                         <span id="city_banner_name_preview" class="text-white font-serif text-lg font-bold drop-shadow"></span>
                     </div>
                     <button type="button" onclick="clearCityBanner()"
-                        class="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 hover:bg-red-600 text-white flex items-center justify-center transition text-xs">
+                        class="absolute top-2 right-2 w-6 h-6 rounded-full bg-green-950/60 hover:bg-red-600 text-white flex items-center justify-center transition text-xs">
                         <i class="fas fa-xmark"></i>
                     </button>
                 </div>
@@ -258,7 +258,7 @@
             <div class="md:col-span-2">
                 <div class="flex items-center justify-between mb-2">
                     <label class="text-xs text-slate-400">
-                        <i class="fas fa-image text-amber-400/70 mr-1"></i>
+                        <i class="fas fa-image text-orange-400/70 mr-1"></i>
                         Miniature <span class="text-slate-600">(vignette dans la liste des villes)</span>
                     </label>
                     <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-0.5">
@@ -287,12 +287,12 @@
                             <input type="url" name="thumbnail" id="city_thumbnail" maxlength="500"
                                 placeholder="https://… (URL de la miniature)"
                                 oninput="previewCityThumb(this.value)"
-                                class="w-full bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                                class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                         </div>
                         {{-- Mode Upload --}}
                         <div id="thumb_file_section" class="hidden">
-                            <label class="flex items-center gap-2 border border-dashed border-slate-700 hover:border-amber-500/50 rounded-lg px-3 py-2.5 cursor-pointer transition group">
-                                <i class="fas fa-cloud-arrow-up text-slate-600 group-hover:text-amber-400/70 transition"></i>
+                            <label class="flex items-center gap-2 border border-dashed border-slate-700 hover:border-orange-500/50 rounded-lg px-3 py-2.5 cursor-pointer transition group">
+                                <i class="fas fa-cloud-arrow-up text-slate-600 group-hover:text-orange-400/70 transition"></i>
                                 <span class="text-slate-500 text-xs group-hover:text-slate-300 transition">Choisir une miniature</span>
                                 <input type="file" name="thumbnail_file" id="city_thumb_file"
                                     accept="image/jpeg,image/png,image/webp,image/jpg"
@@ -312,17 +312,17 @@
 
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">
-                    <i class="fas fa-globe text-amber-400/70 mr-1"></i>
+                    <i class="fas fa-globe text-orange-400/70 mr-1"></i>
                     Site web officiel
                 </label>
                 <div class="flex gap-2 items-center">
                     <input type="url" name="website" id="city_website" maxlength="300"
                         placeholder="https://…"
                         oninput="toggleCityWebsiteLink(this.value)"
-                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-amber-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+                        class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
                     <a id="city_website_link" href="#" target="_blank" rel="noopener"
                         style="display:none"
-                        class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 hover:bg-amber-500/20 border border-slate-700 hover:border-amber-500/40 items-center justify-center text-slate-400 hover:text-amber-400 transition"
+                        class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 hover:bg-orange-500/20 border border-slate-700 hover:border-orange-500/40 items-center justify-center text-slate-400 hover:text-orange-400 transition"
                         title="Visiter le site">
                         <i class="fas fa-arrow-up-right-from-square text-xs"></i>
                     </a>
@@ -338,12 +338,12 @@
             <div class="flex items-end gap-5 pb-1">
                 <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                     <input type="checkbox" name="is_active" id="city_is_active" value="1" checked
-                        class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                        class="rounded border-slate-600 bg-slate-800 text-orange-500">
                     Active
                 </label>
                 <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                     <input type="checkbox" name="is_featured" id="city_is_featured" value="1"
-                        class="rounded border-slate-600 bg-slate-800 text-amber-500">
+                        class="rounded border-slate-600 bg-slate-800 text-orange-500">
                     En vedette
                 </label>
             </div>
@@ -352,7 +352,7 @@
                 <button type="button" onclick="closeCityModal()"
                     class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded-lg transition">Annuler</button>
                 <button type="submit"
-                    class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black text-sm font-semibold rounded-lg transition">Enregistrer</button>
+                    class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black text-sm font-semibold rounded-lg transition">Enregistrer</button>
             </div>
         </form>
     </div>
