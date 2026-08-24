@@ -118,7 +118,7 @@
                     <div class="flex-1 space-y-2">
                         {{-- Mode URL --}}
                         <div id="site_thumb_url_section">
-                            <input type="url" name="thumbnail"
+                            <input type="text" name="thumbnail"
                                 id="site_thumbnail"
                                 value="{{ old('thumbnail', $site->thumbnail ?? '') }}"
                                 maxlength="500"

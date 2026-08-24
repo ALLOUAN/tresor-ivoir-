@@ -283,7 +283,7 @@
                 </div>
                 <div class="md:col-span-2">
                     <label class="text-xs text-slate-400 mb-1 block">Image bannière (URL)</label>
-                    <input type="url" name="cover_image" maxlength="500"
+                    <input type="text" name="cover_image" maxlength="500"
                         class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                 </div>
                 <div class="md:col-span-2 flex items-center gap-4">

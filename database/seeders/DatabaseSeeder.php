@@ -39,6 +39,9 @@ class DatabaseSeeder extends Seeder
 
             // Pages centre d'information (légal, FAQ, etc.)
             InformationPageSeeder::class,
+
+            // Contenu du site public (bandeaux d'annonce, etc.)
+            FlashInfoSeeder::class,
         ]);
     }
 }

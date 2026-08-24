@@ -201,7 +201,7 @@
         } elseif ($role === 'provider') {
             /** @var \App\Models\User $authUser */
             $authUser = auth()->user();
-            $provider = $authUser->providers()->first();
+            $provider = $authUser->providers()->with('category.parent')->first();
             if ($provider) {
                 $sidebarMessagingUnreadCount = \App\Models\ProviderConversation::query()
                     ->where('provider_id', $provider->id)
@@ -209,6 +209,11 @@
                         ->whereNull('read_at')
                         ->where('sender_id', '!=', auth()->id()))
                     ->count();
+
+                $providerCategoryRootSlug = $provider->category?->parent_id
+                    ? $provider->category?->parent?->slug
+                    : $provider->category?->slug;
+                $providerIsAccommodationCategory = $providerCategoryRootSlug === 'hotels';
             }
         }
     @endphp
@@ -316,7 +321,7 @@
                     <span>Maintenance</span>
                 </a>
                 <a href="{{ route('admin.administration.appearance') }}"
-                   class="nav-row {{ request()->routeIs('admin.administration.appearance', 'admin.administration.social', 'admin.administration.media') ? 'is-active' : '' }}">
+                   class="nav-row {{ request()->routeIs('admin.administration.appearance', 'admin.administration.flash-info', 'admin.administration.social', 'admin.administration.media') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-palette"></i></span>
                     <span>Apparence</span>
                 </a>
@@ -387,6 +392,16 @@
                     <span class="nav-row-icon"><i class="fas fa-hotel"></i></span>
                     <span>Hébergements</span>
                 </a>
+                <a href="{{ route('admin.prestations.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.prestations.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-concierge-bell"></i></span>
+                    <span>Nos Prestations</span>
+                </a>
+                <a href="{{ route('admin.homepage-bubbles.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.homepage-bubbles.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-circle-dot"></i></span>
+                    <span>Bulles interactives</span>
+                </a>
                 <a href="{{ route('admin.reservations.index') }}"
                    class="nav-row {{ request()->routeIs('admin.reservations.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-calendar-check"></i></span>
@@ -441,6 +456,16 @@
                    class="sidebar-link {{ request()->routeIs('provider.profile.*') ? 'active' : '' }}">
                     <i class="fas fa-store w-4 text-center"></i> Ma fiche
                 </a>
+                @if($providerIsAccommodationCategory ?? false)
+                    <a href="{{ route('provider.accommodation.edit') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.accommodation.*') ? 'active' : '' }}">
+                        <i class="fas fa-bed w-4 text-center"></i> Mon hébergement
+                    </a>
+                    <a href="{{ route('provider.reservations.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.reservations.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check w-4 text-center"></i> Réservations
+                    </a>
+                @endif
                 <a href="{{ route('provider.reviews.index') }}"
                    class="sidebar-link {{ request()->routeIs('provider.reviews.*') ? 'active' : '' }}">
                     <i class="fas fa-star w-4 text-center"></i> Mes avis

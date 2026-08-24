@@ -286,7 +286,7 @@
 
             <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">URL image de couverture</label>
-                <input type="url" name="cover_url" id="edit_cover_url"
+                <input type="text" name="cover_url" id="edit_cover_url"
                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
             </div>
 

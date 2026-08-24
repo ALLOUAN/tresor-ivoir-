@@ -38,6 +38,7 @@ class ReservationController extends Controller
         Reservation::query()->create([
             'accommodation_id' => $accommodation->id,
             'accommodation_name' => $accommodation->name,
+            'provider_id' => $accommodation->provider_id,
             'room_name' => $validated['room_name'],
             'room_price_xof' => $validated['room_price_xof'] ?? null,
             'check_in' => $validated['check_in'],

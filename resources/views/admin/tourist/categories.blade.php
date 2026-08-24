@@ -24,7 +24,15 @@
 {{-- Grid --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     @forelse($categories as $cat)
-    <div class="bg-green-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition group">
+    <div class="bg-green-900 border border-slate-800 hover:border-slate-700 rounded-xl overflow-hidden transition group">
+        @if($cat->hero_image_url)
+            <img src="{{ $cat->hero_image_url }}" alt="" class="w-full h-24 object-cover">
+        @else
+            <div class="w-full h-24 bg-slate-800/60 flex items-center justify-center text-slate-700">
+                <i class="fas fa-image text-xl"></i>
+            </div>
+        @endif
+        <div class="p-5">
         <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
@@ -57,6 +65,7 @@
                 </button>
             </form>
         </div>
+        </div>
     </div>
     @empty
     <div class="col-span-3 text-center py-16 text-slate-500">
@@ -71,7 +80,7 @@
     <div class="absolute inset-0 bg-green-950/70 backdrop-blur-sm" onclick="closeCatModal()"></div>
     <div class="relative bg-green-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg shadow-2xl">
         <h3 id="catModalTitle" class="text-white font-semibold mb-5">Nouvelle catégorie</h3>
-        <form id="catForm" method="POST" class="space-y-4">
+        <form id="catForm" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <div id="catMethodField"></div>
 
@@ -79,6 +88,17 @@
                 <label class="block text-xs text-slate-400 mb-1">Nom <span class="text-red-400">*</span></label>
                 <input type="text" name="name" id="cat_name" required maxlength="100"
                     class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
+            </div>
+
+            <div>
+                <label class="block text-xs text-slate-400 mb-2">Image hero (bannière de la page catégorie)</label>
+                <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-orange-500/50 rounded-xl p-3 cursor-pointer transition group">
+                    <i class="fas fa-cloud-arrow-up text-lg text-slate-600 group-hover:text-orange-400/70 mb-1 transition"></i>
+                    <span class="text-slate-500 text-[11px] group-hover:text-slate-300 transition">JPG, PNG, WebP — 5 Mo max</span>
+                    <input type="file" name="hero_image_file" id="cat_hero_image_file" accept="image/jpeg,image/png,image/webp" class="hidden"
+                           onchange="const r=new FileReader();r.onload=e=>{document.getElementById('cat_hero_preview').src=e.target.result;document.getElementById('cat_hero_preview').classList.remove('hidden');};r.readAsDataURL(this.files[0])">
+                </label>
+                <img id="cat_hero_preview" src="" class="mt-2 w-full h-24 object-cover rounded-lg border border-slate-700 hidden">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -143,6 +163,14 @@ function openCatModal(cat = null) {
         document.getElementById('cat_description').value = cat.description || '';
         document.getElementById('cat_sort_order').value  = cat.sort_order || 0;
         document.getElementById('cat_is_active').checked = cat.is_active == 1;
+        const preview = document.getElementById('cat_hero_preview');
+        if (cat.hero_image_url) {
+            preview.src = cat.hero_image_url;
+            preview.classList.remove('hidden');
+        } else {
+            preview.src = '';
+            preview.classList.add('hidden');
+        }
     } else {
         title.textContent = 'Nouvelle catégorie';
         form.action = catStoreUrl;
@@ -150,6 +178,9 @@ function openCatModal(cat = null) {
         form.reset();
         document.getElementById('cat_is_active').checked = true;
         document.getElementById('cat_color').value = '#f2790f';
+        const preview = document.getElementById('cat_hero_preview');
+        preview.src = '';
+        preview.classList.add('hidden');
     }
     const modal = document.getElementById('catModal');
     modal.classList.remove('hidden');

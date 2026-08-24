@@ -188,6 +188,10 @@ class BillingController extends Controller
 
     public function confirmation(Payment $payment): View
     {
+        $provider = Provider::where('user_id', Auth::id())->firstOrFail();
+
+        abort_unless((int) $payment->provider_id === (int) $provider->id, 403);
+
         $payment->load(['subscription.plan', 'invoice', 'provider']);
 
         return view('billing.confirmation', compact('payment'));

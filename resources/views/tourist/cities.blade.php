@@ -16,21 +16,38 @@
         .city-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,.4); }
         html:not(.dark) body { background:#e9e5d9; color: #1c1915; }
         html:not(.dark) .city-card { background:#f0ece1 !important; border-color: rgba(0,0,0,.12) !important; box-shadow: 0 8px 20px rgba(0,0,0,.05); }
+        /* Image de fond configurable (back-office) du bandeau de la page Tourisme. */
+        .tourist-hero {
+            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--tourist-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
 
 @include('partials.public-top-nav')
 
+@php
+    $touristHeroImage = \Illuminate\Support\Facades\Schema::hasTable('tourist_hero_images')
+        ? \App\Models\TouristHeroImage::query()->find(1)
+        : null;
+@endphp
+
 {{-- Hero --}}
-<section class="relative py-20 overflow-hidden">
+<section class="tourist-hero relative py-20 overflow-hidden"
+    @if($touristHeroImage && $touristHeroImage->isVisible())
+        style="--tourist-hero-bg-image: url('{{ $touristHeroImage->image_url }}');"
+    @endif
+>
     <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
     <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
         <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">Découverte</p>
         <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
             Régions Touristiques
         </h1>
-        <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+        <p class="text-[#1c1915] text-xl max-w-2xl mx-auto">
             Explorez les villes et leurs merveilles touristiques à travers toute la Côte d'Ivoire.
         </p>
     </div>

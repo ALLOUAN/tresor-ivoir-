@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AppearanceSlide;
 use App\Models\Article;
+use App\Models\FlashInfo;
 use App\Models\SiteContactSetting;
 use App\Models\SiteMediaItem;
 use App\Models\SiteSetting;
@@ -509,6 +510,73 @@ class AdministrationController extends Controller
         $path = $file->store($directory, 'public');
 
         return '/storage/'.$path;
+    }
+
+    public function flashInfo(): View
+    {
+        $flashInfos = FlashInfo::query()
+            ->orderBy('display_order')
+            ->orderByDesc('id')
+            ->paginate(20);
+
+        return view('admin.system.flash-info', compact('flashInfos'));
+    }
+
+    public function storeFlashInfo(Request $request): RedirectResponse
+    {
+        $data = $this->validateFlashInfo($request);
+
+        FlashInfo::create($data);
+
+        return back()->with('success', 'Message flash info ajouté.');
+    }
+
+    public function updateFlashInfo(Request $request, FlashInfo $flashInfo): RedirectResponse
+    {
+        $data = $this->validateFlashInfo($request);
+
+        $flashInfo->update($data);
+
+        return back()->with('success', 'Message flash info modifié.');
+    }
+
+    public function toggleFlashInfo(FlashInfo $flashInfo): RedirectResponse
+    {
+        $flashInfo->update(['is_active' => ! $flashInfo->is_active]);
+
+        return back()->with('success', $flashInfo->is_active ? 'Message activé.' : 'Message désactivé.');
+    }
+
+    public function destroyFlashInfo(FlashInfo $flashInfo): RedirectResponse
+    {
+        $flashInfo->delete();
+
+        return back()->with('success', 'Message flash info supprimé.');
+    }
+
+    private function validateFlashInfo(Request $request): array
+    {
+        $validated = $request->validate([
+            'message' => ['required', 'string', 'max:500'],
+            'link_url' => ['nullable', 'url', 'max:500'],
+            'link_label' => ['nullable', 'string', 'max:120'],
+            'type' => ['required', Rule::in(FlashInfo::TYPES)],
+            'is_active' => ['nullable', 'boolean'],
+            'is_dismissible' => ['nullable', 'boolean'],
+            'display_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
+            'starts_at' => ['nullable', 'date'],
+            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+        ]);
+
+        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['is_dismissible'] = $request->boolean('is_dismissible', true);
+        $validated['display_order'] = (int) ($validated['display_order'] ?? 0);
+        $validated['link_url'] = $validated['link_url'] ?? null;
+        $validated['link_label'] = $validated['link_label'] ?? null;
+        $validated['starts_at'] = $validated['starts_at'] ?? null;
+        $validated['ends_at'] = $validated['ends_at'] ?? null;
+
+        return $validated;
     }
 
     public function contacts(): View

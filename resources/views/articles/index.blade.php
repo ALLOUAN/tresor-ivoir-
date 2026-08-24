@@ -80,11 +80,24 @@
         .articles-hero {
             position: relative;
             border-bottom: 1px solid rgba(255,255,255,0.08);
-            background:
+            background-image:
                 linear-gradient(130deg, rgba(255, 255, 255,0.92), rgba(255, 255, 255,0.97)),
                 radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.14), transparent 55%),
-                radial-gradient(90% 80% at 100% 10%, rgba(120,90,40,0.08), transparent 50%);
+                radial-gradient(90% 80% at 100% 10%, rgba(120,90,40,0.08), transparent 50%),
+                var(--articles-hero-bg-image, none);
+            background-size: auto, auto, auto, cover;
+            background-position: 0 0, 0 0, 0 0, center;
+            background-repeat: repeat, no-repeat, no-repeat, no-repeat;
             overflow: hidden;
+        }
+        /* Image de fond configurable (back-office) : voile blanchi allégé pour
+           laisser l'image transparaître (même traitement que les autres pages). */
+        .articles-hero[style*="--articles-hero-bg-image"] {
+            background-image:
+                linear-gradient(130deg, rgba(255, 255, 255,0.55), rgba(255, 255, 255,0.55)),
+                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.14), transparent 55%),
+                radial-gradient(90% 80% at 100% 10%, rgba(120,90,40,0.08), transparent 50%),
+                var(--articles-hero-bg-image, none);
         }
         .articles-hero::before {
             content: '';
@@ -188,6 +201,30 @@
         .categories-strip::-webkit-scrollbar {
             display: none;
         }
+        .categories-strip {
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+                    mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+        }
+        .categories-nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+            width: 34px; height: 34px;
+            border-radius: 999px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(28,25,21,0.9);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+            cursor: pointer;
+            font-size: 12px;
+            transition: background .2s ease, transform .2s ease, opacity .2s ease;
+        }
+        .categories-nav-arrow:hover { background: #f2790f; transform: translateY(-50%) scale(1.06); }
+        .categories-nav-arrow--left { left: -4px; }
+        .categories-nav-arrow--right { right: -4px; }
+        .categories-nav-arrow[hidden] { display: none; }
         .footer-ultra {
             position: relative;
             background-color:#e9e5d9;
@@ -329,9 +366,19 @@
         }
         html:not(.dark) .articles-hero {
             border-bottom-color: rgba(0,0,0,0.08);
-            background:
+            background-image:
                 linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.98)),
-                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.10), transparent 55%);
+                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.10), transparent 55%),
+                var(--articles-hero-bg-image, none);
+            background-size: auto, auto, cover;
+            background-position: 0 0, 0 0, center;
+            background-repeat: repeat, no-repeat, no-repeat;
+        }
+        html:not(.dark) .articles-hero[style*="--articles-hero-bg-image"] {
+            background-image:
+                linear-gradient(130deg, rgba(255,255,255,0.55), rgba(248,244,236,0.55)),
+                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.10), transparent 55%),
+                var(--articles-hero-bg-image, none);
         }
         html:not(.dark) .articles-search-shell {
             border-color: rgba(0,0,0,0.08);
@@ -351,6 +398,13 @@
             background: rgba(233, 229, 217, 0.92);
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
+        html:not(.dark) .categories-nav-arrow {
+            background: rgba(255,255,255,0.96);
+            color: #1c1915;
+            border-color: rgba(0,0,0,0.1);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        }
+        html:not(.dark) .categories-nav-arrow:hover { background: #f2790f; color: #fff; }
         html:not(.dark) .category-chip {
             border-color: rgba(0,0,0,0.12);
             background: rgba(233, 229, 217, 0.9);
@@ -385,35 +439,53 @@
 <body class="bg-[#ffffff] text-white min-h-screen">
 @include('partials.public-top-nav')
 
-{{-- ── Page header ──────────────────────────────────────────────── --}}
-<div class="articles-hero">
-    <div class="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-            <div>
-                <p class="text-orange-300 text-xs tracking-[.25em] uppercase mb-2 font-semibold">Magazine</p>
-                <h1 class="font-serif text-3xl sm:text-4xl font-bold">
-                    @if($active_category)
-                        {{ $active_category->name_fr }}
-                    @elseif($search)
-                        Résultats pour "{{ $search }}"
-                    @else
-                        Tous les articles
-                    @endif
-                </h1>
-                <p class="text-gray-500 text-sm mt-2">{{ $articles->total() }} article{{ $articles->total() > 1 ? 's' : '' }}</p>
-            </div>
-            {{-- Search --}}
-            <form method="GET" action="{{ route('articles.index') }}" class="articles-search-shell p-2 rounded-2xl flex gap-2 w-full sm:w-auto">
-                <input name="q" value="{{ $search }}" placeholder="Rechercher…"
-                    class="articles-search-input flex-1 sm:w-64 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none">
-                <button class="articles-search-btn px-4 py-2.5 text-black rounded-xl">
-                    <i class="fas fa-search text-sm"></i>
-                </button>
-            </form>
-        </div>
+@php
+    $articlesHeroImage = \Illuminate\Support\Facades\Schema::hasTable('articles_hero_images')
+        ? \App\Models\ArticlesHeroImage::query()->find(1)
+        : null;
+@endphp
 
-        {{-- Category tabs --}}
-        <div class="categories-strip flex items-center gap-2.5 overflow-x-auto mt-6 pb-1">
+{{-- ── Page header ──────────────────────────────────────────────── --}}
+<section class="articles-hero relative py-20 overflow-hidden"
+    @if($articlesHeroImage && $articlesHeroImage->isVisible())
+        style="--articles-hero-bg-image: url('{{ $articlesHeroImage->image_url }}');"
+    @endif
+>
+    <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
+    <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+        <p class="text-orange-300 text-sm font-medium uppercase tracking-widest mb-3">Magazine</p>
+        <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
+            @if($active_category)
+                {{ $active_category->name_fr }}
+            @elseif($search)
+                Résultats pour "{{ $search }}"
+            @else
+                Tous les articles
+            @endif
+        </h1>
+        <p class="text-[#1c1915] text-xl max-w-2xl mx-auto">{{ $articles->total() }} article{{ $articles->total() > 1 ? 's' : '' }}</p>
+    </div>
+</section>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-6">
+        {{-- Search --}}
+        <form method="GET" action="{{ route('articles.index') }}" class="articles-search-shell p-2 rounded-2xl flex gap-2 w-full sm:w-auto">
+            <input name="q" value="{{ $search }}" placeholder="Rechercher…"
+                class="articles-search-input flex-1 sm:w-64 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none">
+            <button class="articles-search-btn px-4 py-2.5 text-black rounded-xl">
+                <i class="fas fa-search text-sm"></i>
+            </button>
+        </form>
+    </div>
+
+    {{-- Category tabs --}}
+    <div class="categories-nav relative mb-10">
+        <button type="button" class="categories-nav-arrow categories-nav-arrow--left" data-dir="-1" aria-label="Catégories précédentes" hidden>
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="categories-strip flex items-center gap-2.5 overflow-x-auto pb-1">
             <a href="{{ route('articles.index') }}"
                class="category-chip {{ !$active_category && !$search ? 'is-active' : '' }} shrink-0 px-5 py-2 rounded-full text-sm font-semibold">
                 Tous
@@ -425,10 +497,10 @@
             </a>
             @endforeach
         </div>
+        <button type="button" class="categories-nav-arrow categories-nav-arrow--right" data-dir="1" aria-label="Catégories suivantes">
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
-</div>
-
-<div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
 
     {{-- ── Featured (if no filter) ──────────────────────────────── --}}
     @if(!$active_category && !$search && $featured->isNotEmpty())
@@ -509,8 +581,8 @@
                 @endif
             </div>
             <div class="p-3">
-                <span class="text-gold-400/70 text-[10px] uppercase tracking-wider font-elegant">{{ $article->category?->name_fr ?? '—' }}</span>
-                <h3 class="font-serif text-xs font-semibold mt-1 line-clamp-2 group-hover:text-gold-300 transition leading-snug">
+                <span class="text-gold-400/70 text-sm uppercase tracking-wider font-elegant">{{ $article->category?->name_fr ?? '—' }}</span>
+                <h3 class="font-serif text-sm font-semibold mt-1 line-clamp-2 group-hover:text-gold-300 transition leading-snug">
                     {{ $article->title_fr }}
                 </h3>
                 @if($contributors->isNotEmpty())
@@ -619,6 +691,35 @@
         });
     }, { threshold: 0.06 });
     revealEls.forEach(el => revealObs.observe(el));
+
+    // Categories strip: scroll arrows + molette horizontale (la liste dépasse la largeur visible)
+    document.querySelectorAll('.categories-nav').forEach((nav) => {
+        const strip = nav.querySelector('.categories-strip');
+        const prev = nav.querySelector('.categories-nav-arrow--left');
+        const next = nav.querySelector('.categories-nav-arrow--right');
+        if (!strip || !prev || !next) return;
+
+        const updateArrows = () => {
+            const max = strip.scrollWidth - strip.clientWidth;
+            prev.hidden = strip.scrollLeft <= 4;
+            next.hidden = max <= 4 || strip.scrollLeft >= max - 4;
+        };
+        const scrollByStep = (dir) => {
+            strip.scrollBy({ left: dir * Math.round(strip.clientWidth * 0.7), behavior: 'smooth' });
+        };
+
+        prev.addEventListener('click', () => scrollByStep(-1));
+        next.addEventListener('click', () => scrollByStep(1));
+        strip.addEventListener('scroll', updateArrows, { passive: true });
+        strip.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                strip.scrollLeft += e.deltaY;
+                e.preventDefault();
+            }
+        }, { passive: false });
+        window.addEventListener('resize', updateArrows);
+        updateArrows();
+    });
 </script>
 @include('partials.image-protection')
 </body>

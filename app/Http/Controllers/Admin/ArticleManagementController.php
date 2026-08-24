@@ -62,7 +62,7 @@ class ArticleManagementController extends Controller
             'title_fr' => ['required', 'string', 'max:255'],
             'excerpt_fr' => ['nullable', 'string', 'max:800'],
             'content_fr' => ['nullable', 'string'],
-            'cover_url' => ['nullable', 'url', 'max:500'],
+            'cover_url' => ['nullable', 'string', 'max:500'],
             'reading_time' => ['nullable', 'integer', 'min:1', 'max:240'],
             'status' => ['required', 'in:draft,review,published,archived'],
             'published_at' => ['nullable', 'date'],

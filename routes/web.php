@@ -29,6 +29,7 @@ use App\Http\Controllers\Editor\ArticleController as EditorArticleController;
 use App\Http\Controllers\Editor\EventController as EditorEventController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InformationPageController;
+use App\Http\Controllers\Provider\AccommodationController as ProviderAccommodationController;
 use App\Http\Controllers\Provider\BillingController;
 use App\Http\Controllers\Provider\ConversationController as ProviderConversationController;
 use App\Http\Controllers\Provider\MediaController as ProviderMediaController;
@@ -36,6 +37,7 @@ use App\Http\Controllers\Provider\NotificationController as ProviderNotification
 use App\Http\Controllers\Provider\PaymentController;
 use App\Http\Controllers\Provider\ProfileController as ProviderProfileController;
 use App\Http\Controllers\Provider\ProviderAnalyticsController;
+use App\Http\Controllers\Provider\ReservationController as ProviderReservationController;
 use App\Http\Controllers\Provider\ReviewController as ProviderReviewController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicContactController;
@@ -56,6 +58,23 @@ use App\Http\Controllers\CulturalController;
 use App\Http\Controllers\Admin\TouristManagementController;
 use App\Http\Controllers\Admin\CulturalManagementController;
 use App\Http\Controllers\Admin\AccommodationManagementController;
+use App\Http\Controllers\Admin\PrestationManagementController;
+use App\Http\Controllers\Admin\HomepageBubbleManagementController;
+use App\Http\Controllers\Admin\FooterImageController;
+use App\Http\Controllers\Admin\RegionsSectionImageController;
+use App\Http\Controllers\Admin\AnnuaireSectionImageController;
+use App\Http\Controllers\Admin\CulturesSectionImageController;
+use App\Http\Controllers\Admin\HeaderImageController;
+use App\Http\Controllers\Admin\EvenementsSectionImageController;
+use App\Http\Controllers\Admin\PartenairesSectionImageController;
+use App\Http\Controllers\Admin\ArticlesSectionImageController;
+use App\Http\Controllers\Admin\TouristHeroImageController;
+use App\Http\Controllers\Admin\CulturalHeroImageController;
+use App\Http\Controllers\Admin\ArticlesHeroImageController;
+use App\Http\Controllers\Admin\ProvidersHeroImageController;
+use App\Http\Controllers\Admin\EventsHeroImageController;
+use App\Http\Controllers\Admin\GalleryHeroImageController;
+use App\Http\Controllers\PrestationController;
 use App\Http\Middleware\LogAdminActions;
 use App\Models\AppearanceSlide;
 use App\Models\Article;
@@ -63,6 +82,13 @@ use App\Models\ArticleCategory;
 use App\Models\Event;
 use App\Models\InformationPage;
 use App\Models\Partner;
+use App\Models\HomepageBubble;
+use App\Models\RegionsSectionImage;
+use App\Models\AnnuaireSectionImage;
+use App\Models\CulturesSectionImage;
+use App\Models\EvenementsSectionImage;
+use App\Models\PartenairesSectionImage;
+use App\Models\ArticlesSectionImage;
 use App\Models\Provider;
 use App\Models\ProviderCategory;
 use App\Models\TouristCity;
@@ -199,11 +225,44 @@ Route::get('/', function () {
             ->get()
         : collect();
 
+    $homeBubbles = Schema::hasTable('homepage_bubbles')
+        ? HomepageBubble::query()
+            ->with('images')
+            ->active()
+            ->ordered()
+            ->get()
+        : collect();
+
+    $regionsImage = Schema::hasTable('regions_section_images')
+        ? RegionsSectionImage::query()->find(1)
+        : null;
+
+    $annuaireImage = Schema::hasTable('annuaire_section_images')
+        ? AnnuaireSectionImage::query()->find(1)
+        : null;
+
+    $culturesImage = Schema::hasTable('cultures_section_images')
+        ? CulturesSectionImage::query()->find(1)
+        : null;
+
+    $evenementsImage = Schema::hasTable('evenements_section_images')
+        ? EvenementsSectionImage::query()->find(1)
+        : null;
+
+    $partenairesImage = Schema::hasTable('partenaires_section_images')
+        ? PartenairesSectionImage::query()->find(1)
+        : null;
+
+    $articlesImage = Schema::hasTable('articles_section_images')
+        ? ArticlesSectionImage::query()->find(1)
+        : null;
+
     return view('welcome', compact(
         'homeEvents', 'homeProviders', 'heroSlides', 'homePartners',
         'informationPages', 'homeArticles', 'homeCategories', 'homeProviderCategories',
         'homeDestinationArticle', 'hideHomeHeroArticle', 'homeTouristCities',
-        'homeCulturalPeoples', 'homeCulturalDomains'
+        'homeCulturalPeoples', 'homeCulturalDomains', 'homeBubbles', 'regionsImage',
+        'annuaireImage', 'culturesImage', 'evenementsImage', 'partenairesImage', 'articlesImage'
     ));
 })->name('home');
 
@@ -336,6 +395,9 @@ Route::post('/abonnements/{plan}/traiter', [PublicSubscriptionController::class,
 Route::get('/annuaire', [ProviderController::class, 'index'])->name('providers.index');
 Route::get('/annuaire/{slug}', [ProviderController::class, 'show'])->name('providers.show');
 
+// ── NOS PRESTATIONS PUBLIC ─────────────────────────────────────────────────
+Route::get('/nos-prestations', [PrestationController::class, 'show'])->name('prestations.public');
+
 // ── TOURISME PUBLIC ────────────────────────────────────────────────────────
 Route::get('/tourisme', [TouristController::class, 'cities'])->name('tourist.cities');
 Route::get('/tourisme/{citySlug}', [TouristController::class, 'city'])->name('tourist.city');
@@ -453,6 +515,11 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/administration/apparence/slides/{slide}', [AdministrationController::class, 'updateSlide'])->name('administration.appearance.slides.update');
         Route::patch('/administration/apparence/slides/{slide}/toggle', [AdministrationController::class, 'toggleSlide'])->name('administration.appearance.slides.toggle');
         Route::delete('/administration/apparence/slides/{slide}', [AdministrationController::class, 'destroySlide'])->name('administration.appearance.slides.destroy');
+        Route::get('/administration/flash-info', [AdministrationController::class, 'flashInfo'])->name('administration.flash-info');
+        Route::post('/administration/flash-info', [AdministrationController::class, 'storeFlashInfo'])->name('administration.flash-info.store');
+        Route::patch('/administration/flash-info/{flashInfo}', [AdministrationController::class, 'updateFlashInfo'])->name('administration.flash-info.update');
+        Route::patch('/administration/flash-info/{flashInfo}/toggle', [AdministrationController::class, 'toggleFlashInfo'])->name('administration.flash-info.toggle');
+        Route::delete('/administration/flash-info/{flashInfo}', [AdministrationController::class, 'destroyFlashInfo'])->name('administration.flash-info.destroy');
         Route::get('/administration/contacts', [AdministrationController::class, 'contacts'])->name('administration.contacts');
         Route::put('/administration/contacts', [AdministrationController::class, 'updateContactSettings'])->name('administration.contacts.update');
         Route::get('/administration/messages-contact/export', [ContactMessageController::class, 'export'])->name('administration.contact-messages.export');
@@ -483,6 +550,62 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::put('/administration/parametres', [AdministrationController::class, 'updateSiteSettings'])->name('administration.settings.update');
         Route::get('/administration/accueil', [AdministrationController::class, 'homepage'])->name('administration.homepage');
         Route::put('/administration/accueil', [AdministrationController::class, 'updateHomepage'])->name('administration.homepage.update');
+        Route::get('/administration/footer', [FooterImageController::class, 'edit'])->name('administration.footer');
+        Route::put('/administration/footer', [FooterImageController::class, 'update'])->name('administration.footer.update');
+        Route::patch('/administration/footer/toggle', [FooterImageController::class, 'toggle'])->name('administration.footer.toggle');
+        Route::delete('/administration/footer', [FooterImageController::class, 'destroy'])->name('administration.footer.destroy');
+        Route::get('/administration/regions-image', [RegionsSectionImageController::class, 'edit'])->name('administration.regions-image');
+        Route::put('/administration/regions-image', [RegionsSectionImageController::class, 'update'])->name('administration.regions-image.update');
+        Route::patch('/administration/regions-image/toggle', [RegionsSectionImageController::class, 'toggle'])->name('administration.regions-image.toggle');
+        Route::delete('/administration/regions-image', [RegionsSectionImageController::class, 'destroy'])->name('administration.regions-image.destroy');
+        Route::get('/administration/annuaire-image', [AnnuaireSectionImageController::class, 'edit'])->name('administration.annuaire-image');
+        Route::put('/administration/annuaire-image', [AnnuaireSectionImageController::class, 'update'])->name('administration.annuaire-image.update');
+        Route::patch('/administration/annuaire-image/toggle', [AnnuaireSectionImageController::class, 'toggle'])->name('administration.annuaire-image.toggle');
+        Route::delete('/administration/annuaire-image', [AnnuaireSectionImageController::class, 'destroy'])->name('administration.annuaire-image.destroy');
+        Route::get('/administration/cultures-image', [CulturesSectionImageController::class, 'edit'])->name('administration.cultures-image');
+        Route::put('/administration/cultures-image', [CulturesSectionImageController::class, 'update'])->name('administration.cultures-image.update');
+        Route::patch('/administration/cultures-image/toggle', [CulturesSectionImageController::class, 'toggle'])->name('administration.cultures-image.toggle');
+        Route::delete('/administration/cultures-image', [CulturesSectionImageController::class, 'destroy'])->name('administration.cultures-image.destroy');
+        Route::get('/administration/header-image', [HeaderImageController::class, 'edit'])->name('administration.header-image');
+        Route::put('/administration/header-image', [HeaderImageController::class, 'update'])->name('administration.header-image.update');
+        Route::patch('/administration/header-image/toggle', [HeaderImageController::class, 'toggle'])->name('administration.header-image.toggle');
+        Route::delete('/administration/header-image', [HeaderImageController::class, 'destroy'])->name('administration.header-image.destroy');
+        Route::get('/administration/evenements-image', [EvenementsSectionImageController::class, 'edit'])->name('administration.evenements-image');
+        Route::put('/administration/evenements-image', [EvenementsSectionImageController::class, 'update'])->name('administration.evenements-image.update');
+        Route::patch('/administration/evenements-image/toggle', [EvenementsSectionImageController::class, 'toggle'])->name('administration.evenements-image.toggle');
+        Route::delete('/administration/evenements-image', [EvenementsSectionImageController::class, 'destroy'])->name('administration.evenements-image.destroy');
+        Route::get('/administration/partenaires-image', [PartenairesSectionImageController::class, 'edit'])->name('administration.partenaires-image');
+        Route::put('/administration/partenaires-image', [PartenairesSectionImageController::class, 'update'])->name('administration.partenaires-image.update');
+        Route::patch('/administration/partenaires-image/toggle', [PartenairesSectionImageController::class, 'toggle'])->name('administration.partenaires-image.toggle');
+        Route::delete('/administration/partenaires-image', [PartenairesSectionImageController::class, 'destroy'])->name('administration.partenaires-image.destroy');
+        Route::get('/administration/articles-image', [ArticlesSectionImageController::class, 'edit'])->name('administration.articles-image');
+        Route::put('/administration/articles-image', [ArticlesSectionImageController::class, 'update'])->name('administration.articles-image.update');
+        Route::patch('/administration/articles-image/toggle', [ArticlesSectionImageController::class, 'toggle'])->name('administration.articles-image.toggle');
+        Route::delete('/administration/articles-image', [ArticlesSectionImageController::class, 'destroy'])->name('administration.articles-image.destroy');
+        Route::get('/administration/tourist-hero-image', [TouristHeroImageController::class, 'edit'])->name('administration.tourist-hero-image');
+        Route::put('/administration/tourist-hero-image', [TouristHeroImageController::class, 'update'])->name('administration.tourist-hero-image.update');
+        Route::patch('/administration/tourist-hero-image/toggle', [TouristHeroImageController::class, 'toggle'])->name('administration.tourist-hero-image.toggle');
+        Route::delete('/administration/tourist-hero-image', [TouristHeroImageController::class, 'destroy'])->name('administration.tourist-hero-image.destroy');
+        Route::get('/administration/cultural-hero-image', [CulturalHeroImageController::class, 'edit'])->name('administration.cultural-hero-image');
+        Route::put('/administration/cultural-hero-image', [CulturalHeroImageController::class, 'update'])->name('administration.cultural-hero-image.update');
+        Route::patch('/administration/cultural-hero-image/toggle', [CulturalHeroImageController::class, 'toggle'])->name('administration.cultural-hero-image.toggle');
+        Route::delete('/administration/cultural-hero-image', [CulturalHeroImageController::class, 'destroy'])->name('administration.cultural-hero-image.destroy');
+        Route::get('/administration/articles-hero-image', [ArticlesHeroImageController::class, 'edit'])->name('administration.articles-hero-image');
+        Route::put('/administration/articles-hero-image', [ArticlesHeroImageController::class, 'update'])->name('administration.articles-hero-image.update');
+        Route::patch('/administration/articles-hero-image/toggle', [ArticlesHeroImageController::class, 'toggle'])->name('administration.articles-hero-image.toggle');
+        Route::delete('/administration/articles-hero-image', [ArticlesHeroImageController::class, 'destroy'])->name('administration.articles-hero-image.destroy');
+        Route::get('/administration/providers-hero-image', [ProvidersHeroImageController::class, 'edit'])->name('administration.providers-hero-image');
+        Route::put('/administration/providers-hero-image', [ProvidersHeroImageController::class, 'update'])->name('administration.providers-hero-image.update');
+        Route::patch('/administration/providers-hero-image/toggle', [ProvidersHeroImageController::class, 'toggle'])->name('administration.providers-hero-image.toggle');
+        Route::delete('/administration/providers-hero-image', [ProvidersHeroImageController::class, 'destroy'])->name('administration.providers-hero-image.destroy');
+        Route::get('/administration/events-hero-image', [EventsHeroImageController::class, 'edit'])->name('administration.events-hero-image');
+        Route::put('/administration/events-hero-image', [EventsHeroImageController::class, 'update'])->name('administration.events-hero-image.update');
+        Route::patch('/administration/events-hero-image/toggle', [EventsHeroImageController::class, 'toggle'])->name('administration.events-hero-image.toggle');
+        Route::delete('/administration/events-hero-image', [EventsHeroImageController::class, 'destroy'])->name('administration.events-hero-image.destroy');
+        Route::get('/administration/gallery-hero-image', [GalleryHeroImageController::class, 'edit'])->name('administration.gallery-hero-image');
+        Route::put('/administration/gallery-hero-image', [GalleryHeroImageController::class, 'update'])->name('administration.gallery-hero-image.update');
+        Route::patch('/administration/gallery-hero-image/toggle', [GalleryHeroImageController::class, 'toggle'])->name('administration.gallery-hero-image.toggle');
+        Route::delete('/administration/gallery-hero-image', [GalleryHeroImageController::class, 'destroy'])->name('administration.gallery-hero-image.destroy');
         Route::get('/administration/partenaires', [PartnerController::class, 'index'])->name('administration.partners');
         Route::get('/administration/partenaires/creer', [PartnerController::class, 'create'])->name('administration.partners.create');
         Route::post('/administration/partenaires', [PartnerController::class, 'store'])->name('administration.partners.store');
@@ -643,6 +766,27 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/hebergements/{accommodation}/toggle-vedette', [AccommodationManagementController::class, 'toggleFeatured'])->name('accommodations.toggle-featured');
         Route::delete('/hebergements/medias/{media}', [AccommodationManagementController::class, 'destroyMedia'])->name('accommodations.media.destroy');
 
+        // ── Nos Prestations ──────────────────────────────────────────────
+        Route::get('/prestations', [PrestationManagementController::class, 'index'])->name('prestations.index');
+        Route::post('/prestations/banners', [PrestationManagementController::class, 'storeBanner'])->name('prestations.banners.store');
+        Route::patch('/prestations/banners/{banner}', [PrestationManagementController::class, 'updateBanner'])->name('prestations.banners.update');
+        Route::patch('/prestations/banners/{banner}/toggle', [PrestationManagementController::class, 'toggleBanner'])->name('prestations.banners.toggle');
+        Route::delete('/prestations/banners/{banner}', [PrestationManagementController::class, 'destroyBanner'])->name('prestations.banners.destroy');
+        Route::put('/prestations/parametres', [PrestationManagementController::class, 'updateSettings'])->name('prestations.settings.update');
+        Route::post('/prestations/items', [PrestationManagementController::class, 'storeItem'])->name('prestations.items.store');
+        Route::patch('/prestations/items/{item}', [PrestationManagementController::class, 'updateItem'])->name('prestations.items.update');
+        Route::patch('/prestations/items/{item}/toggle', [PrestationManagementController::class, 'toggleItem'])->name('prestations.items.toggle');
+        Route::delete('/prestations/items/{item}', [PrestationManagementController::class, 'destroyItem'])->name('prestations.items.destroy');
+
+        // ── Bulles interactives (page d'accueil) ───────────────────────────
+        Route::get('/bulles-accueil', [HomepageBubbleManagementController::class, 'index'])->name('homepage-bubbles.index');
+        Route::post('/bulles-accueil', [HomepageBubbleManagementController::class, 'store'])->name('homepage-bubbles.store');
+        Route::put('/bulles-accueil/{bubble}', [HomepageBubbleManagementController::class, 'update'])->name('homepage-bubbles.update');
+        Route::patch('/bulles-accueil/{bubble}/toggle', [HomepageBubbleManagementController::class, 'toggle'])->name('homepage-bubbles.toggle');
+        Route::delete('/bulles-accueil/{bubble}', [HomepageBubbleManagementController::class, 'destroy'])->name('homepage-bubbles.destroy');
+        Route::post('/bulles-accueil/{bubble}/images', [HomepageBubbleManagementController::class, 'storeImage'])->name('homepage-bubbles.images.store');
+        Route::delete('/bulles-accueil/images/{image}', [HomepageBubbleManagementController::class, 'destroyImage'])->name('homepage-bubbles.images.destroy');
+
         // Réservations
         Route::get('/reservations/export', [AdminReservationController::class, 'export'])->name('reservations.export');
         Route::get('/reservations', [AdminReservationController::class, 'index'])->name('reservations.index');
@@ -696,6 +840,16 @@ Route::middleware(['auth', 'verified', 'role:provider'])
         Route::get('/profil', [ProviderProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profil', [ProviderProfileController::class, 'update'])->name('profile.update');
         Route::put('/profil/horaires', [ProviderProfileController::class, 'updateHours'])->name('profile.hours');
+
+        // Fiche hébergement (chambres, tarifs, équipements, liens de réservation) — prestataires "Hôtels"
+        Route::get('/hebergement', [ProviderAccommodationController::class, 'edit'])->name('accommodation.edit');
+        Route::put('/hebergement', [ProviderAccommodationController::class, 'update'])->name('accommodation.update');
+        Route::delete('/hebergement/medias/{media}', [ProviderAccommodationController::class, 'destroyMedia'])->name('accommodation.media.destroy');
+
+        // Réservations reçues
+        Route::get('/reservations', [ProviderReservationController::class, 'index'])->name('reservations.index');
+        Route::get('/reservations/{reservation}', [ProviderReservationController::class, 'show'])->name('reservations.show');
+        Route::patch('/reservations/{reservation}/status', [ProviderReservationController::class, 'updateStatus'])->name('reservations.status');
 
         // Avis (réponses)
         Route::get('/avis', [ProviderReviewController::class, 'index'])->name('reviews.index');

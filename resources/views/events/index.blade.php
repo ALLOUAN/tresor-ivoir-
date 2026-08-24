@@ -27,11 +27,13 @@
             pointer-events: none;
         }
         .events-hero {
-            border: 1px solid rgba(255,255,255,0.09);
-            background:
+            background-image:
                 linear-gradient(130deg, rgba(24,24,21,0.86), rgba(14,14,12,0.94)),
-                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%),
+                var(--events-hero-bg-image, none);
+            background-size: auto, auto, cover;
+            background-position: 0 0, 0 0, center;
+            background-repeat: repeat, no-repeat, no-repeat;
         }
         .events-filter-panel {
             border: 1px solid rgba(255,255,255,0.09);
@@ -161,11 +163,19 @@
             50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(242, 121, 15,0.22); }
         }
         html:not(.dark) .events-hero {
-            border-color: rgba(0,0,0,0.1);
-            background:
+            background-image:
                 linear-gradient(130deg, rgba(255,255,255,0.96), rgba(247,243,235,0.98)),
-                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%);
-            box-shadow: 0 14px 30px rgba(0,0,0,0.07);
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%),
+                var(--events-hero-bg-image, none);
+            background-size: auto, auto, cover;
+            background-position: 0 0, 0 0, center;
+            background-repeat: repeat, no-repeat, no-repeat;
+        }
+        html:not(.dark) .events-hero[style*="--events-hero-bg-image"] {
+            background-image:
+                linear-gradient(130deg, rgba(255,255,255,0.55), rgba(247,243,235,0.55)),
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%),
+                var(--events-hero-bg-image, none);
         }
         html:not(.dark) .events-filter-panel {
             border-color: rgba(0,0,0,0.1);
@@ -213,21 +223,30 @@
 </head>
 <body class="bg-[#ffffff] text-white">
     @include('partials.public-top-nav')
-    <div class="events-shell max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        <section class="events-hero rounded-2xl p-5 sm:p-8 mb-6 sm:mb-7">
-            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-                <div>
-                    <p class="text-orange-300/90 text-[11px] tracking-[.26em] uppercase mb-2 font-semibold">Agenda culturel</p>
-                    <h1 class="font-serif text-3xl sm:text-4xl lg:text-[2.65rem] font-bold leading-tight">Agenda des événements</h1>
-                    <p class="text-gray-400 mt-2 text-sm sm:text-base">Explorez les rendez-vous à venir avec une expérience de lecture premium.</p>
-                </div>
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-sm text-orange-300 hover:text-orange-200 hover:border-orange-400/45 hover:bg-orange-500/10 transition">
-                    <i class="fas fa-arrow-left text-[11px]"></i>
-                    Retour accueil
-                </a>
-            </div>
-        </section>
 
+    @php
+        $eventsHeroImage = \Illuminate\Support\Facades\Schema::hasTable('events_hero_images')
+            ? \App\Models\EventsHeroImage::query()->find(1)
+            : null;
+    @endphp
+
+    <section class="events-hero relative py-20 overflow-hidden"
+        @if($eventsHeroImage && $eventsHeroImage->isVisible())
+            style="--events-hero-bg-image: url('{{ $eventsHeroImage->image_url }}');"
+        @endif
+    >
+        <a href="{{ route('home') }}" class="absolute top-6 right-6 z-10 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-sm text-orange-300 hover:text-orange-200 hover:border-orange-400/45 hover:bg-orange-500/10 transition">
+            <i class="fas fa-arrow-left text-[11px]"></i>
+            Retour accueil
+        </a>
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+            <p class="text-orange-300/90 text-[11px] tracking-[.26em] uppercase mb-3 font-semibold">Agenda culturel</p>
+            <h1 class="font-serif text-4xl md:text-5xl font-bold leading-tight mb-4">Agenda des événements</h1>
+            <p class="text-gray-400 text-xl max-w-2xl mx-auto">Explorez les rendez-vous à venir avec une expérience de lecture premium.</p>
+        </div>
+    </section>
+
+    <div class="events-shell max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <form method="GET" action="{{ route('events.index') }}" class="events-filter-panel rounded-2xl p-4 sm:p-5 grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
             <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher un événement..." class="events-input md:col-span-2 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-gray-500">
             <select name="categorie" class="events-input rounded-xl px-3.5 py-2.5 text-sm text-gray-200">

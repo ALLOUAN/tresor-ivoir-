@@ -108,6 +108,13 @@ class TouristManagementController extends Controller
         $data = $this->validateCategory($request);
         $data['slug']      = Str::slug($data['name']);
         $data['is_active'] = $request->boolean('is_active', true);
+
+        unset($data['hero_image_file']);
+        $heroFile = $request->file('hero_image_file');
+        if ($heroFile && $heroFile->isValid()) {
+            $data['hero_image_url'] = $this->storeCategoryImage($heroFile, 'hero');
+        }
+
         TouristCategory::create($data);
         return back()->with('success', "Catégorie « {$data['name']} » créée.");
     }
@@ -116,12 +123,21 @@ class TouristManagementController extends Controller
     {
         $data = $this->validateCategory($request);
         $data['is_active'] = $request->boolean('is_active');
+
+        unset($data['hero_image_file']);
+        $heroFile = $request->file('hero_image_file');
+        if ($heroFile && $heroFile->isValid()) {
+            $this->deleteCategoryImage($category->hero_image_url);
+            $data['hero_image_url'] = $this->storeCategoryImage($heroFile, 'hero');
+        }
+
         $category->update($data);
         return back()->with('success', 'Catégorie mise à jour.');
     }
 
     public function destroyCategory(TouristCategory $category)
     {
+        $this->deleteCategoryImage($category->hero_image_url);
         $category->delete();
         return back()->with('success', 'Catégorie supprimée.');
     }
@@ -267,9 +283,9 @@ class TouristManagementController extends Controller
             'district'              => 'nullable|string|max:100',
             'region_administrative' => 'nullable|string|max:100',
             'description'           => 'nullable|string',
-            'thumbnail'             => 'nullable|url|max:500',
+            'thumbnail'             => 'nullable|string|max:500',
             'thumbnail_file'        => 'nullable|file|image|max:5120',
-            'cover_image'           => 'nullable|url|max:500',
+            'cover_image'           => 'nullable|string|max:500',
             'cover_image_file'      => 'nullable|file|image|max:5120',
             'website'               => 'nullable|url|max:300',
             'latitude'              => 'nullable|numeric|between:-90,90',
@@ -309,6 +325,28 @@ class TouristManagementController extends Controller
         }
     }
 
+    private function storeCategoryImage(\Illuminate\Http\UploadedFile $file, string $type): string
+    {
+        $ext      = strtolower($file->getClientOriginalExtension()) ?: 'jpg';
+        $filename = 'tourist/categories/' . $type . '_' . Str::random(32) . '.' . $ext;
+
+        Storage::disk('public')->put($filename, fopen($file->getPathname(), 'r'));
+
+        return '/storage/' . $filename;
+    }
+
+    private function deleteCategoryImage(?string $url): void
+    {
+        if (!$url || !str_starts_with($url, '/storage/')) {
+            return;
+        }
+
+        $relative = ltrim(substr($url, strlen('/storage/')), '/');
+        if ($relative) {
+            Storage::disk('public')->delete($relative);
+        }
+    }
+
     private function storeCityImage(\Illuminate\Http\UploadedFile $file, string $type): string
     {
         $ext      = strtolower($file->getClientOriginalExtension()) ?: 'jpg';
@@ -334,11 +372,12 @@ class TouristManagementController extends Controller
     private function validateCategory(Request $request): array
     {
         return $request->validate([
-            'name'        => 'required|string|max:100',
-            'icon'        => 'nullable|string|max:80',
-            'color'       => 'nullable|string|max:20',
-            'description' => 'nullable|string',
-            'sort_order'  => 'nullable|integer|min:0',
+            'name'             => 'required|string|max:100',
+            'icon'             => 'nullable|string|max:80',
+            'color'            => 'nullable|string|max:20',
+            'hero_image_file'  => 'nullable|file|image|max:5120',
+            'description'      => 'nullable|string',
+            'sort_order'       => 'nullable|integer|min:0',
         ]);
     }
 
@@ -350,7 +389,7 @@ class TouristManagementController extends Controller
             'name'               => 'required|string|max:150',
             'short_description'  => 'nullable|string|max:300',
             'description'        => 'nullable|string',
-            'thumbnail'          => 'nullable|url|max:500',
+            'thumbnail'          => 'nullable|string|max:500',
             'thumbnail_file'     => 'nullable|file|image|max:5120',
             'media_files'        => 'nullable|array',
             'media_files.*'      => 'nullable|file|image|max:5120',

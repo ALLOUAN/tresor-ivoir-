@@ -47,41 +47,23 @@
 </head>
 <body class="bg-dark-900 text-white antialiased font-sans">
 
+@include('partials.public-top-nav')
+
 @if(session('info'))
-<div class="fixed top-16 left-0 right-0 z-40 px-4 py-2 text-center text-sm bg-green-900/90 text-green-100 border-b border-green-700/50">{{ session('info') }}</div>
+<div class="px-4 py-2 text-center text-sm bg-green-900/90 text-green-100 border-b border-green-700/50">{{ session('info') }}</div>
 @endif
 @if(session('error'))
-<div class="fixed top-16 left-0 right-0 z-40 px-4 py-2 text-center text-sm bg-red-900/90 text-red-100 border-b border-red-700/50">{{ session('error') }}</div>
+<div class="px-4 py-2 text-center text-sm bg-red-900/90 text-red-100 border-b border-red-700/50">{{ session('error') }}</div>
 @endif
 
-{{-- NAV MINIMALISTE --}}
-<nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/5" style="background:rgba(233, 229, 217, 0.95);backdrop-filter:blur(12px)">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <a href="{{ route('home') }}" class="flex items-center gap-2.5">
-            @if(!empty($siteBrand['logo_url']))
-                <img src="{{ $siteBrand['logo_url'] }}" alt="" class="h-8 w-auto">
-            @else
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                    <i class="fas fa-gem text-black text-xs"></i>
-                </div>
-            @endif
-            <span class="font-serif font-bold text-gold-400 text-lg">{{ $siteBrand['site_name'] }}</span>
-        </a>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('login') }}" class="text-sm text-gray-400 hover:text-white transition px-3 py-1.5">Connexion</a>
-            <a href="{{ route('register') }}" class="text-sm font-semibold text-dark-900 px-4 py-2 rounded-lg" style="background:#f2790f">Créer un compte</a>
-        </div>
-    </div>
-</nav>
-
 {{-- HERO --}}
-<section class="pt-32 pb-16 text-center relative overflow-hidden">
+<section class="pt-16 pb-16 text-center relative overflow-hidden">
     <div class="absolute inset-0 opacity-5" style="background-image:repeating-linear-gradient(45deg,#f2790f 0,#f2790f 1px,transparent 0,transparent 50%);background-size:20px 20px"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(242, 121, 15,0.07),transparent 70%)"></div>
     <div class="relative max-w-2xl mx-auto px-4">
-        <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Visibilité & croissance</p>
+        <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-3">Visibilité & croissance</p>
         <h1 class="font-serif text-4xl sm:text-5xl font-bold mb-4 leading-tight">Choisissez votre offre</h1>
-        <p class="text-gray-400 text-lg font-elegant font-light leading-relaxed">
+        <p class="text-[#1c1915] text-xl font-elegant font-light leading-relaxed">
             Référencez votre activité sur le premier magazine culturel et touristique de Côte d'Ivoire et touchez des milliers de visiteurs qualifiés.
         </p>
 

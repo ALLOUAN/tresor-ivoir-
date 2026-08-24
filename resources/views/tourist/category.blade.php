@@ -17,43 +17,50 @@
         .site-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.4); }
         html:not(.dark) body { background:#e9e5d9; color: #1c1915; }
         html:not(.dark) .site-card { background:#f0ece1 !important; border-color: rgba(0,0,0,.12) !important; box-shadow: 0 8px 20px rgba(0,0,0,.05); }
+        /* Image de fond configurable (back-office, par catégorie) du bandeau —
+           même modèle que .cultural-hero / .tourist-hero. */
+        .category-hero {
+            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--category-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
 
 @include('partials.public-top-nav')
 
-{{-- Header --}}
-<section class="max-w-6xl mx-auto px-6 py-12">
-    <nav class="text-xs text-slate-400 mb-5">
-        <a href="{{ route('tourist.cities') }}" class="hover:text-orange-400 transition">Régions</a>
-        <span class="mx-2 text-slate-600">/</span>
-        <a href="{{ route('tourist.city', $city->slug) }}" class="hover:text-orange-400 transition">{{ $city->name }}</a>
-        <span class="mx-2 text-slate-600">/</span>
-        <span class="text-white">{{ $category->name }}</span>
-    </nav>
-
-    <div class="flex items-center gap-4 mb-2">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0"
-            style="{{ $category->color ? 'background:' . $category->color . '22; color:' . $category->color : 'background:#e9e5d9; color:#94a3b8' }}">
-            <i class="{{ $category->icon ?: 'fas fa-tag' }}"></i>
-        </div>
-        <div>
-            <h1 class="font-serif text-3xl font-bold text-white">{{ $category->name }}</h1>
-            <p class="text-slate-400 text-sm">
-                {{ $city->name }}
-                @if($sites->count() > 0)
-                — {{ $sites->count() }} site(s)
-                @endif
-                @if(isset($accommodations) && $accommodations->count() > 0)
-                — {{ $accommodations->count() }} hébergement(s)
-                @endif
-            </p>
-        </div>
-    </div>
-    @if($category->description)
-    <p class="text-slate-400 mt-4 max-w-2xl">{{ $category->description }}</p>
+{{-- Hero --}}
+<section class="category-hero relative py-20 overflow-hidden"
+    @if($category->hero_image_url)
+        style="--category-hero-bg-image: url('{{ $category->hero_image_url }}');"
     @endif
+>
+    <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
+    <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+        <nav class="text-xs text-slate-400 mb-4">
+            <a href="{{ route('tourist.cities') }}" class="hover:text-orange-400 transition">Régions</a>
+            <span class="mx-2 text-slate-600">/</span>
+            <a href="{{ route('tourist.city', $city->slug) }}" class="hover:text-orange-400 transition">{{ $city->name }}</a>
+            <span class="mx-2 text-slate-600">/</span>
+            <span class="text-white">{{ $category->name }}</span>
+        </nav>
+        <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">{{ $city->name }}</p>
+        <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
+            {{ $category->name }}
+        </h1>
+        <p class="text-[#1c1915] text-xl max-w-2xl mx-auto">
+            @if($category->description)
+                {{ $category->description }}
+            @else
+                {{ $sites->count() }} site(s) touristique(s)
+                @if(isset($accommodations) && $accommodations->count() > 0)
+                    · {{ $accommodations->count() }} hébergement(s)
+                @endif
+            @endif
+        </p>
+    </div>
 </section>
 
 {{-- Sites list --}}

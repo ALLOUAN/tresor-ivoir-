@@ -218,7 +218,7 @@
 
                 {{-- Mode URL --}}
                 <div id="cover_url_section">
-                    <input type="url" name="cover_image" id="city_cover" maxlength="500"
+                    <input type="text" name="cover_image" id="city_cover" maxlength="500"
                         placeholder="https://… (URL de la bannière)"
                         oninput="previewCityBanner(this.value)"
                         class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">
@@ -284,7 +284,7 @@
                     <div class="flex-1 space-y-2">
                         {{-- Mode URL --}}
                         <div id="thumb_url_section">
-                            <input type="url" name="thumbnail" id="city_thumbnail" maxlength="500"
+                            <input type="text" name="thumbnail" id="city_thumbnail" maxlength="500"
                                 placeholder="https://… (URL de la miniature)"
                                 oninput="previewCityThumb(this.value)"
                                 class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition">

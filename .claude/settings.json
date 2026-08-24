@@ -96,7 +96,11 @@
       "Bash(curl -s -o /tmp/provider2.html -w \"HTTP %{http_code}\\\\n\" https://tresorsivoire.test/annuaire/sofitel-abidjan-hotel-ivoire)",
       "Bash(curl -s -o /tmp/provider_hotel.html -w \"hotel: %{http_code}\\\\n\" https://tresorsivoire.test/annuaire/sofitel-abidjan-hotel-ivoire)",
       "Bash(curl -s -o /tmp/provider_resto.html -w \"resto: %{http_code}\\\\n\" https://tresorsivoire.test/annuaire/la-table-du-chef-cocody)",
-      "Bash(curl -s -o /tmp/prov_reviews.html -w \"HTTP %{http_code}\\\\n\" https://tresorsivoire.test/annuaire/sofitel-abidjan-hotel-ivoire)"
+      "Bash(curl -s -o /tmp/prov_reviews.html -w \"HTTP %{http_code}\\\\n\" https://tresorsivoire.test/annuaire/sofitel-abidjan-hotel-ivoire)",
+      "Bash(git fetch *)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ],
     "additionalDirectories": [
       "\\tmp"

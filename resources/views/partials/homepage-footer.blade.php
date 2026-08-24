@@ -26,14 +26,24 @@
     $footerBlurb = !empty($siteBrand['site_description'])
         ? \Illuminate\Support\Str::limit(strip_tags($siteBrand['site_description']), 220)
         : 'Le magazine de référence pour explorer la culture, l\'art de vivre et le tourisme en Côte d\'Ivoire.';
+    $footerImage = $footerImage ?? (\Illuminate\Support\Facades\Schema::hasTable('footer_images')
+        ? \App\Models\FooterImage::query()->find(1)
+        : null);
 @endphp
 
 <style>
-    .footer-ultra { position: relative; background: linear-gradient(105deg, #fa9a3c 0%, #f2790f 50%, #f97316 100%); }
+    .footer-ultra {
+        position: relative;
+        background-image: linear-gradient(105deg, rgba(6,20,12,.90) 0%, rgba(10,26,16,.88) 50%, rgba(6,20,12,.90) 100%), var(--footer-bg-image, none);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #0c1a12;
+    }
     .footer-ultra::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='fn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23fn)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; opacity: .9; }
     .footer-ultra-inner { position: relative; z-index: 1; }
-    .footer-v2-link { display: block; padding: .32rem 0; font-size: .8125rem; color: rgba(28,25,21,.88); transition: color .18s ease, padding-left .18s ease; }
-    .footer-v2-link:hover { color: #1c1915; padding-left: .35rem; }
+    .footer-v2-link { display: block; padding: .32rem 0; font-size: .9375rem; color: rgba(255,255,255,.72); transition: color .18s ease, padding-left .18s ease; }
+    .footer-v2-link:hover { color: #fdba74; padding-left: .35rem; }
     .social-links-wrap { position: relative; }
     .social-icon-ultra { position: relative; overflow: hidden; border-radius: .62rem; backdrop-filter: blur(8px); transition: transform .28s cubic-bezier(.2,.8,.2,1),color .25s ease,border-color .25s ease,box-shadow .3s ease,background-color .25s ease; isolation: isolate; }
     .social-icon-ultra::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; background: conic-gradient(from 180deg, rgba(0,0,0,0), rgba(0,0,0,.35), rgba(0,0,0,.1), rgba(0,0,0,0)); opacity: 0; transform: rotate(0deg); transition: opacity .28s ease; pointer-events: none; z-index: 0; }
@@ -56,32 +66,36 @@
     @keyframes footerLogoSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes socialRingSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    /* ── Texte foncé sur le fond orange vif (hors carte newsletter blanche) ──
+    /* ── Texte clair sur le fond sombre (hors carte newsletter blanche) ──
        Sélecteurs préfixés par "html .footer-ultra" pour dépasser la
        spécificité des règles globales html:not(.dark) du pont de thème. ── */
-    .footer-links-row, .footer-bottom-row { color: rgba(28,25,21,.85); }
+    .footer-links-row, .footer-bottom-row { color: rgba(255,255,255,.78); }
     html .footer-ultra .footer-links-row .text-white,
-    html .footer-ultra .footer-bottom-row .text-white { color: #1c1915 !important; }
+    html .footer-ultra .footer-bottom-row .text-white { color: #ffffff !important; }
     html .footer-ultra .footer-links-row .text-gray-300,
     html .footer-ultra .footer-links-row .text-gray-400,
     html .footer-ultra .footer-links-row .text-gray-500,
     html .footer-ultra .footer-links-row .text-gray-600,
     html .footer-ultra .footer-bottom-row .text-gray-500,
-    html .footer-ultra .footer-bottom-row .text-gray-600 { color: rgba(28,25,21,.88) !important; }
+    html .footer-ultra .footer-bottom-row .text-gray-600 { color: rgba(255,255,255,.6) !important; }
     html .footer-ultra .footer-links-row a.hover\:text-white:hover,
     html .footer-ultra .footer-links-row a.hover\:text-orange-300:hover,
-    html .footer-ultra .footer-bottom-row a.hover\:text-white:hover { color: #1c1915 !important; }
+    html .footer-ultra .footer-bottom-row a.hover\:text-white:hover { color: #fdba74 !important; }
     html .footer-ultra .footer-links-row .border-white\/5,
     html .footer-ultra .footer-links-row .border-white\/10,
-    html .footer-ultra .footer-bottom-row .border-white\/10 { border-color: rgba(28,25,21,.16) !important; }
+    html .footer-ultra .footer-bottom-row .border-white\/10 { border-color: rgba(255,255,255,.12) !important; }
     html .footer-ultra .footer-links-row h4.text-orange-400\/90,
-    html .footer-ultra .footer-bottom-row a.text-orange-400\/90 { color: #1c1915 !important; }
-    html .footer-ultra .footer-bottom-row a.hover\:text-orange-300:hover { color: #3d2b12 !important; }
-    html .footer-ultra .social-icon-wa { color: #0a3324 !important; border-color: rgba(10,51,36,.3) !important; background-color: rgba(10,51,36,.08) !important; }
-    html .footer-ultra .social-icon-wa:hover { color: #082a1d !important; }
+    html .footer-ultra .footer-bottom-row a.text-orange-400\/90 { color: #fb923c !important; }
+    html .footer-ultra .footer-bottom-row a.hover\:text-orange-300:hover { color: #fdba74 !important; }
+    html .footer-ultra .social-icon-wa { color: #6ee7b7 !important; border-color: rgba(16,185,129,.3) !important; background-color: rgba(16,185,129,.08) !important; }
+    html .footer-ultra .social-icon-wa:hover { color: #a7f3d0 !important; }
 </style>
 
-<footer class="footer-ultra border-t border-white/[0.07]">
+<footer class="footer-ultra border-t border-white/[0.07]"
+    @if($footerImage && $footerImage->isVisible())
+        style="--footer-bg-image: url('{{ $footerImage->image_url }}');"
+    @endif
+>
     <div class="footer-ultra-inner max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div id="newsletter-footer" class="mb-12 sm:mb-14 scroll-mt-28">
             <div class="overflow-hidden rounded-2xl border border-white/[0.09] bg-[#ffffff] shadow-2xl shadow-green-950/50 reveal visible">
@@ -91,7 +105,7 @@
                         <div class="pl-5 sm:pl-6">
                             <p class="text-[10px] font-plus font-bold uppercase tracking-[0.28em] text-orange-400/85 mb-4">Inscription</p>
                             <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-white mb-3 leading-tight tracking-tight">Ne manquez rien de l'Ivoire</h2>
-                            <p class="text-gray-500 text-sm sm:text-[0.9375rem] font-plus leading-relaxed max-w-md">Articles, adresses et événements sélectionnés pour vous, directement dans votre boîte mail.</p>
+                            <p class="text-[#1c1915] text-xl font-elegant font-light leading-relaxed max-w-md">Articles, adresses et événements sélectionnés pour vous, directement dans votre boîte mail.</p>
                         </div>
                     </div>
                     <div class="p-6 sm:p-8 lg:p-10 bg-white/[0.02] flex flex-col justify-center">
@@ -135,7 +149,7 @@
                         <p class="text-gray-600 text-[10px] tracking-[0.16em] uppercase truncate font-plus mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
                     </div>
                 </a>
-                <p class="text-gray-500 text-xs leading-relaxed mb-5 font-plus">{{ $footerBlurb }}</p>
+                <p class="text-[rgba(255,255,255,.72)] text-xl font-elegant font-light leading-relaxed mb-5">{{ $footerBlurb }}</p>
                 @if(count($socialRows) > 0 || $waHref)
                     <p class="text-gray-600 text-[9px] uppercase tracking-[0.18em] mb-2.5 font-plus font-semibold">Réseaux</p>
                     <div class="social-links-wrap flex flex-wrap gap-2">
@@ -150,7 +164,7 @@
             </div>
 
             <div class="lg:col-span-3 lg:px-8 lg:border-r border-white/5">
-                <h4 class="font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-orange-400/90 mb-4">Magazine</h4>
+                <h4 class="font-plus text-sm font-bold uppercase tracking-[0.2em] text-orange-400/90 mb-4">Magazine</h4>
                 <ul class="space-y-0.5 font-plus">
                     <li><a href="{{ route('articles.index') }}" class="footer-v2-link">Tous les articles</a></li>
                     <li><a href="{{ route('discoveries.index') }}" class="footer-v2-link">Découvertes</a></li>
@@ -162,7 +176,7 @@
             </div>
 
             <div class="lg:col-span-3 lg:px-8 lg:border-r border-white/5">
-                <h4 class="font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-orange-400/90 mb-4">Annuaire</h4>
+                <h4 class="font-plus text-sm font-bold uppercase tracking-[0.2em] text-orange-400/90 mb-4">Annuaire</h4>
                 <ul class="space-y-0.5 font-plus">
                     <li><a href="{{ route('providers.index') }}" class="footer-v2-link">Tous les prestataires</a></li>
                     @foreach($homeProviderCategories->take(4) as $pc)
@@ -173,7 +187,7 @@
             </div>
 
             <div class="lg:col-span-3 lg:pl-8">
-                <h4 class="font-plus text-[11px] font-bold uppercase tracking-[0.2em] text-orange-400/90 mb-4">Contact</h4>
+                <h4 class="font-plus text-sm font-bold uppercase tracking-[0.2em] text-orange-400/90 mb-4">Contact</h4>
                 <ul class="space-y-0.5 font-plus mb-5">
                     @forelse($infoPages as $infoPage)
                         <li><a href="{{ route('information.show', $infoPage) }}" class="footer-v2-link">{{ $infoPage->title_fr }}</a></li>

@@ -35,20 +35,43 @@
             border-color: rgba(0,0,0,0.08) !important;
             box-shadow: 0 10px 22px rgba(0,0,0,0.05);
         }
+        /* Image de fond configurable (back-office) du bandeau de la page Annuaire. */
+        .providers-hero {
+            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--providers-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 <body class="bg-[#ffffff] text-white">
     @include('partials.public-top-nav')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <p class="text-orange-400 text-xs tracking-[.25em] uppercase mb-2">Annuaire</p>
-                <h1 class="font-serif text-3xl sm:text-4xl font-bold">Annuaire des prestataires</h1>
-                <p class="text-gray-500 text-sm mt-2">Trouvez les meilleures adresses par ville, catégorie et gamme de prix.</p>
-            </div>
-            <a href="{{ route('home') }}" class="text-orange-400 text-sm hover:text-orange-300 transition">Retour accueil</a>
-        </div>
 
+    @php
+        $providersHeroImage = \Illuminate\Support\Facades\Schema::hasTable('providers_hero_images')
+            ? \App\Models\ProvidersHeroImage::query()->find(1)
+            : null;
+    @endphp
+
+    <section class="providers-hero relative py-20 overflow-hidden"
+        @if($providersHeroImage && $providersHeroImage->isVisible())
+            style="--providers-hero-bg-image: url('{{ $providersHeroImage->image_url }}');"
+        @endif
+    >
+        <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
+        <a href="{{ route('home') }}" class="absolute top-6 right-6 z-10 text-orange-400 text-sm hover:text-orange-300 transition">Retour accueil</a>
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+            <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">Annuaire</p>
+            <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
+                Annuaire des prestataires
+            </h1>
+            <p class="text-[#1c1915] text-xl max-w-2xl mx-auto">
+                Trouvez les meilleures adresses par ville, catégorie et gamme de prix.
+            </p>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         @if($featured->isNotEmpty())
             <div class="mb-6">
                 <h2 class="text-white font-semibold mb-3">Prestataires mis en avant</h2>

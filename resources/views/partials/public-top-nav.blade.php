@@ -8,14 +8,20 @@
     $publicInfoGuide = $publicInfoPages->firstWhere('slug', 'user-guide');
     $publicInfoFaq = $publicInfoPages->firstWhere('slug', 'faq');
     $publicNavItems = [
-        ['label' => 'Accueil',               'href' => route('home'),               'active' => request()->routeIs('home')],
-        ['label' => 'Tourisme',              'href' => route('tourist.cities'),     'active' => request()->routeIs('tourist.*')],
-        ['label' => 'Cultures & Traditions', 'href' => route('cultural.peoples'),   'active' => request()->routeIs('cultural.*')],
-        ['label' => 'Annuaire',              'href' => route('providers.index'),    'active' => request()->routeIs('providers.*')],
-        ['label' => 'Magazine',              'href' => route('articles.index'),     'active' => request()->routeIs('articles.*') || request()->routeIs('discoveries.*')],
-        ['label' => 'Événements',            'href' => route('events.index'),       'active' => request()->routeIs('events.*')],
+        ['label' => 'Accueil',               'icon' => 'fas fa-house',            'href' => route('home'),               'active' => request()->routeIs('home')],
+        ['label' => 'Tourisme',              'icon' => 'fas fa-umbrella-beach',   'href' => route('tourist.cities'),     'active' => request()->routeIs('tourist.*')],
+        ['label' => 'Cultures & Traditions', 'shortLabel' => 'Cultures', 'icon' => 'fas fa-masks-theater',    'href' => route('cultural.peoples'),   'active' => request()->routeIs('cultural.*')],
+        ['label' => 'Annuaire',              'icon' => 'fas fa-address-book',     'href' => route('providers.index'),    'active' => request()->routeIs('providers.*')],
+        ['label' => 'Magazine',              'icon' => 'fas fa-newspaper',        'href' => route('articles.index'),     'active' => request()->routeIs('articles.*') || request()->routeIs('discoveries.*')],
+        ['label' => 'Événements',            'icon' => 'fas fa-calendar-days',    'href' => route('events.index'),       'active' => request()->routeIs('events.*')],
     ];
     $publicGalleryActive = request()->routeIs('gallery.public');
+    $headerImage = $headerImage ?? (\Illuminate\Support\Facades\Schema::hasTable('header_images')
+        ? \App\Models\HeaderImage::query()->find(1)
+        : null);
+    $activeFlashInfos = \Illuminate\Support\Facades\Schema::hasTable('flash_infos')
+        ? \App\Models\FlashInfo::currentlyVisible()->orderBy('display_order')->orderByDesc('id')->get()
+        : collect();
 @endphp
 
 <style>
@@ -42,30 +48,35 @@
     .public-slogan-pill {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.35rem 0.85rem 0.35rem 0.65rem;
+        gap: 0.65rem;
+        padding: 0.5rem 1.1rem 0.5rem 0.85rem;
         border-radius: 9999px;
         border: 1px solid rgba(255,255,255,0.14);
         background: rgba(233, 229, 217, 0.08);
         box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.2);
     }
     .public-pulse-dot {
-        width: 6px; height: 6px; border-radius: 9999px;
+        width: 9px; height: 9px; border-radius: 9999px;
         background: linear-gradient(135deg, #4ade80, #22c55e);
-        box-shadow: 0 0 10px rgba(34,197,94,0.75);
+        box-shadow: 0 0 12px rgba(34,197,94,0.8);
         animation: publicPulse 2.2s ease-in-out infinite;
     }
     @keyframes publicPulse {
         0%, 100% { opacity: 1; transform: scale(1); }
         50% { opacity: 0.65; transform: scale(0.92); }
     }
+    /* Couleurs fixées en CSS pur (et non via classes Tailwind text-green-*) :
+       le pont de thème clair (theme-light-bridge) réécrit ces classes en vert
+       très foncé pour les usages sur fond clair, ce qui les rendait quasi
+       invisibles sur ce bandeau à fond vert foncé. */
+    .public-slogan-text { color: #bbf7d0; }
     .public-topbar-action {
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        padding: 0.32rem 0.85rem;
+        padding: 0.4rem 0.85rem;
         border-radius: 9999px;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 500;
         color: rgba(234, 255, 241, 0.92);
         border: 1px solid rgba(255,255,255,0.14);
@@ -77,29 +88,201 @@
         border-color: rgba(255,255,255,0.3);
         background: rgba(233, 229, 217, 0.16);
     }
+    .public-topbar-action i { font-size: 12px; color: #4ade80; transition: color .2s ease; }
+    .public-topbar-action:hover i { color: #86efac; }
+
+    /* ── Flash info ticker ───────────────────────────────── */
+    .flash-ticker-bg {
+        background:
+            radial-gradient(120% 260% at 0% 0%, rgba(242,121,15,.18), transparent 55%),
+            radial-gradient(90% 220% at 100% 100%, rgba(34,197,94,.12), transparent 55%),
+            linear-gradient(100deg, #14110d 0%, #211106 50%, #2a1408 100%);
+    }
+    .flash-ticker-sheen {
+        background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,.06) 45%, transparent 58%);
+        background-size: 220% 100%;
+        mix-blend-mode: overlay;
+        animation: flash-ticker-sheen-sweep 7s ease-in-out infinite;
+    }
+    @keyframes flash-ticker-sheen-sweep {
+        0%, 100% { background-position: 130% 0; }
+        50%      { background-position: -30% 0; }
+    }
+    .flash-ticker-accent {
+        background: linear-gradient(90deg, transparent, rgba(242,121,15,.85) 50%, transparent);
+        background-size: 200% 100%;
+        animation: flash-ticker-beam 5s ease-in-out infinite;
+    }
+    .flash-ticker-accent-bottom {
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,.08) 50%, transparent);
+    }
+    @keyframes flash-ticker-beam {
+        0%, 100% { background-position: 0% 0; }
+        50%      { background-position: 100% 0; }
+    }
+
+    .flash-ticker-badge {
+        position: relative;
+        display: inline-flex; align-items: center; gap: 16px;
+        padding: 10px 28px 10px 10px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
+        border: 1px solid rgba(242,121,15,.35);
+        box-shadow: 0 1px 0 rgba(255,255,255,.07) inset, 0 12px 30px rgba(0,0,0,.32);
+    }
+    .flash-ticker-badge-orb {
+        position: relative;
+        width: 46px; height: 46px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #fb923c, #f2790f 65%, #c2410c);
+        box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 0 22px rgba(242,121,15,.7);
+        flex-shrink: 0;
+    }
+    .flash-ticker-badge-ring {
+        position: absolute; inset: -6px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(242,121,15,.55);
+        animation: flash-ticker-ripple 2.4s ease-out infinite;
+    }
+    .flash-ticker-badge-ring--2 { animation-delay: 1.2s; }
+    @keyframes flash-ticker-ripple {
+        0%   { opacity: .8; transform: scale(1); }
+        100% { opacity: 0;  transform: scale(1.65); }
+    }
+    .flash-ticker-badge-icon {
+        position: relative;
+        font-size: 19px;
+        color: #fff7ed;
+    }
+    .flash-ticker-badge-copy {
+        position: relative;
+        display: flex; align-items: baseline; gap: 8px;
+        font-size: 18px; font-weight: 800; letter-spacing: .05em;
+        white-space: nowrap;
+    }
+    .flash-ticker-badge-live {
+        background: linear-gradient(90deg, #fed7aa, #fb923c);
+        -webkit-background-clip: text; background-clip: text;
+        color: transparent;
+        text-transform: uppercase;
+    }
+    .flash-ticker-badge-title { color: rgba(255,255,255,.82); text-transform: uppercase; font-weight: 600; }
+
+    .flash-ticker-track {
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+                mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    }
+
+    @keyframes flash-ticker-marquee {
+        from { transform: translateX(0); }
+        to   { transform: translateX(-50%); }
+    }
+    .flash-ticker-scroll {
+        animation-name: flash-ticker-marquee;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+    .flash-ticker-track:hover .flash-ticker-scroll { animation-play-state: paused; }
+
+    .flash-ticker-item {
+        display: inline-flex; align-items: center;
+        padding: 9px 20px;
+        border-radius: 999px;
+        font-size: 19px; font-weight: 500;
+        color: rgba(255,255,255,.92);
+        text-decoration: none;
+        transition: background .25s ease, color .25s ease, transform .25s ease;
+    }
+    a.flash-ticker-item:hover {
+        color: #fff;
+        background: rgba(255,255,255,.08);
+        transform: translateY(-1px);
+    }
+    .flash-ticker-marker {
+        width: 10px; height: 10px; border-radius: 999px;
+        margin-right: 13px; flex-shrink: 0;
+        background: #94a3b8;
+        box-shadow: 0 0 0 5px rgba(148,163,184,.15);
+    }
+    .flash-ticker-item--info    .flash-ticker-marker { background: #38bdf8; box-shadow: 0 0 0 5px rgba(56,189,248,.18), 0 0 12px rgba(56,189,248,.55); }
+    .flash-ticker-item--success .flash-ticker-marker { background: #4ade80; box-shadow: 0 0 0 5px rgba(74,222,128,.18), 0 0 12px rgba(74,222,128,.55); }
+    .flash-ticker-item--warning .flash-ticker-marker { background: #fbbf24; box-shadow: 0 0 0 5px rgba(251,191,36,.18), 0 0 12px rgba(251,191,36,.55); }
+    .flash-ticker-item--urgent  .flash-ticker-marker {
+        background: #fb7185;
+        box-shadow: 0 0 0 5px rgba(251,113,133,.18), 0 0 14px rgba(251,113,133,.75);
+        animation: publicPulse 1.6s ease-in-out infinite;
+    }
+    .flash-ticker-sep {
+        width: 2px; height: 32px;
+        margin: 0 8px;
+        flex-shrink: 0;
+        display: inline-block;
+        background: linear-gradient(180deg, transparent, rgba(255,255,255,.22), transparent);
+    }
+
+    .flash-ticker-close {
+        width: 46px; height: 46px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 999px;
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.08);
+        color: rgba(255,255,255,.55);
+        transition: background .25s ease, color .25s ease, border-color .25s ease, transform .3s ease;
+        font-size: 18px;
+    }
+    .flash-ticker-close:hover {
+        background: rgba(242,121,15,.16);
+        border-color: rgba(242,121,15,.45);
+        color: #fdba74;
+        transform: rotate(90deg);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .flash-ticker-scroll,
+        .flash-ticker-sheen,
+        .flash-ticker-accent,
+        .flash-ticker-badge-ring,
+        .flash-ticker-item--urgent .flash-ticker-marker { animation: none; }
+    }
 
     /* ── Header ──────────────────────────────────────────── */
     .public-header {
-        background: linear-gradient(180deg, rgba(255, 255, 255,0.92) 0%, rgba(255, 255, 255,0.72) 55%, rgba(255, 255, 255,0.45) 100%);
+        background-image: linear-gradient(180deg, rgba(255, 255, 255,0.92) 0%, rgba(255, 255, 255,0.72) 55%, rgba(255, 255, 255,0.45) 100%), var(--header-bg-image, none);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
         backdrop-filter: blur(16px) saturate(160%);
         -webkit-backdrop-filter: blur(16px) saturate(160%);
         border-bottom: 2px solid rgba(34,197,94,0.55);
         transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
     }
+    .public-header[style*="--header-bg-image"] {
+        background-image: linear-gradient(180deg, rgba(255, 255, 255,0.6) 0%, rgba(255, 255, 255,0.45) 55%, rgba(255, 255, 255,0.3) 100%), var(--header-bg-image, none);
+    }
     .public-header.header-scrolled {
-        background: rgba(233, 229, 217, 0.97) !important;
+        background-image: linear-gradient(180deg, rgba(233, 229, 217, 0.97), rgba(233, 229, 217, 0.97)), var(--header-bg-image, none) !important;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
         box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         border-bottom-color: rgba(34,197,94,0.65);
     }
+    .public-header.header-scrolled[style*="--header-bg-image"] {
+        background-image: linear-gradient(180deg, rgba(233, 229, 217, 0.65), rgba(233, 229, 217, 0.65)), var(--header-bg-image, none) !important;
+    }
     .public-nav-pill {
         position: relative;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0.7rem;
         border-radius: 9999px;
         font-size: 0.8125rem;
         font-weight: 500;
         letter-spacing: 0.03em;
         color: rgba(28, 25, 21, 0.72);
         transition: .2s ease;
+    }
+    @media (min-width: 1280px) {
+        .public-nav-pill { padding: 0.5rem 0.75rem; }
     }
     .public-nav-pill:hover {
         color: #1c1915;
@@ -267,31 +450,35 @@
                 {{ session('contact_success') ?? session('contact_error') }}
             </div>
         @endif
-        <div class="py-2.5 flex flex-wrap items-center justify-between gap-y-2 gap-x-4 min-h-[2.5rem]">
+        <div class="py-3.5 flex flex-wrap items-center justify-between gap-y-3 gap-x-5 min-h-[3.25rem]">
             <div class="public-slogan-pill">
                 <span class="public-pulse-dot shrink-0" aria-hidden="true"></span>
-                <span class="text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] uppercase text-green-200/90">
+                <span class="public-slogan-text text-[11px] sm:text-xs font-semibold tracking-[0.14em] uppercase">
                     {{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}
                 </span>
             </div>
-            <div class="flex flex-wrap items-center justify-end gap-2 sm:gap-2.5">
+            <div class="flex flex-wrap items-center justify-end gap-2.5 sm:gap-3">
                 <a href="{{ $topPhoneHref }}" class="public-topbar-action">
-                    <i class="fas fa-phone-volume text-[10px] text-green-400/90"></i>
+                    <i class="fas fa-phone-volume"></i>
                     <span>{{ $topPhoneDisplay }}</span>
                 </a>
+                <a href="{{ route('prestations.public') }}" class="public-topbar-action">
+                    <i class="fas fa-concierge-bell"></i>
+                    Nos prestations
+                </a>
                 <button type="button" onclick="openContactModal()" class="public-topbar-action cursor-pointer">
-                    <i class="fas fa-message text-[10px] text-green-400/90"></i>
+                    <i class="fas fa-message"></i>
                     Contact
                 </button>
                 @if($publicInfoGuide)
                 <a href="{{ route('information.show', $publicInfoGuide) }}" class="public-topbar-action">
-                    <i class="fas fa-book-open text-[10px] text-green-400/90"></i>
+                    <i class="fas fa-book-open"></i>
                     Guide
                 </a>
                 @endif
                 @if($publicInfoFaq)
                 <a href="{{ route('information.show', $publicInfoFaq) }}" class="public-topbar-action">
-                    <i class="fas fa-circle-question text-[10px] text-green-400/90"></i>
+                    <i class="fas fa-circle-question"></i>
                     FAQ
                 </a>
                 @endif
@@ -308,7 +495,11 @@
 {{-- ══════════════════════════════════════════════════════════
      HEADER
 ══════════════════════════════════════════════════════════ --}}
-<header id="main-header" class="public-header font-plus sticky top-0 z-40">
+<header id="main-header" class="public-header font-plus sticky top-0 z-40"
+    @if($headerImage && $headerImage->isVisible())
+        style="--header-bg-image: url('{{ $headerImage->image_url }}');"
+    @endif
+>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[4.25rem] md:h-[5.25rem] flex items-center justify-between gap-4 md:gap-8">
         <a href="{{ route('home') }}" class="flex items-center gap-3 sm:gap-3.5 shrink-0 group">
             @if(!empty($siteBrand['logo_url']))
@@ -334,16 +525,20 @@
             </div>
         </a>
 
-        <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1">
+        <nav class="hidden lg:flex items-center gap-0 xl:gap-0.5">
             @foreach($publicNavItems as $item)
             <a href="{{ $item['href'] }}"
-               class="public-nav-pill public-nav-pill-glow whitespace-nowrap {{ $item['active'] ? 'is-active' : '' }}">
-                {{ $item['label'] }}
+               class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 xl:gap-1.5 {{ $item['active'] ? 'is-active' : '' }}">
+                <i class="{{ $item['icon'] }} text-[11px] opacity-80 hidden 2xl:inline"></i>
+                <span class="2xl:hidden">{{ $item['shortLabel'] ?? $item['label'] }}</span>
+                <span class="hidden 2xl:inline">{{ $item['label'] }}</span>
             </a>
             @endforeach
             <a href="{{ route('gallery.public') }}"
-               class="public-nav-pill public-nav-pill-glow whitespace-nowrap {{ $publicGalleryActive ? 'is-active' : '' }}">
-                Galerie Tresors d'Ivoire
+               class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 xl:gap-1.5 {{ $publicGalleryActive ? 'is-active' : '' }}">
+                <i class="fas fa-camera-retro text-[11px] opacity-80 hidden 2xl:inline"></i>
+                <span class="2xl:hidden">Galerie</span>
+                <span class="hidden 2xl:inline">Galerie Tresors d'Ivoire</span>
             </a>
         </nav>
 
@@ -368,11 +563,11 @@
 
                 {{-- Trigger --}}
                 <button type="button" id="nav-user-dropdown-btn"
-                        class="group inline-flex items-center gap-2.5 pl-1.5 pr-3.5 py-1.5 rounded-full border border-white/10 bg-white/4 hover:border-orange-500/30 hover:bg-orange-500/6 transition-all duration-200">
+                        class="group inline-flex items-center gap-2 pl-1.5 pr-2 2xl:pr-3.5 py-1.5 rounded-full border border-white/10 bg-white/4 hover:border-orange-500/30 hover:bg-orange-500/6 transition-all duration-200">
                     <span class="w-7 h-7 rounded-full bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center text-[11px] font-bold text-white shadow-sm">
                         {{ $__initials }}
                     </span>
-                    <span class="text-sm font-medium text-gray-300 group-hover:text-orange-100 transition-colors">Mon espace</span>
+                    <span class="hidden 2xl:inline text-sm font-medium text-gray-300 group-hover:text-orange-100 transition-colors">Mon espace</span>
                     <i class="fas fa-chevron-down text-[9px] text-gray-500 group-hover:text-orange-400 transition-all duration-200" id="nav-dd-chevron"></i>
                 </button>
 
@@ -514,6 +709,85 @@
         </div>
     </div>
 </header>
+
+{{-- ══════════════════════════════════════════════════════════
+     FLASH INFO — bandeau défilant, géré depuis le back-office
+     (Administration → Apparence → Flash info)
+══════════════════════════════════════════════════════════ --}}
+@if($activeFlashInfos->isNotEmpty())
+@php
+    $flashAllDismissible = $activeFlashInfos->every(fn ($f) => $f->is_dismissible);
+    $flashIdsKey = $activeFlashInfos->pluck('id')->implode(',');
+    $flashDuration = max(20, $activeFlashInfos->count() * 6);
+@endphp
+<div id="flash-ticker" class="flash-ticker relative z-10 overflow-hidden text-white"
+     data-flash-ids="{{ $flashIdsKey }}" role="region" aria-label="Fil d'actualités">
+    <div class="flash-ticker-bg absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+    <div class="flash-ticker-sheen absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+    <div class="flash-ticker-accent absolute inset-x-0 top-0 h-px pointer-events-none" aria-hidden="true"></div>
+    <div class="flash-ticker-accent-bottom absolute inset-x-0 bottom-0 h-px pointer-events-none" aria-hidden="true"></div>
+
+    <div class="relative mx-auto flex min-h-[4.5rem] max-w-[95rem] items-center gap-5 px-5 py-4 md:min-h-[5.75rem] md:gap-8 md:px-10">
+        <div class="shrink-0">
+            <span class="flash-ticker-badge">
+                <span class="flash-ticker-badge-orb">
+                    <span class="flash-ticker-badge-ring"></span>
+                    <span class="flash-ticker-badge-ring flash-ticker-badge-ring--2"></span>
+                    <i class="fas fa-tower-broadcast flash-ticker-badge-icon"></i>
+                </span>
+                <span class="flash-ticker-badge-copy">
+                    <span class="flash-ticker-badge-live">Flash</span>
+                    <span class="flash-ticker-badge-title">Info</span>
+                </span>
+            </span>
+        </div>
+
+        <div class="flash-ticker-track relative min-w-0 flex-1 overflow-hidden">
+            <div class="flash-ticker-scroll flex w-max items-center whitespace-nowrap" style="animation-duration: {{ $flashDuration }}s">
+                @for ($pass = 0; $pass < 2; $pass++)
+                    @foreach($activeFlashInfos as $flash)
+                        @if($flash->link_url)
+                        <a href="{{ $flash->link_url }}" class="flash-ticker-item flash-ticker-item--{{ $flash->type }}">
+                            <span class="flash-ticker-marker"></span>{{ $flash->message }}
+                        </a>
+                        @else
+                        <span class="flash-ticker-item flash-ticker-item--{{ $flash->type }}">
+                            <span class="flash-ticker-marker"></span>{{ $flash->message }}
+                        </span>
+                        @endif
+                        <span class="flash-ticker-sep" aria-hidden="true"></span>
+                    @endforeach
+                @endfor
+            </div>
+        </div>
+
+        @if($flashAllDismissible)
+        <button type="button" class="flash-ticker-close shrink-0" onclick="dismissFlashTicker()" aria-label="Fermer le fil d'actualités">
+            <i class="fas fa-xmark"></i>
+        </button>
+        @endif
+    </div>
+</div>
+<script>
+    (function () {
+        var el = document.getElementById('flash-ticker');
+        if (!el) return;
+        var storageKey = 'flashTickerDismissed';
+        var currentIds = el.dataset.flashIds || '';
+
+        window.dismissFlashTicker = function () {
+            el.remove();
+            try { localStorage.setItem(storageKey, currentIds); } catch (e) { /* indisponible : ignoré */ }
+        };
+
+        // Exécuté immédiatement pour éviter tout flash si le visiteur avait déjà
+        // fermé exactement ce même jeu de messages lors d'une visite précédente.
+        try {
+            if (localStorage.getItem(storageKey) === currentIds) el.remove();
+        } catch (e) { /* localStorage indisponible : on ignore */ }
+    })();
+</script>
+@endif
 
 {{-- ══════════════════════════════════════════════════════════
      MODAL DE CONTACT

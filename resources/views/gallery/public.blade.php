@@ -54,7 +54,7 @@
             background-color:#e9e5d9;
             background-image:
                 radial-gradient(ellipse 120% 80% at 10% -10%, rgba(242, 121, 15, 0.14), transparent 55%),
-                radial-gradient(ellipse 90% 60% at 100% 0%, rgba(99, 102, 241, 0.06), transparent 50%),
+                radial-gradient(ellipse 90% 60% at 100% 0%, rgba(242, 121, 15, 0.06), transparent 50%),
                 radial-gradient(ellipse 70% 50% at 50% 110%, rgba(242, 121, 15, 0.05), transparent 55%);
         }
         .gallery-grid-noise {
@@ -86,8 +86,19 @@
             background-image:
                 linear-gradient(135deg, rgba(255, 255, 255,0.97) 0%, rgba(26,21,6,0.92) 42%, rgba(21,18,8,0.95) 100%),
                 radial-gradient(ellipse 100% 60% at 0% 0%, rgba(242, 121, 15, 0.18), transparent 52%),
-                radial-gradient(ellipse 80% 50% at 100% 20%, rgba(99, 102, 241, 0.07), transparent 48%),
+                radial-gradient(ellipse 80% 50% at 100% 20%, rgba(242, 121, 15, 0.07), transparent 48%),
                 radial-gradient(ellipse 60% 40% at 50% 100%, rgba(242, 121, 15, 0.06), transparent 55%);
+        }
+        /* Image de fond configurable (back-office) : posée sur le calque assombrissant
+           (voir .gallery-hero-bgphoto plus bas) plutôt que sur .gallery-hero-shell,
+           qui est entièrement recouvert par ce calque opaque. */
+        .gallery-hero-bgphoto {
+            background-image:
+                linear-gradient(to bottom right, rgba(13,9,4,.78), rgba(7,7,12,.78), rgba(13,9,4,.78)),
+                var(--gallery-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         .gallery-hero-grid {
             background-image:
@@ -162,28 +173,38 @@
 
 @include('partials.public-top-nav')
 
-<section class="relative isolate overflow-hidden border-b border-white/[0.08] gallery-hero-shell pt-28 sm:pt-36 pb-16 sm:pb-24 bg-[#050507]">
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#090b14] via-[#07070c] to-[#120a1d]"></div>
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(250, 154, 60,0.22),transparent_42%),radial-gradient(circle_at_84%_14%,rgba(139,92,246,0.22),transparent_36%),radial-gradient(circle_at_55%_78%,rgba(56,189,248,0.16),transparent_40%)]"></div>
+@php
+    $galleryHeroImage = \Illuminate\Support\Facades\Schema::hasTable('gallery_hero_images')
+        ? \App\Models\GalleryHeroImage::query()->find(1)
+        : null;
+@endphp
+
+<section class="relative isolate overflow-hidden border-b border-white/[0.08] gallery-hero-shell pt-12 sm:pt-14 pb-6 sm:pb-8 bg-[#050507]">
+    <div class="pointer-events-none absolute inset-0 gallery-hero-bgphoto"
+        @if($galleryHeroImage && $galleryHeroImage->isVisible())
+            style="--gallery-hero-bg-image: url('{{ $galleryHeroImage->image_url }}');"
+        @endif
+    ></div>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(250,154,60,0.24),transparent_42%),radial-gradient(circle_at_84%_14%,rgba(250,154,60,0.16),transparent_36%),radial-gradient(circle_at_55%_78%,rgba(250,154,60,0.14),transparent_40%)]"></div>
     <div class="pointer-events-none absolute inset-0 gallery-grid-noise opacity-[0.38] mix-blend-soft-light"></div>
     <div class="pointer-events-none absolute inset-0 gallery-hero-grid opacity-[0.24]"></div>
     <div class="pointer-events-none absolute left-1/2 top-0 h-[26rem] w-[min(92%,72rem)] -translate-x-1/2 bg-gradient-to-b from-white/[0.16] via-white/[0.03] to-transparent blur-3xl"></div>
     <div class="pointer-events-none absolute -left-28 top-1/4 h-[24rem] w-[24rem] rounded-full bg-orange-500/25 blur-3xl gallery-hero-glow"></div>
-    <div class="pointer-events-none absolute -right-24 top-[-2rem] h-[22rem] w-[22rem] rounded-full bg-green-500/20 blur-3xl gallery-hero-glow"></div>
-    <div class="pointer-events-none absolute bottom-[-5rem] left-1/2 h-56 w-[min(94%,50rem)] -translate-x-1/2 rounded-full bg-gradient-to-r from-orange-400/20 via-green-400/10 to-green-300/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -right-24 top-[-2rem] h-[22rem] w-[22rem] rounded-full bg-orange-500/20 blur-3xl gallery-hero-glow"></div>
+    <div class="pointer-events-none absolute bottom-[-5rem] left-1/2 h-56 w-[min(94%,50rem)] -translate-x-1/2 rounded-full bg-orange-400/15 blur-3xl"></div>
     <div class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-        <nav class="reveal mb-8 inline-flex flex-wrap items-center gap-1.5 rounded-full border border-white/[0.14] bg-green-950/25 px-1.5 py-1.5 backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] font-plus text-[11px] sm:text-xs">
+        <nav class="reveal mb-5 inline-flex flex-wrap items-center gap-1.5 rounded-full border border-white/[0.14] bg-[#1a0f04]/25 px-1.5 py-1.5 backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] font-plus text-[11px] sm:text-xs">
             <a href="{{ route('home') }}" class="rounded-full px-3 py-1.5 text-gray-200 hover:text-white hover:bg-white/[0.08] transition">Accueil</a>
             <span class="text-white/35 select-none" aria-hidden="true">/</span>
             <span class="rounded-full bg-gradient-to-r from-orange-400/30 to-orange-500/20 px-3 py-1.5 font-semibold text-orange-100 border border-orange-300/35">Galerie</span>
         </nav>
 
-        <div class="max-w-3xl relative rounded-3xl border border-white/10 bg-green-950/35 backdrop-blur-md px-5 py-6 sm:px-8 sm:py-8 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
-            <div class="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-green-950/55 via-green-950/40 to-green-950/60"></div>
+        <div class="max-w-3xl relative rounded-3xl border border-white/10 bg-[#1a0f04]/85 backdrop-blur-md px-5 py-5 sm:px-7 sm:py-6 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+            <div class="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-[#1a0f04]/90 via-[#1a0f04]/80 to-[#1a0f04]/90"></div>
             <div class="pointer-events-none absolute inset-0 rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"></div>
-            <div class="reveal mb-6 inline-flex items-center gap-2.5 rounded-full border border-orange-400/35 bg-gradient-to-r from-orange-500/20 via-green-950/10 to-green-500/10 px-4 py-2 backdrop-blur-sm">
+            <div class="reveal mb-4 inline-flex items-center gap-2.5 rounded-full border border-orange-400/35 bg-gradient-to-r from-orange-500/20 via-orange-400/10 to-orange-500/10 px-4 py-1.5 backdrop-blur-sm">
                 <span class="relative flex h-2 w-2 shrink-0">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-50"></span>
                     <span class="relative inline-flex h-2 w-2 rounded-full bg-orange-400 shadow-[0_0_12px_rgba(250, 154, 60,0.8)]"></span>
@@ -191,13 +212,13 @@
                 <span class="text-[10px] sm:text-[11px] font-plus font-bold uppercase tracking-[0.28em] text-orange-100 [text-shadow:0_1px_3px_rgba(0,0,0,0.45)]">Photographie</span>
             </div>
 
-            <h1 class="reveal relative z-10 font-serif text-[2.35rem] sm:text-5xl md:text-6xl lg:text-[3.5rem] font-semibold leading-[1.05] sm:leading-[1.02] gallery-hero-title pb-1 text-white [text-shadow:0_8px_30px_rgba(0,0,0,0.65)]">
+            <h1 class="reveal relative z-10 font-serif text-3xl sm:text-4xl md:text-5xl font-semibold leading-[1.05] sm:leading-[1.02] gallery-hero-title pb-1 text-white [text-shadow:0_8px_30px_rgba(0,0,0,0.65)]">
                 Galerie Trésors d'Ivoire
             </h1>
 
-            <div class="reveal relative z-10 mt-6 h-px w-16 sm:w-24 rounded-full bg-gradient-to-r from-orange-300 via-orange-400/80 to-transparent"></div>
+            <div class="reveal relative z-10 mt-4 h-px w-16 sm:w-20 rounded-full bg-gradient-to-r from-orange-300 via-orange-400/80 to-transparent"></div>
 
-            <p class="relative z-10 mt-6 sm:mt-8 inline-block rounded-2xl border border-orange-200/40 bg-green-950/75 px-4 py-3 sm:px-5 sm:py-3.5 backdrop-blur-md text-base sm:text-lg md:text-xl text-orange-50 font-plus font-bold leading-relaxed max-w-2xl tracking-normal shadow-[0_14px_40px_rgba(0,0,0,0.55),0_0_22px_rgba(250, 154, 60,0.12)] [text-shadow:0_0_14px_rgba(255,235,180,0.28),0_4px_18px_rgba(0,0,0,0.82)]">
+            <p class="relative z-10 mt-4 sm:mt-5 inline-block rounded-2xl border border-orange-200/40 bg-[#1a0f04]/75 px-4 py-2.5 sm:px-5 sm:py-3 backdrop-blur-md text-sm sm:text-base text-orange-50 font-plus font-bold leading-relaxed max-w-2xl tracking-normal shadow-[0_14px_40px_rgba(0,0,0,0.55),0_0_22px_rgba(250, 154, 60,0.12)] [text-shadow:0_0_14px_rgba(255,235,180,0.28),0_4px_18px_rgba(0,0,0,0.82)]">
                 Un regard sur la Côte d'Ivoire : instants choisis par la rédaction, disponibles en pleine page.
             </p>
         </div>
@@ -226,8 +247,8 @@
                 <div class="max-w-2xl">
                     <div class="gallery-selection-badge inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 backdrop-blur-md mb-5">
                         <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-60"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-400"></span>
                         </span>
                         <span class="gallery-selection-copy text-[11px] font-plus font-semibold uppercase tracking-[0.2em]">{{ $galleryImages->count() }} visuel{{ $galleryImages->count() > 1 ? 's' : '' }}</span>
                     </div>
@@ -262,16 +283,16 @@
                         <a href="{{ filled($img->uuid) ? route('gallery.public.show', $img->uuid) : url($img->url) }}"
                            @if(!filled($img->uuid)) target="_blank" rel="noopener noreferrer" @endif
                            class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff]">
-                            <div class="relative aspect-[4/3] overflow-hidden bg-green-950">
-                                <div class="absolute inset-0 bg-gradient-to-t from-green-950/80 via-green-950/20 to-transparent z-[1] opacity-90"></div>
+                            <div class="relative aspect-[4/3] overflow-hidden bg-[#1a0f04]">
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#1a0f04]/80 via-[#1a0f04]/20 to-transparent z-[1] opacity-90"></div>
                                 <div class="gallery-shine"></div>
                                 <img src="{{ url($img->url) }}" alt="{{ $alt }}" loading="lazy" decoding="async"
                                      class="gallery-img relative z-0 w-full h-full object-cover">
-                                <div class="absolute bottom-3 right-3 z-[3] flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-green-950/40 text-white/90 backdrop-blur-md opacity-0 translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                                <div class="absolute bottom-3 right-3 z-[3] flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#1a0f04]/60 text-white/90 backdrop-blur-md opacity-0 translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
                                     <i class="fas fa-arrow-up-right text-xs"></i>
                                 </div>
                             </div>
-                            <div class="relative px-5 py-4 sm:px-6 sm:py-5 border-t border-white/15 bg-gradient-to-b from-green-950/60 via-green-950/45 to-green-950/30 backdrop-blur-md">
+                            <div class="relative px-5 py-4 sm:px-6 sm:py-5 border-t border-white/15 bg-gradient-to-b from-[#1a0f04]/75 via-[#1a0f04]/55 to-[#1a0f04]/30 backdrop-blur-md">
                                 @if($title !== '')
                                     <p class="text-white font-serif text-[15px] sm:text-[17px] font-semibold leading-snug tracking-tight [text-shadow:0_3px_12px_rgba(0,0,0,0.6)] group-hover:text-orange-100 transition-colors">{{ $title }}</p>
                                 @else
@@ -283,12 +304,12 @@
                                 <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
                                     <div class="flex flex-wrap items-center gap-2">
                                         @if($credit !== '')
-                                            <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-green-950/55 px-2.5 py-1 text-[10px] font-semibold text-gray-100 font-plus shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
+                                            <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-[#1a0f04]/65 px-2.5 py-1 text-[10px] font-semibold text-gray-100 font-plus shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
                                                 <i class="fas fa-camera text-orange-300 text-[9px]"></i>{{ $credit }}
                                             </span>
                                         @endif
                                         @if($price)
-                                            <span class="inline-flex items-center rounded-full border border-emerald-300/35 bg-emerald-400/20 px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-emerald-100 font-plus shadow-[0_0_12px_rgba(16,185,129,0.2)]">{{ $price }}</span>
+                                            <span class="inline-flex items-center rounded-full border border-orange-300/35 bg-orange-400/20 px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-orange-100 font-plus shadow-[0_0_12px_rgba(250,154,60,0.25)]">{{ $price }}</span>
                                         @endif
                                     </div>
                                     <span class="text-[10px] font-plus font-bold uppercase tracking-[0.15em] text-orange-200/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:inline [text-shadow:0_2px_8px_rgba(0,0,0,0.45)]">

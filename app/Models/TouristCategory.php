@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class TouristCategory extends Model
 {
     protected $fillable = [
-        'name', 'slug', 'icon', 'color',
+        'name', 'slug', 'icon', 'color', 'hero_image_url',
         'description', 'sort_order', 'is_active',
     ];
 

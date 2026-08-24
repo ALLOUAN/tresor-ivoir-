@@ -32,8 +32,11 @@
         html:not(.dark) .placeholder-slate-500::placeholder { color:#665f52 !important; }
     </style>
 </head>
-<body class="min-h-screen bg-green-950 flex items-center justify-center p-4">
+<body class="min-h-screen bg-green-950 flex flex-col">
 
+@include('partials.public-top-nav')
+
+    <div class="flex-1 flex items-center justify-center p-4">
     <div class="w-full max-w-md">
         {{-- Retour accueil --}}
         <div class="mb-4">
@@ -147,6 +150,7 @@
         <p class="text-center text-slate-600 text-xs mt-6">
             &copy; {{ date('Y') }} {{ $siteBrand['site_name'] }} — Tous droits réservés
         </p>
+    </div>
     </div>
 
 </body>

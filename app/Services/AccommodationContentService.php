@@ -1,0 +1,165 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Accommodation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+/**
+ * Parsing / stockage des sous-contenus dynamiques d'un hébergement
+ * (types de chambres, liens de réservation, équipements, médias).
+ * Partagé entre la gestion admin et l'auto-gestion prestataire.
+ */
+class AccommodationContentService
+{
+    /** Parse les lignes dynamiques de types de chambres. */
+    public function parseRoomTypes(Request $request): ?array
+    {
+        $names = $request->input('room_name', []);
+        $adults = $request->input('room_max_adults', []);
+        $children = $request->input('room_max_children', []);
+        $areas = $request->input('room_area_m2', []);
+        $pricesXof = $request->input('room_price_xof', []);
+        $pricesEur = $request->input('room_price_eur', []);
+        $amenities = $request->input('room_amenities', []);
+        $photos = $request->input('room_photos', []);
+
+        $rooms = [];
+        foreach ($names as $i => $name) {
+            if (empty(trim($name))) {
+                continue;
+            }
+            $rooms[] = [
+                'name' => trim($name),
+                'max_adults' => (int) ($adults[$i] ?? 2),
+                'max_children' => (int) ($children[$i] ?? 0),
+                'area_m2' => ! empty($areas[$i]) ? (float) $areas[$i] : null,
+                'price_xof' => ! empty($pricesXof[$i]) ? (int) $pricesXof[$i] : null,
+                'price_eur' => ! empty($pricesEur[$i]) ? (float) $pricesEur[$i] : null,
+                'amenities' => ! empty($amenities[$i])
+                    ? array_values(array_filter(array_map('trim', explode(',', $amenities[$i]))))
+                    : [],
+                'photos' => ! empty($photos[$i])
+                    ? array_values(array_filter(array_map('trim', explode(',', $photos[$i]))))
+                    : [],
+            ];
+        }
+
+        return $rooms ?: null;
+    }
+
+    /** Parse les lignes dynamiques de liens de réservation. */
+    public function parseBookingLinks(Request $request): ?array
+    {
+        $providers = $request->input('bl_provider', []);
+        $urls = $request->input('bl_url', []);
+        $logos = $request->input('bl_logo', []);
+        $officials = $request->input('bl_official', []);
+        $badges = $request->input('bl_badge', []);
+
+        $links = [];
+        foreach ($providers as $i => $provider) {
+            if (empty(trim($provider))) {
+                continue;
+            }
+            $links[] = [
+                'provider_name' => trim($provider),
+                'logo_url' => ! empty($logos[$i]) ? trim($logos[$i]) : null,
+                'affiliate_url' => ! empty($urls[$i]) ? trim($urls[$i]) : '#',
+                'is_official' => in_array((string) $i, (array) $officials),
+                'badge_text' => ! empty($badges[$i]) ? trim($badges[$i]) : null,
+                'sort_order' => $i,
+            ];
+        }
+
+        return $links ?: null;
+    }
+
+    /** Parse des paires icon/label (commodités). */
+    public function parseKeyLabel(Request $request, string $iconField, string $labelField): ?array
+    {
+        $icons = $request->input($iconField, []);
+        $labels = $request->input($labelField, []);
+
+        $result = [];
+        foreach ($labels as $i => $label) {
+            if (empty(trim($label))) {
+                continue;
+            }
+            $result[] = [
+                'icon' => trim($icons[$i] ?? 'fas fa-check'),
+                'label' => trim($label),
+            ];
+        }
+
+        return $result ?: null;
+    }
+
+    /** Upload les photos de chambre et les ajoute dans le tableau room_types. */
+    public function uploadRoomPhotos(Request $request, ?array $rooms): ?array
+    {
+        if (! $rooms) {
+            return $rooms;
+        }
+        foreach ($rooms as $i => &$room) {
+            $files = $request->file("room_photo_files.{$i}") ?? [];
+            foreach ((array) $files as $file) {
+                if (! $file || ! $file->isValid()) {
+                    continue;
+                }
+                $room['photos'][] = $this->storeImage($file, 'accommodations/rooms', 'room');
+            }
+        }
+
+        return $rooms;
+    }
+
+    public function storeUploadedMedia(Request $request, Accommodation $accommodation): void
+    {
+        $files = $request->file('media_files', []);
+        foreach ($files as $file) {
+            if (! $file || ! $file->isValid()) {
+                continue;
+            }
+            $url = $this->storeImage($file, 'accommodations/media', 'photo');
+            $accommodation->media()->create(['type' => 'photo', 'url' => $url]);
+        }
+    }
+
+    public function storeImage(\Illuminate\Http\UploadedFile $file, string $folder, string $prefix): string
+    {
+        $ext = strtolower($file->getClientOriginalExtension()) ?: 'jpg';
+        $filename = $folder.'/'.$prefix.'_'.Str::random(32).'.'.$ext;
+        Storage::disk('public')->put($filename, fopen($file->getPathname(), 'r'));
+
+        return '/storage/'.$filename;
+    }
+
+    public function deleteImage(?string $url): void
+    {
+        if (! $url || ! str_starts_with($url, '/storage/')) {
+            return;
+        }
+        Storage::disk('public')->delete(ltrim(str_replace('/storage/', '', $url), '/'));
+    }
+
+    /** Génère un slug unique pour un hébergement, en excluant éventuellement son propre id. */
+    public function uniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $base = Str::slug($name) ?: 'hebergement';
+        $slug = $base;
+        $i = 1;
+        while (
+            Accommodation::withTrashed()
+                ->where('slug', $slug)
+                ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+                ->exists()
+        ) {
+            $slug = $base.'-'.(++$i);
+        }
+
+        return $slug;
+    }
+}

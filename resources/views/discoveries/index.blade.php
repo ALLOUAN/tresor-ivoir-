@@ -65,11 +65,11 @@
     <div class="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none" style="background:rgba(242, 121, 15,0.06)"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="max-w-2xl">
-            <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Explorer par thème</p>
+            <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-3">Explorer par thème</p>
             <h1 class="font-serif text-4xl sm:text-5xl font-bold mb-5 leading-tight">
                 Découvertes
             </h1>
-            <p class="text-gray-400 font-elegant text-xl font-light leading-relaxed mb-8">
+            <p class="text-[#1c1915] font-elegant text-xl font-light leading-relaxed mb-8">
                 Plongez dans la richesse et la diversité de la Côte d'Ivoire à travers nos rubriques thématiques — patrimoine, culture, gastronomie, nature et art de vivre.
             </p>
             <div class="flex flex-wrap gap-3">
@@ -95,7 +95,7 @@
 <section class="py-16 sm:py-20 bg-dark-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="mb-10 sm:mb-12 reveal">
-            <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-2">Nos rubriques</p>
+            <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-2">Nos rubriques</p>
             <h2 class="font-serif text-2xl sm:text-3xl font-bold gold-line">Explorer par catégorie</h2>
         </div>
 
@@ -163,7 +163,7 @@
 
         <div class="flex items-end justify-between mb-10 sm:mb-12 reveal">
             <div>
-                <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-2">Sélection éditoriale</p>
+                <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-2">Sélection éditoriale</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold gold-line">Dernières publications</h2>
             </div>
             <a href="{{ route('articles.index') }}"

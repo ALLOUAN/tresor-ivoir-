@@ -32,25 +32,7 @@
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
 
-<header class="bg-[#ffffff]/95 backdrop-blur border-b border-white/8 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-        <a href="{{ route('home') }}" class="flex items-center gap-2 shrink-0">
-            @if(!empty($siteBrand['logo_url']))
-                <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden p-0.5">
-                    <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
-                </div>
-            @else
-                <div class="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center">
-                    <i class="fas fa-gem text-black text-xs"></i>
-                </div>
-            @endif
-            <span class="font-serif font-bold text-orange-400 text-sm hidden sm:block truncate max-w-[200px]">{{ $siteBrand['site_name'] }}</span>
-        </a>
-        <a href="{{ route('home') }}" class="text-xs text-gray-500 hover:text-orange-400 transition">
-            <i class="fas fa-arrow-left mr-1"></i>Accueil
-        </a>
-    </div>
-</header>
+@include('partials.public-top-nav')
 
 <article class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
     <nav class="flex items-center gap-2 text-xs text-gray-600 mb-8">

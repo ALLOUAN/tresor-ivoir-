@@ -505,9 +505,131 @@
             background: rgba(233, 229, 217, 0.85);
         }
 
+        /* ── Categories bar (chips) — repris du modèle de /articles ──────── */
+        .category-chip {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            color: rgba(203, 213, 225, 0.9);
+            transition: transform .2s ease, border-color .2s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease;
+        }
+        .category-chip::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.16), transparent);
+            transform: translateX(-130%);
+            transition: transform .45s ease;
+            pointer-events: none;
+        }
+        .category-chip::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #d4630a, #fa9a3c, #f2790f);
+            transition: width .24s ease;
+            box-shadow: 0 0 10px rgba(242, 121, 15,0.45);
+        }
+        .category-chip:hover {
+            transform: translateY(-1px);
+            color: #ffffff;
+            border-color: rgba(242, 121, 15,0.3);
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+            box-shadow: 0 0 14px rgba(242, 121, 15,0.14);
+        }
+        .category-chip:hover::before {
+            transform: translateX(130%);
+        }
+        .category-chip:hover::after {
+            width: 72%;
+        }
+        .category-chip.is-active {
+            border-color: rgba(242, 121, 15,0.52);
+            background: linear-gradient(135deg, #fa9a3c, #f2790f);
+            color: #090705;
+            box-shadow: 0 8px 20px rgba(242, 121, 15,0.3);
+        }
+        .category-chip.is-active::after {
+            width: 76%;
+            background: rgba(9,7,5,0.8);
+            box-shadow: none;
+        }
+        .categories-strip {
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 9999px;
+            background: rgba(8,8,7,0.38);
+            backdrop-filter: blur(10px) saturate(120%);
+            padding: 0.45rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .categories-strip::-webkit-scrollbar {
+            display: none;
+        }
+        .categories-strip {
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+                    mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+        }
+        .categories-nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+            width: 34px; height: 34px;
+            border-radius: 999px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(28,25,21,0.9);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+            cursor: pointer;
+            font-size: 12px;
+            transition: background .2s ease, transform .2s ease, opacity .2s ease;
+        }
+        .categories-nav-arrow:hover { background: #f2790f; transform: translateY(-50%) scale(1.06); }
+        .categories-nav-arrow--left { left: -4px; }
+        .categories-nav-arrow--right { right: -4px; }
+        .categories-nav-arrow[hidden] { display: none; }
+        html:not(.dark) .categories-strip {
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(233, 229, 217, 0.92);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        html:not(.dark) .categories-nav-arrow {
+            background: rgba(255,255,255,0.96);
+            color: #1c1915;
+            border-color: rgba(0,0,0,0.1);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        }
+        html:not(.dark) .categories-nav-arrow:hover { background: #f2790f; color: #fff; }
+        html:not(.dark) .category-chip {
+            border-color: rgba(0,0,0,0.12);
+            background: rgba(233, 229, 217, 0.9);
+            color: #2d2a23;
+        }
+        html:not(.dark) .category-chip:hover {
+            color: #1c1915;
+            border-color: rgba(194, 94, 10,0.35);
+            background: rgba(242, 121, 15,0.10);
+            box-shadow: 0 0 14px rgba(194, 94, 10,0.12);
+        }
+        html:not(.dark) .category-chip.is-active {
+            border-color: rgba(194, 94, 10,0.45);
+            background: linear-gradient(135deg, #fa9a3c, #f2790f);
+            color: #1c1915;
+            box-shadow: 0 8px 18px rgba(194, 94, 10,0.2);
+        }
+
     </style>
 </head>
-<body class="bg-dark-900 text-white antialiased font-sans">
+<body class="relative bg-dark-900 text-white antialiased font-sans">
 @php
     $topContact = $siteBrand['contact'] ?? [];
     $topPhoneDisplay = !empty($topContact['phone_1']) ? $topContact['phone_1'] : '+225 27 22 48 36 90';
@@ -633,21 +755,29 @@
 
     {{-- Categories bar --}}
     <div class="relative z-10 border-t border-white/8 bg-dark-900/60 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="flex items-center overflow-x-auto gap-0 scrollbar-none py-1">
-                <a href="{{ route('articles.index') }}"
-                   class="shrink-0 px-4 py-4 text-xs {{ !request('categorie') && request()->routeIs('home') ? 'text-gold-400 border-gold-400/50' : 'text-gray-400 border-transparent' }} hover:text-gold-400 tracking-wider uppercase font-medium transition border-b-2 hover:border-gold-400/50 whitespace-nowrap">
-                    Tout voir
-                </a>
-                @foreach($homeCategories as $cat)
-                <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}"
-                   class="shrink-0 px-4 py-4 text-xs text-gray-400 hover:text-gold-400 tracking-wider uppercase font-medium transition border-b-2 border-transparent hover:border-gold-400/50 whitespace-nowrap">
-                    {{ $cat->name_fr }}
-                    @if($cat->articles_count > 0)
-                    <span class="ml-1 text-gray-600">({{ $cat->articles_count }})</span>
-                    @endif
-                </a>
-                @endforeach
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+            <div class="categories-nav relative">
+                <button type="button" class="categories-nav-arrow categories-nav-arrow--left" data-dir="-1" aria-label="Catégories précédentes" hidden>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="categories-strip flex items-center gap-2.5 overflow-x-auto scrollbar-none">
+                    <a href="{{ route('articles.index') }}"
+                       class="category-chip {{ !request('categorie') && request()->routeIs('home') ? 'is-active' : '' }} shrink-0 px-5 py-2 rounded-full text-sm font-semibold">
+                        Tous
+                    </a>
+                    @foreach($homeCategories as $cat)
+                    <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}"
+                       class="category-chip shrink-0 px-5 py-2 rounded-full text-sm font-semibold">
+                        {{ $cat->name_fr }}
+                        @if($cat->articles_count > 0)
+                        <span class="ml-1 opacity-70">({{ $cat->articles_count }})</span>
+                        @endif
+                    </a>
+                    @endforeach
+                </div>
+                <button type="button" class="categories-nav-arrow categories-nav-arrow--right" data-dir="1" aria-label="Catégories suivantes">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -662,7 +792,11 @@
 {{-- ══════════════════════════════════════════════════════════
      SECTION: À LA UNE
 ══════════════════════════════════════════════════════════ --}}
-<section id="articles" class="py-16 sm:py-20 bg-dark-900">
+<section id="articles" class="py-16 sm:py-20 bg-dark-900"
+    @if($articlesImage && $articlesImage->isVisible())
+        style="--articles-bg-image: url('{{ $articlesImage->image_url }}');"
+    @endif
+>
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
         {{-- ── En-tête centré style presse ── --}}
@@ -716,9 +850,9 @@
                         {{ $art->title_fr }}
                     </h3>
                     {{-- Auteur + date --}}
-                    <div class="flex items-center gap-1.5 text-[11px] text-gray-500 flex-wrap">
+                    <div class="flex items-center gap-1.5 text-[#1c1915] font-elegant text-xl font-light flex-wrap">
                         @if($art->author)
-                        <span class="font-semibold text-gray-400 uppercase">{{ $art->author->full_name }}</span>
+                        <span class="font-semibold uppercase">{{ $art->author->full_name }}</span>
                         <span>·</span>
                         @endif
                         <span>{{ $art->published_at?->translatedFormat('d M Y') }}</span>
@@ -774,7 +908,7 @@
                     </h2>
                     {{-- Extrait --}}
                     @if($mainArt->excerpt_fr)
-                    <p class="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4 font-elegant text-base">
+                    <p class="text-[#1c1915] leading-relaxed line-clamp-3 mb-4 font-elegant text-xl font-light">
                         {{ $mainArt->excerpt_fr }}
                     </p>
                     @endif
@@ -820,7 +954,7 @@
                             <h4 class="font-serif text-[11px] sm:text-xs font-semibold line-clamp-2 group-hover:text-gold-300 transition leading-snug">
                                 {{ $art->title_fr }}
                             </h4>
-                            <p class="text-gray-600 text-[10px] mt-1">{{ $art->published_at?->translatedFormat('d M Y') }}</p>
+                            <p class="text-[#1c1915] font-elegant text-xl font-light mt-1">{{ $art->published_at?->translatedFormat('d M Y') }}</p>
                             @if($contributors->isNotEmpty())
                             <div class="mt-1 flex flex-wrap gap-1">
                                 @foreach($contributors->take(2) as $contributor)
@@ -874,7 +1008,11 @@
 {{-- ══════════════════════════════════════════════════════════
      SECTION : ANNUAIRE PRESTATAIRES
 ══════════════════════════════════════════════════════════ --}}
-<section id="annuaire" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
+<section id="annuaire" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden"
+    @if($annuaireImage && $annuaireImage->isVisible())
+        style="--annuaire-bg-image: url('{{ $annuaireImage->image_url }}');"
+    @endif
+>
     <div class="absolute inset-0 pointer-events-none opacity-40">
         <div class="absolute -top-32 -left-24 w-80 h-80 rounded-full bg-gold-500/10 blur-3xl"></div>
         <div class="absolute -bottom-20 right-0 w-72 h-72 rounded-full bg-orange-400/10 blur-3xl"></div>
@@ -896,7 +1034,7 @@
                     <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4 leading-snug">
                         Les meilleures adresses<br>de Côte d'Ivoire
                     </h2>
-                    <p class="text-gray-400 font-elegant text-base font-light leading-relaxed mb-7">
+                    <p class="text-[#1c1915] font-elegant text-xl font-light leading-relaxed mb-7">
                         Hôtels, restaurants, guides touristiques, artisans… Découvrez notre sélection premium d'établissements vérifiés et notés par notre équipe.
                     </p>
 
@@ -951,14 +1089,14 @@
                         @endif
                     </div>
                     <p class="text-white text-sm sm:text-[15px] font-semibold font-serif leading-snug line-clamp-2">{{ $p->name }}</p>
-                    <p class="text-gray-400 text-xs mt-1">{{ $p->category->name_fr ?? 'Prestataire' }}</p>
+                    <p class="text-[#1c1915] font-elegant text-xl font-light mt-1">{{ $p->category->name_fr ?? 'Prestataire' }}</p>
                     <div class="mt-3 flex items-center justify-between">
                         <div class="flex items-center gap-1">
                             @for($i = 1; $i <= 5; $i++)
                             <i class="fas fa-star text-[10px] {{ $i <= round((float) ($p->rating_avg ?? 0)) ? 'text-gold-400' : 'text-dark-500' }}"></i>
                             @endfor
                         </div>
-                        <span class="text-gray-400 text-[11px] font-medium">{{ number_format((float) ($p->rating_avg ?? 0), 1) }} ({{ (int) ($p->rating_count ?? 0) }})</span>
+                        <span class="text-[#1c1915] font-elegant text-xl font-light">{{ number_format((float) ($p->rating_avg ?? 0), 1) }} ({{ (int) ($p->rating_count ?? 0) }})</span>
                     </div>
                 </a>
                 @empty
@@ -981,7 +1119,7 @@
         <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16 reveal">
             <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Explorer par thème</p>
             <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4">Nos rubriques</h2>
-            <p class="text-gray-400 font-elegant text-lg font-light">Plongez dans la richesse et la diversité de la Côte d'Ivoire à travers nos sélections thématiques.</p>
+            <p class="text-[#1c1915] font-elegant text-xl font-light">Plongez dans la richesse et la diversité de la Côte d'Ivoire à travers nos sélections thématiques.</p>
         </div>
 
         @php
@@ -1077,6 +1215,61 @@
 @@keyframes rt2-bounce-x {
     0%,100% { transform: translateX(0); }
     50%     { transform: translateX(5px); }
+}
+
+/* Image de fond configurable (back-office) de la section Régions Touristiques :
+   superposée d'un voile crème à forte opacité pour ne rien changer à la lisibilité
+   existante — l'image n'apparaît qu'en filigrane, comme pour le footer. */
+#regions-touristiques {
+    background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--regions-bg-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+/* Image de fond configurable (back-office) de la section Annuaire — même
+   traitement que la section Régions Touristiques. */
+#annuaire {
+    background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--annuaire-bg-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+/* Image de fond configurable (back-office) de la section Cultures Ivoiriennes —
+   même traitement que les sections Régions Touristiques et Annuaire. */
+#cultures-ivoiriennes {
+    background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--cultures-bg-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+/* Titre des cartes ethnies : posé sur un dégradé réellement sombre
+   (from-green-950/85), non affecté par le pont de thème clair — couleur
+   fixée en dur (text-white y était réécrit en noir par le pont, invisible). */
+#cultures-ivoiriennes .cti-title { color: #ffffff !important; }
+#cultures-ivoiriennes a.group:hover .cti-title { color: #fde3b8 !important; }
+/* Image de fond configurable (back-office) de la section Événements — même
+   traitement que les autres sections d'accueil. */
+#evenements {
+    background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--evenements-bg-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+/* Image de fond configurable (back-office) de la section Partenaires — même
+   traitement que les autres sections d'accueil. */
+#partenaires {
+    background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--partenaires-bg-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+/* Image de fond configurable (back-office) de la section Articles (« À la une ») —
+   même traitement que les autres sections d'accueil. */
+#articles {
+    background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--articles-bg-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* ── Hero card ─────────────────────── */
@@ -1261,28 +1454,42 @@
     to   { opacity:1; transform: translateY(0)    scale(1);   }
 }
 .rt2-pill {
+    --pc: 163,69,10;
     opacity: 0;
-    animation: rt2-pill-in .4s cubic-bezier(.22,1,.36,1) both;
+    animation: rt2-pill-in .45s cubic-bezier(.22,1,.36,1) both;
     animation-play-state: paused;
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 14px;
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 6px 17px 6px 6px;
     border-radius: 999px;
-    border: 1px solid rgba(0,0,0,.1);
-    background: rgba(0,0,0,.03);
-    font-size: 11px; font-weight: 500;
-    color: #544f47;
-    transition: background .2s, border-color .2s, color .2s, transform .2s;
+    border: 1px solid rgba(0,0,0,.08);
+    background: rgba(255,255,255,.9);
+    box-shadow: 0 1px 3px rgba(28,25,21,.05);
+    font-size: 14px; font-weight: 600;
+    color: #1c1915;
+    transition: background .25s ease, border-color .25s ease, color .25s ease, transform .25s ease, box-shadow .25s ease;
     text-decoration: none;
     white-space: nowrap;
 }
-.rt2-pill:hover {
-    background: rgba(242, 121, 15,.10);
-    border-color: rgba(242, 121, 15,.4);
-    color: #a3450a;
-    transform: translateY(-2px);
+.rt2-pill-icon {
+    width: 24px; height: 24px; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: rgba(var(--pc),.13);
+    color: rgb(var(--pc));
+    font-size: 10px;
+    transition: background .25s ease, color .25s ease, transform .3s cubic-bezier(.22,1,.36,1);
 }
-.rt2-pill i { transition: transform .2s; }
-.rt2-pill:hover i { transform: scale(1.15); }
+.rt2-pill:hover {
+    border-color: rgba(var(--pc),.4);
+    color: rgb(var(--pc));
+    transform: translateY(-3px);
+    box-shadow: 0 12px 22px -10px rgba(var(--pc),.55);
+}
+.rt2-pill:hover .rt2-pill-icon {
+    background: rgb(var(--pc));
+    color: #fff;
+    transform: scale(1.12) rotate(-8deg);
+}
 
 /* Overlay gradient commun */
 .rt2-overlay-b {
@@ -1297,9 +1504,26 @@
 
 /* Content z-index */
 .rt2-content { position: relative; z-index: 3; }
+
+/* Texte superposé sur photo : couleurs fixées en CSS pur (et non via classes
+   Tailwind text-white, text-gray-x ou text-gold-x), que le pont de thème
+   clair réécrit en teintes sombres pour le reste de la page — invisibles
+   ici sur fond de photo assombri par .rt2-overlay-b. */
+.rt2-content .rt2-title { color: #ffffff !important; }
+.rt2-content .rt2-district { color: rgba(253, 190, 123, 0.85) !important; }
+.rt2-content .rt2-meta { color: #d1d5db !important; }
+.rt2-content .rt2-meta-light { color: #e2e8f0 !important; }
+.rt2-content .rt2-meta-icon { color: rgba(242, 121, 15, 0.6) !important; }
+.rt2-content .rt2-meta-icon-soft { color: rgba(253, 190, 123, 0.9) !important; }
+.rt2-content .rt2-cta { color: #fa9a3c !important; }
+.rt2-content .rt2-arrow-btn { color: #fa9a3c !important; }
 </style>
 
-<section id="regions-touristiques" class="py-16 sm:py-24 bg-dark-900 relative overflow-hidden">
+<section id="regions-touristiques" class="py-16 sm:py-24 bg-dark-900 relative overflow-hidden"
+    @if($regionsImage && $regionsImage->isVisible())
+        style="--regions-bg-image: url('{{ $regionsImage->image_url }}');"
+    @endif
+>
 
     {{-- Fond décoratif subtil --}}
     <div class="absolute inset-0 pointer-events-none opacity-[0.025]"
@@ -1316,7 +1540,7 @@
             <div>
                 <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Voyage en Côte d'Ivoire</p>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Régions Touristiques</h2>
-                <p class="text-gray-400 font-elegant text-base font-light mt-4 max-w-lg">
+                <p class="text-[#1c1915] font-elegant text-xl font-light mt-4 max-w-lg">
                     Plages, parcs nationaux, monuments historiques… Explorez les villes et leurs merveilles.
                 </p>
             </div>
@@ -1363,23 +1587,23 @@
                 {{-- Contenu bas --}}
                 <div class="rt2-content p-7">
                     <span class="rt2-line"></span>
-                    <h3 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-2 leading-tight">
+                    <h3 class="rt2-title font-serif text-4xl sm:text-5xl font-bold mb-2 leading-tight">
                         {{ $rtHero->name }}
                     </h3>
                     @if($rtHero->district)
-                    <p class="text-gold-400/80 text-sm font-elegant mb-4">
-                        <i class="fas fa-map-marker-alt mr-1.5 text-xs"></i>{{ $rtHero->district }}
+                    <p class="rt2-district text-base font-elegant mb-4">
+                        <i class="fas fa-map-marker-alt mr-1.5 text-sm"></i>{{ $rtHero->district }}
                     </p>
                     @endif
                     <div class="flex items-center gap-4">
-                        <span class="text-gray-300 text-sm">
-                            <i class="fas fa-map-pin text-gold-500/60 mr-1.5 text-xs"></i>
+                        <span class="rt2-meta text-base">
+                            <i class="fas fa-map-pin rt2-meta-icon mr-1.5 text-sm"></i>
                             {{ $rtHero->sites_count }} site{{ $rtHero->sites_count > 1 ? 's' : '' }} à explorer
                         </span>
-                        <span class="ml-auto flex items-center gap-2 text-gold-400 text-sm font-semibold group-hover:gap-3 transition-all duration-300">
+                        <span class="rt2-cta ml-auto flex items-center gap-2 text-base font-semibold group-hover:gap-3 transition-all duration-300">
                             Explorer
-                            <span class="w-8 h-8 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-black group-hover:border-gold-500 transition-all duration-300">
-                                <i class="fas fa-arrow-right text-xs"></i>
+                            <span class="w-9 h-9 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-black group-hover:border-gold-500 transition-all duration-300">
+                                <i class="fas fa-arrow-right text-sm"></i>
                             </span>
                         </span>
                     </div>
@@ -1413,16 +1637,16 @@
                     <div class="rt2-content px-4 pb-4 pt-2 w-full">
                         <div class="flex items-end justify-between">
                             <div class="flex-1 min-w-0">
-                                <h3 class="font-serif text-lg font-bold text-white truncate group-hover:text-gold-200 transition-colors">{{ $city->name }}</h3>
+                                <h3 class="rt2-title font-serif text-lg font-bold truncate group-hover:text-gold-200 transition-colors">{{ $city->name }}</h3>
                                 @if($city->district)
-                                <p class="text-gold-400/70 text-xs truncate mt-0.5">{{ $city->district }}</p>
+                                <p class="rt2-district text-xs truncate mt-0.5">{{ $city->district }}</p>
                                 @endif
                             </div>
-                            <span class="ml-3 w-7 h-7 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-400 shrink-0 group-hover:bg-gold-500 group-hover:text-black transition-all duration-300">
+                            <span class="rt2-arrow-btn ml-3 w-7 h-7 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center shrink-0 group-hover:bg-gold-500 group-hover:text-black transition-all duration-300">
                                 <i class="fas fa-arrow-right text-[9px]"></i>
                             </span>
                         </div>
-                        <p class="text-gray-500 text-xs mt-1.5">
+                        <p class="rt2-meta-light text-xs mt-1.5">
                             <i class="fas fa-map-pin mr-1 text-[9px]"></i>{{ $city->sites_count }} site{{ $city->sites_count > 1 ? 's' : '' }}
                         </p>
                     </div>
@@ -1436,7 +1660,7 @@
         @if($rtStrip->isNotEmpty())
         <div class="mt-2" id="rt2-strip-section">
             <div class="flex items-center gap-3 mb-3">
-                <span class="text-gray-600 text-[10px] tracking-[.2em] uppercase font-elegant flex-1">Autres destinations</span>
+                <span class="text-[#1c1915] text-[10px] tracking-[.2em] uppercase font-elegant flex-1">Autres destinations</span>
                 <button class="rt2-nav-btn rt2-prev" id="rt2-prev" aria-label="Précédent">
                     <i class="fas fa-arrow-left text-xs"></i>
                 </button>
@@ -1460,9 +1684,9 @@
                     <div class="rt2-overlay-b"></div>
 
                     <div class="rt2-content absolute bottom-0 left-0 right-0 p-3.5">
-                        <h3 class="font-serif text-base font-bold text-white truncate group-hover:text-gold-200 transition-colors">{{ $city->name }}</h3>
-                        <p class="text-gray-400 text-xs mt-0.5">
-                            <i class="fas fa-map-pin text-gold-500/50 mr-1 text-[9px]"></i>
+                        <h3 class="rt2-title font-serif text-base font-bold truncate group-hover:text-gold-200 transition-colors">{{ $city->name }}</h3>
+                        <p class="rt2-meta-light text-xs mt-0.5">
+                            <i class="fas fa-map-pin rt2-meta-icon-soft mr-1 text-[9px]"></i>
                             {{ $city->sites_count }} site{{ $city->sites_count > 1 ? 's' : '' }}
                         </p>
                     </div>
@@ -1483,13 +1707,26 @@
         @endphp
         @if($touristCats->isNotEmpty())
         <div class="mt-12 pt-10 border-t border-white/5" id="rt2-pills">
-            <p class="text-center text-gray-600 text-[10px] tracking-[.22em] uppercase font-elegant mb-5">Explorer par catégorie</p>
-            <div class="flex flex-wrap justify-center gap-2">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <span class="hidden sm:block w-8 h-px" style="background:linear-gradient(to right, transparent, rgba(242,121,15,.35))"></span>
+                <p class="text-center text-[#1c1915] text-sm tracking-[.22em] uppercase font-elegant flex items-center gap-2">
+                    <i class="fas fa-compass text-sm" style="color:#f2790f"></i>
+                    Explorer par catégorie
+                </p>
+                <span class="hidden sm:block w-8 h-px" style="background:linear-gradient(to left, transparent, rgba(242,121,15,.35))"></span>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2.5">
                 @foreach($touristCats as $j => $cat)
+                @php
+                    $catColor = $cat->color ?: '#a3450a';
+                    $catRgb = sscanf(ltrim($catColor, '#'), '%02x%02x%02x') ?: [163, 69, 10];
+                @endphp
                 <a href="{{ route('tourist.cities') }}#{{ $cat->slug }}"
-                   class="rt2-pill" style="animation-delay: {{ $j * 45 }}ms;">
-                    <i class="{{ $cat->icon ?: 'fas fa-tag' }} text-[10px]"
-                       style="{{ $cat->color ? 'color:'.$cat->color : 'color:#a3450a' }}"></i>
+                   class="rt2-pill"
+                   style="animation-delay: {{ $j * 45 }}ms; --pc: {{ $catRgb[0] }},{{ $catRgb[1] }},{{ $catRgb[2] }};">
+                    <span class="rt2-pill-icon">
+                        <i class="{{ $cat->icon ?: 'fas fa-tag' }}"></i>
+                    </span>
                     {{ $cat->name }}
                 </a>
                 @endforeach
@@ -1586,7 +1823,11 @@
      SECTION : CULTURES IVOIRIENNES
 ══════════════════════════════════════════════════════════ --}}
 @if(($homeCulturalPeoples ?? collect())->isNotEmpty())
-<section id="cultures-ivoiriennes" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
+<section id="cultures-ivoiriennes" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden"
+    @if($culturesImage && $culturesImage->isVisible())
+        style="--cultures-bg-image: url('{{ $culturesImage->image_url }}');"
+    @endif
+>
 
     <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(circle, #f2790f 1px, transparent 1px); background-size: 32px 32px;"></div>
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent"></div>
@@ -1596,9 +1837,9 @@
         {{-- En-tête --}}
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 sm:mb-16">
             <div class="reveal">
-                <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Patrimoine vivant</p>
+                <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-3">Patrimoine vivant</p>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Cultures Ivoiriennes</h2>
-                <p class="text-gray-400 font-elegant text-base font-light mt-4 max-w-lg">
+                <p class="text-[#1c1915] font-elegant text-xl font-light mt-4 max-w-lg">
                     Peuples, traditions, masques, gastronomie… Plongez dans la richesse des 60 ethnies de Côte d'Ivoire.
                 </p>
             </div>
@@ -1646,7 +1887,7 @@
                 @endif
 
                 <div class="absolute bottom-0 left-0 right-0 p-5">
-                    <h3 class="font-serif text-xl font-bold text-white mb-1 group-hover:text-gold-200 transition-colors">
+                    <h3 class="cti-title font-serif text-xl font-bold mb-1 transition-colors">
                         {{ $people->name }}
                     </h3>
                     @if($people->famille_linguistique)
@@ -1656,7 +1897,7 @@
                     @endif
                     <div class="flex items-center justify-between">
                         @if($people->capitale_culturelle)
-                        <span class="text-gray-400 text-xs">
+                        <span class="text-[#eae6da] text-xs">
                             <i class="fas fa-map-pin text-gold-500/60 mr-1 text-[10px]"></i>
                             {{ $people->capitale_culturelle }}
                         </span>
@@ -1673,12 +1914,12 @@
         {{-- Domaines culturels --}}
         @if(($homeCulturalDomains ?? collect())->isNotEmpty())
         <div class="mt-12 pt-10 border-t border-white/5">
-            <p class="text-center text-gray-500 text-xs tracking-[.2em] uppercase font-elegant mb-6">Explorer par domaine</p>
+            <p class="text-center text-[#1c1915] text-sm tracking-[.2em] uppercase font-elegant mb-6">Explorer par domaine</p>
             <div class="flex flex-wrap justify-center gap-3">
                 @foreach($homeCulturalDomains as $domain)
                 <a href="{{ route('cultural.peoples', ['domaine' => $domain->slug]) }}" class="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:border-gold-500/40 hover:bg-gold-500/10 transition-all duration-200">
-                    <i class="{{ $domain->icon }} text-xs" style="color: {{ $domain->color }}"></i>
-                    <span class="text-gray-300 group-hover:text-white text-xs font-medium transition-colors">{{ $domain->name }}</span>
+                    <i class="{{ $domain->icon }} text-sm" style="color: {{ $domain->color }}"></i>
+                    <span class="text-[#1c1915] group-hover:text-[#a54a0b] text-sm font-medium transition-colors">{{ $domain->name }}</span>
                 </a>
                 @endforeach
             </div>
@@ -1692,11 +1933,15 @@
 {{-- ══════════════════════════════════════════════════════════
      SECTION : ÉVÉNEMENTS
 ══════════════════════════════════════════════════════════ --}}
-<section id="evenements" class="py-16 sm:py-24 bg-dark-900">
+<section id="evenements" class="py-16 sm:py-24 bg-dark-900"
+    @if($evenementsImage && $evenementsImage->isVisible())
+        style="--evenements-bg-image: url('{{ $evenementsImage->image_url }}');"
+    @endif
+>
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex items-end justify-between mb-10 sm:mb-14">
             <div class="reveal">
-                <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-2">Agenda culturel</p>
+                <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-2">Agenda culturel</p>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">Événements à venir</h2>
             </div>
             <a href="{{ route('events.index') }}"
@@ -1742,7 +1987,7 @@
                     <div class="flex-1 min-w-0">
                         <span class="inline-block bg-white/8 text-gold-300 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full mb-2">{{ $ev->category->name_fr ?? 'Événement' }}</span>
                         <h3 class="font-serif text-sm font-semibold group-hover:text-gold-300 transition leading-snug line-clamp-2">{{ $ev->title_fr }}</h3>
-                        <p class="text-gray-500 text-xs mt-2">
+                        <p class="text-[#1c1915] text-sm mt-2">
                             <i class="fas fa-location-dot mr-1 text-gold-500/60"></i>{{ $ev->city ?: 'Côte d\'Ivoire' }}
                         </p>
                         <div class="event-cta-row">
@@ -1777,14 +2022,18 @@
 {{-- ══════════════════════════════════════════════════════════
      SECTION : PARTENAIRES
 ══════════════════════════════════════════════════════════ --}}
-<section id="partenaires" class="py-16 sm:py-24 bg-dark-900 border-t border-white/5">
+<section id="partenaires" class="py-16 sm:py-24 bg-dark-900 border-t border-white/5"
+    @if($partenairesImage && $partenairesImage->isVisible())
+        style="--partenaires-bg-image: url('{{ $partenairesImage->image_url }}');"
+    @endif
+>
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-14 reveal">
-            <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Ils nous font confiance</p>
+            <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-3">Ils nous font confiance</p>
             <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4 leading-snug text-white">
                 Nos partenaires
             </h2>
-            <p class="text-gray-400 font-elegant text-lg font-light leading-relaxed">
+            <p class="text-[#1c1915] font-elegant text-xl font-light leading-relaxed">
                 Institutions, entreprises et organisations qui soutiennent la mise en valeur du patrimoine et du tourisme ivoirien.
             </p>
         </div>
@@ -1837,6 +2086,8 @@
 
 @include('partials.homepage-footer')
 
+@include('partials.homepage-bubbles')
+
 {{-- ══════════════════════════════════════════════════════════
      SCRIPTS
 ══════════════════════════════════════════════════════════ --}}
@@ -1858,6 +2109,35 @@
         a.addEventListener('click', () => {
             document.getElementById('mobile-menu').classList.remove('open');
         });
+    });
+
+    // Categories strip: scroll arrows + molette horizontale (la liste dépasse la largeur visible)
+    document.querySelectorAll('.categories-nav').forEach((nav) => {
+        const strip = nav.querySelector('.categories-strip');
+        const prev = nav.querySelector('.categories-nav-arrow--left');
+        const next = nav.querySelector('.categories-nav-arrow--right');
+        if (!strip || !prev || !next) return;
+
+        const updateArrows = () => {
+            const max = strip.scrollWidth - strip.clientWidth;
+            prev.hidden = strip.scrollLeft <= 4;
+            next.hidden = max <= 4 || strip.scrollLeft >= max - 4;
+        };
+        const scrollByStep = (dir) => {
+            strip.scrollBy({ left: dir * Math.round(strip.clientWidth * 0.7), behavior: 'smooth' });
+        };
+
+        prev.addEventListener('click', () => scrollByStep(-1));
+        next.addEventListener('click', () => scrollByStep(1));
+        strip.addEventListener('scroll', updateArrows, { passive: true });
+        strip.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                strip.scrollLeft += e.deltaY;
+                e.preventDefault();
+            }
+        }, { passive: false });
+        window.addEventListener('resize', updateArrows);
+        updateArrows();
     });
 
     // Hero background carousel (images + vidéos)

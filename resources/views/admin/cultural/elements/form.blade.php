@@ -111,7 +111,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
                 <label class="block text-xs text-slate-400 mb-2">Thumbnail (URL)</label>
-                <input type="url" name="thumbnail" value="{{ old('thumbnail', $element->thumbnail ?? '') }}" maxlength="500"
+                <input type="text" name="thumbnail" value="{{ old('thumbnail', $element->thumbnail ?? '') }}" maxlength="500"
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                 @isset($element) @if($element->thumbnail)
                 <img src="{{ $element->thumbnail }}" class="mt-2 h-20 rounded-lg object-cover">
@@ -119,7 +119,7 @@
             </div>
             <div>
                 <label class="block text-xs text-slate-400 mb-2">Image bannière (URL)</label>
-                <input type="url" name="cover_image" value="{{ old('cover_image', $element->cover_image ?? '') }}" maxlength="500"
+                <input type="text" name="cover_image" value="{{ old('cover_image', $element->cover_image ?? '') }}" maxlength="500"
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                 @isset($element) @if($element->cover_image)
                 <img src="{{ $element->cover_image }}" class="mt-2 h-20 w-full rounded-lg object-cover">

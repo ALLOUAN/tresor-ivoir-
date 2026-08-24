@@ -210,6 +210,50 @@
     </div>
 </div>
 
+{{-- ── Activité récente des prestataires ──────────────────────────────── --}}
+<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden mb-6">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+        <h2 class="text-white font-semibold text-sm flex items-center gap-2">
+            <i class="fas fa-store text-orange-400"></i>
+            Activité récente des prestataires
+        </h2>
+        <a href="{{ route('admin.providers.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Tous les prestataires →</a>
+    </div>
+    <div class="divide-y divide-slate-800">
+        @php
+            $activityColors = [
+                'orange' => 'bg-orange-900/30 text-orange-400',
+                'emerald' => 'bg-emerald-900/30 text-emerald-400',
+                'sky' => 'bg-sky-900/30 text-sky-400',
+                'violet' => 'bg-violet-900/30 text-violet-400',
+                'rose' => 'bg-rose-900/30 text-rose-400',
+            ];
+        @endphp
+        @forelse($recent_provider_activity as $activity)
+        <a href="{{ $activity['url'] }}" class="flex items-center gap-3 px-5 py-3 hover:bg-slate-800/50 transition">
+            <div class="w-8 h-8 rounded-lg {{ $activityColors[$activity['color']] ?? 'bg-slate-800 text-slate-400' }} flex items-center justify-center shrink-0">
+                <i class="fas {{ $activity['icon'] }} text-xs"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-white text-sm truncate">{{ $activity['label'] }}</p>
+                <p class="text-slate-500 text-xs truncate">
+                    {{ $activity['title'] }}
+                    @if($activity['provider'])
+                        <span class="text-slate-600">·</span> {{ $activity['provider'] }}
+                    @endif
+                </p>
+            </div>
+            <span class="text-slate-500 text-xs shrink-0">{{ $activity['date']->diffForHumans() }}</span>
+        </a>
+        @empty
+        <div class="px-5 py-8 text-center text-slate-500 text-sm">
+            <i class="fas fa-inbox text-2xl mb-2 block opacity-40"></i>
+            Aucune activité récente de la part des prestataires.
+        </div>
+        @endforelse
+    </div>
+</div>
+
 {{-- ── Pending reviews ────────────────────────────────────────────────── --}}
 <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
