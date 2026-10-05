@@ -66,7 +66,7 @@
                         <label class="block text-xs text-slate-400 mb-1">Type <span class="text-red-400">*</span></label>
                         <select name="type" required
                                 class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
-                            @foreach(['hotel'=>'Hôtel','resort'=>'Resort','guesthouse'=>"Maison d'hôtes",'hostel'=>'Auberge de jeunesse','auberge'=>'Auberge','villa'=>'Villa','eco_lodge'=>'Éco-lodge'] as $val => $lbl)
+                            @foreach(['hotel'=>'Hôtel','residence'=>'Résidence','resort'=>'Resort','guesthouse'=>"Maison d'hôtes",'hostel'=>'Auberge de jeunesse','auberge'=>'Auberge','villa'=>'Villa','eco_lodge'=>'Éco-lodge'] as $val => $lbl)
                                 <option value="{{ $val }}" {{ old('type', $accommodation->type ?? '') === $val ? 'selected' : '' }}>{{ $lbl }}</option>
                             @endforeach
                         </select>
@@ -145,6 +145,11 @@
                         <label class="block text-xs text-slate-400 mb-1">Description complète</label>
                         <textarea name="description" rows="5"
                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('description', $accommodation->description ?? '') }}</textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-400 mb-1">Conditions de réservation / d'annulation</label>
+                        <textarea name="cancellation_policy" rows="4" placeholder="Ex : Annulation gratuite jusqu'à 48h avant l'arrivée. Au-delà, la première nuit est facturée..."
+                                  class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('cancellation_policy', $accommodation->cancellation_policy ?? '') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -375,7 +380,7 @@
                         @endforeach
                     @elseif(old('room_name'))
                         @foreach(old('room_name') as $i => $rn)
-                            @php $r = ['name'=>$rn,'max_adults'=>old('room_max_adults.'.$i),'max_children'=>old('room_max_children.'.$i),'area_m2'=>old('room_area_m2.'.$i),'price_xof'=>old('room_price_xof.'.$i),'price_eur'=>old('room_price_eur.'.$i),'amenities'=>old('room_amenities.'.$i,'')]; @endphp
+                            @php $r = ['name'=>$rn,'max_adults'=>old('room_max_adults.'.$i),'max_children'=>old('room_max_children.'.$i),'area_m2'=>old('room_area_m2.'.$i),'price_xof'=>old('room_price_xof.'.$i),'price_eur'=>old('room_price_eur.'.$i),'amenities'=>old('room_amenities.'.$i,''),'beds'=>old('room_beds.'.$i),'description'=>old('room_description.'.$i),'conditions'=>old('room_conditions.'.$i)]; @endphp
                             @include('admin.accommodation._room_row', ['r'=>$r, 'i'=>$i])
                         @endforeach
                     @endif
@@ -414,9 +419,9 @@
                     <i class="fas fa-photo-film text-orange-400"></i> Galerie photos
                 </h2>
 
-                @if($isEdit && $accommodation->media->isNotEmpty())
+                @if($isEdit && $accommodation->photos->isNotEmpty())
                     <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-5">
-                        @foreach($accommodation->media as $m)
+                        @foreach($accommodation->photos as $m)
                         <div class="relative group">
                             <img src="{{ $m->url }}" alt="{{ $m->alt_text ?? '' }}"
                                  loading="lazy"
@@ -442,6 +447,43 @@
                            onchange="showMediaPreviews(this)">
                 </label>
                 <div id="media-previews" class="flex flex-wrap gap-2 mt-3"></div>
+            </div>
+
+            {{-- ⑧ Galerie vidéos (liens) ───────────────────────────────── --}}
+            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
+                <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-video text-orange-400"></i> Vidéos
+                </h2>
+
+                @if($isEdit && $accommodation->videos->isNotEmpty())
+                    <div class="space-y-2 mb-5">
+                        @foreach($accommodation->videos as $v)
+                        <div class="flex items-center gap-3 bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2">
+                            <i class="fas fa-circle-play text-orange-400/70 shrink-0"></i>
+                            <a href="{{ $v->url }}" target="_blank" rel="noopener"
+                               class="text-sm text-slate-300 hover:text-orange-300 truncate flex-1">{{ $v->url }}</a>
+                            <button type="submit"
+                                    form="media-del-{{ $v->id }}"
+                                    onclick="return confirm('Supprimer cette vidéo ?')"
+                                    class="w-6 h-6 shrink-0 bg-red-900/80 hover:bg-red-700 text-red-200 rounded-md flex items-center justify-center">
+                                <i class="fas fa-times text-[10px]"></i>
+                            </button>
+                        </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <div id="video-link-rows" class="space-y-2 mb-3">
+                    <div class="flex gap-2">
+                        <input type="url" name="video_links[]" placeholder="https://www.youtube.com/watch?v=..."
+                               class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                    </div>
+                </div>
+                <button type="button" onclick="addVideoLinkRow()"
+                        class="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1.5">
+                    <i class="fas fa-plus"></i> Ajouter un autre lien vidéo
+                </button>
+                <p class="text-slate-600 text-xs mt-2">Lien YouTube, Vimeo ou vidéo directe (.mp4) — pas de fichier à téléverser.</p>
             </div>
 
         </div>{{-- fin col principale --}}
@@ -636,6 +678,21 @@
                 <input type="text" name="room_amenities[]" placeholder="Climatisation, TV, Coffre-fort"
                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
             </div>
+            <div>
+                <span class="text-[11px] text-slate-500 mb-1 block">Lits</span>
+                <input type="text" name="room_beds[]" placeholder="1 lit double"
+                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
+            </div>
+            <div class="col-span-2">
+                <span class="text-[11px] text-slate-500 mb-1 block">Description</span>
+                <textarea name="room_description[]" rows="2" placeholder="Description de cette chambre…"
+                          class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none resize-none"></textarea>
+            </div>
+            <div class="col-span-2">
+                <span class="text-[11px] text-slate-500 mb-1 block">Conditions applicables à cette chambre</span>
+                <textarea name="room_conditions[]" rows="2" placeholder="Ex : petit-déjeuner inclus, non remboursable…"
+                          class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none resize-none"></textarea>
+            </div>
             <div class="col-span-2">
                 <div class="flex items-center justify-between mb-1.5">
                     <span class="text-[11px] text-slate-500 flex items-center gap-1">
@@ -791,6 +848,21 @@ function showMediaPreviews(input) {
         };
         reader.readAsDataURL(file);
     });
+}
+
+// ── Lignes de liens vidéo ────────────────────────────────────────────────
+function addVideoLinkRow() {
+    const wrap = document.getElementById('video-link-rows');
+    const row  = document.createElement('div');
+    row.className = 'flex gap-2';
+    row.innerHTML = `
+        <input type="url" name="video_links[]" placeholder="https://www.youtube.com/watch?v=..."
+               class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+        <button type="button" onclick="this.closest('div').remove()"
+                class="w-9 h-9 shrink-0 bg-slate-800 hover:bg-red-900/50 text-slate-400 hover:text-red-300 rounded-lg flex items-center justify-center">
+            <i class="fas fa-times text-xs"></i>
+        </button>`;
+    wrap.appendChild(row);
 }
 
 // ── Bouton lien externe --

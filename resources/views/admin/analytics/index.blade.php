@@ -19,7 +19,7 @@
             <input type="date" name="to" id="to" value="{{ $to->toDateString() }}"
                    class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
         </div>
-        <button type="submit" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
+        <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
             <i class="fas fa-filter text-xs"></i> Appliquer
         </button>
     </form>

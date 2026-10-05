@@ -83,7 +83,7 @@ class ArticleController extends Controller
         }
 
         $data['author_id'] = Auth::id();
-        $data['word_count'] = $data['content_fr'] ? str_word_count(strip_tags($data['content_fr'])) : 0;
+        $data['word_count'] = ! empty($data['content_fr']) ? str_word_count(strip_tags($data['content_fr'])) : 0;
         if (empty($data['reading_time']) && $data['word_count']) {
             $data['reading_time'] = max(1, (int) round($data['word_count'] / 200));
         }
@@ -156,7 +156,7 @@ class ArticleController extends Controller
             $data['cover_url'] = $this->storeArticleCover($request->file('cover_image'));
         }
 
-        $data['word_count'] = $data['content_fr'] ? str_word_count(strip_tags($data['content_fr'])) : 0;
+        $data['word_count'] = ! empty($data['content_fr']) ? str_word_count(strip_tags($data['content_fr'])) : 0;
         if (empty($data['reading_time']) && $data['word_count']) {
             $data['reading_time'] = max(1, (int) round($data['word_count'] / 200));
         }

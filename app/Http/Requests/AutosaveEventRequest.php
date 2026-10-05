@@ -20,11 +20,16 @@ class AutosaveEventRequest extends FormRequest
         return [
             'title_fr' => ['nullable', 'string', 'max:255'],
             'title_en' => ['nullable', 'string', 'max:255'],
+            'subtitle_fr' => ['nullable', 'string', 'max:200'],
+            'subtitle_en' => ['nullable', 'string', 'max:200'],
             'slug' => ['nullable', 'string', 'max:300', Rule::unique('events', 'slug')->ignore($eventId)],
             'category_id' => ['nullable', 'exists:event_categories,id'],
             'description_fr' => ['nullable', 'string'],
             'description_en' => ['nullable', 'string'],
-            'cover_url' => ['nullable', 'url', 'max:500'],
+            // cf. StoreArticleRequest : 'url' seule rejette les chemins relatifs
+            // /storage/... générés par l'upload — l'autosave échouerait alors en
+            // boucle dès qu'une couverture est déjà en place sur l'événement.
+            'cover_url' => ['nullable', 'max:500', 'regex:/^(https?:\/\/\S+|\/\S*)$/'],
             'cover_alt' => ['nullable', 'string', 'max:300'],
             'starts_at' => ['nullable', 'date'],
             'ends_at' => ['nullable', 'date'],
@@ -42,6 +47,7 @@ class AutosaveEventRequest extends FormRequest
             'location_name' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:500'],
             'city' => ['nullable', 'string', 'max:150'],
+            'audience' => ['nullable', 'string', 'max:150'],
             'organizer_name' => ['nullable', 'string', 'max:255'],
             'organizer_phone' => ['nullable', 'string', 'max:20'],
             'organizer_email' => ['nullable', 'email', 'max:255'],

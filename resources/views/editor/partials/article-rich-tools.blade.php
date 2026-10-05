@@ -1,4 +1,4 @@
-{{-- TinyMCE + auto-sauvegarde (édition) / brouillon local (création) + prévisualisation --}}
+{{-- Summernote + auto-sauvegarde (édition) / brouillon local (création) + prévisualisation --}}
 @php
     $editorMode = isset($article) ? 'edit' : 'create';
     $autosaveUrl = $editorMode === 'edit' ? route('editor.articles.autosave', $article) : null;
@@ -6,6 +6,8 @@
     $localKey = 'tresor_editor_article_draft_v1';
     $errorsPresent = $errorsPresent ?? false;
 @endphp
+
+@include('editor.partials.summernote-assets')
 
 @if($editorMode === 'create')
 <div id="article-preview-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-green-950/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="preview-modal-title">
@@ -21,7 +23,6 @@
 </div>
 @endif
 
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
 (function () {
     const AUTOSAVE_URL = @json($autosaveUrl);
@@ -29,12 +30,12 @@
     const LOCAL_KEY = @json($localKey);
     const ERRORS_PRESENT = @json($errorsPresent);
     const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    const IMAGE_UPLOAD_URL = @json(route('editor.events.description-image'));
 
-    function updateWordCountFromEditor(editor, countId) {
+    function updateWordCountFromText(text, countId) {
         const el = document.getElementById(countId);
         if (!el) return;
-        const text = editor.getContent({ format: 'text' }) || '';
-        const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+        const words = String(text).trim().split(/\s+/).filter(w => w.length > 0);
         el.textContent = words.length + (countId.includes('en') ? ' words' : ' mots');
     }
 
@@ -64,7 +65,7 @@
     function runAutosave() {
         const form = document.getElementById('articleForm');
         if (!form || !AUTOSAVE_URL) return;
-        if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+        window.RichEditor.sync();
         const payload = collectArticlePayload(form);
         const statusEl = document.getElementById('autosaveStatus');
         fetch(AUTOSAVE_URL, {
@@ -103,7 +104,7 @@
     function saveLocalDraft() {
         const form = document.getElementById('articleForm');
         if (!form || !LOCAL_KEY) return;
-        if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+        window.RichEditor.sync();
         try {
             const data = collectArticlePayload(form);
             data._savedAt = new Date().toISOString();
@@ -127,7 +128,7 @@
         const form = document.getElementById('articleForm');
         if (!form) return;
         Object.keys(data).forEach(k => {
-            if (k === 'tags' || k === '_savedAt') return;
+            if (k === 'tags' || k === '_savedAt' || k === 'content_fr' || k === 'content_en') return;
             const el = form.querySelector('[name="' + k + '"]');
             if (el && typeof data[k] === 'string') el.value = data[k];
         });
@@ -136,19 +137,15 @@
                 cb.checked = data.tags.includes(parseInt(cb.value, 10));
             });
         }
-        if (typeof tinymce !== 'undefined') {
-            const edFr = tinymce.get('content_fr');
-            const edEn = tinymce.get('content_en');
-            if (edFr) edFr.setContent(form.querySelector('#content_fr')?.value || '');
-            if (edEn) edEn.setContent(form.querySelector('#content_en')?.value || '');
-        }
+        if (typeof data.content_fr === 'string') window.RichEditor.setHtml('content_fr', data.content_fr);
+        if (typeof data.content_en === 'string') window.RichEditor.setHtml('content_en', data.content_en);
     }
 
     window.openArticlePreviewModal = function () {
         const modal = document.getElementById('article-preview-modal');
         const body = document.getElementById('article-preview-body');
         if (!modal || !body) return;
-        if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+        window.RichEditor.sync();
         const title = (document.getElementById('title_fr') || document.querySelector('[name="title_fr"]'))?.value || 'Sans titre';
         const ex = (document.getElementById('excerpt_fr') || document.querySelector('[name="excerpt_fr"]'))?.value || '';
         const html = document.getElementById('content_fr')?.value || '';
@@ -176,34 +173,25 @@
     };
 
     document.addEventListener('DOMContentLoaded', function () {
-        if (typeof tinymce === 'undefined') return;
+        if (!window.RichEditor || !window.RichEditor.available()) return;
 
-        tinymce.init({
-            selector: 'textarea.rich-editor',
+        window.RichEditor.init('textarea.rich-editor', {
             height: 440,
-            menubar: false,
-            branding: false,
-            promotion: false,
-            plugins: 'lists link autoresize code wordcount',
-            toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link | removeformat | code',
-            skin: 'oxide-dark',
-            content_css: 'dark',
-            content_style: 'body { font-size:15px; line-height:1.65; }',
-            setup: function (editor) {
-                editor.on('init change keyup Undo Redo', function () {
-                    const id = editor.id;
-                    if (id === 'content_fr') updateWordCountFromEditor(editor, 'wordCount-fr');
-                    if (id === 'content_en') updateWordCountFromEditor(editor, 'wordCount-en');
-                    scheduleAutosave();
-                    scheduleLocalDraft();
-                });
+            uploadUrl: IMAGE_UPLOAD_URL,
+            csrf: CSRF,
+            onChange: function ($note) {
+                const id = $note.attr('id');
+                if (id === 'content_fr') updateWordCountFromText(window.RichEditor.text('content_fr'), 'wordCount-fr');
+                if (id === 'content_en') updateWordCountFromText(window.RichEditor.text('content_en'), 'wordCount-en');
+                scheduleAutosave();
+                scheduleLocalDraft();
             },
         });
 
         const form = document.getElementById('articleForm');
         if (form) {
             form.addEventListener('submit', function () {
-                if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+                window.RichEditor.sync();
             });
         }
 

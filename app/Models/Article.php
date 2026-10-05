@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\HtmlSanitizer;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +20,7 @@ class Article extends Model
         'title_fr', 'title_en', 'slug_fr', 'slug_en',
         'excerpt_fr', 'excerpt_en', 'content_fr', 'content_en',
         'cover_url', 'cover_alt', 'reading_time', 'word_count',
-        'is_featured', 'is_destination', 'is_sponsored', 'sponsor_id',
+        'is_featured', 'featured_position', 'is_destination', 'is_sponsored', 'sponsor_id',
         'status',
         'meta_title_fr', 'meta_desc_fr', 'meta_title_en', 'meta_desc_en',
         'published_at', 'scheduled_at',
@@ -33,6 +35,17 @@ class Article extends Model
             'published_at' => 'datetime',
             'scheduled_at' => 'datetime',
         ];
+    }
+
+    /** Contenu riche de l'éditeur : nettoyé (HTML autorisé uniquement) à chaque écriture. */
+    protected function contentFr(): Attribute
+    {
+        return Attribute::set(fn ($value) => HtmlSanitizer::forStorage($value));
+    }
+
+    protected function contentEn(): Attribute
+    {
+        return Attribute::set(fn ($value) => HtmlSanitizer::forStorage($value));
     }
 
     protected static function booted(): void

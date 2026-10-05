@@ -109,10 +109,14 @@ class TouristManagementController extends Controller
         $data['slug']      = Str::slug($data['name']);
         $data['is_active'] = $request->boolean('is_active', true);
 
-        unset($data['hero_image_file']);
+        unset($data['hero_image_file'], $data['icon_image_file']);
         $heroFile = $request->file('hero_image_file');
         if ($heroFile && $heroFile->isValid()) {
             $data['hero_image_url'] = $this->storeCategoryImage($heroFile, 'hero');
+        }
+        $iconFile = $request->file('icon_image_file');
+        if ($iconFile && $iconFile->isValid()) {
+            $data['icon_image_url'] = $this->storeCategoryImage($iconFile, 'icon');
         }
 
         TouristCategory::create($data);
@@ -124,11 +128,16 @@ class TouristManagementController extends Controller
         $data = $this->validateCategory($request);
         $data['is_active'] = $request->boolean('is_active');
 
-        unset($data['hero_image_file']);
+        unset($data['hero_image_file'], $data['icon_image_file']);
         $heroFile = $request->file('hero_image_file');
         if ($heroFile && $heroFile->isValid()) {
             $this->deleteCategoryImage($category->hero_image_url);
             $data['hero_image_url'] = $this->storeCategoryImage($heroFile, 'hero');
+        }
+        $iconFile = $request->file('icon_image_file');
+        if ($iconFile && $iconFile->isValid()) {
+            $this->deleteCategoryImage($category->icon_image_url);
+            $data['icon_image_url'] = $this->storeCategoryImage($iconFile, 'icon');
         }
 
         $category->update($data);
@@ -138,6 +147,7 @@ class TouristManagementController extends Controller
     public function destroyCategory(TouristCategory $category)
     {
         $this->deleteCategoryImage($category->hero_image_url);
+        $this->deleteCategoryImage($category->icon_image_url);
         $category->delete();
         return back()->with('success', 'Catégorie supprimée.');
     }
@@ -374,6 +384,7 @@ class TouristManagementController extends Controller
         return $request->validate([
             'name'             => 'required|string|max:100',
             'icon'             => 'nullable|string|max:80',
+            'icon_image_file'  => 'nullable|file|image|max:5120',
             'color'            => 'nullable|string|max:20',
             'hero_image_file'  => 'nullable|file|image|max:5120',
             'description'      => 'nullable|string',

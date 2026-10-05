@@ -27,7 +27,10 @@ class AutosaveArticleRequest extends FormRequest
             'excerpt_en' => ['nullable', 'string', 'max:500'],
             'content_fr' => ['nullable', 'string'],
             'content_en' => ['nullable', 'string'],
-            'cover_url' => ['nullable', 'url', 'max:500'],
+            // cf. StoreArticleRequest : 'url' seule rejette les chemins relatifs
+            // /storage/... générés par l'upload — l'autosave échouerait alors en
+            // boucle dès qu'une couverture est déjà en place sur l'article.
+            'cover_url' => ['nullable', 'max:500', 'regex:/^(https?:\/\/\S+|\/\S*)$/'],
             'cover_alt' => ['nullable', 'string', 'max:300'],
             'reading_time' => ['nullable', 'integer', 'min:1', 'max:120'],
             'meta_title_fr' => ['nullable', 'string', 'max:70'],

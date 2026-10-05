@@ -8,12 +8,17 @@ use App\Models\CulturalElement;
 use App\Models\CulturalElementMedia;
 use App\Models\CulturalPeople;
 use App\Models\TouristCity;
+use App\Services\ImageUploadSecurityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CulturalManagementController extends Controller
 {
+    public function __construct(
+        private readonly ImageUploadSecurityService $imageUpload,
+    ) {}
+
     // ── PEOPLES ───────────────────────────────────────────────────────────────
 
     public function peoples(Request $request)
@@ -39,13 +44,14 @@ class CulturalManagementController extends Controller
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active']   = $request->boolean('is_active', true);
         $data['symboles']    = $this->parseSymboles($request);
-        unset($data['thumbnail_file'], $data['cover_image_file']);
+        unset($data['thumbnail_file'], $data['cover_images_file'], $data['remove_cover_images']);
 
-        if ($f = $request->file('cover_image_file')) {
-            $data['cover_image'] = $this->storeImage($f, 'cultural/peoples', 'cover');
+        $data['cover_images'] = [];
+        foreach ($this->uploadedPeopleCoverImages($request) as $f) {
+            $data['cover_images'][] = $this->imageUpload->store($f, 'cultural/peoples', 'cover');
         }
         if ($f = $request->file('thumbnail_file')) {
-            $data['thumbnail'] = $this->storeImage($f, 'cultural/peoples', 'thumb');
+            $data['thumbnail'] = $this->imageUpload->store($f, 'cultural/peoples', 'thumb');
         }
 
         CulturalPeople::create($data);
@@ -59,24 +65,78 @@ class CulturalManagementController extends Controller
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active']   = $request->boolean('is_active');
         $data['symboles']    = $this->parseSymboles($request);
-        unset($data['thumbnail_file'], $data['cover_image_file']);
+        unset($data['thumbnail_file'], $data['cover_images_file'], $data['remove_cover_images']);
 
-        if ($f = $request->file('cover_image_file')) {
-            $this->deleteImage($people->cover_image);
-            $data['cover_image'] = $this->storeImage($f, 'cultural/peoples', 'cover');
+        // Bannières : retire celles cochées pour suppression (case par image — cf.
+        // exigence « supprimer une image lorsque cela est nécessaire ») puis ajoute
+        // les nouvelles téléversées — plusieurs bannières peuvent coexister.
+        $coverImages = $this->removeMarkedPeopleCoverImages($request, $people->cover_images ?? []);
+        foreach ($this->uploadedPeopleCoverImages($request) as $f) {
+            $coverImages[] = $this->imageUpload->store($f, 'cultural/peoples', 'cover');
+        }
+        $data['cover_images'] = $coverImages;
+
+        if ($request->boolean('remove_thumbnail') && ! $request->file('thumbnail_file')) {
+            $this->deleteImage($people->thumbnail);
+            $data['thumbnail'] = null;
         }
         if ($f = $request->file('thumbnail_file')) {
             $this->deleteImage($people->thumbnail);
-            $data['thumbnail'] = $this->storeImage($f, 'cultural/peoples', 'thumb');
+            $data['thumbnail'] = $this->imageUpload->store($f, 'cultural/peoples', 'thumb');
         }
 
         $people->update($data);
         return back()->with('success', "Peuple « {$people->name} » mis à jour.");
     }
 
+    /** @return array<int, \Illuminate\Http\UploadedFile> */
+    private function uploadedPeopleCoverImages(Request $request): array
+    {
+        $files = $request->file('cover_images_file', []);
+        if (! is_array($files)) {
+            return [];
+        }
+
+        return array_values(array_filter($files, function ($file) {
+            if (! $file instanceof \Illuminate\Http\UploadedFile) {
+                return false;
+            }
+            try {
+                return $file->isValid() && $file->getError() === UPLOAD_ERR_OK;
+            } catch (\ValueError) {
+                return false;
+            }
+        }));
+    }
+
+    /**
+     * Retire de la liste les bannières cochées pour suppression (case "remove_cover_images[]")
+     * et supprime aussi les fichiers physiques correspondants du disque.
+     *
+     * @param  array<int, string>  $currentImages
+     * @return array<int, string>
+     */
+    private function removeMarkedPeopleCoverImages(Request $request, array $currentImages): array
+    {
+        $toRemove = array_filter((array) $request->input('remove_cover_images', []));
+        if (empty($toRemove)) {
+            return $currentImages;
+        }
+
+        foreach ($toRemove as $url) {
+            if (in_array($url, $currentImages, true)) {
+                $this->deleteImage($url);
+            }
+        }
+
+        return array_values(array_diff($currentImages, $toRemove));
+    }
+
     public function destroyPeople(CulturalPeople $people)
     {
-        $this->deleteImage($people->cover_image);
+        foreach ($people->cover_images ?? [] as $url) {
+            $this->deleteImage($url);
+        }
         $this->deleteImage($people->thumbnail);
         $people->delete();
         return back()->with('success', 'Peuple supprimé.');
@@ -111,6 +171,12 @@ class CulturalManagementController extends Controller
         $data = $this->validateDomain($request);
         $data['slug']      = Str::slug($data['name']);
         $data['is_active'] = $request->boolean('is_active', true);
+        unset($data['icon_image_file']);
+
+        if ($f = $request->file('icon_image_file')) {
+            $data['icon_image_url'] = $this->imageUpload->store($f, 'cultural/domains', 'icon');
+        }
+
         CulturalDomain::create($data);
         return back()->with('success', "Domaine « {$data['name']} » créé.");
     }
@@ -119,12 +185,20 @@ class CulturalManagementController extends Controller
     {
         $data = $this->validateDomain($request);
         $data['is_active'] = $request->boolean('is_active');
+        unset($data['icon_image_file']);
+
+        if ($f = $request->file('icon_image_file')) {
+            $this->deleteImage($domain->icon_image_url);
+            $data['icon_image_url'] = $this->imageUpload->store($f, 'cultural/domains', 'icon');
+        }
+
         $domain->update($data);
         return back()->with('success', 'Domaine mis à jour.');
     }
 
     public function destroyDomain(CulturalDomain $domain)
     {
+        $this->deleteImage($domain->icon_image_url);
         $domain->delete();
         return back()->with('success', 'Domaine supprimé.');
     }
@@ -174,10 +248,10 @@ class CulturalManagementController extends Controller
         unset($data['thumbnail_file'], $data['cover_image_file'], $data['media_files']);
 
         if ($f = $request->file('cover_image_file')) {
-            $data['cover_image'] = $this->storeImage($f, 'cultural/elements', 'cover');
+            $data['cover_image'] = $this->imageUpload->store($f, 'cultural/elements', 'cover');
         }
         if ($f = $request->file('thumbnail_file')) {
-            $data['thumbnail'] = $this->storeImage($f, 'cultural/elements', 'thumb');
+            $data['thumbnail'] = $this->imageUpload->store($f, 'cultural/elements', 'thumb');
         }
 
         $element = CulturalElement::create($data);
@@ -209,11 +283,11 @@ class CulturalManagementController extends Controller
 
         if ($f = $request->file('cover_image_file')) {
             $this->deleteImage($element->cover_image);
-            $data['cover_image'] = $this->storeImage($f, 'cultural/elements', 'cover');
+            $data['cover_image'] = $this->imageUpload->store($f, 'cultural/elements', 'cover');
         }
         if ($f = $request->file('thumbnail_file')) {
             $this->deleteImage($element->thumbnail);
-            $data['thumbnail'] = $this->storeImage($f, 'cultural/elements', 'thumb');
+            $data['thumbnail'] = $this->imageUpload->store($f, 'cultural/elements', 'thumb');
         }
 
         $element->update($data);
@@ -265,8 +339,10 @@ class CulturalManagementController extends Controller
             'histoire'             => 'nullable|string',
             'thumbnail'            => 'nullable|string|max:500',
             'thumbnail_file'       => 'nullable|file|image|max:5120',
-            'cover_image'          => 'nullable|string|max:500',
-            'cover_image_file'     => 'nullable|file|image|max:5120',
+            'cover_images_file'    => 'nullable|array',
+            'cover_images_file.*'  => 'nullable|file|image|max:5120',
+            'remove_cover_images'  => 'nullable|array',
+            'remove_cover_images.*' => 'nullable|string|max:500',
             'sort_order'           => 'nullable|integer|min:0',
         ]);
     }
@@ -274,12 +350,13 @@ class CulturalManagementController extends Controller
     private function validateDomain(Request $request): array
     {
         return $request->validate([
-            'parent_id'   => 'nullable|exists:cultural_domains,id',
-            'name'        => 'required|string|max:100',
-            'icon'        => 'nullable|string|max:80',
-            'color'       => 'nullable|string|max:20',
-            'description' => 'nullable|string',
-            'sort_order'  => 'nullable|integer|min:0',
+            'parent_id'       => 'nullable|exists:cultural_domains,id',
+            'name'            => 'required|string|max:100',
+            'icon'            => 'nullable|string|max:80',
+            'icon_image_file' => 'nullable|file|image|max:5120',
+            'color'           => 'nullable|string|max:20',
+            'description'     => 'nullable|string',
+            'sort_order'      => 'nullable|integer|min:0',
         ]);
     }
 
@@ -306,14 +383,6 @@ class CulturalManagementController extends Controller
         ]);
     }
 
-    private function storeImage(\Illuminate\Http\UploadedFile $file, string $folder, string $prefix): string
-    {
-        $ext      = strtolower($file->getClientOriginalExtension()) ?: 'jpg';
-        $filename = $folder . '/' . $prefix . '_' . Str::random(32) . '.' . $ext;
-        Storage::disk('public')->put($filename, fopen($file->getPathname(), 'r'));
-        return '/storage/' . $filename;
-    }
-
     private function deleteImage(?string $url): void
     {
         if (!$url || !str_starts_with($url, '/storage/')) return;
@@ -327,7 +396,7 @@ class CulturalManagementController extends Controller
         $order = $element->media()->max('sort_order') ?? 0;
         foreach ($request->file('media_files') as $file) {
             if (!$file->isValid()) continue;
-            $url = $this->storeImage($file, 'cultural/elements', 'media');
+            $url = $this->imageUpload->store($file, 'cultural/elements', 'media');
             $element->media()->create([
                 'type'       => 'photo',
                 'url'        => $url,

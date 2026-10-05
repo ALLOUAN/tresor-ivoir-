@@ -78,6 +78,7 @@ class AccommodationManagementController extends Controller
 
         $accommodation = Accommodation::create($data);
         $this->content->storeUploadedMedia($request, $accommodation);
+        $this->content->storeVideoLinks($request, $accommodation);
 
         return redirect()->route('admin.accommodations.edit', $accommodation)
             ->with('success', "Hébergement « {$accommodation->name} » créé.");
@@ -87,7 +88,7 @@ class AccommodationManagementController extends Controller
 
     public function edit(Accommodation $accommodation)
     {
-        $accommodation->load('media');
+        $accommodation->load('media', 'photos', 'videos');
         $cities     = TouristCity::orderBy('name')->get();
         $categories = TouristCategory::orderBy('sort_order')->get();
         return view('admin.accommodation.form', compact('accommodation', 'cities', 'categories'));
@@ -120,6 +121,7 @@ class AccommodationManagementController extends Controller
 
         $accommodation->update($data);
         $this->content->storeUploadedMedia($request, $accommodation);
+        $this->content->storeVideoLinks($request, $accommodation);
 
         return redirect()->route('admin.accommodations.edit', $accommodation)
             ->with('success', "Hébergement « {$accommodation->name} » mis à jour.");
@@ -170,10 +172,11 @@ class AccommodationManagementController extends Controller
         return $request->validate([
             'city_id'           => 'required|exists:tourist_cities,id',
             'name'              => 'required|string|max:150',
-            'type'              => 'required|in:hotel,resort,guesthouse,hostel,auberge,villa,eco_lodge',
+            'type'              => 'required|in:hotel,residence,resort,guesthouse,hostel,auberge,villa,eco_lodge',
             'stars'             => 'nullable|integer|min:0|max:5',
             'short_description' => 'nullable|string|max:300',
             'description'       => 'nullable|string',
+            'cancellation_policy' => 'nullable|string',
             'adresse'           => 'nullable|string|max:255',
             'quartier'          => 'nullable|string|max:100',
             'latitude'          => 'nullable|numeric|between:-90,90',
@@ -191,6 +194,8 @@ class AccommodationManagementController extends Controller
             'category_ids.*'    => 'integer|exists:tourist_categories,id',
             'media_files'           => 'nullable|array',
             'media_files.*'         => 'file|image|max:5120',
+            'video_links'           => 'nullable|array',
+            'video_links.*'         => 'nullable|url|max:500',
             'room_photo_files'      => 'nullable|array',
             'room_photo_files.*'    => 'nullable|array',
             'room_photo_files.*.*'  => 'nullable|file|image|max:5120',

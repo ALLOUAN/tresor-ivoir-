@@ -70,7 +70,7 @@ class ArticleController extends Controller
 
     public function show(string $slug)
     {
-        $articleWith = ['category', 'author', 'tags', 'media'];
+        $articleWith = ['category', 'author', 'tags', 'media', 'sponsor'];
         if (Schema::hasTable('article_uploader')) {
             $articleWith[] = 'uploaders';
         }

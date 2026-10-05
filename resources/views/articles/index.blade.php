@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +8,10 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        serif:   ['Playfair Display', 'Georgia', 'serif'],
-                        elegant: ['Cormorant Garamond', 'Georgia', 'serif'],
-                    },
                     colors: {
                         gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
                         dark: { 500:'#e9e5d9', 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
@@ -92,12 +86,13 @@
         }
         /* Image de fond configurable (back-office) : voile blanchi allégé pour
            laisser l'image transparaître (même traitement que les autres pages). */
+        /* Image configurée : couleurs vraies, sans voile — la lisibilité du texte
+           est déjà assurée par le cadre bg-green-950/70 qui l'entoure. */
         .articles-hero[style*="--articles-hero-bg-image"] {
-            background-image:
-                linear-gradient(130deg, rgba(255, 255, 255,0.55), rgba(255, 255, 255,0.55)),
-                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.14), transparent 55%),
-                radial-gradient(90% 80% at 100% 10%, rgba(120,90,40,0.08), transparent 50%),
-                var(--articles-hero-bg-image, none);
+            background-image: var(--articles-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         .articles-hero::before {
             content: '';
@@ -125,7 +120,7 @@
             box-shadow: 0 0 0 3px rgba(242, 121, 15,0.14);
         }
         .articles-search-btn {
-            background: linear-gradient(135deg, #fa9a3c 0%, #f2790f 55%, #d4630a 100%);
+            background: #f2790f;
             box-shadow: 0 8px 20px rgba(242, 121, 15,0.28);
             transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
         }
@@ -179,7 +174,7 @@
         }
         .category-chip.is-active {
             border-color: rgba(242, 121, 15,0.52);
-            background: linear-gradient(135deg, #fa9a3c, #f2790f);
+            background: #f2790f;
             color: #090705;
             box-shadow: 0 8px 20px rgba(242, 121, 15,0.3);
         }
@@ -375,10 +370,10 @@
             background-repeat: repeat, no-repeat, no-repeat;
         }
         html:not(.dark) .articles-hero[style*="--articles-hero-bg-image"] {
-            background-image:
-                linear-gradient(130deg, rgba(255,255,255,0.55), rgba(248,244,236,0.55)),
-                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.10), transparent 55%),
-                var(--articles-hero-bg-image, none);
+            background-image: var(--articles-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         html:not(.dark) .articles-search-shell {
             border-color: rgba(0,0,0,0.08);
@@ -418,7 +413,7 @@
         }
         html:not(.dark) .category-chip.is-active {
             border-color: rgba(194, 94, 10,0.45);
-            background: linear-gradient(135deg, #fa9a3c, #f2790f);
+            background: #f2790f;
             color: #1c1915;
             box-shadow: 0 8px 18px rgba(194, 94, 10,0.2);
         }
@@ -437,6 +432,7 @@
     </style>
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
+    @include('partials.page-background')
 @include('partials.public-top-nav')
 
 @php
@@ -453,17 +449,19 @@
 >
     <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
     <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-        <p class="text-orange-300 text-sm font-medium uppercase tracking-widest mb-3">Magazine</p>
-        <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
-            @if($active_category)
-                {{ $active_category->name_fr }}
-            @elseif($search)
-                Résultats pour "{{ $search }}"
-            @else
-                Tous les articles
-            @endif
-        </h1>
-        <p class="text-[#1c1915] text-xl max-w-2xl mx-auto">{{ $articles->total() }} article{{ $articles->total() > 1 ? 's' : '' }}</p>
+        <div class="inline-block rounded-2xl bg-green-950/70 backdrop-blur-md px-6 py-8 sm:px-12 sm:py-10">
+            <p class="text-orange-300 text-sm font-medium uppercase tracking-widest mb-3">Magazine</p>
+            <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
+                @if($active_category)
+                    {{ $active_category->name_fr }}
+                @elseif($search)
+                    Résultats pour "{{ $search }}"
+                @else
+                    Tous les articles
+                @endif
+            </h1>
+            <p class="text-gray-200 text-xl max-w-2xl mx-auto">{{ $articles->total() }} article{{ $articles->total() > 1 ? 's' : '' }}</p>
+        </div>
     </div>
 </section>
 
@@ -518,12 +516,11 @@
                     <img src="{{ $art->cover_url }}" alt="{{ $art->cover_alt }}"
                          class="card-img w-full h-full object-cover">
                     @else
-                    <div class="card-img w-full h-full bg-gradient-to-br from-[#ffffff] to-[#ffffff] flex items-center justify-center">
+                    <div class="card-img w-full h-full bg-[#ffffff] flex items-center justify-center">
                         <i class="fas fa-image text-[#333] text-3xl"></i>
                     </div>
                     @endif
                 </div>
-                <div class="absolute inset-0 bg-linear-to-t from-green-950/95 via-green-950/30 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
                     <span class="text-orange-400 text-[11px] uppercase tracking-widest">{{ $art->category->name_fr ?? '—' }}</span>
                     <h3 class="font-serif font-bold mt-1 group-hover:text-orange-300 transition leading-snug {{ $i === 0 ? 'text-lg sm:text-xl' : 'text-sm' }}">
@@ -569,7 +566,7 @@
                     <img src="{{ $article->cover_url }}" alt="{{ $article->cover_alt ?? $article->title_fr }}"
                          class="card-img absolute inset-0 w-full h-full object-cover">
                 @else
-                    <div class="card-img absolute inset-0 bg-gradient-to-br from-dark-700 to-dark-500 flex items-center justify-center">
+                    <div class="card-img absolute inset-0 bg-dark-700 flex items-center justify-center">
                         <i class="fas fa-image text-dark-400 text-lg"></i>
                     </div>
                 @endif

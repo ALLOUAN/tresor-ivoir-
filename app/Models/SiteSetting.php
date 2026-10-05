@@ -39,25 +39,31 @@ class SiteSetting extends Model
 
     public static function singleton(): self
     {
-        $model = static::query()->firstOrCreate(
-            ['id' => 1],
-            [
-                'site_name' => config('app.name'),
-                'timezone' => config('app.timezone', 'UTC'),
-                'default_language' => 'fr',
-                'primary_color' => '#7c3aed',
-                'secondary_color' => '#0ea5e9',
-                'maintenance_mode' => false,
-                'maintenance_message' => null,
-                'maintenance_allowed_ips' => null,
-                'maintenance_progress' => null,
-                'maintenance_eta' => null,
-            ]
-        );
-
-        if ($model->wasRecentlyCreated) {
-            static::forgetBrandCache();
+        $model = static::query()->find(1);
+        if ($model) {
+            return $model;
         }
+
+        // `id` n'est pas mass-assignable (absent de $fillable) : firstOrCreate()
+        // l'ignorerait silencieusement et laisserait l'auto-incrément attribuer
+        // un id quelconque, cassant tous les `find(1)` de l'application (middleware
+        // de maintenance, branding()...). On force donc l'id via affectation directe.
+        $model = new static([
+            'site_name' => config('app.name'),
+            'timezone' => config('app.timezone', 'UTC'),
+            'default_language' => 'fr',
+            'primary_color' => '#7c3aed',
+            'secondary_color' => '#0ea5e9',
+            'maintenance_mode' => false,
+            'maintenance_message' => null,
+            'maintenance_allowed_ips' => null,
+            'maintenance_progress' => null,
+            'maintenance_eta' => null,
+        ]);
+        $model->id = 1;
+        $model->save();
+
+        static::forgetBrandCache();
 
         return $model;
     }

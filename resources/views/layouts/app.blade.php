@@ -192,12 +192,15 @@
     @php
         $role = auth()->user()->role;
         $sidebarMessagingUnreadCount = 0;
+        $sidebarClientMessagingUnreadCount = 0;
+        $sidebarConversationReportsPendingCount = 0;
         if ($role === 'admin') {
             $sidebarMessagingUnreadCount = \App\Models\ProviderConversation::query()
                 ->whereHas('messages', fn ($q) => $q
                     ->whereNull('read_at')
                     ->where('sender_id', '!=', auth()->id()))
                 ->count();
+            $sidebarConversationReportsPendingCount = \App\Models\ConversationReport::where('status', 'pending')->count();
         } elseif ($role === 'provider') {
             /** @var \App\Models\User $authUser */
             $authUser = auth()->user();
@@ -210,11 +213,32 @@
                         ->where('sender_id', '!=', auth()->id()))
                     ->count();
 
+                $sidebarClientMessagingUnreadCount = \App\Models\Conversation::query()
+                    ->where('provider_id', $provider->id)
+                    ->whereHas('messages', fn ($q) => $q
+                        ->whereNull('read_at')
+                        ->where('sender_id', '!=', auth()->id()))
+                    ->count();
+
                 $providerCategoryRootSlug = $provider->category?->parent_id
                     ? $provider->category?->parent?->slug
                     : $provider->category?->slug;
                 $providerIsAccommodationCategory = $providerCategoryRootSlug === 'hotels';
+                $providerIsArtCategory = $providerCategoryRootSlug === 'art-creations';
+                $providerIsRestaurantCategory = $providerCategoryRootSlug === 'restaurants';
+                $providerIsTravelAgencyCategory = $providerCategoryRootSlug === 'agences-voyages';
+                $providerIsLeisureCategory = in_array($providerCategoryRootSlug, ['loisirs-culture', 'sites-touristiques'], true);
+                $providerIsLeisureVenueCategory = $providerCategoryRootSlug === 'loisirs-culture';
+                $providerIsTouristExperienceCategory = $providerCategoryRootSlug === 'sites-touristiques';
+                $providerIsTransportCategory = $providerCategoryRootSlug === 'transports';
             }
+        } elseif ($role === 'visitor') {
+            $sidebarClientMessagingUnreadCount = \App\Models\Conversation::query()
+                ->where('client_id', auth()->id())
+                ->whereHas('messages', fn ($q) => $q
+                    ->whereNull('read_at')
+                    ->where('sender_id', '!=', auth()->id()))
+                ->count();
         }
     @endphp
     @if(session('success'))
@@ -294,6 +318,16 @@
                         </span>
                     @endif
                 </a>
+                <a href="{{ route('admin.conversation-reports.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.conversation-reports.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-flag"></i></span>
+                    <span class="flex-1">Signalements messagerie</span>
+                    @if($sidebarConversationReportsPendingCount > 0)
+                        <span class="inline-flex min-w-[1.35rem] h-[1.35rem] px-1.5 items-center justify-center rounded-full bg-orange-500 text-black text-[10px] font-bold leading-none">
+                            {{ $sidebarConversationReportsPendingCount > 99 ? '99+' : $sidebarConversationReportsPendingCount }}
+                        </span>
+                    @endif
+                </a>
                 <a href="{{ route('admin.articles.index') }}"
                    class="nav-row {{ request()->routeIs('admin.articles.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-newspaper"></i></span>
@@ -366,6 +400,16 @@
                     <span class="nav-row-icon"><i class="fas fa-sliders"></i></span>
                     <span>Config paiement</span>
                 </a>
+                <a href="{{ route('admin.wallet.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.wallet.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-wallet"></i></span>
+                    <span>Portefeuilles</span>
+                </a>
+                <a href="{{ route('admin.art-orders.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.art-orders.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-receipt"></i></span>
+                    <span>Commandes Art</span>
+                </a>
                 <p class="nav-section-title"><span>Contenu</span></p>
                 <a href="{{ route('admin.newsletter.index') }}"
                    class="nav-row {{ request()->routeIs('admin.newsletter.*') ? 'is-active' : '' }}">
@@ -392,6 +436,31 @@
                     <span class="nav-row-icon"><i class="fas fa-hotel"></i></span>
                     <span>Hébergements</span>
                 </a>
+                <a href="{{ route('admin.artworks.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.artworks.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-palette"></i></span>
+                    <span>Art &amp; Créations</span>
+                </a>
+                <a href="{{ route('admin.menu.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.menu.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-utensils"></i></span>
+                    <span>Restaurants</span>
+                </a>
+                <a href="{{ route('admin.tours.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.tours.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-route"></i></span>
+                    <span>Agences de Voyages</span>
+                </a>
+                <a href="{{ route('admin.activities.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.activities.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-person-hiking"></i></span>
+                    <span>Loisirs &amp; Culture</span>
+                </a>
+                <a href="{{ route('admin.transport.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.transport.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-car-side"></i></span>
+                    <span>Transports</span>
+                </a>
                 <a href="{{ route('admin.prestations.index') }}"
                    class="nav-row {{ request()->routeIs('admin.prestations.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-concierge-bell"></i></span>
@@ -406,6 +475,11 @@
                    class="nav-row {{ request()->routeIs('admin.reservations.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-calendar-check"></i></span>
                     <span>Réservations</span>
+                </a>
+                <a href="{{ route('admin.tourist-visits.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.tourist-visits.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-person-hiking"></i></span>
+                    <span>Visites touristiques</span>
                 </a>
                 <p class="nav-section-title"><span>Sécurité</span></p>
                 <a href="{{ route('admin.analytics.index') }}"
@@ -457,22 +531,39 @@
                     <i class="fas fa-store w-4 text-center"></i> Ma fiche
                 </a>
                 @if($providerIsAccommodationCategory ?? false)
-                    <a href="{{ route('provider.accommodation.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.accommodation.*') ? 'active' : '' }}">
-                        <i class="fas fa-bed w-4 text-center"></i> Mon hébergement
+                    <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Mon hébergement</p>
+                    <a href="{{ route('provider.accommodation.dashboard') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.accommodation.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney w-4 text-center"></i> Vue d'ensemble
+                    </a>
+                    <a href="{{ route('provider.accommodation.profile.edit') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.accommodation.profile.*') ? 'active' : '' }}">
+                        <i class="fas fa-hotel w-4 text-center"></i> Fiche établissement
+                    </a>
+                    <a href="{{ route('provider.accommodation.rooms.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.accommodation.rooms.*') ? 'active' : '' }}">
+                        <i class="fas fa-bed w-4 text-center"></i> Chambres & tarifs
+                    </a>
+                    <a href="{{ route('provider.accommodation.gallery.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.accommodation.gallery.*') ? 'active' : '' }}">
+                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
                     </a>
                     <a href="{{ route('provider.reservations.index') }}"
                        class="sidebar-link {{ request()->routeIs('provider.reservations.*') ? 'active' : '' }}">
                         <i class="fas fa-calendar-check w-4 text-center"></i> Réservations
                     </a>
+                    <a href="{{ route('provider.tourist-visits.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.tourist-visits.*') ? 'active' : '' }}">
+                        <i class="fas fa-person-hiking w-4 text-center"></i> Visites
+                    </a>
+                    <a href="{{ route('provider.wallet.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
+                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
+                    </a>
                 @endif
                 <a href="{{ route('provider.reviews.index') }}"
                    class="sidebar-link {{ request()->routeIs('provider.reviews.*') ? 'active' : '' }}">
                     <i class="fas fa-star w-4 text-center"></i> Mes avis
-                </a>
-                <a href="{{ route('provider.analytics') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.analytics') ? 'active' : '' }}">
-                    <i class="fas fa-chart-line w-4 text-center"></i> Statistiques
                 </a>
                 <a href="{{ route('provider.media.index') }}"
                    class="sidebar-link {{ request()->routeIs('provider.media.*') ? 'active' : '' }}">
@@ -488,6 +579,149 @@
                         </span>
                     @endif
                 </a>
+                <a href="{{ route('provider.client-conversations.index') }}"
+                   class="sidebar-link {{ request()->routeIs('provider.client-conversations.*') ? 'active' : '' }}">
+                    <i class="fas fa-message w-4 text-center"></i>
+                    <span class="flex-1">Messages clients</span>
+                    @if($sidebarClientMessagingUnreadCount > 0)
+                        <span class="inline-flex min-w-[1.2rem] h-[1.2rem] px-1 items-center justify-center rounded-full bg-orange-500 text-black text-[10px] font-bold leading-none">
+                            {{ $sidebarClientMessagingUnreadCount > 99 ? '99+' : $sidebarClientMessagingUnreadCount }}
+                        </span>
+                    @endif
+                </a>
+                @if($providerIsArtCategory ?? false)
+                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Espace Art &amp; Créations</p>
+                    <a href="{{ route('provider.artworks.dashboard') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.artworks.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('provider.artworks.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.artworks.index') || request()->routeIs('provider.artworks.create') || request()->routeIs('provider.artworks.edit') ? 'active' : '' }}">
+                        <i class="fas fa-palette w-4 text-center"></i> Mes œuvres
+                    </a>
+                    <a href="{{ route('provider.art-orders.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.art-orders.*') ? 'active' : '' }}">
+                        <i class="fas fa-box-open w-4 text-center"></i> Commandes Art
+                    </a>
+                    <a href="{{ route('provider.wallet.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
+                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
+                    </a>
+                @endif
+                @if($providerIsRestaurantCategory ?? false)
+                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Espace Restaurant</p>
+                    <a href="{{ route('provider.menu.dashboard') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.menu.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('provider.restaurant.profile.edit') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.restaurant.profile.*') ? 'active' : '' }}">
+                        <i class="fas fa-utensils w-4 text-center"></i> Fiche établissement
+                    </a>
+                    <a href="{{ route('provider.menu.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.menu.index') || request()->routeIs('provider.menu.create') || request()->routeIs('provider.menu.edit') ? 'active' : '' }}">
+                        <i class="fas fa-book-open w-4 text-center"></i> Ma carte
+                    </a>
+                    <a href="{{ route('provider.restaurant.gallery.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.restaurant.gallery.*') ? 'active' : '' }}">
+                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
+                    </a>
+                    <a href="{{ route('provider.wallet.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
+                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
+                    </a>
+                @endif
+                @if($providerIsTravelAgencyCategory ?? false)
+                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Espace Agence de Voyages</p>
+                    <a href="{{ route('provider.tours.dashboard') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.tours.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('provider.travel-agency.profile.edit') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.travel-agency.profile.*') ? 'active' : '' }}">
+                        <i class="fas fa-plane w-4 text-center"></i> Fiche établissement
+                    </a>
+                    <a href="{{ route('provider.tours.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.tours.index') || request()->routeIs('provider.tours.create') || request()->routeIs('provider.tours.edit') ? 'active' : '' }}">
+                        <i class="fas fa-route w-4 text-center"></i> Mes circuits
+                    </a>
+                    <a href="{{ route('provider.travel-agency.gallery.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.travel-agency.gallery.*') ? 'active' : '' }}">
+                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
+                    </a>
+                    <a href="{{ route('provider.wallet.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
+                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
+                    </a>
+                @endif
+                @if($providerIsLeisureCategory ?? false)
+                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Activités</p>
+                    <a href="{{ route('provider.activities.dashboard') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.activities.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('provider.activities.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.activities.index') || request()->routeIs('provider.activities.create') || request()->routeIs('provider.activities.edit') ? 'active' : '' }}">
+                        <i class="fas fa-person-hiking w-4 text-center"></i> Mes activités
+                    </a>
+                    <a href="{{ route('provider.wallet.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
+                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
+                    </a>
+                @endif
+                @if($providerIsTouristExperienceCategory ?? false)
+                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Mon établissement</p>
+                    <a href="{{ route('provider.tourist-experience.dashboard') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.tourist-experience.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('provider.tourist-experience.profile.edit') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.tourist-experience.profile.*') ? 'active' : '' }}">
+                        <i class="fas fa-landmark w-4 text-center"></i> Fiche établissement
+                    </a>
+                    <a href="{{ route('provider.tourist-experience.gallery.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.tourist-experience.gallery.*') ? 'active' : '' }}">
+                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
+                    </a>
+                @endif
+                @if($providerIsLeisureVenueCategory ?? false)
+                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Mon établissement</p>
+                    <a href="{{ route('provider.leisure-venue.dashboard') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.leisure-venue.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('provider.leisure-venue.profile.edit') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.leisure-venue.profile.*') ? 'active' : '' }}">
+                        <i class="fas fa-masks-theater w-4 text-center"></i> Fiche établissement
+                    </a>
+                    <a href="{{ route('provider.leisure-venue.gallery.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.leisure-venue.gallery.*') ? 'active' : '' }}">
+                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
+                    </a>
+                @endif
+                @if($providerIsTransportCategory ?? false)
+                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Espace Transport</p>
+                    <a href="{{ route('provider.transport.dashboard') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.transport.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('provider.transport-company.profile.edit') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.transport-company.profile.*') ? 'active' : '' }}">
+                        <i class="fas fa-car w-4 text-center"></i> Fiche établissement
+                    </a>
+                    <a href="{{ route('provider.transport.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.transport.index') || request()->routeIs('provider.transport.create') || request()->routeIs('provider.transport.edit') ? 'active' : '' }}">
+                        <i class="fas fa-car-side w-4 text-center"></i> Mes offres
+                    </a>
+                    <a href="{{ route('provider.transport-company.gallery.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.transport-company.gallery.*') ? 'active' : '' }}">
+                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
+                    </a>
+                    <a href="{{ route('provider.wallet.index') }}"
+                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
+                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
+                    </a>
+                @endif
                 <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Abonnement</p>
                 <a href="{{ route('provider.billing.plans') }}"
                    class="sidebar-link {{ request()->routeIs('provider.billing.plans') || request()->routeIs('provider.billing.checkout') ? 'active' : '' }}">
@@ -515,6 +749,16 @@
                 <a href="{{ route('visitor.notifications.index') }}"
                    class="sidebar-link {{ request()->routeIs('visitor.notifications.*') ? 'active' : '' }}">
                     <i class="fas fa-bell w-4 text-center"></i> Notifications
+                </a>
+                <a href="{{ route('visitor.conversations.index') }}"
+                   class="sidebar-link {{ request()->routeIs('visitor.conversations.*') ? 'active' : '' }}">
+                    <i class="fas fa-message w-4 text-center"></i>
+                    <span class="flex-1">Messages</span>
+                    @if($sidebarClientMessagingUnreadCount > 0)
+                        <span class="inline-flex min-w-[1.2rem] h-[1.2rem] px-1 items-center justify-center rounded-full bg-orange-500 text-black text-[10px] font-bold leading-none">
+                            {{ $sidebarClientMessagingUnreadCount > 99 ? '99+' : $sidebarClientMessagingUnreadCount }}
+                        </span>
+                    @endif
                 </a>
                 <a href="{{ route('articles.index') }}" class="sidebar-link">
                     <i class="fas fa-newspaper w-4 text-center"></i> Articles

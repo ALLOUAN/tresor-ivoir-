@@ -1,81 +1,45 @@
-{{-- À propos — split hero + glass editorial --}}
-<form method="POST" action="{{ route('admin.administration.info-center.update', $page) }}" class="relative">
+{{-- À propos --}}
+<form method="POST" action="{{ route('admin.administration.info-center.update', $page) }}" class="space-y-6">
     @csrf
     @method('PUT')
 
-    <div class="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl shadow-green-900/20 mb-8">
-        <div class="absolute inset-0 bg-gradient-to-br from-green-600/30 via-green-600/20 to-orange-500/10"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent"></div>
-        <div class="relative px-6 sm:px-10 py-10 sm:py-14 grid lg:grid-cols-2 gap-10 items-center">
-            <div class="space-y-4">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-green-200 text-[10px] font-bold tracking-[0.2em] uppercase backdrop-blur-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Identité
-                </span>
-                <h3 class="text-2xl sm:text-3xl font-light text-white tracking-tight leading-tight">
-                    Racontez <span class="font-semibold bg-gradient-to-r from-green-200 to-orange-200 bg-clip-text text-transparent">l’histoire</span> du magazine
-                </h3>
-                <p class="text-slate-400 text-sm leading-relaxed max-w-md">
-                    Ce bloc met en scène votre page « À propos » : titres bilingues, puis un contenu riche (HTML) pour mission, équipe et valeurs.
-                </p>
-                <ul class="text-slate-500 text-xs space-y-2 max-w-md border-l-2 border-green-500/30 pl-4">
-                    <li><span class="text-green-200/90 font-medium">Ton</span> — institutionnel mais chaleureux ; évitez le jargon marketing creux.</li>
-                    <li><span class="text-green-200/90 font-medium">Titres</span> — 200 caractères max ; privilégiez un titre court + sous-titre dans le corps en <code class="text-green-300/70">&lt;p class="lead"&gt;</code> si besoin.</li>
-                    <li><span class="text-green-200/90 font-medium">Visuels</span> — intégrez des images via URL absolues <code class="text-green-300/70">&lt;img src="https://…"&gt;</code> (hébergées sur votre média ou CDN).</li>
-                    <li><span class="text-green-200/90 font-medium">SEO</span> — une seule <code class="text-green-300/70">&lt;h1&gt;</code> côté public ; ici le « titre » sert souvent de H1 de page.</li>
-                </ul>
-            </div>
-            <div class="rounded-2xl bg-green-950/60 backdrop-blur-xl border border-white/10 p-6 shadow-inner">
-                <div class="space-y-5">
-                    <div class="group">
-                        <label class="block text-[11px] font-semibold text-green-300/90 uppercase tracking-widest mb-2">Titre · français</label>
-                        <input type="text" name="title_fr" required maxlength="200" value="{{ old('title_fr', $page->title_fr) }}"
-                            class="w-full bg-green-900/80 border border-white/10 rounded-xl px-4 py-3 text-lg text-white placeholder-slate-600 focus:border-green-400/50 focus:ring-2 focus:ring-green-500/20 outline-none transition group-hover:border-white/20">
-                    </div>
-                    <div class="group">
-                        <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Titre · english</label>
-                        <input type="text" name="title_en" maxlength="200" value="{{ old('title_en', $page->title_en) }}"
-                            class="w-full bg-green-900/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:border-green-400/40 focus:ring-2 focus:ring-green-500/20 outline-none transition">
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="rounded-xl border border-slate-700 bg-slate-800/40 px-4 py-3 text-xs text-slate-400 leading-relaxed">
+        <p class="font-semibold text-slate-300 mb-1"><i class="fas fa-circle-info text-orange-400/80 mr-1"></i> Page « À propos »</p>
+        <p>Titres bilingues puis un contenu riche (HTML) pour mission, équipe et valeurs. Ton institutionnel mais chaleureux, une seule <code class="text-slate-300">&lt;h1&gt;</code> côté public (le titre en sert souvent de H1). Images via URL absolues <code class="text-slate-300">&lt;img src="https://…"&gt;</code>.</p>
     </div>
 
-    <div class="grid lg:grid-cols-5 gap-6">
-        <div class="lg:col-span-3 rounded-2xl border border-white/8 bg-gradient-to-b from-green-900/90 to-green-950 p-6 sm:p-8">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="h-px flex-1 bg-gradient-to-r from-transparent via-green-500/40 to-transparent"></div>
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Corps FR</span>
-                <div class="h-px flex-1 bg-gradient-to-r from-transparent via-green-500/40 to-transparent"></div>
-            </div>
-            <textarea name="body_fr" rows="20" placeholder="Collez ou rédigez votre HTML ici…"
-                class="w-full bg-green-950/50 border border-white/10 rounded-2xl px-5 py-4 text-sm text-slate-200 leading-relaxed font-mono focus:border-green-500/40 focus:ring-1 focus:ring-green-500/30 outline-none resize-y min-h-[320px]">{{ old('body_fr', $page->body_fr) }}</textarea>
-            <details class="mt-4 rounded-xl border border-white/10 bg-green-950/40 px-4 py-3 group">
-                <summary class="text-xs font-semibold text-slate-400 cursor-pointer list-none flex items-center gap-2 [&::-webkit-details-marker]:hidden">
-                    <i class="fas fa-code text-green-400/70"></i> Exemple de squelette HTML (cliquer pour afficher)
-                </summary>
-                <pre class="mt-3 text-[11px] text-slate-500 overflow-x-auto leading-relaxed font-mono whitespace-pre-wrap">&lt;section&gt;
+    <div class="grid gap-6 sm:grid-cols-2">
+        <div>
+            <label for="title_fr" class="block text-sm text-slate-300 mb-1">Titre (français) <span class="text-red-400">*</span></label>
+            <input type="text" name="title_fr" id="title_fr" required maxlength="200" value="{{ old('title_fr', $page->title_fr) }}"
+                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 outline-none transition">
+        </div>
+        <div>
+            <label for="title_en" class="block text-sm text-slate-300 mb-1">Titre (anglais)</label>
+            <input type="text" name="title_en" id="title_en" maxlength="200" value="{{ old('title_en', $page->title_en) }}"
+                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:ring-2 focus:ring-orange-500/30 outline-none transition" placeholder="Optionnel">
+        </div>
+    </div>
+    <div>
+        <label for="body_fr" class="block text-sm text-slate-300 mb-1">Contenu (français)</label>
+        <textarea name="body_fr" id="body_fr" rows="18" placeholder="Collez ou rédigez votre HTML ici…"
+            class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 font-mono focus:ring-2 focus:ring-orange-500/30 outline-none resize-y">{{ old('body_fr', $page->body_fr) }}</textarea>
+        <details class="mt-2 rounded-lg border border-slate-700 bg-slate-800/40 px-3 py-2">
+            <summary class="text-[11px] font-medium text-slate-400 cursor-pointer list-none flex items-center gap-2 [&::-webkit-details-marker]:hidden">
+                <i class="fas fa-code text-orange-400/70"></i> Exemple de squelette HTML
+            </summary>
+            <pre class="mt-2 text-[11px] text-slate-500 overflow-x-auto leading-relaxed font-mono whitespace-pre-wrap">&lt;section&gt;
   &lt;h2 id="mission"&gt;Notre mission&lt;/h2&gt;
   &lt;p&gt;…&lt;/p&gt;
   &lt;h2 id="equipe"&gt;L’équipe&lt;/h2&gt;
   &lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ul&gt;
 &lt;/section&gt;</pre>
-            </details>
-        </div>
-        <div class="lg:col-span-2 rounded-2xl border border-green-500/15 bg-green-900/40 p-6 sm:p-8 flex flex-col">
-            <div class="flex items-center gap-2 mb-4">
-                <i class="fas fa-language text-green-400/80"></i>
-                <span class="text-xs font-bold text-green-200/80 uppercase tracking-widest">English body</span>
-            </div>
-            <textarea name="body_en" rows="14"
-                class="flex-1 w-full bg-green-950/60 border border-green-500/20 rounded-2xl px-4 py-3 text-sm text-slate-300 font-mono focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 outline-none resize-y min-h-[200px]">{{ old('body_en', $page->body_en) }}</textarea>
-            <div class="mt-4 rounded-xl border border-green-500/20 bg-green-950/20 p-4 text-[11px] text-slate-400 leading-relaxed space-y-2">
-                <p class="font-semibold text-green-200/90 flex items-center gap-2"><i class="fas fa-earth-europe"></i> Version anglaise</p>
-                <p>Reproduisez la <strong class="text-slate-300">même hiérarchie</strong> de titres (<code class="text-green-300/80">id</code> identiques sur les sections miroir) pour le référencement multilingue et les liens profonds.</p>
-                <p class="text-slate-600">Si la page n’a pas de version EN publique, laissez ce champ vide.</p>
-            </div>
-        </div>
+        </details>
     </div>
-
+    <div>
+        <label for="body_en" class="block text-sm text-slate-300 mb-1">Contenu (anglais)</label>
+        <textarea name="body_en" id="body_en" rows="10"
+            class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 font-mono focus:ring-2 focus:ring-orange-500/30 outline-none resize-y">{{ old('body_en', $page->body_en) }}</textarea>
+    </div>
     @include('admin.system.information-center.forms._submit')
 </form>

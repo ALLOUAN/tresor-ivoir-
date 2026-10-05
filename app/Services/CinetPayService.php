@@ -83,8 +83,11 @@ class CinetPayService
      * Champs requis dans $data :
      *   amount, designation, client_first_name, client_last_name, client_email,
      *   success_url, failed_url, notify_url
-     * Champs optionnels :
-     *   client_phone_number, currency
+     * Champ optionnel :
+     *   currency
+     *
+     * client_phone_number n'est volontairement pas transmis à CinetPay, voir la
+     * note dans le corps de la méthode.
      */
     public function initPayment(array $data): array
     {
@@ -105,9 +108,15 @@ class CinetPayService
             'direct_pay'              => false,
         ];
 
-        if (! empty($data['client_phone_number'])) {
-            $payload['client_phone_number'] = $data['client_phone_number'];
-        }
+        // NB : client_phone_number n'est PAS envoyé à CinetPay pour le moment.
+        // Constaté en test (voir CinetPayService::initPayment) : dès que ce champ est
+        // renseigné — même avec un numéro ivoirien valide au format attendu — l'API
+        // répond code 200 (succès apparent) mais n'aboutit à aucune session de paiement
+        // exploitable (payment_url absent, et l'URL reconstruite à partir du
+        // payment_token renvoie une 404). Le champ étant optionnel selon la doc
+        // CinetPay, on l'omet pour fiabiliser le paiement tant que ce comportement
+        // n'est pas expliqué par leur support (probablement lié au statut "Non vérifié"
+        // / migration du compte marchand).
 
         try {
             $token    = $this->getAccessToken();
@@ -120,9 +129,28 @@ class CinetPayService
 
             // code 200 = transaction initiée avec succès
             if ($code === 200) {
+                $paymentUrl = $result['payment_url'] ?? null;
+
+                // Constaté en test : CinetPay peut répondre code 200 sans avoir
+                // réellement provisionné de session de paiement exploitable
+                // (payment_url absent). Traiter ce cas comme un succès produirait
+                // un lien de paiement mort pour le client — on le traite en échec.
+                if (empty($paymentUrl)) {
+                    Log::warning('CinetPay initPayment: code 200 mais payment_url absent', [
+                        'merchant_transaction_id' => $merchantTxId,
+                        'result' => $result,
+                    ]);
+
+                    return [
+                        'success'                 => false,
+                        'message'                 => 'Le service de paiement n\'a pas retourné de lien valide. Merci de réessayer dans quelques instants.',
+                        'merchant_transaction_id' => $merchantTxId,
+                    ];
+                }
+
                 return [
                     'success'                 => true,
-                    'payment_url'             => $result['payment_url'] ?? null,
+                    'payment_url'             => $paymentUrl,
                     'payment_token'           => $result['payment_token'] ?? null,
                     'notify_token'            => $result['notify_token'] ?? null,
                     'transaction_id'          => $result['transaction_id'] ?? null,

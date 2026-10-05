@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SubscriptionPlan extends Model
 {
@@ -16,7 +17,7 @@ class SubscriptionPlan extends Model
         'has_social_posts', 'has_verified_badge',
         'stats_level', 'support_level',
         'min_duration_months', 'is_active', 'is_promotional',
-        'promo_starts_at', 'promo_ends_at', 'group_target', 'sort_order',
+        'promo_starts_at', 'promo_ends_at', 'group_target', 'provider_category_id', 'sort_order',
     ];
 
     protected function casts(): array
@@ -43,5 +44,10 @@ class SubscriptionPlan extends Model
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class, 'plan_id');
+    }
+
+    public function providerCategory(): BelongsTo
+    {
+        return $this->belongsTo(ProviderCategory::class);
     }
 }

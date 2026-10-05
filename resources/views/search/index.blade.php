@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,6 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -43,12 +42,32 @@
             background:#e9e5d9 !important;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
+        /* Image de fond configurable (back-office) de la page de recherche. */
+        .search-bg {
+            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55));
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .search-bg[style*="--search-bg-image"] {
+            background-image: var(--search-bg-image, none);
+        }
     </style>
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
+    @include('partials.page-background')
 @include('partials.public-top-nav')
 
-<main class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+@php
+    $searchImage = \Illuminate\Support\Facades\Schema::hasTable('search_page_images')
+        ? \App\Models\SearchPageImage::query()->find(1)
+        : null;
+@endphp
+<main class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16 {{ ($searchImage && $searchImage->isVisible()) ? 'search-bg' : '' }}"
+    @if($searchImage && $searchImage->isVisible())
+        style="--search-bg-image: url('{{ $searchImage->image_url }}');"
+    @endif
+>
 
     {{-- Search bar --}}
     <div class="mb-10">

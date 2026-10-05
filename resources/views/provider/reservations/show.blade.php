@@ -98,6 +98,43 @@
     @endif
 
     <div class="bg-green-900 border border-slate-800 rounded-xl p-5 sm:p-6">
+        <h3 class="text-white font-semibold text-sm mb-4">Fiche d'enregistrement voyageur</h3>
+        @if($reservation->guestRegistration)
+            @php $reg = $reservation->guestRegistration; @endphp
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Voyageur</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->full_name }}</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Document</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->labelForDocumentType() }} — {{ $reg->document_number }}</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Type de voyage</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->labelForTravelType() }}</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Téléphone</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->phone_country_code }} {{ $reg->phone_number }}</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Envoyée le</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->submitted_at?->format('d/m/Y à H:i') }}</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ $reg->document_scan_front_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-id-card mr-1"></i>Pièce recto</a>
+                <a href="{{ $reg->document_scan_back_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-id-card mr-1"></i>Pièce verso</a>
+                <a href="{{ $reg->selfie_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-camera-retro mr-1"></i>Selfie</a>
+                <a href="{{ $reg->signature_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-signature mr-1"></i>Signature</a>
+            </div>
+        @else
+            <p class="text-slate-500 text-sm"><i class="fas fa-circle-info mr-1"></i>Le client n'a pas encore complété sa fiche d'enregistrement.</p>
+        @endif
+    </div>
+
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5 sm:p-6">
         <h3 class="text-white font-semibold text-sm mb-1">Statut de la réservation</h3>
         <p class="text-slate-500 text-xs mb-4">
             Statut actuel : <span class="text-slate-300 font-medium">{{ $reservation->labelForStatus() }}</span>
@@ -111,7 +148,7 @@
                 @method('PATCH')
                 @if($reservation->status === \App\Models\Reservation::STATUS_NEW)
                     <button type="submit" name="status" value="{{ \App\Models\Reservation::STATUS_CONFIRMED }}"
-                            class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-400 hover:to-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+                            class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                         <i class="fas fa-check"></i> Confirmer la réservation
                     </button>
                 @endif

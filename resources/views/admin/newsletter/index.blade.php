@@ -201,7 +201,7 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
                                 <td class="px-5 py-3 text-right">
                                     @if($s->status === 'active')
                                         <a href="{{ route('admin.newsletter.subscribers.message', $s) }}"
-                                           class="inline-flex items-center gap-1.5 text-xs font-medium text-green-400 hover:text-green-300 transition">
+                                           class="inline-flex items-center gap-1.5 text-xs font-medium text-orange-400 hover:text-orange-300 transition">
                                             <i class="fas fa-envelope text-[10px]"></i>
                                             Individuel
                                         </a>
@@ -227,8 +227,8 @@ Votre texte ici… (ou balises HTML si format HTML coché).">{{ old('content_fr'
     @if($hasCampaigns)
         <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
             <div class="px-5 py-4 border-b border-slate-800 flex items-center gap-3 bg-slate-800/40">
-                <div class="w-10 h-10 rounded-lg bg-green-500/15 border border-green-500/30 flex items-center justify-center shrink-0">
-                    <i class="fas fa-clock-rotate-left text-green-300"></i>
+                <div class="w-10 h-10 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0">
+                    <i class="fas fa-clock-rotate-left text-orange-300"></i>
                 </div>
                 <div>
                     <h2 class="text-white font-semibold text-lg">Historique des messages envoyés</h2>

@@ -14,8 +14,8 @@
 
     $roleBadgeClasses = [
         'admin' => 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-        'editor' => 'bg-green-500/20 text-green-300 border-green-500/40',
-        'provider' => 'bg-green-500/20 text-green-300 border-green-500/40',
+        'editor' => 'bg-orange-500/20 text-orange-300 border-orange-500/40',
+        'provider' => 'bg-slate-500/20 text-slate-300 border-slate-500/40',
         'visitor' => 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
     ];
 
@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="md:col-span-2 flex items-center gap-3">
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
                         Creer l'utilisateur
                     </button>
                     <button type="button" id="cancel-create-user-modal" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
@@ -231,7 +231,7 @@
                                 <div class="flex items-center gap-2">
                                     <button
                                         type="submit"
-                                        class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition"
+                                        class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition"
                                     >
                                         Enregistrer permissions
                                     </button>

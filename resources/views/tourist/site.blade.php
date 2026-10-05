@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<html lang="fr" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,6 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background:#e9e5d9; color: #1c1915; }
@@ -49,6 +48,7 @@
     </style>
 </head>
 <body class="min-h-screen">
+    @include('partials.page-background')
 
 @include('partials.public-top-nav')
 
@@ -65,7 +65,7 @@
         class="hero-img w-full h-full object-cover">
     @else
     <div class="w-full h-full flex items-center justify-center"
-        style="background: linear-gradient(135deg, #7a3c08 0%, #e9e5d9 60%, #e9e5d9 100%);">
+        style="background: #e9e5d9;">
         <i class="fas fa-image text-8xl opacity-10"></i>
     </div>
     @endif

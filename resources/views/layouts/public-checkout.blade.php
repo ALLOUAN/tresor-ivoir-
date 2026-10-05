@@ -57,6 +57,7 @@
     </style>
 </head>
 <body class="min-h-screen bg-dark-900 text-white">
+    @include('partials.page-background')
     @include('partials.public-top-nav')
 
     <section class="border-b border-white/10 bg-dark-800/70">

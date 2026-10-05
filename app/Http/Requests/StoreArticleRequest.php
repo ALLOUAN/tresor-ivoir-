@@ -26,15 +26,22 @@ class StoreArticleRequest extends FormRequest
             'excerpt_en' => ['nullable', 'string', 'max:500'],
             'content_fr' => ['nullable', 'string'],
             'content_en' => ['nullable', 'string'],
-            'cover_url' => ['nullable', 'url', 'max:500'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+            // La règle 'url' seule rejette les chemins relatifs que génère nous-mêmes
+            // l'upload d'une couverture (ex: /storage/articles/covers/xxx.webp, cf.
+            // ArticleController::storeArticleCover) : la valeur pré-remplie dans le
+            // formulaire d'édition d'un article ayant déjà une couverture uploadée
+            // échouait alors systématiquement à la validation dès qu'on modifiait
+            // l'article, quel que soit le champ touché — bug confirmé et corrigé ici.
+            'cover_url' => ['nullable', 'max:500', 'regex:/^(https?:\/\/\S+|\/\S*)$/'],
+            'cover_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:10240'],
             'article_images' => ['nullable', 'array', 'max:20'],
-            'article_images.*' => ['image', 'mimes:jpeg,jpg,png,webp', 'max:6144'],
+            'article_images.*' => ['image', 'mimes:jpeg,jpg,png,webp', 'max:10240'],
             'remove_media_ids' => ['nullable', 'array'],
             'remove_media_ids.*' => ['integer', 'exists:media,id'],
             'cover_alt' => ['nullable', 'string', 'max:300'],
             'reading_time' => ['nullable', 'integer', 'min:1', 'max:120'],
             'is_featured' => ['boolean'],
+            'featured_position' => ['nullable', 'integer', 'min:1', 'max:5'],
             'is_destination' => ['boolean'],
             'is_sponsored' => ['boolean'],
             'sponsor_id' => ['nullable', 'required_if:is_sponsored,1', 'exists:providers,id'],
@@ -72,6 +79,13 @@ class StoreArticleRequest extends FormRequest
             $this->merge(['sponsor_id' => null]);
         }
 
+        // Une position n'a de sens que pour un article effectivement à la une —
+        // on l'efface sinon pour éviter qu'une ancienne valeur ne reste collée
+        // en base après qu'on ait décoché « à la une ».
+        if (! $this->boolean('is_featured')) {
+            $this->merge(['featured_position' => null]);
+        }
+
         if (
             $this->input('publication_mode') === 'schedule'
             && $this->filled('scheduled_at')
@@ -97,12 +111,12 @@ class StoreArticleRequest extends FormRequest
             'slug_fr.unique' => 'Ce slug est déjà utilisé par un autre article.',
             'cover_image.image' => 'Le fichier de couverture doit être une image valide.',
             'cover_image.mimes' => 'Le format de l’image doit être jpeg, jpg, png ou webp.',
-            'cover_image.max' => 'L’image de couverture ne doit pas dépasser 4 Mo.',
+            'cover_image.max' => 'L’image de couverture ne doit pas dépasser 10 Mo.',
             'article_images.array' => 'Le lot d’images est invalide.',
             'article_images.max' => 'Vous pouvez ajouter au maximum 20 images.',
             'article_images.*.image' => 'Chaque fichier de la galerie doit être une image valide.',
             'article_images.*.mimes' => 'Les images de la galerie doivent être au format jpeg, jpg, png ou webp.',
-            'article_images.*.max' => 'Chaque image de la galerie ne doit pas dépasser 6 Mo.',
+            'article_images.*.max' => 'Chaque image de la galerie ne doit pas dépasser 10 Mo.',
             'sponsor_id.required_if' => 'Veuillez sélectionner un sponsor pour un article sponsorisé.',
             'sponsor_id.exists' => 'Le sponsor sélectionné est invalide.',
             'scheduled_at.required_if' => 'Veuillez renseigner la date de planification.',

@@ -35,9 +35,13 @@
         <div class="p-5">
         <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 overflow-hidden"
                     style="{{ $cat->color ? 'background:' . $cat->color . '22; color:' . $cat->color : 'background:#334155; color:#94a3b8' }}">
-                    <i class="{{ $cat->icon ?: 'fas fa-tag' }}"></i>
+                    @if($cat->icon_image_url)
+                        <img src="{{ $cat->icon_image_url }}" alt="" class="w-full h-full object-cover">
+                    @else
+                        <i class="{{ $cat->icon ?: 'fas fa-tag' }}"></i>
+                    @endif
                 </div>
                 <div>
                     <p class="text-white font-semibold text-sm">{{ $cat->name }}</p>
@@ -115,6 +119,19 @@
             </div>
 
             <div>
+                <label class="block text-xs text-slate-400 mb-2">Icône en image <span class="text-slate-600">(remplace l'icône FontAwesome si définie)</span></label>
+                <div class="flex items-center gap-3">
+                    <img id="cat_icon_preview" src="" class="w-12 h-12 object-cover rounded-lg border border-slate-700 hidden shrink-0">
+                    <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-orange-500/50 rounded-xl p-3 cursor-pointer transition group">
+                        <i class="fas fa-cloud-arrow-up text-lg text-slate-600 group-hover:text-orange-400/70 mb-1 transition"></i>
+                        <span class="text-slate-500 text-[11px] group-hover:text-slate-300 transition">JPG, PNG, WebP — 5 Mo max</span>
+                        <input type="file" name="icon_image_file" id="cat_icon_image_file" accept="image/jpeg,image/png,image/webp" class="hidden"
+                               onchange="const r=new FileReader();r.onload=e=>{document.getElementById('cat_icon_preview').src=e.target.result;document.getElementById('cat_icon_preview').classList.remove('hidden');};r.readAsDataURL(this.files[0])">
+                    </label>
+                </div>
+            </div>
+
+            <div>
                 <label class="block text-xs text-slate-400 mb-1">Description</label>
                 <textarea name="description" id="cat_description" rows="2"
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-none"></textarea>
@@ -171,6 +188,14 @@ function openCatModal(cat = null) {
             preview.src = '';
             preview.classList.add('hidden');
         }
+        const iconPreview = document.getElementById('cat_icon_preview');
+        if (cat.icon_image_url) {
+            iconPreview.src = cat.icon_image_url;
+            iconPreview.classList.remove('hidden');
+        } else {
+            iconPreview.src = '';
+            iconPreview.classList.add('hidden');
+        }
     } else {
         title.textContent = 'Nouvelle catégorie';
         form.action = catStoreUrl;
@@ -181,6 +206,9 @@ function openCatModal(cat = null) {
         const preview = document.getElementById('cat_hero_preview');
         preview.src = '';
         preview.classList.add('hidden');
+        const iconPreview = document.getElementById('cat_icon_preview');
+        iconPreview.src = '';
+        iconPreview.classList.add('hidden');
     }
     const modal = document.getElementById('catModal');
     modal.classList.remove('hidden');

@@ -182,7 +182,7 @@ class AccommodationSeeder extends Seeder
                 ],
                 'category_ids'      => [
                     $k['sports-aventure'],
-                    $k['parcs-espaces-naturels'],
+                    $k['parcs-reserves-naturelles'],
                 ],
                 'room_types'        => [
                     [

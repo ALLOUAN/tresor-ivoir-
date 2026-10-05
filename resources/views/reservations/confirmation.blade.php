@@ -61,10 +61,62 @@
             </div>
         </div>
 
-        <a href="{{ route('providers.show', $reservation->provider?->slug ?? '') }}"
-           class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-semibold text-sm transition">
-            <i class="fas fa-arrow-left text-xs"></i> Retour à la fiche établissement
-        </a>
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 mb-6">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="fas fa-id-card text-amber-600"></i>
+                <p class="text-gray-800 font-semibold text-sm">Fiche d'enregistrement voyageur</p>
+            </div>
+            <p class="text-gray-600 text-sm mb-3">
+                Conformément à la réglementation du Ministère du Tourisme et des Loisirs.
+            </p>
+            @if($reservation->guestRegistration)
+                <span class="inline-flex items-center gap-2 text-emerald-700 text-sm font-semibold">
+                    <i class="fas fa-circle-check"></i> Fiche déjà complétée
+                </span>
+            @else
+                {{-- Ne devrait plus se produire : le paiement de l'acompte exige désormais que la fiche soit remplie au préalable. --}}
+                <a href="{{ $reservation->guestRegistrationUrl() }}"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-sm transition">
+                    <i class="fas fa-pen-to-square text-xs"></i> Compléter ma fiche d'enregistrement
+                </a>
+            @endif
+        </div>
+
+        @if($reservation->accommodation && $reservation->accommodation->hasCoordinates())
+        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 mb-6">
+            <div class="flex items-center gap-2 mb-3">
+                <i class="fas fa-location-dot text-emerald-600"></i>
+                <p class="text-gray-800 font-semibold text-sm">Localisation exacte débloquée</p>
+            </div>
+            <p class="text-gray-600 text-sm mb-3">
+                {{ trim(($reservation->accommodation->adresse ?? '').', '.($reservation->accommodation->quartier ?? ''), ', ') ?: 'Adresse communiquée ci-dessous.' }}
+            </p>
+            <div class="rounded-xl overflow-hidden border border-emerald-200" style="aspect-ratio:16/8;">
+                <iframe src="https://www.google.com/maps?q={{ $reservation->accommodation->latitude }},{{ $reservation->accommodation->longitude }}&output=embed"
+                        class="w-full h-full" frameborder="0" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <a href="{{ $reservation->accommodation->google_maps_url }}" target="_blank" rel="noopener noreferrer"
+               class="mt-3 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition">
+                <i class="fas fa-diamond-turn-right text-xs"></i> Itinéraire
+            </a>
+        </div>
+        @endif
+
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ $reservation->receiptUrl() }}"
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 text-gray-800 font-semibold text-sm transition">
+                <i class="fas fa-receipt text-xs"></i> Voir mon reçu
+            </a>
+            <a href="{{ $reservation->receiptPdfUrl() }}"
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 text-gray-800 font-semibold text-sm transition">
+                <i class="fas fa-download text-xs"></i> Télécharger le PDF
+            </a>
+            <a href="{{ $reservation->establishmentUrl() }}"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-semibold text-sm transition">
+                <i class="fas fa-arrow-left text-xs"></i> Retour à la fiche établissement
+            </a>
+        </div>
     </div>
 </div>
 @endsection

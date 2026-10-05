@@ -36,7 +36,7 @@
 {{-- Search --}}
 <form method="GET" action="{{ route('admin.tourist.cities.index') }}" class="mb-5 flex gap-2">
     <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher une ville…"
-        class="flex-1 bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+        class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none transition placeholder-slate-500">
     <button class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
         <i class="fas fa-search"></i>
     </button>

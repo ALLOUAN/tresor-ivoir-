@@ -55,7 +55,7 @@ class ReservationController extends Controller
         $provider = $this->getProvider();
         abort_unless((int) $reservation->provider_id === (int) $provider->id, 403);
 
-        $reservation->load('payments');
+        $reservation->load('payments', 'guestRegistration');
 
         return view('provider.reservations.show', compact('reservation'));
     }

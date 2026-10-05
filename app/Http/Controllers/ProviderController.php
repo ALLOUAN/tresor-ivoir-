@@ -23,10 +23,17 @@ class ProviderController extends Controller
             ->where('status', 'active');
 
         $activeCategory = null;
+        $categoryIds = null;
         if ($catSlug) {
             $activeCategory = ProviderCategory::where('slug', $catSlug)->first();
             if ($activeCategory) {
-                $query->where('category_id', $activeCategory->id);
+                // Un secteur racine (ex: "Hôtels") doit englober ses sous-catégories
+                // (ex: "Hôtels de luxe") — un clic depuis le mega-menu ne doit pas
+                // exclure les prestataires classés plus finement.
+                $categoryIds = $activeCategory->parent_id === null
+                    ? ProviderCategory::where('id', $activeCategory->id)->orWhere('parent_id', $activeCategory->id)->pluck('id')
+                    : collect([$activeCategory->id]);
+                $query->whereIn('category_id', $categoryIds);
             }
         }
 
@@ -60,9 +67,8 @@ class ProviderController extends Controller
             ->withCount(['providers' => fn ($q) => $q->where('status', 'active')])
             ->orderBy('sort_order')->get();
         $cities = Provider::where('status', 'active')->whereNotNull('city')->distinct()->orderBy('city')->pluck('city');
-        $featured = Provider::where('status', 'active')->where('is_featured', true)->limit(3)->get();
 
-        return view('providers.index', compact('providers', 'categories', 'activeCategory', 'cities', 'search', 'city', 'price', 'sort', 'featured'));
+        return view('providers.index', compact('providers', 'categories', 'activeCategory', 'cities', 'search', 'city', 'price', 'sort'));
     }
 
     public function show(string $slug)
@@ -70,17 +76,28 @@ class ProviderController extends Controller
         $provider = Provider::with([
             'category', 'tags', 'hours',
             'approvedReviews.user', 'approvedReviews.reply',
-            'media', 'accommodation.media',
+            'media', 'accommodation.media', 'accommodation.videos',
+            'menuItems' => fn ($q) => $q->where('is_available', true)->with('category')->orderBy('sort_order'),
+            'tourPackages' => fn ($q) => $q->where('is_available', true)->with('category')->orderBy('sort_order'),
+            'activities' => fn ($q) => $q->where('is_available', true)->with('category')->orderBy('sort_order'),
+            'transportOffers' => fn ($q) => $q->where('is_available', true)->with('category')->orderBy('sort_order'),
+            'artworks' => fn ($q) => $q->published()->with('category')->latest(),
+            'sponsoredArticles' => fn ($q) => $q->where('status', 'published')->where('published_at', '<=', now())->latest('published_at'),
         ])
             ->where('slug', $slug)
             ->where('status', 'active')
             ->firstOrFail();
 
         $accommodation = $provider->accommodation;
+        $menuByCategory = $provider->menuItems->groupBy(fn ($item) => $item->category?->name_fr ?? 'Autres');
+        $toursByCategory = $provider->tourPackages->groupBy(fn ($tour) => $tour->category?->name_fr ?? 'Autres');
+        $activitiesByCategory = $provider->activities->groupBy(fn ($activity) => $activity->category?->name_fr ?? 'Autres');
+        $transportByCategory = $provider->transportOffers->groupBy(fn ($offer) => $offer->category?->name_fr ?? 'Autres');
+        $artworksByCategory = $provider->artworks->groupBy(fn ($artwork) => $artwork->category?->name_fr ?? 'Autres');
 
         $provider->increment('views_count');
 
-        $related = Provider::with('category')
+        $related = Provider::with('category', 'media', 'accommodation')
             ->where('status', 'active')
             ->where('id', '!=', $provider->id)
             ->where(fn ($q) => $q
@@ -115,6 +132,6 @@ class ProviderController extends Controller
             'clean' => $approvedReviews->whereNotNull('rating_clean')->count(),
         ];
 
-        return view('providers.show', compact('provider', 'accommodation', 'related', 'canReview', 'ratingBreakdown', 'ratingBreakdownCounts', 'isFavorited'));
+        return view('providers.show', compact('provider', 'accommodation', 'menuByCategory', 'toursByCategory', 'activitiesByCategory', 'transportByCategory', 'artworksByCategory', 'related', 'canReview', 'ratingBreakdown', 'ratingBreakdownCounts', 'isFavorited'));
     }
 }

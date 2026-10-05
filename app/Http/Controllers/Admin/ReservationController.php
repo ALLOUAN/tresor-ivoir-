@@ -63,7 +63,7 @@ class ReservationController extends Controller
 
     public function show(Reservation $reservation): View
     {
-        $reservation->load('payments', 'provider');
+        $reservation->load('payments', 'provider', 'guestRegistration');
 
         return view('admin.system.reservations.show', compact('reservation'));
     }

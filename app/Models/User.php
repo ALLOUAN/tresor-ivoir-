@@ -20,7 +20,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'uuid', 'email', 'password_hash', 'first_name', 'last_name',
         'phone', 'avatar_url', 'role', 'granted_permissions', 'is_active', 'is_verified',
-        'locale', 'last_login_at', 'email_verified_at',
+        'locale', 'last_login_at', 'email_verified_at', 'terms_accepted_at',
+        'payout_method', 'payout_account_number', 'payout_account_name',
     ];
 
     protected $hidden = ['password_hash'];
@@ -32,6 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'terms_accepted_at' => 'datetime',
             'password_hash' => 'hashed',
             'granted_permissions' => 'array',
             'is_active' => 'boolean',
@@ -103,6 +105,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sentProviderConversationMessages(): HasMany
     {
         return $this->hasMany(ProviderConversationMessage::class, 'sender_id');
+    }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'client_id');
+    }
+
+    public function sentConversationMessages(): HasMany
+    {
+        return $this->hasMany(ConversationMessage::class, 'sender_id');
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function payoutRequests(): HasMany
+    {
+        return $this->hasMany(PayoutRequest::class);
     }
 
     public function getFullNameAttribute(): string

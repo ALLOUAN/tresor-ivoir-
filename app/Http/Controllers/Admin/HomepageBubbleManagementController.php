@@ -94,9 +94,12 @@ class HomepageBubbleManagementController extends Controller
             'color_hex' => ['nullable', 'string', 'max:7'],
             'icon' => ['nullable', 'string', 'max:100'],
             'display_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
+            'pages' => ['nullable', 'array'],
+            'pages.*' => ['string', Rule::in(array_keys(HomepageBubble::SELECTABLE_PAGES))],
         ]);
 
         $data['display_order'] = (int) ($data['display_order'] ?? 0);
+        $data['pages'] = array_values($data['pages'] ?? []);
 
         return $data;
     }

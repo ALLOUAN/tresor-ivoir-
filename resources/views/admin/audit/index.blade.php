@@ -33,7 +33,7 @@
             <input type="text" name="route" id="route" value="{{ request('route') }}" placeholder="ex. articles.publish"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
         </div>
-        <button type="submit" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
+        <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
             <i class="fas fa-search text-xs"></i> Filtrer
         </button>
         <a href="{{ route('admin.audit.index') }}" class="text-slate-400 hover:text-slate-200 text-sm py-2">Réinitialiser</a>

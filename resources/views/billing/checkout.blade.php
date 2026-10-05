@@ -55,7 +55,7 @@
             color: #1c1915;
         }
         .checkout-submit {
-            background: linear-gradient(135deg, var(--ti-gold) 0%, var(--ti-sunset) 55%, #f5b34b 100%);
+            background: var(--ti-sunset);
             color: #16140f;
             box-shadow: 0 10px 28px rgba(240,138,36,0.22);
         }

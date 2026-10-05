@@ -5,7 +5,7 @@
 
 @section('header-actions')
     <a href="{{ route('admin.administration.partners.create') }}"
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-rose-500 hover:from-green-500 hover:to-rose-400 shadow-lg shadow-rose-900/20 transition">
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-green-600 hover:bg-green-500 shadow-lg shadow-rose-900/20 transition">
         <i class="fas fa-plus"></i> Nouveau partenaire
     </a>
 @endsection
@@ -70,7 +70,7 @@
                 </select>
             </div>
             <button type="submit"
-                class="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-orange-500 hover:from-green-500 hover:to-orange-400 transition">
+                class="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-green-600 hover:bg-green-500 transition">
                 Filtrer
             </button>
         </form>
@@ -139,7 +139,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" title="Basculer"
-                                        class="min-w-[3.25rem] px-2 py-1 rounded-full text-[11px] font-semibold transition {{ $partner->is_featured ? 'bg-green-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600' }}">
+                                        class="min-w-[3.25rem] px-2 py-1 rounded-full text-[11px] font-semibold transition {{ $partner->is_featured ? 'bg-emerald-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600' }}">
                                         {{ $partner->is_featured ? 'Oui' : 'Non' }}
                                     </button>
                                 </form>
@@ -149,7 +149,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" title="Basculer"
-                                        class="min-w-[3.25rem] px-2 py-1 rounded-full text-[11px] font-semibold transition {{ $partner->is_active ? 'bg-green-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600' }}">
+                                        class="min-w-[3.25rem] px-2 py-1 rounded-full text-[11px] font-semibold transition {{ $partner->is_active ? 'bg-emerald-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600' }}">
                                         {{ $partner->is_active ? 'Actif' : 'Off' }}
                                     </button>
                                 </form>

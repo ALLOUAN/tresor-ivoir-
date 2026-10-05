@@ -63,6 +63,19 @@
         </div>
 
         <div>
+            <label class="block text-sm text-slate-300 mb-1">Sous-titre / slogan (FR)</label>
+            <input type="text" name="subtitle_fr" id="subtitle_fr" maxlength="200" value="{{ old('subtitle_fr', $event->subtitle_fr) }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Court résumé affiché sous le titre">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Sous-titre / slogan (EN)</label>
+            <input type="text" name="subtitle_en" id="subtitle_en" maxlength="200" value="{{ old('subtitle_en', $event->subtitle_en) }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div>
             <label class="block text-sm text-slate-300 mb-1">Slug</label>
             <input type="text" name="slug" value="{{ old('slug', $event->slug) }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
@@ -154,6 +167,13 @@
             <label class="block text-sm text-slate-300 mb-1">Adresse</label>
             <input type="text" name="address" value="{{ old('address', $event->address) }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Public concerné</label>
+            <input type="text" name="audience" id="audience" maxlength="150" value="{{ old('audience', $event->audience) }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Ex: Familles, Professionnels, Tout public">
         </div>
 
         <div>
@@ -258,6 +278,41 @@
             @error('recurrence_rule') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
+        <div class="md:col-span-2">
+            <label class="block text-sm text-slate-300 mb-2">Programme / Agenda</label>
+            <div id="program-container-{{ $event->id }}" class="space-y-2">
+                @forelse(($event->program ?: []) as $item)
+                <div class="grid grid-cols-12 gap-2 items-center program-row">
+                    <input type="text" name="program_time[]" value="{{ $item['time'] ?? '' }}" placeholder="Heure" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_title[]" value="{{ $item['title'] ?? '' }}" placeholder="Activité" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_description[]" value="{{ $item['description'] ?? '' }}" placeholder="Description" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_speaker[]" value="{{ $item['speaker'] ?? '' }}" placeholder="Intervenant" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_location[]" value="{{ $item['location'] ?? '' }}" placeholder="Lieu" class="col-span-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <button type="button" onclick="this.closest('.program-row').remove()"
+                        class="col-span-1 w-8 h-8 shrink-0 rounded-lg bg-slate-700 hover:bg-red-900/40 text-slate-500 hover:text-red-400 flex items-center justify-center transition">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+                @empty
+                <div class="grid grid-cols-12 gap-2 items-center program-row">
+                    <input type="text" name="program_time[]" placeholder="Heure" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_title[]" placeholder="Activité" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_description[]" placeholder="Description" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_speaker[]" placeholder="Intervenant" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_location[]" placeholder="Lieu" class="col-span-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <button type="button" onclick="this.closest('.program-row').remove()"
+                        class="col-span-1 w-8 h-8 shrink-0 rounded-lg bg-slate-700 hover:bg-red-900/40 text-slate-500 hover:text-red-400 flex items-center justify-center transition">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+                @endforelse
+            </div>
+            <button type="button" onclick="addProgramRow('program-container-{{ $event->id }}')"
+                class="mt-2 text-xs text-orange-400 hover:text-orange-300 transition">
+                <i class="fas fa-circle-plus"></i> Ajouter une étape
+            </button>
+        </div>
+
         <div>
             <label class="block text-sm text-slate-300 mb-1">Meta titre (FR)</label>
             <input type="text" name="meta_title_fr" maxlength="70" value="{{ old('meta_title_fr', $event->meta_title_fr) }}"
@@ -293,6 +348,52 @@
             </button>
         </div>
     </form>
+
+    <div class="px-5 pb-5">
+        <div class="border-t border-slate-800/60 pt-5">
+            <label class="block text-sm text-slate-300 mb-2">Galerie photo / vidéo</label>
+
+            @if($event->media->isNotEmpty())
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                @foreach($event->media->sortBy('sort_order') as $media)
+                <div class="relative group rounded-lg overflow-hidden border border-slate-700 bg-slate-800 h-24">
+                    @if($media->isImage())
+                        <img src="{{ $media->url }}" alt="{{ $media->alt_text }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-slate-500">
+                            <i class="fas fa-circle-play text-xl"></i>
+                        </div>
+                    @endif
+                    <form method="POST" action="{{ route('editor.events.media.destroy', [$event, $media]) }}"
+                        onsubmit="return confirm('Supprimer ce média ?')" class="absolute top-1 right-1">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="w-6 h-6 rounded-md bg-red-900/80 hover:bg-red-800 text-red-100 flex items-center justify-center text-xs">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+                @endforeach
+            </div>
+            @endif
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <form method="POST" action="{{ route('editor.events.media.store', $event) }}" enctype="multipart/form-data" class="flex flex-col gap-2 bg-slate-800/60 border border-slate-700 rounded-lg p-3">
+                    <input type="hidden" name="type" value="image">
+                    <label class="text-xs text-slate-400">Ajouter une photo</label>
+                    <input type="file" name="media_file" accept="image/jpeg,image/png,image/webp"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300">
+                    <button type="submit" class="self-end px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-black text-xs font-semibold rounded-lg">Ajouter</button>
+                </form>
+                <form method="POST" action="{{ route('editor.events.media.store', $event) }}" class="flex flex-col gap-2 bg-slate-800/60 border border-slate-700 rounded-lg p-3">
+                    <input type="hidden" name="type" value="video">
+                    <label class="text-xs text-slate-400">Ajouter une vidéo (URL YouTube/Vimeo)</label>
+                    <input type="url" name="url" placeholder="https://www.youtube.com/embed/..."
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300">
+                    <button type="submit" class="self-end px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-black text-xs font-semibold rounded-lg">Ajouter</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @push('scripts')
@@ -361,6 +462,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function addProgramRow(containerId) {
+    const container = document.getElementById(containerId);
+    const row = document.createElement('div');
+    row.className = 'grid grid-cols-12 gap-2 items-center program-row';
+    row.innerHTML = `
+        <input type="text" name="program_time[]" placeholder="Heure" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <input type="text" name="program_title[]" placeholder="Activité" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <input type="text" name="program_description[]" placeholder="Description" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <input type="text" name="program_speaker[]" placeholder="Intervenant" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <input type="text" name="program_location[]" placeholder="Lieu" class="col-span-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <button type="button" onclick="this.closest('.program-row').remove()"
+            class="col-span-1 w-8 h-8 shrink-0 rounded-lg bg-slate-700 hover:bg-red-900/40 text-slate-500 hover:text-red-400 flex items-center justify-center transition">
+            <i class="fas fa-times text-xs"></i>
+        </button>`;
+    container.appendChild(row);
+}
 </script>
 @include('editor.partials.event-rich-tools', ['event' => $event, 'errorsPresent' => $errors->any()])
 @endpush

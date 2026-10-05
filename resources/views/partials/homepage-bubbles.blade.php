@@ -1,6 +1,6 @@
 @if(isset($homeBubbles) && $homeBubbles->isNotEmpty())
 <style>
-    .hp-bubble-layer { position: absolute; inset: 0; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 30; }
+    .hp-bubble-layer { position: fixed; inset: 0; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 30; }
     .hp-bubble {
         position: absolute;
         transform: translate(-50%, -50%);
@@ -105,7 +105,7 @@
             $imagesJson = $images->map(fn ($img) => $img->image_url)->values()->toJson();
             $bgStyle = $bubble->color_hex
                 ? "background:{$bubble->color_hex};"
-                : 'background: linear-gradient(135deg, #f2790f, #d4630a);';
+                : 'background: #f2790f;';
         @endphp
         <button type="button"
             class="hp-bubble hp-bubble-{{ $bubble->size }}"

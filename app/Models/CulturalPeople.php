@@ -13,17 +13,24 @@ class CulturalPeople extends Model
         'name', 'slug', 'zone_geographique', 'famille_linguistique',
         'langue_principale', 'population_estimee', 'capitale_culturelle',
         'description', 'histoire', 'symboles',
-        'thumbnail', 'cover_image',
+        'thumbnail', 'cover_images',
         'is_featured', 'is_active', 'sort_order',
     ];
 
     protected function casts(): array
     {
         return [
-            'symboles'    => 'array',
-            'is_featured' => 'boolean',
-            'is_active'   => 'boolean',
+            'symboles'     => 'array',
+            'cover_images' => 'array',
+            'is_featured'  => 'boolean',
+            'is_active'    => 'boolean',
         ];
+    }
+
+    /** Bannière représentative (première de la liste) pour les cartes/listes. */
+    public function getCoverImageAttribute(): ?string
+    {
+        return $this->cover_images[0] ?? null;
     }
 
     // Éléments culturels qui mentionnent ce peuple dans leur JSON people_roles

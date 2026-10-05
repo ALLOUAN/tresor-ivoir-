@@ -19,23 +19,54 @@ use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class AuthController extends Controller
 {
-    public function showLogin()
+    public function showLogin(Request $request)
     {
+        $this->rememberIntendedRedirect($request);
+
         return view('auth.login');
     }
 
     public function showRegister(Request $request)
     {
-        $plans = SubscriptionPlan::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get();
+        $this->rememberIntendedRedirect($request);
+
+        if ($request->query('role') === 'visitor') {
+            return view('auth.register-visitor');
+        }
+
+        $planId = (int) old('plan_id', $request->query('plan', 0));
+        $selectedPlan = $planId
+            ? SubscriptionPlan::query()->whereKey($planId)->where('is_active', true)->with('providerCategory')->first()
+            : null;
+
+        // Repli minimal si aucun forfait n'a été choisi en amont sur /abonnements : ne proposer
+        // que les forfaits génériques (jamais un forfait réservé à une catégorie précise) — voir
+        // resources/views/public/plans.blade.php pour le parcours "catégorie d'abord" canonique.
+        $plans = $selectedPlan
+            ? collect()
+            : SubscriptionPlan::query()->where('is_active', true)->whereNull('provider_category_id')->orderBy('sort_order')->orderBy('id')->get();
 
         return view('auth.register', [
             'plans' => $plans,
-            'selectedPlanId' => (int) ($request->query('plan', 0)),
+            'selectedPlan' => $selectedPlan,
+            'selectedPlanId' => $planId,
+            'selectedCategorySlug' => old('category_slug', $request->query('categorie')),
         ]);
+    }
+
+    /**
+     * Mémorise l'URL d'origine (ex: page de réservation) via le mécanisme
+     * standard `redirect()->intended()`, déjà utilisé après login/vérification e-mail.
+     * N'accepte qu'un chemin relatif local (jamais une URL absolue/externe) pour éviter
+     * tout open-redirect via ce paramètre.
+     */
+    private function rememberIntendedRedirect(Request $request): void
+    {
+        $redirect = $request->query('redirect');
+
+        if (is_string($redirect) && str_starts_with($redirect, '/') && ! str_starts_with($redirect, '//')) {
+            session(['url.intended' => url($redirect)]);
+        }
     }
 
     public function register(Request $request)
@@ -47,6 +78,7 @@ class AuthController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'password' => ['required', 'confirmed', PasswordRule::min(8)],
             'role' => ['required', 'in:visitor,provider'],
+            'terms' => ['accepted'],
         ], [
             'first_name.required' => 'Le prénom est obligatoire.',
             'last_name.required' => 'Le nom est obligatoire.',
@@ -57,6 +89,7 @@ class AuthController extends Controller
             'password.min' => 'Le mot de passe doit contenir au moins 8 caractères.',
             'role.required' => 'Veuillez choisir un type de compte.',
             'role.in' => 'Type de compte invalide.',
+            'terms.accepted' => 'Vous devez accepter les conditions générales d\'utilisation.',
         ]);
 
         // Libérer l'email si un compte soft-deleted l'occupe encore (évite la contrainte unique MySQL)
@@ -74,10 +107,21 @@ class AuthController extends Controller
             'role' => $data['role'],
             'is_active' => true,
             'is_verified' => false,
+            'terms_accepted_at' => now(),
         ]);
 
+        $planId = $request->input('plan_id') ?: ($request->query('plan') ?? session()->pull('selected_plan_id'));
+        $plan = $planId
+            ? SubscriptionPlan::query()->whereKey($planId)->where('is_active', true)->with('providerCategory')->first()
+            : null;
+
         if ($data['role'] === 'provider') {
-            ProviderProfileBootstrap::ensure($user);
+            // Le forfait choisi fait autorité s'il est déjà rattaché à une catégorie précise (ex.
+            // Art & Créations) ; sinon on utilise la catégorie choisie sur /abonnements (forfait générique).
+            $rawCategorySlug = $request->input('category_slug');
+            $categorySlug = $plan?->providerCategory?->slug ?? (is_string($rawCategorySlug) ? $rawCategorySlug : null);
+
+            ProviderProfileBootstrap::ensure($user, $categorySlug);
         }
 
         Auth::login($user);
@@ -85,20 +129,12 @@ class AuthController extends Controller
 
         $this->sendEmailVerificationCode($user);
 
-        $planId = $request->input('plan_id') ?: ($request->query('plan') ?? session()->pull('selected_plan_id'));
-        if ($planId && $user->role === 'provider') {
-            $plan = SubscriptionPlan::query()
-                ->whereKey($planId)
-                ->where('is_active', true)
-                ->first();
+        if ($plan && $user->role === 'provider') {
+            session(['post_email_verification_subscription_plan_id' => $plan->id]);
 
-            if ($plan) {
-                session(['post_email_verification_subscription_plan_id' => $plan->id]);
-
-                return redirect()
-                    ->route('subscriptions.checkout', $plan)
-                    ->with('status', 'Bienvenue ! Finalisez votre abonnement ci-dessous.');
-            }
+            return redirect()
+                ->route('subscriptions.checkout', $plan)
+                ->with('status', 'Bienvenue ! Finalisez votre abonnement ci-dessous.');
         }
 
         if ($user->role === 'visitor') {
@@ -130,6 +166,7 @@ class AuthController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $user->update(['last_login_at' => now()]);
+        \App\Services\AccountSecurityEventLogger::log($user, \App\Models\AccountSecurityEvent::TYPE_LOGIN, $request);
 
         return redirect()->intended(match ($user->role) {
             'admin' => route('admin.dashboard'),

@@ -10,8 +10,8 @@
     @php
     $roleStyles = [
         'admin'    => ['bg' => 'bg-rose-500',    'text' => 'Administrateur', 'icon' => 'fa-shield-halved'],
-        'editor'   => ['bg' => 'bg-green-500',    'text' => 'Éditeur',        'icon' => 'fa-pen-nib'],
-        'provider' => ['bg' => 'bg-green-500',  'text' => 'Prestataire',    'icon' => 'fa-store'],
+        'editor'   => ['bg' => 'bg-orange-500',    'text' => 'Éditeur',        'icon' => 'fa-pen-nib'],
+        'provider' => ['bg' => 'bg-slate-500',  'text' => 'Prestataire',    'icon' => 'fa-store'],
         'visitor'  => ['bg' => 'bg-emerald-500', 'text' => 'Visiteur',       'icon' => 'fa-user'],
     ];
     @endphp

@@ -40,8 +40,9 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
         <div>
             <p class="text-white font-semibold">Forfait {{ ucfirst($planCode) }}</p>
             <p class="text-slate-400 text-xs mt-0.5">
+                @php $providerDaysLeft = $subscription->ends_at ? now()->startOfDay()->diffInDays($subscription->ends_at->copy()->startOfDay(), false) : null; @endphp
                 Valide jusqu'au {{ $subscription->ends_at?->format('d/m/Y') ?? 'N/A' }}
-                · {{ $subscription->ends_at?->diffInDays(now()) > 0 ? $subscription->ends_at->diffInDays(now()) . ' jours restants' : 'Expiré' }}
+                · {{ $providerDaysLeft !== null && $providerDaysLeft > 0 ? $providerDaysLeft . ' jours restants' : 'Expiré' }}
             </p>
         </div>
     </div>

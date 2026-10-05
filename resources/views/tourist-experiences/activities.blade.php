@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr" id="html-root" class="overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activités proposées — {{ $experience->name }} — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.theme-init')
+    @include('partials.theme-light-bridge')
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .btn-primary {
+            background: #27AE60;
+            box-shadow: 0 12px 28px rgba(39,174,96,0.3);
+            transition: transform .22s ease, filter .22s ease;
+            color: #fff;
+        }
+        .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .section-kicker { letter-spacing: .22em; }
+        .item-card {
+            border: 1px solid rgba(0,0,0,0.07);
+            background: linear-gradient(180deg, #ffffff, #fbf8f2);
+            box-shadow: 0 10px 28px rgba(20,18,12,0.06);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+        .item-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(39,174,96,0.14); border-color: rgba(39,174,96,0.3); }
+        .item-cover { position: relative; overflow: hidden; background: #14130f; cursor: zoom-in; }
+        .item-cover img { transition: transform .5s ease; }
+        .item-card:hover .item-cover img { transform: scale(1.06); }
+
+        .category-hero { position: relative; }
+        .category-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-image: var(--category-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body class="text-[#1c1915]">
+    @include('partials.page-background')
+    @include('partials.public-top-nav')
+
+    {{-- ═══ HERO ═══ --}}
+    <section class="relative py-20 overflow-hidden {{ $experience->thumbnail ? 'category-hero' : '' }}"
+        @if($experience->thumbnail)
+            style="--category-hero-bg-image: url('{{ $experience->thumbnail }}');"
+        @endif
+    >
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+            <div class="inline-block rounded-2xl bg-[#0f2a18] backdrop-blur-md px-6 py-8 sm:px-12 sm:py-10">
+                <nav class="text-xs text-[#94a3b8] mb-4">
+                    <a href="{{ route('tourist-experience.index') }}" class="hover:text-[#58d68d] transition">Sites Touristiques</a>
+                    <span class="mx-2 text-[#475569]">/</span>
+                    <a href="{{ route('tourist-experience.index', ['ville' => $experience->city_id]) }}" class="hover:text-[#58d68d] transition">{{ $experience->city?->name }}</a>
+                    <span class="mx-2 text-[#475569]">/</span>
+                    <span class="text-[#ffffff]">Activités proposées</span>
+                </nav>
+                <p class="text-[#ffffff] text-sm font-medium uppercase tracking-widest mb-3">{{ $experience->name }}</p>
+                <h1 class="font-serif text-4xl md:text-5xl font-bold text-[#ffffff] mb-4">
+                    Activités proposées
+                </h1>
+                <p class="text-[#e5e7eb] text-xl max-w-2xl mx-auto">
+                    <i class="fas fa-location-dot mr-1"></i>{{ $experience->city?->name }}
+                    — Choisissez une activité pour poursuivre votre échange avec le prestataire.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+
+        @if($activitiesByCategory->isNotEmpty())
+        <div class="space-y-10">
+            @foreach($activitiesByCategory as $categoryName => $activities)
+            <div>
+                <h2 class="text-[#27AE60] text-sm font-bold uppercase tracking-wide mb-4">{{ $categoryName }}</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    @foreach($activities as $activity)
+                    <div class="item-card rounded-2xl overflow-hidden flex flex-col">
+                        <div class="item-cover h-40" @if(!empty($activity->images[0])) onclick="openLightbox('{{ $activity->images[0] }}')" @endif>
+                            @if(!empty($activity->images[0]))
+                                <img src="{{ $activity->images[0] }}" alt="{{ $activity->name }}" class="w-full h-full object-cover" loading="lazy">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-white/30"><i class="fas fa-person-hiking text-3xl"></i></div>
+                            @endif
+                            <div class="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 left-3 inline-flex items-center rounded-full bg-black/55 border border-white/20 px-3 py-1 text-[10px] uppercase tracking-wide text-orange-100 font-bold backdrop-blur">
+                                {{ number_format((int) $activity->price_xof, 0, ',', ' ') }} XOF
+                            </span>
+                        </div>
+                        <div class="p-4 flex flex-col flex-1">
+                            <p class="font-serif font-bold text-lg leading-snug">{{ $activity->name }}</p>
+                            <p class="text-[#8a7f6b] text-xs mt-1.5">
+                                @if($activity->duration_minutes) <i class="fas fa-clock mr-0.5"></i>{{ $activity->duration_minutes }} min @endif
+                                @if($activity->duration_minutes && $activity->max_participants) · @endif
+                                @if($activity->max_participants) <i class="fas fa-user mr-0.5"></i>{{ $activity->max_participants }} pers. max @endif
+                            </p>
+                            @if($activity->description)
+                            <p class="text-[#5c5548] text-sm mt-2 leading-relaxed">{{ $activity->description }}</p>
+                            @endif
+                            <div class="flex-1"></div>
+                            <a href="{{ route('tourist-experience.show', $experience->slug) }}?item={{ urlencode($activity->name) }}#contact-card"
+                               class="btn-primary btn-shine mt-4 inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl font-extrabold text-sm">
+                                <i class="fas fa-comment-dots text-sm"></i> Contacter à ce sujet
+                            </a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <div class="item-card rounded-2xl py-16 text-center">
+            <i class="fas fa-person-hiking text-3xl text-[#c9bfa8] mb-3 block"></i>
+            <p class="text-[#8a7f6b] text-sm">Aucune activité renseignée pour ce site pour le moment.</p>
+        </div>
+        @endif
+    </div>
+
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0a0907]/96 items-center justify-center p-4" onclick="closeLightbox()">
+        <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()">
+            <i class="fas fa-xmark"></i>
+        </button>
+        <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[90vh] rounded-xl object-contain" onclick="event.stopPropagation()">
+    </div>
+
+@include('partials.homepage-footer')
+@include('partials.image-protection')
+<script>
+function openLightbox(url) {
+    const img = document.getElementById('lightbox-img');
+    img.src = url;
+    const lb = document.getElementById('lightbox');
+    lb.classList.remove('hidden'); lb.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    lb.classList.add('hidden'); lb.classList.remove('flex');
+    document.body.style.overflow = '';
+}
+</script>
+</body>
+</html>

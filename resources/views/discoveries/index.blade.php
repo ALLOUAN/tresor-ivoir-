@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,17 +12,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        serif:   ['Playfair Display', 'Georgia', 'serif'],
-                        elegant: ['Cormorant Garamond', 'Georgia', 'serif'],
-                        sans:    ['Inter', 'system-ui', 'sans-serif'],
-                        plus:    ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-                    },
                     colors: {
                         gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
                         dark: { 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
@@ -56,11 +49,12 @@
     </style>
 </head>
 <body class="bg-dark-900 text-white antialiased font-sans">
+    @include('partials.page-background')
 
 @include('partials.public-top-nav')
 
 {{-- ── HERO ──────────────────────────────────────────────────────────────── --}}
-<section class="relative pt-24 sm:pt-32 pb-16 sm:pb-20 overflow-hidden" style="background: linear-gradient(135deg, #e9e5d9 0%, #e9e5d9 40%, #e9e5d9 100%);">
+<section class="relative pt-24 sm:pt-32 pb-16 sm:pb-20 overflow-hidden" style="background: #e9e5d9;">
     <div class="absolute inset-0 opacity-5" style="background-image: repeating-linear-gradient(45deg,#f2790f 0,#f2790f 1px,transparent 0,transparent 50%); background-size: 20px 20px;"></div>
     <div class="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none" style="background:rgba(242, 121, 15,0.06)"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
@@ -182,7 +176,7 @@
                         <img src="{{ $article->cover_url }}" alt="{{ $article->title_fr }}"
                              class="art-img absolute inset-0 w-full h-full object-cover">
                     @else
-                        <div class="art-img absolute inset-0 bg-gradient-to-br from-dark-700 to-dark-500 flex items-center justify-center">
+                        <div class="art-img absolute inset-0 bg-dark-700 flex items-center justify-center">
                             <i class="fas fa-image text-dark-400 text-lg"></i>
                         </div>
                     @endif

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<html lang="fr" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,6 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background:#e9e5d9; color: #1c1915; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -29,33 +28,62 @@
     </style>
 </head>
 <body class="min-h-screen">
+    @include('partials.page-background')
 
 @include('partials.public-top-nav')
 
 {{-- ══ HERO ══════════════════════════════════════════════════════════════════ --}}
 <section class="hero-wrap relative h-[500px] md:h-[640px] overflow-hidden">
 
-    @if($people->cover_image)
-    <img src="{{ $people->cover_image }}" alt="Bannière {{ $people->name }}"
-        class="hero-img w-full h-full object-cover scale-105"
-        style="object-position: center 40%;">
-    @elseif($people->thumbnail)
-    <img src="{{ $people->thumbnail }}" alt="Bannière {{ $people->name }}"
-        class="hero-img w-full h-full object-cover scale-105">
+    @php $coverImages = $people->cover_images ?? []; @endphp
+
+    @if(!empty($coverImages))
+    <div id="people-hero-carousel" class="absolute inset-0 z-0 h-full w-full overflow-hidden">
+        @foreach($coverImages as $i => $img)
+        <div class="people-hero-layer absolute inset-0 transition-opacity duration-700 ease-out {{ $i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
+             data-people-hero-layer="{{ $i }}">
+            <img src="{{ $img }}" alt="Bannière {{ $people->name }}"
+                class="hero-img w-full h-full object-cover scale-105"
+                style="object-position: center 40%;"
+                @if($i > 0) loading="lazy" @endif>
+        </div>
+        @endforeach
+    </div>
     @else
     <div class="w-full h-full"
-        style="background: linear-gradient(135deg, #7a3c08 0%, #e9e5d9 50%, #e9e5d9 100%);">
+        style="background: #e9e5d9;">
         <div class="absolute inset-0 flex items-center justify-center opacity-10">
             <i class="fas fa-users text-white" style="font-size: 12rem;"></i>
         </div>
     </div>
     @endif
 
-    <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(255, 255, 255,1) 0%, rgba(255, 255, 255,.55) 40%, rgba(255, 255, 255,.1) 100%);"></div>
-    <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(255, 255, 255,.55) 0%, transparent 60%);"></div>
+    <div class="absolute inset-0 z-20 pointer-events-none" style="background: linear-gradient(to top, rgba(255, 255, 255,1) 0%, rgba(255, 255, 255,.55) 40%, rgba(255, 255, 255,.1) 100%);"></div>
+    <div class="absolute inset-0 z-20 pointer-events-none" style="background: linear-gradient(to right, rgba(255, 255, 255,.55) 0%, transparent 60%);"></div>
+
+    @if(count($coverImages) > 1)
+    {{-- Flèches --}}
+    <button type="button" id="people-hero-prev" aria-label="Bannière précédente"
+        class="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/70 border border-black/10 text-[#1c1915] hover:bg-orange-500 hover:text-white transition shadow-lg backdrop-blur-sm">
+        <i class="fas fa-chevron-left text-sm"></i>
+    </button>
+    <button type="button" id="people-hero-next" aria-label="Bannière suivante"
+        class="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/70 border border-black/10 text-[#1c1915] hover:bg-orange-500 hover:text-white transition shadow-lg backdrop-blur-sm">
+        <i class="fas fa-chevron-right text-sm"></i>
+    </button>
+
+    {{-- Indicateurs --}}
+    <div class="absolute top-20 right-6 z-30 flex items-center gap-1.5 rounded-full bg-white/60 border border-black/10 px-3 py-1.5 backdrop-blur-sm" id="people-hero-dots" role="tablist" aria-label="Choisir une bannière">
+        @foreach($coverImages as $i => $img)
+        <button type="button"
+            class="people-hero-dot h-2 rounded-full transition-all {{ $i === 0 ? 'w-6 bg-orange-500' : 'w-2 bg-black/25 hover:bg-black/50' }}"
+            data-people-hero-dot="{{ $i }}" aria-label="Bannière {{ $i + 1 }}" aria-selected="{{ $i === 0 ? 'true' : 'false' }}"></button>
+        @endforeach
+    </div>
+    @endif
 
     {{-- Breadcrumb --}}
-    <div class="absolute top-6 left-0 right-0 max-w-6xl mx-auto px-6">
+    <div class="absolute top-6 left-0 right-0 z-30 max-w-6xl mx-auto px-6">
         <nav class="flex items-center gap-1.5 text-xs text-white/50">
             <a href="{{ route('cultural.peoples') }}" class="hover:text-orange-400 transition flex items-center gap-1">
                 <i class="fas fa-users text-orange-400/60 text-[10px]"></i> Cultures
@@ -66,7 +94,7 @@
     </div>
 
     {{-- Contenu bas --}}
-    <div class="absolute bottom-0 left-0 right-0 max-w-6xl mx-auto px-6 pb-10">
+    <div class="absolute bottom-0 left-0 right-0 z-30 max-w-6xl mx-auto px-6 pb-10">
         {{-- Badges --}}
         <div class="flex flex-wrap gap-2 mb-4">
             @if($people->is_featured)
@@ -163,12 +191,20 @@
                 @if($domains->isNotEmpty())
                 <div>
                     <h2 class="text-white font-serif text-xl font-bold mb-4">Domaines culturels</h2>
+                    @php
+                        // Palette aux couleurs du drapeau ivoirien, appliquée en rotation
+                        // (une couleur différente par bouton) plutôt que la couleur libre
+                        // par domaine — identité visuelle cohérente sur cette section.
+                        $domainPalette = [
+                            'background:#f2790f18; border-color:#f2790f40; color:#c25e0a', // orange
+                            'background:#ffffff; border-color:#00000018; color:#1c1915',   // blanc
+                            'background:#16a34a18; border-color:#16a34a40; color:#15803d', // vert
+                        ];
+                    @endphp
                     <div class="flex flex-wrap gap-2">
                         @foreach($domains as $domain)
                         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm"
-                            style="{{ $domain->color
-                                ? 'background:'.$domain->color.'18; border-color:'.$domain->color.'40; color:'.$domain->color
-                                : 'background:#e9e5d9; border-color:#334155; color:#94a3b8' }}">
+                            style="{{ $domainPalette[$loop->index % 3] }}">
                             @if($domain->icon)<i class="{{ $domain->icon }} text-xs"></i>@endif
                             {{ $domain->name }}
                         </span>
@@ -281,13 +317,13 @@
             <div class="bg-[#ffffff] border border-slate-800 rounded-2xl overflow-hidden">
 
                 {{-- En-tête panneau --}}
-                <div class="relative h-40 overflow-hidden">
-                    @if($people->thumbnail)
+                <div class="relative h-48 overflow-hidden">
+                    @if($people->cover_image)
+                    <img src="{{ $people->cover_image }}" alt="" class="w-full h-full object-cover" style="object-position: center top;">
+                    @elseif($people->thumbnail)
                     <img src="{{ $people->thumbnail }}" alt="" class="w-full h-full object-cover">
-                    @elseif($people->cover_image)
-                    <img src="{{ $people->cover_image }}" alt="" class="w-full h-full object-cover" style="object-position: center 30%;">
                     @else
-                    <div class="w-full h-full" style="background: linear-gradient(135deg, #7a3c08 0%, #e9e5d9 100%);"></div>
+                    <div class="w-full h-full" style="background: #e9e5d9;"></div>
                     @endif
                     <div class="absolute inset-0" style="background: linear-gradient(to top, #e9e5d9, transparent);"></div>
                     <div class="absolute bottom-3 left-4">
@@ -364,6 +400,77 @@ function showTab(name, btn) {
     btn.classList.add('active');
     window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 10, behavior: 'smooth' });
 }
+
+// Carrousel de bannières (défilement automatique, transition en fondu, navigation
+// manuelle flèches/indicateurs, pause à l'interaction) — même mécanique que le
+// carrousel hero de la page d'accueil, adaptée ici à de simples images statiques.
+(function () {
+    const layers = document.querySelectorAll('.people-hero-layer');
+    if (layers.length < 2) return;
+
+    const root = document.querySelector('.hero-wrap');
+    const dots = document.querySelectorAll('.people-hero-dot');
+    const prevBtn = document.getElementById('people-hero-prev');
+    const nextBtn = document.getElementById('people-hero-next');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DELAY = 3000;
+
+    let index = 0;
+    let timer = null;
+
+    function start() {
+        stop();
+        if (reduceMotion) return;
+        timer = setInterval(next, DELAY);
+    }
+    function stop() {
+        if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    function render() {
+        layers.forEach((el, i) => {
+            const active = i === index;
+            el.classList.toggle('opacity-100', active);
+            el.classList.toggle('z-10', active);
+            el.classList.toggle('opacity-0', !active);
+            el.classList.toggle('z-0', !active);
+        });
+        dots.forEach((dot, i) => {
+            const active = i === index;
+            dot.classList.toggle('w-6', active);
+            dot.classList.toggle('bg-orange-500', active);
+            dot.classList.toggle('w-2', !active);
+            dot.classList.toggle('bg-black/25', !active);
+            dot.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+    }
+
+    function goTo(i) {
+        index = (i + layers.length) % layers.length;
+        render();
+        start();
+    }
+    function next() { goTo(index + 1); }
+    function prev() { goTo(index - 1); }
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+    if (prevBtn) prevBtn.addEventListener('click', prev);
+    if (nextBtn) nextBtn.addEventListener('click', next);
+
+    if (root) {
+        root.addEventListener('mouseenter', stop);
+        root.addEventListener('mouseleave', start);
+        root.addEventListener('focusin', stop);
+        root.addEventListener('focusout', start);
+        root.addEventListener('touchstart', stop, { passive: true });
+    }
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stop(); else start();
+    });
+
+    render();
+    start();
+})();
 </script>
 </body>
 </html>

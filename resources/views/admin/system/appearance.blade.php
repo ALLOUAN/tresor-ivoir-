@@ -104,7 +104,7 @@
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $slide->is_active ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-600/30 text-slate-300 border border-slate-600/40' }}">
                             {{ $slide->is_active ? 'Actif' : 'Inactif' }}
                         </span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600/25 text-green-200 border border-green-500/35">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/20 text-slate-300 border border-slate-600/40">
                             Ordre : {{ $slide->display_order }}
                         </span>
                         @if($slide->isVideo())
@@ -112,7 +112,7 @@
                                 <i class="fas fa-film text-[10px]"></i> Vidéo
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-300 border border-green-500/30">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/20 text-slate-300 border border-slate-600/40">
                                 <i class="fas fa-image text-[10px]"></i> Image
                             </span>
                         @endif
@@ -135,7 +135,7 @@
                             data-video-mobile-url="{{ e($slide->video_mobile_url ?? '') }}"
                             data-display-order="{{ $slide->display_order }}"
                             data-is-active="{{ $slide->is_active ? '1' : '0' }}"
-                            class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-green-600/90 hover:bg-green-500 text-white transition"
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/90 hover:bg-orange-400 text-white transition"
                             title="Modifier">
                         <i class="fas fa-pen"></i>
                     </button>
@@ -163,7 +163,7 @@
             <div class="text-center py-14 text-slate-500 border border-dashed border-slate-700 rounded-xl">
                 <i class="fas fa-images text-3xl mb-3 text-slate-600"></i>
                 <p>Aucun slide pour le moment.</p>
-                <button type="button" onclick="openCreateSlideModal()" class="mt-4 text-green-400 hover:text-green-300 text-sm font-medium">Ajouter le premier slide</button>
+                <button type="button" onclick="openCreateSlideModal()" class="mt-4 text-orange-400 hover:text-orange-300 text-sm font-medium">Ajouter le premier slide</button>
             </div>
         @endforelse
     </div>
@@ -186,7 +186,7 @@
                 @include('admin.system.partials.slide-form-fields')
                 <div class="md:col-span-2 flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeCreateSlideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter le slide</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter le slide</button>
                 </div>
             </form>
         </div>
@@ -207,7 +207,7 @@
                 @include('admin.system.partials.slide-form-fields', ['isEdit' => true])
                 <div class="md:col-span-2 flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeEditSlideModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
                 </div>
             </form>
         </div>

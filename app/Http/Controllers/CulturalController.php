@@ -5,12 +5,33 @@ namespace App\Http\Controllers;
 use App\Models\CulturalDomain;
 use App\Models\CulturalElement;
 use App\Models\CulturalPeople;
+use Illuminate\Http\Request;
 
 class CulturalController extends Controller
 {
-    public function peoples()
+    public function peoples(Request $request)
     {
-        $peoples = CulturalPeople::where('is_active', 1)
+        $domain = null;
+        if ($domainSlug = $request->get('domaine')) {
+            $domain = CulturalDomain::where('slug', $domainSlug)->where('is_active', 1)->first();
+        }
+
+        $peoplesQuery = CulturalPeople::where('is_active', 1);
+
+        if ($domain) {
+            $domainIds = $domain->children()->pluck('id')->push($domain->id);
+
+            $peopleIds = CulturalElement::active()
+                ->whereIn('domain_id', $domainIds)
+                ->pluck('people_roles')
+                ->flatMap(fn ($roles) => collect($roles ?? [])->pluck('people_id'))
+                ->filter()
+                ->unique();
+
+            $peoplesQuery->whereIn('id', $peopleIds);
+        }
+
+        $peoples = $peoplesQuery
             ->orderBy('is_featured', 'desc')
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -21,7 +42,7 @@ class CulturalController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('cultural.peoples', compact('peoples', 'domains'));
+        return view('cultural.peoples', compact('peoples', 'domains', 'domain'));
     }
 
     public function people(string $slug)

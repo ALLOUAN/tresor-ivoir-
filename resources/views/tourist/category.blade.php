@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<!DOCTYPE html>
+<html lang="fr" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,6 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -19,47 +18,67 @@
         html:not(.dark) .site-card { background:#f0ece1 !important; border-color: rgba(0,0,0,.12) !important; box-shadow: 0 8px 20px rgba(0,0,0,.05); }
         /* Image de fond configurable (back-office, par catégorie) du bandeau —
            même modèle que .cultural-hero / .tourist-hero. */
-        .category-hero {
-            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--category-hero-bg-image, none);
+        .category-hero { position: relative; }
+        .category-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-image: var(--category-hero-bg-image, none);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }
+        /* Mobile : la bannière est panoramique (~5:1) avec ses collages aux deux
+           extrémités et un centre vide ; « cover » sur une section haute et étroite
+           n'en garde que le centre vide. On l'affiche donc en pleine largeur, ancrée
+           en haut ET en bas (les bandes de padding autour du cadre), pour que les
+           deux collages restent visibles. */
+        @media (max-width: 639px) {
+            .category-hero::before {
+                background-image: var(--category-hero-bg-image, none), var(--category-hero-bg-image, none);
+                background-size: 100% auto, 100% auto;
+                background-position: top center, bottom center;
+                background-repeat: no-repeat, no-repeat;
+            }
+        }
     </style>
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
+    @include('partials.page-background')
 
 @include('partials.public-top-nav')
 
 {{-- Hero --}}
-<section class="category-hero relative py-20 overflow-hidden"
+<section class="relative py-20 overflow-hidden {{ $category->hero_image_url ? 'category-hero' : '' }}"
     @if($category->hero_image_url)
         style="--category-hero-bg-image: url('{{ $category->hero_image_url }}');"
     @endif
 >
-    <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
     <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-        <nav class="text-xs text-slate-400 mb-4">
-            <a href="{{ route('tourist.cities') }}" class="hover:text-orange-400 transition">Régions</a>
-            <span class="mx-2 text-slate-600">/</span>
-            <a href="{{ route('tourist.city', $city->slug) }}" class="hover:text-orange-400 transition">{{ $city->name }}</a>
-            <span class="mx-2 text-slate-600">/</span>
-            <span class="text-white">{{ $category->name }}</span>
-        </nav>
-        <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">{{ $city->name }}</p>
-        <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
-            {{ $category->name }}
-        </h1>
-        <p class="text-[#1c1915] text-xl max-w-2xl mx-auto">
-            @if($category->description)
-                {{ $category->description }}
-            @else
-                {{ $sites->count() }} site(s) touristique(s)
-                @if(isset($accommodations) && $accommodations->count() > 0)
-                    · {{ $accommodations->count() }} hébergement(s)
+        <div class="inline-block rounded-xl sm:rounded-2xl bg-[#0f2a18] backdrop-blur-md px-4 py-4 sm:px-12 sm:py-10">
+            <nav class="text-[10px] sm:text-xs text-[#94a3b8] mb-2 sm:mb-4">
+                <a href="{{ route('tourist.cities') }}" class="hover:text-[#fb923c] transition">Régions</a>
+                <span class="mx-2 text-[#475569]">/</span>
+                <a href="{{ route('tourist.city', $city->slug) }}" class="hover:text-[#fb923c] transition">{{ $city->name }}</a>
+                <span class="mx-2 text-[#475569]">/</span>
+                <span class="text-[#ffffff]">{{ $category->name }}</span>
+            </nav>
+            <p class="text-[#fb923c] text-[11px] sm:text-sm font-medium uppercase tracking-widest mb-1.5 sm:mb-3">{{ $city->name }}</p>
+            <h1 class="font-serif text-xl sm:text-4xl md:text-5xl font-bold text-[#ffffff] mb-2 sm:mb-4">
+                {{ $category->name }}
+            </h1>
+            <p class="text-[#e5e7eb] text-xs sm:text-xl max-w-2xl mx-auto">
+                @if($category->description)
+                    {{ $category->description }}
+                @else
+                    {{ $sites->count() }} site(s) touristique(s)
+                    @if(isset($accommodations) && $accommodations->count() > 0)
+                        · {{ $accommodations->count() }} hébergement(s)
+                    @endif
                 @endif
-            @endif
-        </p>
+            </p>
+        </div>
     </div>
 </section>
 

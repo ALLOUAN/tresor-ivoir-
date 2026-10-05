@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<html lang="fr" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +8,15 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
         .providers-filter-shell {
             box-shadow: 0 12px 28px rgba(0,0,0,0.18);
         }
-        .provider-featured-card,
         .provider-list-card {
             transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
         }
-        .provider-featured-card:hover,
         .provider-list-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 24px rgba(0,0,0,0.2);
@@ -29,7 +26,6 @@
             border-color: rgba(0,0,0,0.08) !important;
             box-shadow: 0 12px 26px rgba(0,0,0,0.06);
         }
-        html:not(.dark) .provider-featured-card,
         html:not(.dark) .provider-list-card {
             background:#e9e5d9 !important;
             border-color: rgba(0,0,0,0.08) !important;
@@ -37,14 +33,18 @@
         }
         /* Image de fond configurable (back-office) du bandeau de la page Annuaire. */
         .providers-hero {
-            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55)), var(--providers-hero-bg-image, none);
+            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55));
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }
+        .providers-hero[style*="--providers-hero-bg-image"] {
+            background-image: var(--providers-hero-bg-image, none);
+        }
     </style>
 </head>
 <body class="bg-[#ffffff] text-white">
+    @include('partials.page-background')
     @include('partials.public-top-nav')
 
     @php
@@ -53,7 +53,7 @@
             : null;
     @endphp
 
-    <section class="providers-hero relative py-20 overflow-hidden"
+    <section class="relative py-20 overflow-hidden {{ ($providersHeroImage && $providersHeroImage->isVisible()) ? 'providers-hero' : '' }}"
         @if($providersHeroImage && $providersHeroImage->isVisible())
             style="--providers-hero-bg-image: url('{{ $providersHeroImage->image_url }}');"
         @endif
@@ -61,32 +61,19 @@
         <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
         <a href="{{ route('home') }}" class="absolute top-6 right-6 z-10 text-orange-400 text-sm hover:text-orange-300 transition">Retour accueil</a>
         <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-            <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">Annuaire</p>
-            <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
-                Annuaire des prestataires
-            </h1>
-            <p class="text-[#1c1915] text-xl max-w-2xl mx-auto">
-                Trouvez les meilleures adresses par ville, catégorie et gamme de prix.
-            </p>
+            <div class="inline-block rounded-2xl bg-green-950/70 backdrop-blur-md px-6 py-8 sm:px-12 sm:py-10">
+                <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">Annuaire</p>
+                <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
+                    Annuaire des prestataires
+                </h1>
+                <p class="text-gray-200 text-xl max-w-2xl mx-auto">
+                    Trouvez les meilleures adresses par ville, catégorie et gamme de prix.
+                </p>
+            </div>
         </div>
     </section>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-        @if($featured->isNotEmpty())
-            <div class="mb-6">
-                <h2 class="text-white font-semibold mb-3">Prestataires mis en avant</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    @foreach($featured as $f)
-                        <a href="{{ route('providers.show', $f->slug) }}" class="provider-featured-card bg-[#ffffff] border border-orange-500/20 rounded-xl p-4 hover:border-orange-500/50 transition">
-                            <p class="text-orange-400 text-xs uppercase">{{ $f->category->name_fr ?? 'Prestataire' }}</p>
-                            <p class="text-white font-semibold mt-1">{{ $f->name }}</p>
-                            <p class="text-gray-500 text-sm mt-1">{{ $f->city ?: 'Côte d\'Ivoire' }}</p>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
         <div class="providers-filter-shell bg-[#ffffff] border border-white/8 rounded-xl p-4 mb-6">
             <form method="GET" action="{{ route('providers.index') }}" class="grid grid-cols-1 md:grid-cols-6 gap-3">
                 <input

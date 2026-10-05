@@ -60,9 +60,9 @@
         {{-- Search --}}
         <div class="flex gap-2">
             <input type="text" name="q" value="{{ $search }}" placeholder="Chercher un article…"
-                class="w-52 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+                class="w-52 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none transition placeholder-slate-600">
             <select name="category"
-                class="bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition">
+                class="bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none transition">
                 <option value="">Toutes rubriques</option>
                 @foreach($categories as $cat)
                 <option value="{{ $cat->id }}" {{ $category == $cat->id ? 'selected':'' }}>{{ $cat->name_fr }}</option>

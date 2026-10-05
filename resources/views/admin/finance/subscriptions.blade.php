@@ -50,6 +50,7 @@
                     <label class="block text-slate-300 text-xs mb-1">Statut</label>
                     <select name="status" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                         <option value="active" @selected(old('status', 'active') === 'active')>Actif</option>
+                        <option value="pending" @selected(old('status') === 'pending')>En attente</option>
                         <option value="suspended" @selected(old('status') === 'suspended')>Suspendu</option>
                         <option value="cancelled" @selected(old('status') === 'cancelled')>Annulé</option>
                         <option value="expired" @selected(old('status') === 'expired')>Expiré</option>
@@ -65,7 +66,8 @@
                 <div>
                     <label class="block text-slate-300 text-xs mb-1">Méthode de paiement</label>
                     <select name="payment_method" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
-                        <option value="orange_money" @selected(old('payment_method', 'orange_money') === 'orange_money')>Orange Money</option>
+                        <option value="manual" @selected(old('payment_method', 'manual') === 'manual')>Manuel (sans paiement CinetPay)</option>
+                        <option value="orange_money" @selected(old('payment_method') === 'orange_money')>Orange Money</option>
                         <option value="mtn_momo" @selected(old('payment_method') === 'mtn_momo')>MTN MoMo</option>
                         <option value="wave" @selected(old('payment_method') === 'wave')>Wave</option>
                         <option value="moov_money" @selected(old('payment_method') === 'moov_money')>Moov Money</option>
@@ -89,7 +91,7 @@
                     <textarea name="cancellation_reason" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" placeholder="Seulement si statut annulé">{{ old('cancellation_reason') }}</textarea>
                 </div>
                 <div class="md:col-span-2 flex items-center gap-2">
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Créer abonnement</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Créer abonnement</button>
                     <button type="button" id="cancel-create-subscription-modal" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
                 </div>
             </form>
@@ -123,7 +125,7 @@
     </div>
     <div class="space-y-2">
         @forelse($expiringSoonSubscriptions as $expiring)
-            @php $daysLeft = $expiring->ends_at ? max(0, now()->diffInDays($expiring->ends_at, false)) : 0; @endphp
+            @php $daysLeft = $expiring->ends_at ? max(0, now()->startOfDay()->diffInDays($expiring->ends_at->copy()->startOfDay(), false)) : 0; @endphp
             <div class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-3 flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <p class="text-white text-sm font-medium">{{ $expiring->provider->name ?? '—' }} - {{ strtoupper($expiring->plan->code ?? 'N/A') }}</p>
@@ -133,13 +135,13 @@
                 </div>
                 <form method="POST" action="{{ route('admin.subscriptions.extend', $expiring) }}" class="flex items-center gap-2">
                     @csrf
-                    <select name="extend_by_months" class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-100">
+                    <select name="extend_by_months" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-100">
                         <option value="1">+1 mois</option>
                         <option value="3">+3 mois</option>
                         <option value="6">+6 mois</option>
                         <option value="12">+12 mois</option>
                     </select>
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
                         Prolonger
                     </button>
                 </form>
@@ -158,7 +160,7 @@
                    class="md:col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
             <select name="status" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                 <option value="">Tous les statuts</option>
-                @foreach(['active' => 'Actif', 'suspended' => 'Suspendu', 'cancelled' => 'Annulé', 'expired' => 'Expiré'] as $value => $label)
+                @foreach(['active' => 'Actif', 'pending' => 'En attente', 'suspended' => 'Suspendu', 'cancelled' => 'Annulé', 'expired' => 'Expiré'] as $value => $label)
                     <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -198,13 +200,13 @@
                         <td class="px-5 py-3 text-white">{{ $subscription->provider->name ?? '—' }}</td>
                         <td class="px-5 py-3 text-slate-300">{{ strtoupper($subscription->plan->code ?? 'N/A') }}</td>
                         <td class="px-5 py-3 text-slate-300">{{ $subscription->billing_cycle === 'yearly' ? 'Annuel' : 'Mensuel' }}</td>
-                        <td class="px-5 py-3 text-slate-300">{{ str_replace('_', ' ', ucfirst($subscription->payment_method ?? '')) ?: '—' }}</td>
+                        <td class="px-5 py-3 text-slate-300">{{ $subscription->payment_method === 'manual' ? 'Manuel' : (str_replace('_', ' ', ucfirst($subscription->payment_method ?? '')) ?: '—') }}</td>
                         <td class="px-5 py-3 text-slate-300">
                             {{ optional($subscription->starts_at)->format('d/m/Y') ?? '-' }} -
                             {{ optional($subscription->ends_at)->format('d/m/Y') ?? '-' }}
                             @if($subscription->last_edited_at && $subscription->last_edited_at->gt(now()->subDays(7)))
                                 <div class="mt-1">
-                                    <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
+                                    <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-slate-500/20 text-slate-300 border border-slate-600/40">
                                         Modifié récemment - {{ $subscription->last_edited_at->format('d/m/Y H:i') }} par {{ $subscription->lastEditedBy->full_name ?? 'admin' }}
                                     </span>
                                 </div>
@@ -267,6 +269,7 @@
                                         <label class="block text-slate-300 text-xs mb-1">Statut</label>
                                         <select name="status" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                                             <option value="active" @selected($subscription->status === 'active')>Actif</option>
+                                            <option value="pending" @selected($subscription->status === 'pending')>En attente</option>
                                             <option value="suspended" @selected($subscription->status === 'suspended')>Suspendu</option>
                                             <option value="cancelled" @selected($subscription->status === 'cancelled')>Annulé</option>
                                             <option value="expired" @selected($subscription->status === 'expired')>Expiré</option>
@@ -282,6 +285,7 @@
                                     <div>
                                         <label class="block text-slate-300 text-xs mb-1">Méthode de paiement</label>
                                         <select name="payment_method" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                                            <option value="manual" @selected($subscription->payment_method === 'manual')>Manuel (sans paiement CinetPay)</option>
                                             <option value="orange_money" @selected($subscription->payment_method === 'orange_money')>Orange Money</option>
                                             <option value="mtn_momo" @selected($subscription->payment_method === 'mtn_momo')>MTN MoMo</option>
                                             <option value="wave" @selected($subscription->payment_method === 'wave')>Wave</option>
@@ -306,7 +310,7 @@
                                         <textarea name="cancellation_reason" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ $subscription->cancellation_reason }}</textarea>
                                     </div>
                                     <div class="md:col-span-2 flex items-center gap-2">
-                                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
+                                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
                                         <button type="button" class="close-edit-subscription-modal bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg" data-target="edit-subscription-modal-{{ $subscription->id }}">Annuler</button>
                                     </div>
                                 </form>

@@ -55,7 +55,7 @@
                     <option value="{{ $value }}" @selected($contactMessage->status === $value)>{{ $label }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-400 hover:to-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+            <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-floppy-disk"></i>
                 Enregistrer
             </button>

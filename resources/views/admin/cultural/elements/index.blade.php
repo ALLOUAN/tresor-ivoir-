@@ -32,16 +32,16 @@
 {{-- Filtres --}}
 <form method="GET" action="{{ route('admin.cultural.elements.index') }}" class="mb-5 flex gap-2 flex-wrap">
     <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher un élément…"
-        class="flex-1 min-w-40 bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+        class="flex-1 min-w-40 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none transition placeholder-slate-500">
     <select name="domain"
-        class="bg-green-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+        class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none">
         <option value="">Tous les domaines</option>
         @foreach($domains as $d)
         <option value="{{ $d->id }}" {{ $domainId == $d->id ? 'selected' : '' }}>{{ $d->name }}</option>
         @endforeach
     </select>
     <select name="risk"
-        class="bg-green-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+        class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none">
         <option value="">Tous risques</option>
         @foreach(['stable'=>'Stable','vulnerable'=>'Vulnérable','en_danger'=>'En danger','disparu'=>'Disparu'] as $val => $lbl)
         <option value="{{ $val }}" {{ $risk === $val ? 'selected' : '' }}>{{ $lbl }}</option>

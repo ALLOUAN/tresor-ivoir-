@@ -32,9 +32,9 @@
 {{-- Filtres --}}
 <form method="GET" action="{{ route('admin.cultural.peoples.index') }}" class="mb-5 flex gap-2">
     <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher un peuple…"
-        class="flex-1 bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+        class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none transition placeholder-slate-500">
     <select name="zone"
-        class="bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+        class="bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none">
         <option value="">Toutes zones</option>
         @foreach(['Nord','Sud','Est','Ouest','Centre'] as $z)
         <option value="{{ $z }}" {{ $zone === $z ? 'selected' : '' }}>{{ $z }}</option>
@@ -144,12 +144,12 @@
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Nom</label>
                                     <input type="text" name="name" value="{{ $people->name }}" required maxlength="100"
-                                        class="w-full bg-green-900 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Zone géographique</label>
                                     <select name="zone_geographique"
-                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                         <option value="">—</option>
                                         @foreach(['Nord','Sud','Est','Ouest','Centre'] as $z)
                                         <option value="{{ $z }}" {{ $people->zone_geographique === $z ? 'selected' : '' }}>{{ $z }}</option>
@@ -159,27 +159,90 @@
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Famille linguistique</label>
                                     <input type="text" name="famille_linguistique" value="{{ $people->famille_linguistique }}" maxlength="100"
-                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Langue principale</label>
                                     <input type="text" name="langue_principale" value="{{ $people->langue_principale }}" maxlength="100"
-                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Population estimée</label>
                                     <input type="number" name="population_estimee" value="{{ $people->population_estimee }}" min="0"
-                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div>
                                     <label class="text-xs text-slate-400 mb-1 block">Capitale culturelle</label>
                                     <input type="text" name="capitale_culturelle" value="{{ $people->capitale_culturelle }}" maxlength="100"
-                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                                 </div>
                                 <div class="md:col-span-3">
-                                    <label class="text-xs text-slate-400 mb-1 block">Description</label>
+                                    <label class="text-xs text-slate-400 mb-1 block">Description (Présentation)</label>
                                     <textarea name="description" rows="3"
-                                        class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ $people->description }}</textarea>
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ $people->description }}</textarea>
+                                </div>
+                                <div class="md:col-span-3">
+                                    <label class="text-xs text-slate-400 mb-1 block">Histoire</label>
+                                    <textarea name="histoire" rows="5"
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ $people->histoire }}</textarea>
+                                </div>
+                                <div class="md:col-span-3">
+                                    <label class="text-xs text-slate-400 mb-1 block">Symboles</label>
+                                    <div id="symboles-container-{{ $people->id }}" class="space-y-2">
+                                        @foreach(($people->symboles ?: []) as $symbole)
+                                        <div class="flex gap-2 items-center symbole-row">
+                                            <input type="text" name="symbole_label[]" value="{{ $symbole['label'] ?? '' }}" placeholder="Label (ex: Couleur)"
+                                                class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                            <input type="text" name="symbole_valeur[]" value="{{ $symbole['valeur'] ?? '' }}" placeholder="Valeur (ex: Blanc)"
+                                                class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                                            <button type="button" onclick="this.closest('.symbole-row').remove()"
+                                                class="w-8 h-8 shrink-0 rounded-lg bg-slate-800 hover:bg-red-900/40 text-slate-500 hover:text-red-400 flex items-center justify-center transition">
+                                                <i class="fas fa-times text-xs"></i>
+                                            </button>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    <button type="button" onclick="addSymboleRow('symboles-container-{{ $people->id }}')"
+                                        class="mt-2 text-xs text-orange-400 hover:text-orange-300 transition">
+                                        <i class="fas fa-circle-plus"></i> Ajouter un symbole
+                                    </button>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-400 mb-1 block">Miniature</label>
+                                    <img id="preview-thumb-{{ $people->id }}" src="{{ $people->thumbnail ?: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7' }}" class="w-16 h-16 object-cover rounded-lg border border-slate-700 mb-2 {{ $people->thumbnail ? '' : 'hidden' }}">
+                                    <input type="file" name="thumbnail_file" accept="image/jpeg,image/png,image/webp"
+                                        onchange="previewPeopleImage(this, 'preview-thumb-{{ $people->id }}')"
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 outline-none file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-200 file:text-xs">
+                                    @if($people->thumbnail)
+                                    <label class="flex items-center gap-2 text-[11px] text-slate-500 mt-1.5 cursor-pointer">
+                                        <input type="checkbox" name="remove_thumbnail" value="1" class="rounded border-slate-600 bg-slate-800 text-red-500"
+                                            onchange="toggleRemoveImagePreview(this, 'preview-thumb-{{ $people->id }}')">
+                                        Supprimer l'image actuelle
+                                    </label>
+                                    @endif
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-xs text-slate-400 mb-1 block">
+                                        Bannières{{ !empty($people->cover_images) ? ' ('.count($people->cover_images).')' : '' }}
+                                    </label>
+                                    @if(!empty($people->cover_images))
+                                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-2">
+                                        @foreach($people->cover_images as $url)
+                                        <div>
+                                            <img src="{{ $url }}" class="w-full h-16 object-cover rounded-lg border border-slate-700 mb-1" loading="lazy">
+                                            <label class="flex items-center gap-1.5 text-[10px] text-slate-500 cursor-pointer">
+                                                <input type="checkbox" name="remove_cover_images[]" value="{{ $url }}" class="rounded border-slate-600 bg-slate-800 text-red-500">
+                                                Supprimer
+                                            </label>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                    <div id="new-covers-preview-{{ $people->id }}" class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-2"></div>
+                                    <input type="file" name="cover_images_file[]" multiple accept="image/jpeg,image/png,image/webp"
+                                        onchange="previewPeopleMultiImages(this, 'new-covers-preview-{{ $people->id }}')"
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 outline-none file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-200 file:text-xs">
+                                    <p class="text-[10px] text-slate-500 mt-1">Plusieurs images peuvent être sélectionnées en une fois — elles s'ajoutent aux bannières existantes.</p>
                                 </div>
                                 <div class="md:col-span-3 flex items-center justify-between">
                                     <div class="flex items-center gap-4">
@@ -233,7 +296,7 @@
             </h3>
             <button onclick="closePeopleModal()" class="text-slate-500 hover:text-white transition"><i class="fas fa-times"></i></button>
         </div>
-        <form method="POST" action="{{ route('admin.cultural.peoples.store') }}" enctype="multipart/form-data" class="p-5 space-y-4">
+        <form id="form-people-create" method="POST" action="{{ route('admin.cultural.peoples.store') }}" enctype="multipart/form-data" class="p-5 space-y-4">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2">
@@ -277,14 +340,48 @@
                         class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="text-xs text-slate-400 mb-1 block">Description</label>
+                    <label class="text-xs text-slate-400 mb-1 block">Description (Présentation)</label>
                     <textarea name="description" rows="3"
                         class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y"></textarea>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="text-xs text-slate-400 mb-1 block">Image bannière (URL)</label>
-                    <input type="text" name="cover_image" maxlength="500"
-                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                    <label class="text-xs text-slate-400 mb-1 block">Histoire</label>
+                    <textarea name="histoire" rows="4"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-xs text-slate-400 mb-1 block">Symboles</label>
+                    <div id="symboles-container-create" class="space-y-2">
+                        <div class="flex gap-2 items-center symbole-row">
+                            <input type="text" name="symbole_label[]" placeholder="Label (ex: Couleur)"
+                                class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                            <input type="text" name="symbole_valeur[]" placeholder="Valeur (ex: Blanc)"
+                                class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                            <button type="button" onclick="this.closest('.symbole-row').remove()"
+                                class="w-8 h-8 shrink-0 rounded-lg bg-slate-700 hover:bg-red-900/40 text-slate-500 hover:text-red-400 flex items-center justify-center transition">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addSymboleRow('symboles-container-create')"
+                        class="mt-2 text-xs text-orange-400 hover:text-orange-300 transition">
+                        <i class="fas fa-circle-plus"></i> Ajouter un symbole
+                    </button>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">Miniature</label>
+                    <img id="preview-thumb-create" src="" class="w-16 h-16 object-cover rounded-lg border border-slate-700 mb-2 hidden">
+                    <input type="file" name="thumbnail_file" accept="image/jpeg,image/png,image/webp"
+                        onchange="previewPeopleImage(this, 'preview-thumb-create')"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 outline-none file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-200 file:text-xs">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">Bannières</label>
+                    <div id="new-covers-preview-create" class="grid grid-cols-3 gap-2 mb-2"></div>
+                    <input type="file" name="cover_images_file[]" multiple accept="image/jpeg,image/png,image/webp"
+                        onchange="previewPeopleMultiImages(this, 'new-covers-preview-create')"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 outline-none file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-200 file:text-xs">
+                    <p class="text-[10px] text-slate-500 mt-1">Plusieurs images peuvent être sélectionnées en une fois.</p>
                 </div>
                 <div class="md:col-span-2 flex items-center gap-4">
                     <label class="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
@@ -309,8 +406,74 @@
 
 <script>
 function openPeopleModal() { document.getElementById('modal-people-create').classList.remove('hidden'); }
-function closePeopleModal() { document.getElementById('modal-people-create').classList.add('hidden'); }
+function closePeopleModal() {
+    document.getElementById('modal-people-create').classList.add('hidden');
+    document.getElementById('form-people-create').reset();
+    const c = document.getElementById('symboles-container-create');
+    c.querySelectorAll('.symbole-row').forEach((row, i) => { if (i > 0) row.remove(); });
+    const thumb = document.getElementById('preview-thumb-create');
+    thumb.src = '';
+    thumb.classList.add('hidden');
+    document.getElementById('new-covers-preview-create').innerHTML = '';
+}
+
+// Aperçu local de l'image sélectionnée avant tout envoi au serveur
+// (exigence « prévisualiser l'image avant son enregistrement »).
+function previewPeopleImage(input, previewId) {
+    const img = document.getElementById(previewId);
+    const file = input.files && input.files[0];
+    if (!file) {
+        img.src = '';
+        img.classList.add('hidden');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        img.src = e.target.result;
+        img.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+}
+
+function toggleRemoveImagePreview(checkbox, previewId) {
+    const img = document.getElementById(previewId);
+    img.classList.toggle('hidden', checkbox.checked);
+}
+
+// Aperçu local de plusieurs bannières sélectionnées en une fois (champ multiple)
+// avant tout envoi au serveur.
+function previewPeopleMultiImages(input, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    const files = input.files ? Array.from(input.files) : [];
+    files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'w-full h-16 object-cover rounded-lg border border-slate-700';
+            container.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+}
 function openEditPeopleModal(id) { document.getElementById('edit-people-' + id).classList.remove('hidden'); }
 function closeEditPeopleModal(id) { document.getElementById('edit-people-' + id).classList.add('hidden'); }
+
+function addSymboleRow(containerId) {
+    const container = document.getElementById(containerId);
+    const row = document.createElement('div');
+    row.className = 'flex gap-2 items-center symbole-row';
+    row.innerHTML = `
+        <input type="text" name="symbole_label[]" placeholder="Label (ex: Couleur)"
+            class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+        <input type="text" name="symbole_valeur[]" placeholder="Valeur (ex: Blanc)"
+            class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+        <button type="button" onclick="this.closest('.symbole-row').remove()"
+            class="w-8 h-8 shrink-0 rounded-lg bg-slate-700 hover:bg-red-900/40 text-slate-500 hover:text-red-400 flex items-center justify-center transition">
+            <i class="fas fa-times text-xs"></i>
+        </button>`;
+    container.appendChild(row);
+}
 </script>
 @endsection

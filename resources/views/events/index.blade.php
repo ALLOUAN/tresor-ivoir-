@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<html lang="fr" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,6 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -29,11 +28,19 @@
         .events-hero {
             background-image:
                 linear-gradient(130deg, rgba(24,24,21,0.86), rgba(14,14,12,0.94)),
-                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%),
-                var(--events-hero-bg-image, none);
-            background-size: auto, auto, cover;
-            background-position: 0 0, 0 0, center;
-            background-repeat: repeat, no-repeat, no-repeat;
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%);
+            background-size: auto, auto;
+            background-position: 0 0, 0 0;
+            background-repeat: repeat, no-repeat;
+        }
+        /* Quand une image est configurée (back-office), on l'affiche sans voile
+           d'opacité par-dessus — la lisibilité du titre est déjà assurée par le
+           cadre bg-green-950/70 qui l'entoure, pas besoin d'assombrir la photo. */
+        .events-hero[style*="--events-hero-bg-image"] {
+            background-image: var(--events-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         .events-filter-panel {
             border: 1px solid rgba(255,255,255,0.09);
@@ -83,9 +90,7 @@
             transform: scale(1.06);
         }
         .event-cover-missing {
-            background:
-                linear-gradient(140deg, rgba(56,56,46,0.7), rgba(255, 255, 255,0.95)),
-                repeating-linear-gradient(45deg, rgba(242, 121, 15,0.1), rgba(242, 121, 15,0.1) 8px, transparent 8px, transparent 16px);
+            background: rgba(56,56,46,0.85);
         }
         .event-cta-row {
             display: flex;
@@ -108,7 +113,7 @@
             padding: 0.38rem 0.7rem;
             border-radius: 0.7rem;
             border: 1px solid rgba(242, 121, 15,0.35);
-            background: linear-gradient(145deg, rgba(242, 121, 15,0.22), rgba(255,255,255,0.08));
+            background: rgba(242, 121, 15,0.16);
             color: #f8d79a;
             font-size: 11px;
             font-weight: 800;
@@ -128,26 +133,14 @@
             font-size: 11px;
             font-weight: 800;
             color: #1b1408;
-            background: linear-gradient(135deg, #f4c65a 0%, #f2790f 65%, #cb8517 100%);
+            background: #f2790f;
             box-shadow: 0 10px 20px rgba(242, 121, 15,0.28);
             transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
-        }
-        .event-ticket-btn-modern::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            transform: translateX(-130%);
-            background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.38) 50%, transparent 80%);
-            transition: transform .55s ease;
-            pointer-events: none;
         }
         .event-ticket-btn-modern:hover {
             transform: translateY(-1px);
             filter: brightness(1.03);
             box-shadow: 0 14px 24px rgba(242, 121, 15,0.35);
-        }
-        .event-ticket-btn-modern:hover::after {
-            transform: translateX(130%);
         }
         .group:hover .event-cta-row {
             border-color: rgba(242, 121, 15,0.35);
@@ -165,17 +158,16 @@
         html:not(.dark) .events-hero {
             background-image:
                 linear-gradient(130deg, rgba(255,255,255,0.96), rgba(247,243,235,0.98)),
-                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%),
-                var(--events-hero-bg-image, none);
-            background-size: auto, auto, cover;
-            background-position: 0 0, 0 0, center;
-            background-repeat: repeat, no-repeat, no-repeat;
+                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%);
+            background-size: auto, auto;
+            background-position: 0 0, 0 0;
+            background-repeat: repeat, no-repeat;
         }
         html:not(.dark) .events-hero[style*="--events-hero-bg-image"] {
-            background-image:
-                linear-gradient(130deg, rgba(255,255,255,0.55), rgba(247,243,235,0.55)),
-                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%),
-                var(--events-hero-bg-image, none);
+            background-image: var(--events-hero-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         html:not(.dark) .events-filter-panel {
             border-color: rgba(0,0,0,0.1);
@@ -205,9 +197,7 @@
             background: linear-gradient(to top, rgba(255,255,255,0.92), rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.06));
         }
         html:not(.dark) .event-cover-missing {
-            background:
-                linear-gradient(140deg, rgba(240,235,226,0.9), rgba(231,224,214,0.92)),
-                repeating-linear-gradient(45deg, rgba(194, 94, 10,0.12), rgba(194, 94, 10,0.12) 8px, transparent 8px, transparent 16px);
+            background: rgba(235,229,218,0.95);
         }
         html:not(.dark) .event-cta-row {
             border-color: rgba(0,0,0,0.08);
@@ -215,13 +205,14 @@
         }
         html:not(.dark) .event-price-badge-modern {
             border-color: rgba(194, 94, 10,0.28);
-            background: linear-gradient(145deg, rgba(242, 121, 15,0.24), rgba(255,255,255,0.95));
+            background: rgba(255,255,255,0.92);
             color: #7a3c08;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(194, 94, 10,0.14);
         }
     </style>
 </head>
 <body class="bg-[#ffffff] text-white">
+    @include('partials.page-background')
     @include('partials.public-top-nav')
 
     @php
@@ -240,9 +231,11 @@
             Retour accueil
         </a>
         <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-            <p class="text-orange-300/90 text-[11px] tracking-[.26em] uppercase mb-3 font-semibold">Agenda culturel</p>
-            <h1 class="font-serif text-4xl md:text-5xl font-bold leading-tight mb-4">Agenda des événements</h1>
-            <p class="text-gray-400 text-xl max-w-2xl mx-auto">Explorez les rendez-vous à venir avec une expérience de lecture premium.</p>
+            <div class="inline-block rounded-2xl bg-green-950/70 backdrop-blur-md px-6 py-8 sm:px-12 sm:py-10">
+                <p class="text-orange-300/90 text-[11px] tracking-[.26em] uppercase mb-3 font-semibold">Agenda culturel</p>
+                <h1 class="font-serif text-4xl md:text-5xl font-bold text-white leading-tight mb-4">Agenda des événements</h1>
+                <p class="text-gray-200 text-xl max-w-2xl mx-auto">Explorez les rendez-vous à venir avec une expérience de lecture premium.</p>
+            </div>
         </div>
     </section>
 
@@ -280,7 +273,8 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($events as $event)
-                <a href="{{ route('events.show', $event->slug) }}" class="event-card rounded-2xl overflow-hidden">
+                <div class="event-card group rounded-2xl overflow-hidden relative">
+                    <a href="{{ route('events.show', $event->slug) }}" class="absolute inset-0 z-[1]" aria-label="Voir {{ $event->title_fr }}"></a>
                     <div class="event-cover h-44">
                         @if(!empty($event->cover_url))
                             <img src="{{ $event->cover_url }}" alt="{{ $event->cover_alt ?: $event->title_fr }}" class="h-full w-full object-cover" loading="lazy" decoding="async">
@@ -317,12 +311,18 @@
                                     {{ number_format((float) $event->price, 0, ',', ' ') }} FCFA
                                 @endif
                             </span>
-                            <span class="event-ticket-btn-modern">
-                                <i class="fas fa-arrow-right text-[10px]"></i> Voir détails
-                            </span>
+                            <a href="{{ $event->ticket_url ?: route('events.show', $event->slug) }}"
+                               @if($event->ticket_url) target="_blank" rel="noopener noreferrer" @endif
+                               class="event-ticket-btn-modern relative z-[2]">
+                                @if($event->ticket_url)
+                                    <i class="fas fa-ticket-simple text-[10px]"></i> Réserver
+                                @else
+                                    <i class="fas fa-arrow-right text-[10px]"></i> Voir détails
+                                @endif
+                            </a>
                         </div>
                     </div>
-                </a>
+                </div>
             @empty
                 <p class="text-gray-500 col-span-3 rounded-2xl border border-dashed border-white/12 bg-white/[0.02] px-5 py-10 text-center">Aucun événement trouvé.</p>
             @endforelse

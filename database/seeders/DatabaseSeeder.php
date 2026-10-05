@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
 
             // Contenu métier (dépend des référentiels et users)
             ProviderSeeder::class,
+            SectorProviderUserSeeder::class,
             ArticleSeeder::class,
             EventSeeder::class,
             ReviewSeeder::class,

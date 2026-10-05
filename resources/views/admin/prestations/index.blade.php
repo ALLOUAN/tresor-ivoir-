@@ -133,7 +133,7 @@
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $banner->is_active ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-600/30 text-slate-300 border border-slate-600/40' }}">
                         {{ $banner->is_active ? 'Actif' : 'Inactif' }}
                     </span>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600/25 text-green-200 border border-green-500/35">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/20 text-slate-300 border border-slate-600/40">
                         Ordre : {{ $banner->display_order }}
                     </span>
                 </div>
@@ -150,7 +150,7 @@
                         data-display-order="{{ $banner->display_order }}"
                         data-is-active="{{ $banner->is_active ? '1' : '0' }}"
                         data-image-url="{{ e($banner->image_url ?? '') }}"
-                        class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-green-600/90 hover:bg-green-500 text-white transition"
+                        class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/90 hover:bg-orange-400 text-white transition"
                         title="Modifier">
                     <i class="fas fa-pen"></i>
                 </button>
@@ -176,7 +176,7 @@
         <div class="text-center py-14 text-slate-500 border border-dashed border-slate-700 rounded-xl">
             <i class="fas fa-panorama text-3xl mb-3 text-slate-600"></i>
             <p>Aucune bannière pour le moment.</p>
-            <button type="button" onclick="openCreateBannerModal()" class="mt-4 text-green-400 hover:text-green-300 text-sm font-medium">Ajouter la première bannière</button>
+            <button type="button" onclick="openCreateBannerModal()" class="mt-4 text-orange-400 hover:text-orange-300 text-sm font-medium">Ajouter la première bannière</button>
         </div>
         @endforelse
     </div>
@@ -202,7 +202,7 @@
                 @include('admin.prestations.partials.banner-form-fields')
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeCreateBannerModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter</button>
                 </div>
             </form>
         </div>
@@ -224,7 +224,7 @@
                 @include('admin.prestations.partials.banner-form-fields', ['isEdit' => true])
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeEditBannerModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
                 </div>
             </form>
         </div>
@@ -374,7 +374,7 @@
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $item->is_active ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-600/30 text-slate-300 border border-slate-600/40' }}">
                         {{ $item->is_active ? 'Actif' : 'Inactif' }}
                     </span>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600/25 text-green-200 border border-green-500/35">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/20 text-slate-300 border border-slate-600/40">
                         Ordre : {{ $item->display_order }}
                     </span>
                     @if($item->link_url)
@@ -397,7 +397,7 @@
                         data-display-order="{{ $item->display_order }}"
                         data-is-active="{{ $item->is_active ? '1' : '0' }}"
                         data-image-url="{{ e($item->image_url ?? '') }}"
-                        class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-green-600/90 hover:bg-green-500 text-white transition"
+                        class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/90 hover:bg-orange-400 text-white transition"
                         title="Modifier">
                     <i class="fas fa-pen"></i>
                 </button>
@@ -423,7 +423,7 @@
         <div class="text-center py-14 text-slate-500 border border-dashed border-slate-700 rounded-xl">
             <i class="fas fa-concierge-bell text-3xl mb-3 text-slate-600"></i>
             <p>Aucune prestation pour le moment.</p>
-            <button type="button" onclick="openCreateItemModal()" class="mt-4 text-green-400 hover:text-green-300 text-sm font-medium">Ajouter la première prestation</button>
+            <button type="button" onclick="openCreateItemModal()" class="mt-4 text-orange-400 hover:text-orange-300 text-sm font-medium">Ajouter la première prestation</button>
         </div>
         @endforelse
     </div>
@@ -449,7 +449,7 @@
                 @include('admin.prestations.partials.item-form-fields')
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeCreateItemModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter</button>
                 </div>
             </form>
         </div>
@@ -471,7 +471,7 @@
                 @include('admin.prestations.partials.item-form-fields', ['isEdit' => true])
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeEditItemModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
                 </div>
             </form>
         </div>

@@ -86,7 +86,7 @@
     <select name="type"
             class="bg-green-900 border border-slate-800 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition">
         <option value="">Tous les types</option>
-        @foreach(['hotel'=>'Hôtel','resort'=>'Resort','guesthouse'=>"Maison d'hôtes",'hostel'=>'Auberge de jeunesse','auberge'=>'Auberge','villa'=>'Villa','eco_lodge'=>'Éco-lodge'] as $val => $lbl)
+        @foreach(['hotel'=>'Hôtel','residence'=>'Résidence','resort'=>'Resort','guesthouse'=>"Maison d'hôtes",'hostel'=>'Auberge de jeunesse','auberge'=>'Auberge','villa'=>'Villa','eco_lodge'=>'Éco-lodge'] as $val => $lbl)
             <option value="{{ $val }}" {{ $type === $val ? 'selected' : '' }}>{{ $lbl }}</option>
         @endforeach
     </select>
@@ -109,12 +109,13 @@
     @php
         $typeCounts = [
             'hotel' => \App\Models\Accommodation::where('type','hotel')->count(),
+            'residence' => \App\Models\Accommodation::where('type','residence')->count(),
             'resort' => \App\Models\Accommodation::where('type','resort')->count(),
             'villa' => \App\Models\Accommodation::where('type','villa')->count(),
             'eco_lodge' => \App\Models\Accommodation::where('type','eco_lodge')->count(),
             'guesthouse' => \App\Models\Accommodation::where('type','guesthouse')->count(),
         ];
-        $typeIcons = ['hotel'=>'fa-building','resort'=>'fa-umbrella-beach','villa'=>'fa-house','eco_lodge'=>'fa-leaf','guesthouse'=>'fa-house-chimney'];
+        $typeIcons = ['hotel'=>'fa-building','residence'=>'fa-bed','resort'=>'fa-umbrella-beach','villa'=>'fa-house','eco_lodge'=>'fa-leaf','guesthouse'=>'fa-house-chimney'];
     @endphp
     @foreach($typeCounts as $tval => $tcount)
         @if($tcount > 0)
@@ -124,7 +125,7 @@
                      ? 'bg-orange-500/20 border-orange-500/40 text-orange-300'
                      : 'bg-green-900 border-slate-700 text-slate-400 hover:border-orange-500/30 hover:text-slate-300' }}">
             <i class="fas {{ $typeIcons[$tval] ?? 'fa-hotel' }} text-[10px]"></i>
-            {{ ['hotel'=>'Hôtels','resort'=>'Resorts','villa'=>'Villas','eco_lodge'=>'Éco-lodges','guesthouse'=>"Maisons d'hôtes"][$tval] }}
+            {{ ['hotel'=>'Hôtels','residence'=>'Résidences','resort'=>'Resorts','villa'=>'Villas','eco_lodge'=>'Éco-lodges','guesthouse'=>"Maisons d'hôtes"][$tval] }}
             <span class="ml-0.5 opacity-60">{{ $tcount }}</span>
         </a>
         @endif

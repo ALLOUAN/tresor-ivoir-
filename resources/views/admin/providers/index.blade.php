@@ -4,6 +4,9 @@
 @section('page-title', 'Gestion des prestataires')
 
 @section('content')
+
+@include('admin.providers.partials.subnav')
+
 <div class="mb-6 flex justify-end">
     <button type="button"
             onclick="openCreateProviderModal()"
@@ -35,8 +38,13 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('admin.providers.store') }}" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
+            <form method="POST" action="{{ route('admin.providers.store') }}" enctype="multipart/form-data" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
                 @csrf
+                <div class="md:col-span-2">
+                    <label class="block text-sm text-slate-300 mb-1">Image de couverture</label>
+                    <input type="file" name="cover_image_file" accept="image/*"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                </div>
                 <div>
                     <label class="block text-sm text-slate-300 mb-1">Prénom *</label>
                     <input type="text" name="first_name" required value="{{ old('first_name') }}"
@@ -105,6 +113,51 @@
                     </select>
                 </div>
                 <div>
+                    <label class="block text-sm text-slate-300 mb-1">Établissement Loisirs & Culture lié</label>
+                    <select name="leisure_venue_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($leisureVenues as $lv)
+                            <option value="{{ $lv->id }}">{{ $lv->name }}{{ $lv->provider_id ? ' (déjà lié)' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Restaurant lié</label>
+                    <select name="restaurant_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($restaurants as $r)
+                            <option value="{{ $r->id }}">{{ $r->name }}{{ $r->provider_id ? ' (déjà lié)' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Site touristique lié</label>
+                    <select name="tourist_experience_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($touristExperiences as $te)
+                            <option value="{{ $te->id }}">{{ $te->name }}{{ $te->provider_id ? ' (déjà lié)' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Agence de voyages liée</label>
+                    <select name="travel_agency_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($travelAgencies as $ta)
+                            <option value="{{ $ta->id }}">{{ $ta->name }}{{ $ta->provider_id ? ' (déjà lié)' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Entreprise de transport liée</label>
+                    <select name="transport_company_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($transportCompanies as $tc)
+                            <option value="{{ $tc->id }}">{{ $tc->name }}{{ $tc->provider_id ? ' (déjà lié)' : '' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
                     <label class="block text-sm text-slate-300 mb-1">Ville</label>
                     <input type="text" name="city" value="{{ old('city') }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
@@ -168,10 +221,19 @@
                 </div>
             @endif
 
-            <form method="POST" id="edit-provider-form" action="" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
+            <form method="POST" id="edit-provider-form" action="" enctype="multipart/form-data" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="edit_provider_id" id="edit_provider_id" value="{{ old('edit_provider_id') }}">
+                <div class="md:col-span-2">
+                    <label class="block text-sm text-slate-300 mb-1">Image de couverture</label>
+                    <div class="flex items-center gap-3">
+                        <img id="edit_cover_preview" src="" alt="" class="hidden w-16 h-16 rounded-lg object-cover border border-slate-700">
+                        <input type="file" name="cover_image_file" id="edit_cover_image_file" accept="image/*"
+                               class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                    </div>
+                    <p class="text-slate-500 text-xs mt-1">Laisser vide pour conserver l'image actuelle.</p>
+                </div>
                 <div>
                     <label class="block text-sm text-slate-300 mb-1">Prénom *</label>
                     <input type="text" name="first_name" id="edit_first_name" required value="{{ old('first_name') }}"
@@ -237,6 +299,51 @@
                         <option value="">— Aucun —</option>
                         @foreach($accommodations as $acc)
                             <option value="{{ $acc->id }}">{{ $acc->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Établissement Loisirs & Culture lié</label>
+                    <select name="leisure_venue_id" id="edit_leisure_venue_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($leisureVenues as $lv)
+                            <option value="{{ $lv->id }}">{{ $lv->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Restaurant lié</label>
+                    <select name="restaurant_id" id="edit_restaurant_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($restaurants as $r)
+                            <option value="{{ $r->id }}">{{ $r->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Site touristique lié</label>
+                    <select name="tourist_experience_id" id="edit_tourist_experience_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($touristExperiences as $te)
+                            <option value="{{ $te->id }}">{{ $te->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Agence de voyages liée</label>
+                    <select name="travel_agency_id" id="edit_travel_agency_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($travelAgencies as $ta)
+                            <option value="{{ $ta->id }}">{{ $ta->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-300 mb-1">Entreprise de transport liée</label>
+                    <select name="transport_company_id" id="edit_transport_company_id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                        <option value="">— Aucun —</option>
+                        @foreach($transportCompanies as $tc)
+                            <option value="{{ $tc->id }}">{{ $tc->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -375,7 +482,7 @@
                         <td class="px-5 py-3">
                             <div class="flex items-center gap-2">
                                 <a href="{{ route('admin.providers.content', $provider) }}"
-                                   class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded">
+                                   class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded">
                                     Gérer contenus
                                 </a>
                                 @if($provider->status !== 'active')
@@ -400,13 +507,19 @@
                                         data-provider-email="{{ $provider->email ?? '' }}"
                                         data-phone="{{ $provider->phone ?? '' }}"
                                         data-website="{{ $provider->website ?? '' }}"
+                                        data-cover-url="{{ $provider->cover_url ?? '' }}"
                                         data-accommodation-id="{{ $provider->accommodation->id ?? '' }}"
+                                        data-leisure-venue-id="{{ $provider->leisureVenue->id ?? '' }}"
+                                        data-restaurant-id="{{ $provider->restaurant->id ?? '' }}"
+                                        data-tourist-experience-id="{{ $provider->touristExperience->id ?? '' }}"
+                                        data-travel-agency-id="{{ $provider->travelAgency->id ?? '' }}"
+                                        data-transport-company-id="{{ $provider->transportCompany->id ?? '' }}"
                                         data-city="{{ $provider->city ?? '' }}"
                                         data-address="{{ $provider->address ?? '' }}"
                                         data-description-fr="{{ $provider->description_fr ?? '' }}"
                                         data-is-featured="{{ $provider->is_featured ? '1' : '0' }}"
                                         data-is-verified="{{ $provider->is_verified ? '1' : '0' }}"
-                                        class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded">
+                                        class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded">
                                     Modifier
                                 </button>
                                 @if($provider->status !== 'suspended')
@@ -473,11 +586,25 @@
         document.getElementById('edit_phone').value = button.dataset.phone || '';
         document.getElementById('edit_website').value = button.dataset.website || '';
         document.getElementById('edit_accommodation_id').value = button.dataset.accommodationId || '';
+        document.getElementById('edit_leisure_venue_id').value = button.dataset.leisureVenueId || '';
+        document.getElementById('edit_restaurant_id').value = button.dataset.restaurantId || '';
+        document.getElementById('edit_tourist_experience_id').value = button.dataset.touristExperienceId || '';
+        document.getElementById('edit_travel_agency_id').value = button.dataset.travelAgencyId || '';
+        document.getElementById('edit_transport_company_id').value = button.dataset.transportCompanyId || '';
         document.getElementById('edit_city').value = button.dataset.city || '';
         document.getElementById('edit_address').value = button.dataset.address || '';
         document.getElementById('edit_description_fr').value = button.dataset.descriptionFr || '';
         document.getElementById('edit_is_featured').checked = button.dataset.isFeatured === '1';
         document.getElementById('edit_is_verified').checked = button.dataset.isVerified === '1';
+
+        document.getElementById('edit_cover_image_file').value = '';
+        const coverPreview = document.getElementById('edit_cover_preview');
+        if (button.dataset.coverUrl) {
+            coverPreview.src = button.dataset.coverUrl;
+            coverPreview.classList.remove('hidden');
+        } else {
+            coverPreview.classList.add('hidden');
+        }
 
         document.getElementById('edit-provider-modal').classList.remove('hidden');
     }

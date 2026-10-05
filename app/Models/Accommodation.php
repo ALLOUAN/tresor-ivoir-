@@ -16,7 +16,7 @@ class Accommodation extends Model
         'city_id',
         'provider_id',
         'name', 'slug', 'type', 'stars',
-        'short_description', 'description',
+        'short_description', 'description', 'cancellation_policy',
         'adresse', 'quartier', 'latitude', 'longitude',
         'phone', 'email', 'website',
         'thumbnail', 'cover_image',
@@ -118,6 +118,28 @@ class Accommodation extends Model
         return $prices->isNotEmpty() ? (float) $prices->min() : null;
     }
 
+    /**
+     * Retrouve une chambre de cet hébergement par son nom exact — utilisé pour valider
+     * côté serveur qu'une réservation porte bien sur une chambre réelle de cet établissement
+     * (et récupérer son prix authentique) plutôt que de faire confiance aux valeurs soumises
+     * par le client.
+     */
+    public function findRoomByName(string $name): ?array
+    {
+        return collect($this->room_types ?? [])->firstWhere('name', $name);
+    }
+
+    /**
+     * Retrouve une chambre par son identifiant stable (uuid) — utilisé par le calendrier
+     * de disponibilité et la réservation pour cibler précisément UNE chambre, y compris
+     * quand plusieurs chambres d'un même hébergement partagent le même nom (findRoomByName
+     * serait alors ambigu).
+     */
+    public function findRoomById(string $id): ?array
+    {
+        return collect($this->room_types ?? [])->firstWhere('id', $id);
+    }
+
     /* ── Scopes ──────────────────────────────────────────────────── */
 
     public function scopeActive(Builder $query): Builder
@@ -133,6 +155,12 @@ class Accommodation extends Model
     public function scopeForCity(Builder $query, int $cityId): Builder
     {
         return $query->where('city_id', $cityId);
+    }
+
+    /** Filtre par région (via la ville liée — pas de table Region dédiée dans ce projet). */
+    public function scopeForRegion(Builder $query, string $region): Builder
+    {
+        return $query->whereHas('city', fn (Builder $q) => $q->where('region_administrative', $region));
     }
 
     /** Filtre par categorie touristique (JSON contains). */
@@ -184,6 +212,7 @@ class Accommodation extends Model
             'auberge'    => 'Auberge',
             'villa'      => 'Villa',
             'eco_lodge'  => 'Éco-lodge',
+            'residence'  => 'Résidence',
             default      => ucfirst($this->type),
         };
     }

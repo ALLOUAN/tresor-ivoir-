@@ -17,10 +17,10 @@
     <div class="flex gap-3" id="{{ $prefix }}media_type_group">
         <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="radio" name="media_type" id="{{ $prefix }}type_image" value="image"
-                   class="accent-green-500 w-4 h-4"
+                   class="accent-orange-500 w-4 h-4"
                    {{ (!$isEdit || !$isVideo) ? 'checked' : '' }}>
             <span class="flex items-center gap-1.5 text-sm text-slate-300 group-has-[:checked]:text-white">
-                <i class="fas fa-image text-green-400 w-4 text-center"></i> Image
+                <i class="fas fa-image text-orange-400 w-4 text-center"></i> Image
             </span>
         </label>
         <label class="flex items-center gap-2.5 cursor-pointer group">
@@ -92,11 +92,11 @@
 <div id="{{ $prefix }}image_fields" class="{{ $isVideo ? 'hidden' : '' }} md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
         <label class="block text-sm text-slate-300 mb-1">
-            Image Desktop <span class="text-green-400">{{ $isEdit ? '' : '*' }}</span>
+            Image Desktop <span class="text-orange-400">{{ $isEdit ? '' : '*' }}</span>
         </label>
         <input type="file" name="desktop_image" id="{{ $prefix }}desktop_image"
                accept="image/jpeg,image/png,image/webp"
-               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-green-600 file:px-3 file:py-2 file:text-white file:text-xs"
+               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-orange-500 file:px-3 file:py-2 file:text-white file:text-xs"
                {{ ($isEdit || $isVideo) ? '' : 'required' }}>
         <p class="text-slate-500 text-xs mt-1">JPEG, PNG, WebP — max 8 Mo. Cible 1920×800 px.</p>
     </div>
@@ -104,14 +104,14 @@
         <label class="block text-sm text-slate-300 mb-1">Image Tablette</label>
         <input type="file" name="tablet_image" id="{{ $prefix }}tablet_image"
                accept="image/jpeg,image/png,image/webp"
-               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-green-600 file:px-3 file:py-2 file:text-white file:text-xs">
+               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-orange-500 file:px-3 file:py-2 file:text-white file:text-xs">
         <p class="text-slate-500 text-xs mt-1">Optionnel — max 6 Mo. Cible 1024×600 px.</p>
     </div>
     <div>
         <label class="block text-sm text-slate-300 mb-1">Image Mobile</label>
         <input type="file" name="mobile_image" id="{{ $prefix }}mobile_image"
                accept="image/jpeg,image/png,image/webp"
-               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-green-600 file:px-3 file:py-2 file:text-white file:text-xs">
+               class="w-full text-sm text-slate-200 file:mr-3 file:rounded file:border-0 file:bg-orange-500 file:px-3 file:py-2 file:text-white file:text-xs">
         <p class="text-slate-500 text-xs mt-1">Optionnel — max 4 Mo. Cible 768×500 px.</p>
     </div>
     @if($isEdit)

@@ -27,7 +27,22 @@
             </div>
             <form method="POST" action="{{ route('admin.plans.store') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3 p-5">
                 @csrf
-                <input name="code" value="{{ old('code') }}" placeholder="Code: bronze/silver/gold" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                @if($errors->any())
+                    <div class="md:col-span-4 bg-rose-900/30 border border-rose-700/40 text-rose-200 text-sm rounded-lg px-4 py-3">
+                        <p class="font-semibold mb-1"><i class="fas fa-circle-exclamation mr-1"></i>Le forfait n'a pas pu être créé :</p>
+                        <ul class="list-disc list-inside space-y-0.5">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <select name="code" required class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                    <option value="" disabled @selected(!old('code'))>Code du forfait… *</option>
+                    <option value="bronze" @selected(old('code') === 'bronze')>Bronze</option>
+                    <option value="silver" @selected(old('code') === 'silver')>Silver</option>
+                    <option value="gold" @selected(old('code') === 'gold')>Gold</option>
+                </select>
                 <input name="name_fr" value="{{ old('name_fr') }}" placeholder="Nom FR" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
                 <input name="name_en" value="{{ old('name_en') }}" placeholder="Nom EN" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
                 <input name="covered_levels" value="{{ old('covered_levels') }}" placeholder="Niveaux couverts" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
@@ -47,6 +62,12 @@
                     <option value="basic" @selected(old('stats_level') === 'basic')>Stats basic</option><option value="advanced" @selected(old('stats_level') === 'advanced')>Stats avancées</option><option value="full" @selected(old('stats_level') === 'full')>Stats complètes</option>
                 </select>
                 <input name="group_target" value="{{ old('group_target') }}" placeholder="Forfait spécial groupes/établissements" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                <select name="provider_category_id" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                    <option value="">Catégorie ciblée : toutes (forfait générique)</option>
+                    @foreach($rootProviderCategories as $rc)
+                        <option value="{{ $rc->id }}" @selected((string) old('provider_category_id') === (string) $rc->id)>{{ $rc->name_fr }}</option>
+                    @endforeach
+                </select>
                 <textarea name="benefits_text" placeholder="Description et avantages inclus" class="md:col-span-4 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">{{ old('benefits_text') }}</textarea>
 
                 {{-- ── Fonctionnalités publiques ── --}}
@@ -172,6 +193,11 @@
                     <td class="px-4 py-3">
                         <p class="text-white font-semibold">{{ strtoupper($plan->code) }} — {{ $plan->name_fr }}</p>
                         <p class="text-slate-500 text-xs mt-0.5">{{ $plan->covered_levels ?: '—' }}</p>
+                        @if($plan->providerCategory)
+                            <span class="inline-block text-xs px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-300 mt-1">
+                                <i class="fas fa-tag mr-1"></i>{{ $plan->providerCategory->name_fr }} uniquement
+                            </span>
+                        @endif
                         @if($plan->benefits_text)
                             <p class="text-slate-600 text-xs mt-1 max-w-xs truncate">{{ $plan->benefits_text }}</p>
                         @endif
@@ -253,7 +279,7 @@
         <input name="max_uses" type="number" placeholder="Utilisations max" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
         <label class="text-sm text-slate-300 flex items-center gap-2"><input type="checkbox" name="is_active" value="1" checked> Actif</label>
         <textarea name="description" placeholder="Description promo" class="md:col-span-4 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></textarea>
-        <div class="md:col-span-4"><button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Créer code promo</button></div>
+        <div class="md:col-span-4"><button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Créer code promo</button></div>
     </form>
 </div>
 
@@ -323,6 +349,12 @@
                 </select>
                 <input name="sort_order" id="edit_sort_order" type="number" placeholder="Ordre d'affichage" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
                 <input name="group_target" id="edit_group_target" placeholder="Forfait spécial groupes/établissements" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm md:col-span-2">
+                <select name="provider_category_id" id="edit_provider_category_id" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm md:col-span-2">
+                    <option value="">Catégorie ciblée : toutes (forfait générique)</option>
+                    @foreach($rootProviderCategories as $rc)
+                        <option value="{{ $rc->id }}">{{ $rc->name_fr }}</option>
+                    @endforeach
+                </select>
                 <input name="promo_starts_at" id="edit_promo_starts_at" type="datetime-local" placeholder="Début promo" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
                 <input name="promo_ends_at" id="edit_promo_ends_at" type="datetime-local" placeholder="Fin promo" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
                 <textarea name="benefits_text" id="edit_benefits_text" placeholder="Description et avantages inclus" class="md:col-span-4 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm h-20"></textarea>
@@ -391,7 +423,7 @@
             <input type="text"
                    value="${escHtml(feature.label)}"
                    placeholder="Libellé de la fonctionnalité…"
-                   class="feature-label flex-1 bg-slate-700 border border-slate-600 rounded px-2.5 py-1.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500">
+                   class="feature-label flex-1 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-orange-500/40 transition">
             <label class="flex items-center gap-1.5 text-sm text-slate-300 cursor-pointer whitespace-nowrap select-none">
                 <input type="checkbox" class="feature-included accent-orange-500" ${feature.included ? 'checked' : ''}>
                 <span class="text-xs">Inclus</span>
@@ -506,6 +538,7 @@
             editForm.querySelector('#edit_photos_limit').value       = plan.photos_limit       ?? '';
             editForm.querySelector('#edit_description_chars').value  = plan.description_chars  ?? '';
             editForm.querySelector('#edit_group_target').value       = plan.group_target       ?? '';
+            editForm.querySelector('#edit_provider_category_id').value = plan.provider_category_id ?? '';
             editForm.querySelector('#edit_sort_order').value         = plan.sort_order         ?? '';
             editForm.querySelector('#edit_benefits_text').value      = plan.benefits_text      ?? '';
             editForm.querySelector('#edit_promo_starts_at').value    = (plan.promo_starts_at   ?? '').replace(' ', 'T').slice(0, 16);

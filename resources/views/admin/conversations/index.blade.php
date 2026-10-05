@@ -62,7 +62,7 @@
         <h2 class="text-white font-semibold">Conversations prestataires</h2>
         <form method="POST" action="{{ route('admin.conversations.start') }}" class="mt-4 grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-800/40 border border-slate-700/60 rounded-lg p-3">
             @csrf
-            <select name="provider_id" required class="md:col-span-2 bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+            <select name="provider_id" required class="md:col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                 <option value="">Choisir un prestataire</option>
                 @foreach($providers as $provider)
                     <option value="{{ $provider->id }}" @selected((string) old('provider_id') === (string) $provider->id)>
@@ -71,16 +71,16 @@
                 @endforeach
             </select>
             <input type="text" name="subject" required maxlength="255" placeholder="Sujet"
-                   class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
                    value="{{ old('subject') }}">
-            <select name="priority" class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+            <select name="priority" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                 <option value="normal" @selected(old('priority') === 'normal')>Priorité normale</option>
                 <option value="urgent" @selected(old('priority') === 'urgent')>Priorité urgente</option>
             </select>
             <textarea name="message" required rows="2" maxlength="4000" placeholder="Votre message..."
-                      class="md:col-span-5 bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ old('message') }}</textarea>
+                      class="md:col-span-5 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ old('message') }}</textarea>
             <div class="md:col-span-5 flex justify-end">
-                <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-black text-sm font-semibold px-4 py-2 rounded-lg">
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-black text-sm font-semibold px-4 py-2 rounded-lg">
                     Démarrer une conversation ciblée
                 </button>
             </div>
@@ -88,20 +88,20 @@
         <form method="POST" action="{{ route('admin.conversations.broadcast') }}" class="mt-4 grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-800/40 border border-slate-700/60 rounded-lg p-3">
             @csrf
             <input type="text" name="subject" required maxlength="255" placeholder="Sujet du message global"
-                   class="md:col-span-2 bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   class="md:col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
                    value="{{ old('subject') }}">
-            <select name="priority" class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+            <select name="priority" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                 <option value="normal" @selected(old('priority') === 'normal')>Priorité normale</option>
                 <option value="urgent" @selected(old('priority') === 'urgent')>Priorité urgente</option>
             </select>
             <textarea name="message" required rows="2" maxlength="4000" placeholder="Message à envoyer à tous les prestataires..."
-                      class="md:col-span-2 bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ old('message') }}</textarea>
+                      class="md:col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ old('message') }}</textarea>
             <label class="md:col-span-5 inline-flex items-center gap-2 text-xs text-slate-300">
                 <input type="checkbox"
                        name="only_without_open_conversation"
                        value="1"
                        @checked(old('only_without_open_conversation'))
-                       class="rounded border-slate-600 bg-green-900 text-orange-500 focus:ring-orange-500/50">
+                       class="rounded border-slate-600 bg-slate-800 text-orange-500 focus:ring-orange-500/50">
                 Envoyer uniquement aux prestataires sans conversation ouverte
             </label>
             <div class="md:col-span-5 flex justify-end">

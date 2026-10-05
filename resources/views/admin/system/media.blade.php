@@ -42,11 +42,11 @@
                 <div>
                     <label class="block text-xs text-slate-400 mb-1.5">Titre galerie</label>
                     <input type="text" name="title" value="{{ old('title') }}" placeholder="Ex: Festival de Bassam 2026"
-                           class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1.5">Section</label>
-                    <select name="section" class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
+                    <select name="section" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
                         @foreach(['home_gallery' => 'Accueil - Galerie', 'hero' => 'Hero', 'discoveries' => 'Découvertes'] as $value => $label)
                         <option value="{{ $value }}" {{ old('section', 'home_gallery') === $value ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
@@ -55,38 +55,38 @@
                 <div class="md:col-span-2">
                     <label class="block text-xs text-slate-400 mb-1.5">Légende</label>
                     <input type="text" name="caption" value="{{ old('caption') }}" placeholder="Texte court affichable sous les images"
-                           class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1.5">Texte alternatif (accessibilité)</label>
                     <input type="text" name="alt_text" value="{{ old('alt_text') }}" placeholder="Description de l'image"
-                           class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1.5">Crédit photo</label>
                     <input type="text" name="credit" value="{{ old('credit') }}" placeholder="Ex: Trésors d'Ivoire / JD"
-                           class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1.5">Prix de l'image (FCFA)</label>
                     <input type="number" name="price" value="{{ old('price') }}" min="0" step="0.01" placeholder="Ex: 15000"
-                           class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
                     <p class="text-[11px] text-slate-500 mt-1">Optionnel. S'applique à chaque fichier du lot.</p>
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1.5">Ordre d'affichage (départ)</label>
                     <input type="number" name="display_order" min="0" max="9999" value="{{ old('display_order', 0) }}"
-                           class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1.5">Date de publication</label>
                     <input type="datetime-local" name="published_at" value="{{ old('published_at') }}"
-                           class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-200">
                 </div>
                 <div class="md:col-span-2 flex flex-wrap items-center gap-4 pt-1">
                     <label class="inline-flex items-center gap-2 text-sm text-slate-300">
                         <input type="hidden" name="is_active" value="0">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', '1') ? 'checked' : '' }} class="rounded border-slate-600 bg-slate-800 text-emerald-500">
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', '1') ? 'checked' : '' }} class="rounded border-slate-600 bg-slate-800 text-orange-500">
                         Activer immédiatement
                     </label>
                     <label class="inline-flex items-center gap-2 text-sm text-slate-300">
@@ -100,7 +100,7 @@
             <div>
                 <label class="block text-xs text-slate-400 mb-1.5">Fichiers images (multi-upload)</label>
                 <input id="gallery-files-input" type="file" name="files[]" multiple accept="image/jpeg,image/png,image/webp"
-                       class="w-full bg-green-950/60 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-300 file:mr-3 file:border-0 file:bg-orange-500 file:px-3 file:py-2 file:text-black file:font-semibold">
+                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-300 file:mr-3 file:border-0 file:bg-orange-500 file:px-3 file:py-2 file:text-black file:font-semibold">
                 <p class="text-[11px] text-slate-500 mt-1">JPG, PNG, WEBP - jusqu'à 30 images par lot (8 Mo max / image).</p>
             </div>
             <div id="gallery-files-preview-wrap" class="hidden">
@@ -109,7 +109,7 @@
             </div>
             <div class="flex justify-end">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-400 hover:to-green-500 text-white text-sm font-semibold px-4 py-2.5 transition">
+                        class="inline-flex items-center gap-2 rounded-lg bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-4 py-2.5 transition">
                     <i class="fas fa-cloud-arrow-up"></i>
                     Publier les images
                 </button>
@@ -179,7 +179,7 @@
                         </div>
                         <div class="flex flex-wrap items-center gap-2 mt-auto">
                             <input type="text" readonly value="{{ url($item->url) }}"
-                                   class="flex-1 min-w-0 bg-green-950/50 border border-slate-700 rounded px-2 py-1 text-[10px] text-slate-400 font-mono truncate"
+                                   class="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[10px] text-slate-400 font-mono truncate"
                                    onclick="this.select()">
                             <form method="POST" action="{{ route('admin.administration.media.destroy', $item) }}" onsubmit="return confirm('Supprimer ce média ?');">
                                 @csrf

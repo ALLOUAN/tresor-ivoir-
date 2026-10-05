@@ -12,6 +12,7 @@ use App\Models\SubscriptionPlan;
 use App\Services\CinetPayService;
 use App\Services\PaymentGatewayService;
 use App\Services\PaymentLifecycleService;
+use App\Services\SubscriptionPlanCatalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,14 +21,22 @@ use Illuminate\View\View;
 
 class BillingController extends Controller
 {
-    public function plans(): View
+    public function plans(SubscriptionPlanCatalog $catalog): View
     {
-        $provider = Provider::where('user_id', Auth::id())->first();
+        $provider = Provider::where('user_id', Auth::id())->with('category.parent')->first();
 
-        $plans = SubscriptionPlan::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
+        // Catégorie racine du prestataire (même résolution que resources/views/layouts/app.blade.php) :
+        // si des forfaits actifs ciblent spécifiquement cette racine (ex. Art & Créations), on
+        // n'affiche que ceux-là — parcours d'abonnement distinct. Sinon on retombe sur les
+        // forfaits génériques (provider_category_id null), comportement inchangé pour tous les
+        // prestataires tant qu'aucun forfait dédié n'existe pour leur catégorie.
+        $rootCategory = $provider?->category
+            ? ($provider->category->parent ?? $provider->category)
+            : null;
+
+        $plans = $rootCategory
+            ? $catalog->plansForRootCategory($rootCategory)
+            : SubscriptionPlan::query()->where('is_active', true)->whereNull('provider_category_id')->orderBy('sort_order')->get();
 
         $currentSubscription = null;
         $daysRemaining       = null;

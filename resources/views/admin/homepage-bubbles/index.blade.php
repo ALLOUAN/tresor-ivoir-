@@ -63,7 +63,7 @@
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $bubble->is_active ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-600/30 text-slate-300 border border-slate-600/40' }}">
                         {{ $bubble->is_active ? 'Active' : 'Inactive' }}
                     </span>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600/25 text-green-200 border border-green-500/35">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700/50 text-slate-300 border border-slate-600/40">
                         Position : {{ number_format($bubble->position_top, 0) }}% / {{ number_format($bubble->position_left, 0) }}%
                     </span>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700/50 text-slate-300 border border-slate-600/40">
@@ -98,7 +98,8 @@
                         data-link-label="{{ e($bubble->link_label ?? '') }}"
                         data-display-order="{{ $bubble->display_order }}"
                         data-is-active="{{ $bubble->is_active ? '1' : '0' }}"
-                        class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-green-600/90 hover:bg-green-500 text-white transition"
+                        data-pages="{{ e(json_encode($bubble->pages ?? [])) }}"
+                        class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition"
                         title="Modifier">
                     <i class="fas fa-pen"></i>
                 </button>
@@ -124,7 +125,7 @@
         <div class="text-center py-14 text-slate-500 border border-dashed border-slate-700 rounded-xl">
             <i class="fas fa-circle-dot text-3xl mb-3 text-slate-600"></i>
             <p>Aucune bulle pour le moment.</p>
-            <button type="button" onclick="openCreateModal()" class="mt-4 text-green-400 hover:text-green-300 text-sm font-medium">Ajouter la première bulle</button>
+            <button type="button" onclick="openCreateModal()" class="mt-4 text-orange-400 hover:text-orange-300 text-sm font-medium">Ajouter la première bulle</button>
         </div>
         @endforelse
     </div>
@@ -150,7 +151,7 @@
                 @include('admin.homepage-bubbles.partials.bubble-form-fields')
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeCreateModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter</button>
                 </div>
             </form>
         </div>
@@ -172,7 +173,7 @@
                 @include('admin.homepage-bubbles.partials.bubble-form-fields', ['isEdit' => true])
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeEditModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
                 </div>
             </form>
         </div>
@@ -228,6 +229,12 @@
         document.getElementById('edit_link_label').value = button.dataset.linkLabel || '';
         document.getElementById('edit_display_order').value = button.dataset.displayOrder || '0';
         document.getElementById('edit_is_active').checked = button.dataset.isActive === '1';
+
+        let selectedPages = [];
+        try { selectedPages = JSON.parse(button.dataset.pages || '[]'); } catch (e) { selectedPages = []; }
+        document.querySelectorAll('#edit_pages_list input[type="checkbox"]').forEach(function (box) {
+            box.checked = selectedPages.indexOf(box.dataset.pageKey) !== -1;
+        });
 
         if (window.edit_syncBubblePicker) window.edit_syncBubblePicker();
 

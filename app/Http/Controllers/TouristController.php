@@ -6,19 +6,35 @@ use App\Models\Accommodation;
 use App\Models\TouristCategory;
 use App\Models\TouristCity;
 use App\Models\TouristSite;
+use Illuminate\Http\Request;
 
 class TouristController extends Controller
 {
-    public function cities()
+    public function cities(Request $request)
     {
-        $cities = TouristCity::withCount(['sites' => fn ($q) => $q->where('is_active', 1)])
-            ->where('is_active', 1)
+        $category = null;
+        if ($categorySlug = $request->get('categorie')) {
+            $category = TouristCategory::where('slug', $categorySlug)->where('is_active', 1)->first();
+        }
+
+        $citiesQuery = TouristCity::withCount(['sites' => fn ($q) => $q->where('is_active', 1)])
+            ->where('is_active', 1);
+
+        if ($category) {
+            $siteCityIds  = TouristSite::where('category_id', $category->id)->where('is_active', 1)->pluck('city_id');
+            $accomCityIds = Accommodation::forCategory($category->id)->where('is_active', 1)->pluck('city_id');
+            $citiesQuery->whereIn('id', $siteCityIds->merge($accomCityIds)->unique());
+        }
+
+        $cities = $citiesQuery
             ->orderBy('is_featured', 'desc')
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
 
-        return view('tourist.cities', compact('cities'));
+        $categories = TouristCategory::where('is_active', 1)->orderBy('sort_order')->get();
+
+        return view('tourist.cities', compact('cities', 'categories', 'category'));
     }
 
     public function city(string $slug)

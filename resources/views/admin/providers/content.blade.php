@@ -28,7 +28,7 @@
                 @csrf
                 @method('PATCH')
                 <div class="mb-4 flex flex-wrap items-center gap-2">
-                    <select name="target_provider_id" class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
+                    <select name="target_provider_id" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
                         @foreach($providers as $target)
                             <option value="{{ $target->id }}" @selected((int) $target->id === (int) $provider->id)>{{ $target->name }}</option>
                         @endforeach
@@ -62,7 +62,7 @@
                 @csrf
                 @method('PATCH')
                 <div class="mb-4 flex flex-wrap items-center gap-2">
-                    <select name="target_provider_id" class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
+                    <select name="target_provider_id" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
                         @foreach($providers as $target)
                             <option value="{{ $target->id }}" @selected((int) $target->id === (int) $provider->id)>{{ $target->name }}</option>
                         @endforeach
@@ -164,7 +164,7 @@
                     @csrf
                     @method('PATCH')
                     <div class="mb-3 flex flex-wrap items-center gap-2">
-                        <select name="target_provider_id" class="bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
+                        <select name="target_provider_id" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100" required>
                             @foreach($providers as $target)
                                 <option value="{{ $target->id }}" @selected((int) $target->id === (int) $provider->id)>{{ $target->name }}</option>
                             @endforeach

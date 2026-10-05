@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,6 @@
     @endif
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -27,6 +26,7 @@
     </style>
 </head>
 <body class="bg-white text-white min-h-screen">
+    @include('partials.page-background')
 @include('partials.public-top-nav')
 
 <article class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
@@ -56,7 +56,14 @@
         <span class="px-3 py-1 bg-green-900/40 border border-green-700/40 text-green-300 text-xs rounded-full">Destination</span>
         @endif
         @if($article->is_sponsored)
-        <span class="px-3 py-1 bg-white/5 border border-white/10 text-gray-400 text-xs rounded-full">Sponsorisé</span>
+            @if($article->sponsor)
+            <a href="{{ route('providers.show', $article->sponsor->slug) }}"
+               class="px-3 py-1 bg-white/5 border border-white/10 text-gray-400 hover:text-orange-400 hover:border-orange-500/30 text-xs rounded-full transition">
+                Sponsorisé par {{ $article->sponsor->name }}
+            </a>
+            @else
+            <span class="px-3 py-1 bg-white/5 border border-white/10 text-gray-400 text-xs rounded-full">Sponsorisé</span>
+            @endif
         @endif
     </div>
 

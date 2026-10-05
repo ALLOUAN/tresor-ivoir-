@@ -61,6 +61,19 @@
         </div>
 
         <div>
+            <label class="block text-sm text-slate-300 mb-1">Sous-titre / slogan (FR)</label>
+            <input type="text" name="subtitle_fr" id="subtitle_fr" maxlength="200" value="{{ old('subtitle_fr') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Court résumé affiché sous le titre">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Sous-titre / slogan (EN)</label>
+            <input type="text" name="subtitle_en" id="subtitle_en" maxlength="200" value="{{ old('subtitle_en') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div>
             <label class="block text-sm text-slate-300 mb-1">Slug</label>
             <input type="text" name="slug" value="{{ old('slug') }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
@@ -153,6 +166,13 @@
             <label class="block text-sm text-slate-300 mb-1">Adresse</label>
             <input type="text" name="address" value="{{ old('address') }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+        </div>
+
+        <div>
+            <label class="block text-sm text-slate-300 mb-1">Public concerné</label>
+            <input type="text" name="audience" id="audience" maxlength="150" value="{{ old('audience') }}"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
+                   placeholder="Ex: Familles, Professionnels, Tout public">
         </div>
 
         <div>
@@ -260,6 +280,27 @@
             @error('recurrence_rule') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
+        <div class="md:col-span-2">
+            <label class="block text-sm text-slate-300 mb-2">Programme / Agenda</label>
+            <div id="program-container-create" class="space-y-2">
+                <div class="grid grid-cols-12 gap-2 items-center program-row">
+                    <input type="text" name="program_time[]" placeholder="Heure" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_title[]" placeholder="Activité" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_description[]" placeholder="Description" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_speaker[]" placeholder="Intervenant" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <input type="text" name="program_location[]" placeholder="Lieu" class="col-span-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+                    <button type="button" onclick="this.closest('.program-row').remove()"
+                        class="col-span-1 w-8 h-8 shrink-0 rounded-lg bg-slate-700 hover:bg-red-900/40 text-slate-500 hover:text-red-400 flex items-center justify-center transition">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="button" onclick="addProgramRow('program-container-create')"
+                class="mt-2 text-xs text-orange-400 hover:text-orange-300 transition">
+                <i class="fas fa-circle-plus"></i> Ajouter une étape
+            </button>
+        </div>
+
         <div>
             <label class="block text-sm text-slate-300 mb-1">Meta titre (FR)</label>
             <input type="text" name="meta_title_fr" maxlength="70" value="{{ old('meta_title_fr') }}"
@@ -363,6 +404,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function addProgramRow(containerId) {
+    const container = document.getElementById(containerId);
+    const row = document.createElement('div');
+    row.className = 'grid grid-cols-12 gap-2 items-center program-row';
+    row.innerHTML = `
+        <input type="text" name="program_time[]" placeholder="Heure" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <input type="text" name="program_title[]" placeholder="Activité" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <input type="text" name="program_description[]" placeholder="Description" class="col-span-3 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <input type="text" name="program_speaker[]" placeholder="Intervenant" class="col-span-2 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <input type="text" name="program_location[]" placeholder="Lieu" class="col-span-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-100 outline-none">
+        <button type="button" onclick="this.closest('.program-row').remove()"
+            class="col-span-1 w-8 h-8 shrink-0 rounded-lg bg-slate-700 hover:bg-red-900/40 text-slate-500 hover:text-red-400 flex items-center justify-center transition">
+            <i class="fas fa-times text-xs"></i>
+        </button>`;
+    container.appendChild(row);
+}
 </script>
 @include('editor.partials.event-rich-tools', ['event' => null, 'errorsPresent' => $errors->any()])
 @endpush

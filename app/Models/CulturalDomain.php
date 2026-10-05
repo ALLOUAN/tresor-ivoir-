@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CulturalDomain extends Model
 {
     protected $fillable = [
-        'parent_id', 'name', 'slug', 'icon', 'color',
+        'parent_id', 'name', 'slug', 'icon', 'icon_image_url', 'color',
         'description', 'sort_order', 'is_active',
     ];
 

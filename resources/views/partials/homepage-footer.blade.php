@@ -122,7 +122,7 @@
                             @csrf
                             <label for="newsletter-email" class="sr-only">Adresse e-mail</label>
                             <input type="email" name="newsletter_email" id="newsletter-email" required maxlength="255" value="{{ old('newsletter_email') }}" placeholder="votre@email.com" autocomplete="email" class="w-full rounded-lg border border-white/12 bg-green-950/50 px-4 py-3.5 text-sm text-white placeholder:text-gray-600 outline-none transition focus:border-orange-400/40 focus:ring-1 focus:ring-orange-500/25 font-plus">
-                            <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg text-dark-900 px-6 py-3.5 text-sm font-bold bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 hover:from-gold-300 hover:to-orange-400 transition-all duration-300 shadow-lg shadow-gold-500/25 hover:-translate-y-0.5 font-plus">
+                            <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg text-dark-900 px-6 py-3.5 text-sm font-bold bg-gold-500 hover:bg-gold-400 transition-all duration-300 shadow-lg shadow-gold-500/25 hover:-translate-y-0.5 font-plus">
                                 <i class="fas fa-arrow-right text-xs"></i>
                                 S'abonner
                             </button>
@@ -179,6 +179,8 @@
                 <h4 class="font-plus text-sm font-bold uppercase tracking-[0.2em] text-orange-400/90 mb-4">Annuaire</h4>
                 <ul class="space-y-0.5 font-plus">
                     <li><a href="{{ route('providers.index') }}" class="footer-v2-link">Tous les prestataires</a></li>
+                    <li><a href="{{ route('accommodations.index') }}" class="footer-v2-link">Résidences &amp; Hôtels</a></li>
+                    <li><a href="{{ route('art.index') }}" class="footer-v2-link">Art &amp; Créations</a></li>
                     @foreach($homeProviderCategories->take(4) as $pc)
                         <li><a href="{{ route('providers.index', ['categorie' => $pc->slug]) }}" class="footer-v2-link">{{ $pc->name_fr }}</a></li>
                     @endforeach

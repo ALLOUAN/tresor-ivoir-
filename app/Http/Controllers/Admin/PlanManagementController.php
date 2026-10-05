@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentSetting;
+use App\Models\ProviderCategory;
 use App\Models\PromoCode;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
@@ -20,9 +21,15 @@ class PlanManagementController extends Controller
     {
         $plans = SubscriptionPlan::query()
             ->withCount(['subscriptions as subscriptions_count'])
+            ->with('providerCategory')
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get();
+
+        $rootProviderCategories = ProviderCategory::query()
+            ->whereNull('parent_id')
+            ->orderBy('sort_order')
+            ->get(['id', 'name_fr']);
 
         $promoCodes = Schema::hasTable('promo_codes')
             ? PromoCode::query()
@@ -44,7 +51,7 @@ class PlanManagementController extends Controller
             ? PaymentSetting::query()->pluck('value', 'key')
             : collect();
 
-        return view('admin.finance.plans', compact('plans', 'promoCodes', 'subscriptionsByPlan', 'cycleSettings'));
+        return view('admin.finance.plans', compact('plans', 'promoCodes', 'subscriptionsByPlan', 'cycleSettings', 'rootProviderCategories'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -129,21 +136,24 @@ class PlanManagementController extends Controller
     private function validatePlan(Request $request, ?int $ignoreId = null): array
     {
         return $request->validate([
-            'code' => ['required', Rule::in(['bronze', 'silver', 'gold']), Rule::unique('subscription_plans', 'code')->ignore($ignoreId)],
+            'code' => ['required', Rule::in(['bronze', 'silver', 'gold']), Rule::unique('subscription_plans', 'code')
+                ->where(fn ($query) => $query->where('provider_category_id', $request->input('provider_category_id') ?: null))
+                ->ignore($ignoreId)],
             'name_fr' => ['required', 'string', 'max:100'],
             'name_en' => ['required', 'string', 'max:100'],
             'benefits_text' => ['nullable', 'string'],
             'covered_levels' => ['nullable', 'string', 'max:255'],
-            'price_monthly' => ['required', 'numeric', 'min:0'],
-            'price_quarterly' => ['nullable', 'numeric', 'min:0'],
-            'price_semiannual' => ['nullable', 'numeric', 'min:0'],
-            'price_yearly' => ['required', 'numeric', 'min:0'],
+            'price_monthly' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
+            'price_quarterly' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
+            'price_semiannual' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
+            'price_yearly' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'photos_limit' => ['required', 'integer', 'min:0'],
             'description_chars' => ['required', 'integer', 'min:0'],
             'min_duration_months' => ['required', 'integer', Rule::in([1, 3, 6, 12])],
             'stats_level' => ['required', Rule::in(['basic', 'advanced', 'full'])],
             'support_level' => ['required', Rule::in(['email', 'chat', 'dedicated'])],
             'group_target' => ['nullable', 'string', 'max:120'],
+            'provider_category_id' => ['nullable', 'integer', 'exists:provider_categories,id'],
             'promo_starts_at' => ['nullable', 'date'],
             'promo_ends_at' => ['nullable', 'date', 'after_or_equal:promo_starts_at'],
             'sort_order' => ['nullable', 'integer', 'min:0'],

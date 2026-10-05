@@ -25,6 +25,9 @@ class AccommodationContentService
         $pricesEur = $request->input('room_price_eur', []);
         $amenities = $request->input('room_amenities', []);
         $photos = $request->input('room_photos', []);
+        $descriptions = $request->input('room_description', []);
+        $beds = $request->input('room_beds', []);
+        $conditions = $request->input('room_conditions', []);
 
         $rooms = [];
         foreach ($names as $i => $name) {
@@ -44,6 +47,9 @@ class AccommodationContentService
                 'photos' => ! empty($photos[$i])
                     ? array_values(array_filter(array_map('trim', explode(',', $photos[$i]))))
                     : [],
+                'description' => ! empty($descriptions[$i]) ? trim($descriptions[$i]) : null,
+                'beds' => ! empty($beds[$i]) ? trim($beds[$i]) : null,
+                'conditions' => ! empty($conditions[$i]) ? trim($conditions[$i]) : null,
             ];
         }
 
@@ -97,6 +103,46 @@ class AccommodationContentService
         return $result ?: null;
     }
 
+    /**
+     * Parse le formulaire "une seule chambre" (page dédiée prestataire) — contrairement à
+     * parseRoomTypes() qui lit des tableaux parallèles pour N lignes soumises ensemble.
+     * Attribue un id stable (uuid) permettant de retrouver cette chambre précise plus tard
+     * dans le JSON room_types, sans dépendre de sa position dans le tableau.
+     */
+    public function parseSingleRoomType(Request $request, ?string $existingId = null): array
+    {
+        $photos = array_values(array_filter(array_map('trim', explode(',', (string) $request->input('room_photos', '')))));
+        $amenities = array_values(array_filter(array_map('trim', explode(',', (string) $request->input('amenities', '')))));
+
+        return [
+            'id' => $existingId ?? (string) Str::uuid(),
+            'name' => trim((string) $request->input('name', '')),
+            'max_adults' => (int) $request->input('max_adults', 2),
+            'max_children' => (int) $request->input('max_children', 0),
+            'area_m2' => $request->filled('area_m2') ? (float) $request->input('area_m2') : null,
+            'price_xof' => $request->filled('price_xof') ? (int) $request->input('price_xof') : null,
+            'price_eur' => $request->filled('price_eur') ? (float) $request->input('price_eur') : null,
+            'amenities' => $amenities,
+            'photos' => $photos,
+            'description' => $request->filled('description') ? trim((string) $request->input('description')) : null,
+            'beds' => $request->filled('beds') ? trim((string) $request->input('beds')) : null,
+            'conditions' => $request->filled('conditions') ? trim((string) $request->input('conditions')) : null,
+        ];
+    }
+
+    /** Upload les photos de la chambre courante (formulaire "une seule chambre") et les ajoute au tableau. */
+    public function uploadSingleRoomPhotos(Request $request, array $room): array
+    {
+        foreach ((array) $request->file('room_photo_files', []) as $file) {
+            if (! $file || ! $file->isValid()) {
+                continue;
+            }
+            $room['photos'][] = $this->storeImage($file, 'accommodations/rooms', 'room');
+        }
+
+        return $room;
+    }
+
     /** Upload les photos de chambre et les ajoute dans le tableau room_types. */
     public function uploadRoomPhotos(Request $request, ?array $rooms): ?array
     {
@@ -125,6 +171,19 @@ class AccommodationContentService
             }
             $url = $this->storeImage($file, 'accommodations/media', 'photo');
             $accommodation->media()->create(['type' => 'photo', 'url' => $url]);
+        }
+    }
+
+    /**
+     * Enregistre des liens vidéo (YouTube, Vimeo, ou lien direct .mp4) plutôt
+     * qu'un fichier téléversé — même table `accommodation_media`, juste un
+     * type différent (`video`), pas de nouvelle logique de stockage à écrire.
+     */
+    public function storeVideoLinks(Request $request, Accommodation $accommodation): void
+    {
+        $links = array_filter((array) $request->input('video_links', []), fn ($url) => trim((string) $url) !== '');
+        foreach ($links as $url) {
+            $accommodation->media()->create(['type' => 'video', 'url' => trim($url)]);
         }
     }
 

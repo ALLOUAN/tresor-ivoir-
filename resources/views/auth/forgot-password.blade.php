@@ -10,15 +10,10 @@
     @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        serif: ['Playfair Display', 'Georgia', 'serif'],
-                        sans:  ['Inter', 'system-ui', 'sans-serif'],
-                    },
                     colors: {
                         gold: { 400: '#fa9a3c', 500: '#f2790f', 600: '#d4630a' },
                         dark: { 800: '#e9e5d9', 900: '#e9e5d9' },
@@ -35,6 +30,7 @@
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 font-sans" style="background:#e9e5d9">
+    @include('partials.page-background')
 
     <div class="w-full max-w-md py-8">
 
@@ -110,7 +106,7 @@
 
                 <button type="submit"
                         class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2"
-                        style="background: linear-gradient(135deg,#fa9a3c,#f2790f); box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
+                        style="background: #f2790f; box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
                     <i class="fas fa-paper-plane text-xs"></i>
                     Envoyer le lien de réinitialisation
                 </button>

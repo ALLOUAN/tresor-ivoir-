@@ -1,7 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Mon hébergement')
-@section('page-title', 'Mon hébergement')
+@section('title', 'Fiche établissement')
+@section('page-title', 'Fiche établissement')
+
+@section('header-actions')
+    <a href="{{ route('provider.accommodation.dashboard') }}"
+       class="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm border border-slate-600 rounded-lg px-3 py-2">
+        <i class="fas fa-arrow-left text-xs"></i> Retour
+    </a>
+@endsection
 
 @section('content')
 @php $accom = $accommodation; @endphp
@@ -20,11 +27,11 @@
 @endif
 
 <p class="text-slate-400 text-sm mb-5">
-    Gérez ici les chambres, tarifs, équipements et photos de votre établissement.
-    Ces informations sont visibles publiquement sur votre fiche.
+    Informations générales, localisation, contact, images principales, commodités, liens de réservation et publication.
+    Les chambres et la galerie photos se gèrent depuis leurs pages dédiées.
 </p>
 
-<form method="POST" action="{{ route('provider.accommodation.update') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('provider.accommodation.profile.update') }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -49,7 +56,7 @@
                         <label class="block text-xs text-slate-400 mb-1">Type <span class="text-red-400">*</span></label>
                         <select name="type" required
                                 class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
-                            @foreach(['hotel'=>'Hôtel','resort'=>'Resort','guesthouse'=>"Maison d'hôtes",'hostel'=>'Auberge de jeunesse','auberge'=>'Auberge','villa'=>'Villa','eco_lodge'=>'Éco-lodge'] as $val => $lbl)
+                            @foreach(['hotel'=>'Hôtel','residence'=>'Résidence','resort'=>'Resort','guesthouse'=>"Maison d'hôtes",'hostel'=>'Auberge de jeunesse','auberge'=>'Auberge','villa'=>'Villa','eco_lodge'=>'Éco-lodge'] as $val => $lbl)
                                 <option value="{{ $val }}" {{ old('type', $accom->type ?? 'hotel') === $val ? 'selected' : '' }}>{{ $lbl }}</option>
                             @endforeach
                         </select>
@@ -113,6 +120,11 @@
                         <label class="block text-xs text-slate-400 mb-1">Description complète</label>
                         <textarea name="description" rows="5"
                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('description', $accom->description ?? '') }}</textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-400 mb-1">Conditions de réservation / d'annulation</label>
+                        <textarea name="cancellation_policy" rows="4" placeholder="Ex : Annulation gratuite jusqu'à 48h avant l'arrivée. Au-delà, la première nuit est facturée..."
+                                  class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('cancellation_policy', $accom->cancellation_policy ?? '') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -239,35 +251,7 @@
                 </p>
             </div>
 
-            {{-- ⑤ Types de chambres ────────────────────────────────── --}}
-            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
-                <div class="flex items-center justify-between mb-5">
-                    <h2 class="text-white font-semibold flex items-center gap-2">
-                        <i class="fas fa-bed text-orange-400"></i> Types de chambres <span class="text-slate-500 font-normal text-xs">(vos produits)</span>
-                    </h2>
-                    <button type="button" onclick="addRoomRow()" class="text-xs text-orange-400 hover:text-orange-300 transition flex items-center gap-1">
-                        <i class="fas fa-plus text-[10px]"></i> Ajouter
-                    </button>
-                </div>
-                <div id="rooms-list" class="space-y-3">
-                    @php $roomTypes = old('room_name') ? null : ($accom->room_types ?? []); @endphp
-                    @if($roomTypes)
-                        @foreach($roomTypes as $r)
-                            @include('admin.accommodation._room_row', ['r'=>$r, 'i'=>$loop->index])
-                        @endforeach
-                    @elseif(old('room_name'))
-                        @foreach(old('room_name') as $i => $rn)
-                            @php $r = ['name'=>$rn,'max_adults'=>old('room_max_adults.'.$i),'max_children'=>old('room_max_children.'.$i),'area_m2'=>old('room_area_m2.'.$i),'price_xof'=>old('room_price_xof.'.$i),'price_eur'=>old('room_price_eur.'.$i),'amenities'=>old('room_amenities.'.$i,'')]; @endphp
-                            @include('admin.accommodation._room_row', ['r'=>$r, 'i'=>$i])
-                        @endforeach
-                    @endif
-                </div>
-                @if(empty($roomTypes) && !old('room_name'))
-                    <p class="text-slate-500 text-sm">Aucune chambre ajoutée pour le moment.</p>
-                @endif
-            </div>
-
-            {{-- ⑥ Liens de réservation ─────────────────────────────── --}}
+            {{-- ⑤ Liens de réservation ─────────────────────────────── --}}
             <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
                 <div class="flex items-center justify-between mb-5">
                     <h2 class="text-white font-semibold flex items-center gap-2">
@@ -290,38 +274,6 @@
                         @endforeach
                     @endif
                 </div>
-            </div>
-
-            {{-- ⑦ Galerie photos ───────────────────────────────────── --}}
-            <div class="bg-green-900 border border-slate-800 rounded-xl p-6">
-                <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
-                    <i class="fas fa-photo-film text-orange-400"></i> Galerie photos
-                </h2>
-
-                @if($accom && $accom->media->isNotEmpty())
-                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-5">
-                        @foreach($accom->media as $m)
-                        <div class="relative group">
-                            <img src="{{ $m->url }}" alt="{{ $m->alt_text ?? '' }}" loading="lazy"
-                                 class="w-full aspect-square object-cover rounded-lg border border-slate-700">
-                            <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition">
-                                <button type="submit" form="media-del-{{ $m->id }}" onclick="return confirm('Supprimer cette photo ?')"
-                                        class="w-6 h-6 bg-red-900/80 hover:bg-red-700 text-red-200 rounded-md flex items-center justify-center">
-                                    <i class="fas fa-times text-[10px]"></i>
-                                </button>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                @endif
-
-                <label class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-700 hover:border-orange-500/50 rounded-xl p-6 cursor-pointer transition group">
-                    <i class="fas fa-cloud-arrow-up text-2xl text-slate-600 group-hover:text-orange-400/70 mb-2 transition"></i>
-                    <span class="text-slate-500 text-sm group-hover:text-slate-300 transition">Ajouter des photos</span>
-                    <span class="text-slate-700 text-xs mt-1">JPG, PNG, WebP — plusieurs fichiers acceptés</span>
-                    <input type="file" name="media_files[]" multiple accept="image/*" class="hidden" onchange="showMediaPreviews(this)">
-                </label>
-                <div id="media-previews" class="flex flex-wrap gap-2 mt-3"></div>
             </div>
 
         </div>{{-- fin col principale --}}
@@ -380,15 +332,7 @@
     </div>{{-- fin grid --}}
 </form>
 
-@if($accom)
-@foreach($accom->media as $m)
-<form id="media-del-{{ $m->id }}" method="POST" action="{{ route('provider.accommodation.media.destroy', $m) }}" class="hidden">
-    @csrf @method('DELETE')
-</form>
-@endforeach
-@endif
-
-{{-- ── Templates JS (identiques à la version admin) ─────────────────────── --}}
+{{-- ── Templates JS ─────────────────────── --}}
 <template id="tpl-amenity">
     <div class="amenity-row flex gap-2">
         <input type="text" name="amenity_icons[]" value="fas fa-check" placeholder="fas fa-wifi"
@@ -399,74 +343,6 @@
                 class="w-8 h-[38px] rounded-lg bg-slate-800 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
             <i class="fas fa-times text-xs"></i>
         </button>
-    </div>
-</template>
-
-<template id="tpl-room">
-    <div class="room-row bg-slate-800/60 border border-slate-700 rounded-xl p-4 space-y-3">
-        <div class="flex gap-2 items-center">
-            <input type="text" name="room_name[]" placeholder="Chambre Standard"
-                   class="flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-medium">
-            <button type="button" onclick="this.closest('.room-row').remove()"
-                    class="w-8 h-9 rounded-lg bg-slate-700 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">
-                <i class="fas fa-times text-xs"></i>
-            </button>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div>
-                <span class="text-[11px] text-slate-500 mb-1 block">Adultes max</span>
-                <input type="number" name="room_max_adults[]" min="1" max="10" value="2"
-                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
-            </div>
-            <div>
-                <span class="text-[11px] text-slate-500 mb-1 block">Enfants max</span>
-                <input type="number" name="room_max_children[]" min="0" max="10" value="0"
-                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
-            </div>
-            <div>
-                <span class="text-[11px] text-slate-500 mb-1 block">Surface m²</span>
-                <input type="number" step="0.5" name="room_area_m2[]" placeholder="25"
-                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
-            </div>
-            <div><!-- spacer --></div>
-            <div>
-                <span class="text-[11px] text-slate-500 mb-1 block">Prix XOF/nuit</span>
-                <input type="number" name="room_price_xof[]" placeholder="50 000"
-                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
-            </div>
-            <div>
-                <span class="text-[11px] text-slate-500 mb-1 block">Prix EUR/nuit</span>
-                <input type="number" step="0.01" name="room_price_eur[]" placeholder="75"
-                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
-            </div>
-            <div class="col-span-2">
-                <span class="text-[11px] text-slate-500 mb-1 block">Équipements <span class="text-slate-600">(séparés par virgule)</span></span>
-                <input type="text" name="room_amenities[]" placeholder="Climatisation, TV, Coffre-fort"
-                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
-            </div>
-            <div class="col-span-2">
-                <div class="flex items-center justify-between mb-1.5">
-                    <span class="text-[11px] text-slate-500 flex items-center gap-1">
-                        <i class="fas fa-images text-[9px] text-orange-400/60"></i> Photos de la chambre
-                    </span>
-                    <button type="button" onclick="addRoomPhotoRow(this)"
-                            class="inline-flex items-center gap-1 text-[10px] text-orange-400 hover:text-orange-300 transition">
-                        <i class="fas fa-plus text-[8px]"></i>Ajouter URL
-                    </button>
-                </div>
-                <input type="hidden" name="room_photos[]" class="room-photos-input" value="">
-                <div class="room-photos-list space-y-1.5 mb-2"></div>
-                <label class="flex items-center gap-2 cursor-pointer group">
-                    <span class="text-[11px] text-slate-500 group-hover:text-slate-300 transition flex items-center gap-1">
-                        <i class="fas fa-cloud-arrow-up text-[9px] text-orange-400/60"></i> Uploader des photos
-                    </span>
-                    <input type="file" name="room_photo_files[__RIDX__][]" multiple accept="image/*"
-                           class="room-photo-file-input hidden" onchange="previewRoomFiles(this)">
-                    <span class="px-2 py-0.5 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[10px] rounded transition">Choisir fichiers</span>
-                </label>
-                <div class="room-file-previews flex flex-wrap gap-1.5 mt-1.5"></div>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -524,74 +400,11 @@ function previewImgFile(input, previewId) {
     reader.readAsDataURL(input.files[0]);
 }
 
-function showMediaPreviews(input) {
-    const container = document.getElementById('media-previews');
-    container.innerHTML = '';
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
-    const files = Array.from(input.files);
-    const rejected = files.filter(f => !validTypes.includes(f.type));
-    if (rejected.length) {
-        const dt = new DataTransfer();
-        files.filter(f => validTypes.includes(f.type)).forEach(f => dt.items.add(f));
-        input.files = dt.files;
-        const warn = document.createElement('p');
-        warn.className = 'w-full text-xs text-red-400 mb-1';
-        warn.textContent = rejected.map(f => `« ${f.name} » ignoré (non-image)`).join(' · ');
-        container.appendChild(warn);
-    }
-    Array.from(input.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = e => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'w-20 h-20 object-cover rounded-lg border border-slate-700';
-            img.title = file.name;
-            container.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
 function addAmenityRow() {
     const tpl = document.getElementById('tpl-amenity').content.cloneNode(true);
     document.getElementById('amenities-list').appendChild(tpl);
 }
-function addRoomRow() {
-    const list = document.getElementById('rooms-list');
-    const idx = list.querySelectorAll('.room-row').length;
-    const tpl = document.getElementById('tpl-room').content.cloneNode(true);
-    const fi = tpl.querySelector('.room-photo-file-input');
-    if (fi) fi.name = 'room_photo_files[' + idx + '][]';
-    list.appendChild(tpl);
-}
 
-function previewRoomFiles(input) {
-    const container = input.closest('.col-span-2').querySelector('.room-file-previews');
-    container.innerHTML = '';
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
-    const files = Array.from(input.files);
-    const rejected = files.filter(function (f) { return !validTypes.includes(f.type); });
-    if (rejected.length) {
-        const dt = new DataTransfer();
-        files.filter(function (f) { return validTypes.includes(f.type); }).forEach(function (f) { dt.items.add(f); });
-        input.files = dt.files;
-        const warn = document.createElement('p');
-        warn.className = 'w-full text-xs text-red-400 mb-1';
-        warn.textContent = rejected.map(function (f) { return '« ' + f.name + ' » ignoré (non-image)'; }).join(' · ');
-        container.appendChild(warn);
-    }
-    Array.from(input.files).forEach(function (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'w-16 h-16 object-cover rounded-lg border border-slate-700';
-            img.title = file.name;
-            container.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-    });
-}
 function addBookingRow() {
     const list = document.getElementById('booking-list');
     const idx = list.querySelectorAll('.booking-row').length;
@@ -599,59 +412,6 @@ function addBookingRow() {
     const cb = tpl.querySelector('input[name="bl_official[]"]');
     if (cb) cb.value = String(idx);
     list.appendChild(tpl);
-}
-
-function addRoomPhotoRow(btn) {
-    const roomRow = btn.closest('.room-row');
-    const list = roomRow.querySelector('.room-photos-list');
-    const row = document.createElement('div');
-    row.className = 'room-photo-row flex gap-2 items-center';
-    row.innerHTML =
-        '<div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">'
-        + '<img src="" alt="" class="w-full h-full object-cover" style="display:none"'
-        + ' onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'\'">'
-        + '<i class="fas fa-image text-slate-600 text-xs"></i>'
-        + '</div>'
-        + '<input type="text" placeholder="https://…/photo.jpg"'
-        + ' class="photo-url-field flex-1 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-1.5 text-xs text-slate-100 outline-none transition"'
-        + ' oninput="syncRoomPhotos(this)">'
-        + '<button type="button" onclick="removeRoomPhotoRow(this)"'
-        + ' class="w-8 h-[34px] rounded-lg bg-slate-700 hover:bg-red-900/50 text-slate-500 hover:text-red-400 flex items-center justify-center transition shrink-0">'
-        + '<i class="fas fa-times text-xs"></i>'
-        + '</button>';
-    list.appendChild(row);
-    row.querySelector('input[type="text"]').focus();
-}
-
-function removeRoomPhotoRow(btn) {
-    btn.closest('.room-photo-row').remove();
-    const roomRow = btn.closest('.room-row');
-    if (roomRow) _syncRoomPhotosInput(roomRow);
-}
-
-function syncRoomPhotos(input) {
-    const row = input.closest('.room-photo-row');
-    const img = row.querySelector('img');
-    const icon = row.querySelector('.fa-image');
-    const url = input.value.trim();
-    if (url && img) {
-        img.src = url;
-        img.style.display = '';
-        if (icon) icon.style.display = 'none';
-    } else if (img) {
-        img.style.display = 'none';
-        if (icon) icon.style.display = '';
-    }
-    _syncRoomPhotosInput(input.closest('.room-row'));
-}
-
-function _syncRoomPhotosInput(roomRow) {
-    if (!roomRow) return;
-    const urls = Array.from(roomRow.querySelectorAll('.photo-url-field'))
-        .map(function (i) { return i.value.trim(); })
-        .filter(Boolean);
-    const hidden = roomRow.querySelector('.room-photos-input');
-    if (hidden) hidden.value = urls.join(', ');
 }
 </script>
 @endpush

@@ -47,6 +47,33 @@
                            value="{{ $settings['reservation_commission_percent'] ?? '12' }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
                 </div>
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Délai avant solde disponible (jours après l'arrivée)</label>
+                    <input name="wallet_payout_release_delay_days" type="number" step="1" min="0" max="90"
+                           value="{{ $settings['wallet_payout_release_delay_days'] ?? '0' }}"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                    <p class="text-slate-500 text-[11px] mt-1">0 = crédit prestataire disponible immédiatement au paiement de l'acompte.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:col-span-3 border-t border-slate-800 pt-4">
+            <h2 class="text-white text-sm font-semibold mb-3">Art &amp; Créations</h2>
+            <p class="text-slate-500 text-xs mb-3">Commission retenue par la plateforme sur chaque vente d'œuvre.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Commission plateforme sur les ventes d'œuvres (%)</label>
+                    <input name="art_commission_percent" type="number" step="0.01" min="0" max="100"
+                           value="{{ $settings['art_commission_percent'] ?? '5' }}"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Libération automatique si expédiée sans confirmation (jours)</label>
+                    <input name="art_auto_release_delay_days" type="number" step="1" min="0" max="90"
+                           value="{{ $settings['art_auto_release_delay_days'] ?? '14' }}"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                    <p class="text-slate-500 text-[11px] mt-1">Filet de sécurité si l'artiste ne confirme jamais la livraison.</p>
+                </div>
             </div>
         </div>
 

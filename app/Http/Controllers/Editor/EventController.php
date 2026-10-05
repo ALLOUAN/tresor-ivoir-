@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AutosaveEventRequest;
 use App\Models\Event;
 use App\Models\EventCategory;
+use App\Models\Media;
 use App\Models\Provider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -62,11 +63,17 @@ class EventController extends Controller
         $data = $request->validate([
             'title_fr' => 'required|string|max:255',
             'title_en' => 'nullable|string|max:255',
+            'subtitle_fr' => 'nullable|string|max:200',
+            'subtitle_en' => 'nullable|string|max:200',
             'slug' => 'nullable|string|max:300|unique:events,slug',
             'category_id' => 'required|exists:event_categories,id',
             'description_fr' => 'nullable|string',
             'description_en' => 'nullable|string',
-            'cover_url' => 'nullable|url|max:500|required_without:cover_image',
+            // 'url' seule rejette les chemins relatifs /storage/... générés par
+            // l'upload (storeEventCover) : la valeur pré-remplie dans le formulaire
+            // d'édition d'un événement ayant déjà une couverture uploadée échouait
+            // alors systématiquement, quel que soit le champ modifié.
+            'cover_url' => ['nullable', 'max:500', 'required_without:cover_image', 'regex:/^(https?:\/\/\S+|\/\S*)$/'],
             'cover_alt' => 'nullable|string|max:300',
             'cover_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:4096|required_without:cover_url',
             'starts_at' => 'required|date',
@@ -85,6 +92,7 @@ class EventController extends Controller
             'location_name' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
             'city' => 'nullable|string|max:150',
+            'audience' => 'nullable|string|max:150',
             'organizer_name' => 'nullable|string|max:255',
             'organizer_phone' => 'nullable|string|max:20',
             'organizer_email' => 'nullable|email|max:255',
@@ -93,6 +101,11 @@ class EventController extends Controller
             'meta_desc_fr' => 'nullable|string|max:165',
             'meta_title_en' => 'nullable|string|max:70',
             'meta_desc_en' => 'nullable|string|max:165',
+            'program_time' => 'nullable|array',
+            'program_title' => 'nullable|array',
+            'program_description' => 'nullable|array',
+            'program_speaker' => 'nullable|array',
+            'program_location' => 'nullable|array',
         ]);
 
         if (empty($data['slug'])) {
@@ -104,6 +117,9 @@ class EventController extends Controller
         }
 
         unset($data['cover_image']);
+
+        $data['program'] = $this->parseProgram($request);
+        unset($data['program_time'], $data['program_title'], $data['program_description'], $data['program_speaker'], $data['program_location']);
 
         $data['created_by'] = Auth::id();
         $data['is_free'] = $request->boolean('is_free');
@@ -203,11 +219,15 @@ class EventController extends Controller
         $data = $request->validate([
             'title_fr' => 'required|string|max:255',
             'title_en' => 'nullable|string|max:255',
+            'subtitle_fr' => 'nullable|string|max:200',
+            'subtitle_en' => 'nullable|string|max:200',
             'slug' => 'nullable|string|max:300|unique:events,slug,'.$event->id,
             'category_id' => 'required|exists:event_categories,id',
             'description_fr' => 'nullable|string',
             'description_en' => 'nullable|string',
-            'cover_url' => 'nullable|url|max:500',
+            // cf. store() ci-dessus : accepte aussi le chemin relatif /storage/...
+            // déjà en place sur l'événement.
+            'cover_url' => ['nullable', 'max:500', 'regex:/^(https?:\/\/\S+|\/\S*)$/'],
             'cover_alt' => 'nullable|string|max:300',
             'cover_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:4096',
             'starts_at' => 'required|date',
@@ -226,6 +246,7 @@ class EventController extends Controller
             'location_name' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
             'city' => 'nullable|string|max:150',
+            'audience' => 'nullable|string|max:150',
             'organizer_name' => 'nullable|string|max:255',
             'organizer_phone' => 'nullable|string|max:20',
             'organizer_email' => 'nullable|email|max:255',
@@ -234,7 +255,15 @@ class EventController extends Controller
             'meta_desc_fr' => 'nullable|string|max:165',
             'meta_title_en' => 'nullable|string|max:70',
             'meta_desc_en' => 'nullable|string|max:165',
+            'program_time' => 'nullable|array',
+            'program_title' => 'nullable|array',
+            'program_description' => 'nullable|array',
+            'program_speaker' => 'nullable|array',
+            'program_location' => 'nullable|array',
         ]);
+
+        $data['program'] = $this->parseProgram($request);
+        unset($data['program_time'], $data['program_title'], $data['program_description'], $data['program_speaker'], $data['program_location']);
 
         $data['is_free'] = $request->boolean('is_free');
         $data['is_recurring'] = $request->boolean('is_recurring');
@@ -276,6 +305,77 @@ class EventController extends Controller
         return back()->with('success', 'Événement supprimé.');
     }
 
+    public function storeMedia(Request $request, Event $event)
+    {
+        $this->authorizeEdit($event);
+
+        $request->validate([
+            'type' => 'required|in:image,video',
+            'url' => 'nullable|string|max:500|required_without:media_file',
+            'media_file' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120|required_without:url',
+            'caption' => 'nullable|string|max:200',
+            'alt_text' => 'nullable|string|max:200',
+        ]);
+
+        $url = $request->input('url');
+        $mimeType = 'video/embed';
+        $originalName = 'video-embed';
+        $sizeBytes = 0;
+
+        if ($this->hasUsableUploadedFile($request, 'media_file')) {
+            $file = $request->file('media_file');
+            $mimeType = $file->getMimeType() ?: 'image/jpeg';
+            $originalName = $file->getClientOriginalName();
+            $sizeBytes = $file->getSize() ?: 0;
+            $url = $this->storeEventGalleryFile($file);
+        }
+
+        $filePath = str_starts_with($url, '/storage/')
+            ? ltrim(substr($url, strlen('/storage/')), '/')
+            : $url;
+
+        $order = (int) ($event->media()->max('sort_order') ?? 0);
+        $event->media()->create([
+            'collection' => 'gallery',
+            'type' => $request->input('type'),
+            'mime_type' => $mimeType,
+            'original_name' => $originalName,
+            'file_path' => $filePath,
+            'url' => $url,
+            'size_bytes' => $sizeBytes,
+            'caption' => $request->input('caption'),
+            'alt_text' => $request->input('alt_text'),
+            'sort_order' => $order + 1,
+            'uploaded_by' => Auth::id(),
+        ]);
+
+        return back()->with('success', 'Média ajouté.');
+    }
+
+    public function destroyMedia(Event $event, Media $media)
+    {
+        $this->authorizeEdit($event);
+        abort_unless($media->mediable_type === Event::class && $media->mediable_id === $event->id, 404);
+
+        if ($media->isImage()) {
+            $this->deleteStoredPublicFile($media->url);
+        }
+        $media->delete();
+
+        return back()->with('success', 'Média supprimé.');
+    }
+
+    public function uploadDescriptionImage(Request $request): JsonResponse
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,jpg,png,webp|max:10240',
+        ]);
+
+        $url = $this->storeEventGalleryFile($request->file('file'), 'events/description', 'file');
+
+        return response()->json(['location' => $url]);
+    }
+
     public function updateStatus(Request $request, Event $event)
     {
         $request->validate(['status' => 'required|in:draft,published,cancelled,past']);
@@ -302,6 +402,31 @@ class EventController extends Controller
         if (! $user->isAdmin() && $event->created_by !== $user->id) {
             abort(403, 'Accès refusé.');
         }
+    }
+
+    private function parseProgram(Request $request): ?array
+    {
+        $times = $request->input('program_time', []);
+        $titles = $request->input('program_title', []);
+        $descriptions = $request->input('program_description', []);
+        $speakers = $request->input('program_speaker', []);
+        $locations = $request->input('program_location', []);
+
+        $result = [];
+        foreach ($titles as $i => $title) {
+            if (! $title) {
+                continue;
+            }
+            $result[] = [
+                'time' => $times[$i] ?? null,
+                'title' => $title,
+                'description' => $descriptions[$i] ?? null,
+                'speaker' => $speakers[$i] ?? null,
+                'location' => $locations[$i] ?? null,
+            ];
+        }
+
+        return $result ?: null;
     }
 
     private function ensureUniqueEventSlug(string $slug, int $ignoreId): string
@@ -346,6 +471,37 @@ class EventController extends Controller
         }
 
         $relativePath = app(\App\Services\ImageWatermarkService::class)->optimize($relativePath);
+
+        return '/storage/' . $relativePath;
+    }
+
+    private function storeEventGalleryFile(UploadedFile $file, string $folder = 'events/gallery', string $field = 'media_file'): string
+    {
+        $this->assertUploadedFileIsUsable($field, $file);
+
+        $pathname = $file->getPathname();
+        $handle = (is_string($pathname) && $pathname !== '') ? @fopen($pathname, 'r') : false;
+
+        if (! is_resource($handle)) {
+            throw ValidationException::withMessages([
+                $field => 'Le fichier image televerse est invalide. Veuillez le selectionner a nouveau.',
+            ]);
+        }
+
+        $extension = strtolower((string) $file->getClientOriginalExtension());
+        $relativePath = $folder . '/' . Str::random(40) . '.' . $extension;
+
+        try {
+            $stored = Storage::disk('public')->put($relativePath, $handle);
+        } finally {
+            is_resource($handle) && fclose($handle);
+        }
+
+        if (! $stored) {
+            throw ValidationException::withMessages([
+                $field => 'Le fichier image televerse est invalide. Veuillez le selectionner a nouveau.',
+            ]);
+        }
 
         return '/storage/' . $relativePath;
     }

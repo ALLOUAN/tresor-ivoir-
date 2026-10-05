@@ -36,7 +36,7 @@
 
         <div class="flex justify-end pt-2">
             <button type="submit"
-                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-rose-500 hover:from-green-500 hover:to-rose-400 shadow-lg transition">
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-green-600 hover:bg-green-500 shadow-lg transition">
                 <i class="fas fa-check"></i> Créer le partenaire
             </button>
         </div>

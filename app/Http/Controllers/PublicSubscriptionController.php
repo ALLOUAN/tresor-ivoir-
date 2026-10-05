@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\PaymentSetting;
 use App\Models\Provider;
+use App\Models\ProviderCategory;
 use App\Models\SubscriptionPlan;
 use App\Services\CinetPayService;
 use App\Services\PaymentLifecycleService;
+use App\Services\SubscriptionPlanCatalog;
 use App\Services\SubscriptionService;
 use App\Support\ProviderProfileBootstrap;
 use Illuminate\Http\RedirectResponse;
@@ -18,16 +21,51 @@ use Illuminate\View\View;
 class PublicSubscriptionController extends Controller
 {
     /**
+     * Page publique « Abonnements » : parcours catégorie d'abord — une carte par catégorie
+     * racine active, révélant ses forfaits (ciblés, ou génériques à défaut) une fois choisie.
+     */
+    public function index(Request $request, SubscriptionPlanCatalog $catalog): View
+    {
+        $rootCategories = ProviderCategory::query()
+            ->whereNull('parent_id')
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $plansByCategory = $rootCategories->mapWithKeys(
+            fn (ProviderCategory $category) => [$category->slug => $catalog->plansForRootCategory($category)]
+        );
+
+        $cycleSettings = PaymentSetting::query()->pluck('value', 'key');
+        $showMonthly = ($cycleSettings['cycle_monthly_active'] ?? '1') === '1';
+        $showYearly  = ($cycleSettings['cycle_yearly_active']  ?? '1') === '1';
+        $yearlySavingsLabel = $cycleSettings['cycle_yearly_savings_label'] ?? '-20%';
+
+        // Sans catégorie choisie dans l'URL, le premier secteur est activé par défaut
+        // (au lieu de laisser les forfaits masqués tant que le visiteur ne clique pas).
+        $selectedCategorySlug = (string) $request->query('categorie', $rootCategories->first()?->slug ?? '');
+
+        return view('public.plans', compact(
+            'rootCategories', 'plansByCategory', 'showMonthly', 'showYearly',
+            'yearlySavingsLabel', 'selectedCategorySlug'
+        ));
+    }
+
+    /**
      * Point d’entrée public : équivalent de GET /abonnements/{plan}/paiement.
      * Invité → inscription prestataire avec plan ; connecté prestataire → page de paiement espace pro.
      */
-    public function checkout(SubscriptionPlan $plan, CinetPayService $cinetPay): View|RedirectResponse
+    public function checkout(Request $request, SubscriptionPlan $plan, CinetPayService $cinetPay): View|RedirectResponse
     {
         abort_unless($plan->is_active, 404);
 
         if (! Auth::check()) {
             return redirect()
-                ->route('register', ['plan' => $plan->id, 'role' => 'provider'])
+                ->route('register', array_filter([
+                    'plan' => $plan->id,
+                    'role' => 'provider',
+                    'categorie' => $request->query('categorie'),
+                ]))
                 ->with('info', 'Créez un compte prestataire pour finaliser votre abonnement.');
         }
 
@@ -50,7 +88,8 @@ class PublicSubscriptionController extends Controller
                 ->with('status', 'Validez votre e-mail pour finaliser l\'abonnement.');
         }
 
-        $provider = ProviderProfileBootstrap::ensure($user);
+        $categorySlug = $plan->providerCategory?->slug ?? $request->query('categorie');
+        $provider = ProviderProfileBootstrap::ensure($user, $categorySlug);
         if (! $provider) {
             return redirect()
                 ->route('plans.public')
@@ -87,7 +126,8 @@ class PublicSubscriptionController extends Controller
             abort(403);
         }
 
-        $provider = ProviderProfileBootstrap::ensure($user);
+        $categorySlug = $plan->providerCategory?->slug ?? $request->query('categorie');
+        $provider = ProviderProfileBootstrap::ensure($user, $categorySlug);
         if (! $provider) {
             return redirect()
                 ->route('plans.public')

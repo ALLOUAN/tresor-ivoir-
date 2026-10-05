@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -41,6 +42,8 @@ class SiteMediaItem extends Model
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
             'price' => 'decimal:2',
+            'likes_count' => 'integer',
+            'downloads_count' => 'integer',
         ];
     }
 
@@ -54,6 +57,11 @@ class SiteMediaItem extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(GalleryLike::class, 'media_id');
     }
 
     /**

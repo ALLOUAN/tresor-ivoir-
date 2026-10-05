@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="scroll-smooth">
+<html lang="fr" id="html-root" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +8,10 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        serif:   ['Playfair Display', 'Georgia', 'serif'],
-                        elegant: ['Cormorant Garamond', 'Georgia', 'serif'],
-                    },
                     colors: {
                         gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
                         dark: { 500:'#e9e5d9', 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
@@ -88,7 +82,7 @@
             display: inline-flex; align-items: center; gap: .5rem;
             padding: .75rem 1.6rem;
             border-radius: 999px;
-            background: linear-gradient(135deg, #fb923c, #d4630a);
+            background: #f2790f;
             color: #1c1310;
             font-weight: 700; font-size: .8rem;
             text-transform: uppercase; letter-spacing: .03em;
@@ -188,6 +182,7 @@
     </style>
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
+    @include('partials.page-background')
 @include('partials.public-top-nav')
 
 {{-- ══════════════════════════════════════════════════════════

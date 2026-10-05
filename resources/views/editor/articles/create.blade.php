@@ -283,7 +283,7 @@
                     <label class="block text-xs text-slate-500 mb-1.5">Ou importer un fichier</label>
                     <input type="file" name="cover_image" id="cover_image" accept="image/jpeg,image/png,image/webp"
                         class="w-full bg-slate-800 border border-slate-700 file:border-0 file:bg-slate-700 file:text-slate-300 file:px-3 file:py-2 file:mr-3 rounded-lg px-3 py-2 text-slate-400 text-xs outline-none transition">
-                    <p class="text-[11px] text-slate-600 mt-1">JPG, PNG ou WEBP (max 4 Mo). Le fichier remplace l'URL si les deux sont remplis.</p>
+                    <p class="text-[11px] text-slate-600 mt-1">JPG, PNG ou WEBP (max 10 Mo). Le fichier remplace l'URL si les deux sont remplis.</p>
                     @error('cover_image') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div id="coverPreview" class="{{ isset($article) && !empty($article->cover_url) ? '' : 'hidden' }} rounded-lg overflow-hidden h-32 bg-slate-800">
@@ -322,7 +322,7 @@
                 <label class="block text-xs text-slate-500 mb-1.5">Ajouter plusieurs images</label>
                 <input type="file" name="article_images[]" id="article_images" multiple accept="image/jpeg,image/png,image/webp"
                     class="w-full bg-slate-800 border border-slate-700 file:border-0 file:bg-slate-700 file:text-slate-300 file:px-3 file:py-2 file:mr-3 rounded-lg px-3 py-2 text-slate-400 text-xs outline-none transition">
-                <p class="text-[11px] text-slate-600 mt-1">Jusqu'à 20 images (JPG, PNG, WEBP), 6 Mo max par fichier.</p>
+                <p class="text-[11px] text-slate-600 mt-1">Jusqu'à 20 images (JPG, PNG, WEBP), 10 Mo max par fichier.</p>
                 @error('article_images') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 @error('article_images.*') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 @error('remove_media_ids') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
@@ -354,26 +354,58 @@
         </div>
         @endif
 
+        {{-- Mise en une --}}
+        @php $currentFeaturedPosition = (int) old('featured_position', $article->featured_position ?? 1); @endphp
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
+            <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
+                <i class="fas fa-star text-amber-400/80"></i> Mise en une
+                <span class="text-slate-600 font-normal normal-case">— section vedette de l'accueil</span>
+            </h3>
+            <label class="flex items-center justify-between cursor-pointer group">
+                <div>
+                    <p class="text-slate-300 text-sm group-hover:text-white transition-colors">Article à la une</p>
+                    <p class="text-slate-600 text-xs mt-0.5">Visible en section vedette</p>
+                </div>
+                <div class="relative flex-shrink-0 ml-3">
+                    <input type="hidden" name="is_featured" value="0">
+                    <input type="checkbox" name="is_featured" value="1" id="is_featured_toggle" {{ old('is_featured', $article->is_featured ?? false) ? 'checked':'' }}
+                        class="sr-only peer">
+                    <div class="w-9 h-5 bg-slate-700 peer-checked:bg-amber-500 rounded-full transition cursor-pointer"
+                         onclick="document.getElementById('is_featured_toggle').click()"></div>
+                    <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4 pointer-events-none"></div>
+                </div>
+            </label>
+
+            <div id="featured_position_group" class="mt-4 {{ old('is_featured', $article->is_featured ?? false) ? '' : 'hidden' }}">
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                    Position <span class="text-slate-600 font-normal normal-case">(1 = principal)</span>
+                </label>
+                <div class="grid grid-cols-5 gap-1.5">
+                    @foreach(range(1, 5) as $pos)
+                    <label class="cursor-pointer">
+                        <input type="radio" name="featured_position" value="{{ $pos }}" {{ $currentFeaturedPosition === $pos ? 'checked' : '' }}
+                            class="sr-only peer">
+                        <div class="h-9 flex flex-col items-center justify-center rounded-lg border-2 text-xs font-bold transition-all
+                                    peer-checked:border-amber-400 peer-checked:bg-amber-500/10 peer-checked:text-amber-300
+                                    border-slate-700 text-slate-500 hover:border-amber-400/40">
+                            {{ $pos }}
+                            @if($pos === 1)
+                            <span class="text-[7px] font-normal leading-none mt-0.5 text-amber-400/70">principal</span>
+                            @endif
+                        </div>
+                    </label>
+                    @endforeach
+                </div>
+                @error('featured_position') <p class="text-red-400 text-xs mt-2">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
         {{-- Badges --}}
         <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
             <h3 class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4 flex items-center gap-2">
                 <i class="fas fa-certificate text-orange-500/60"></i> Badges
             </h3>
             <div class="space-y-3">
-                <label class="flex items-center justify-between cursor-pointer">
-                    <div>
-                        <p class="text-slate-300 text-sm">À la une</p>
-                        <p class="text-slate-600 text-xs">Mis en avant sur la page d'accueil</p>
-                    </div>
-                    <div class="relative">
-                        <input type="hidden" name="is_featured" value="0">
-                        <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $article->is_featured ?? false) ? 'checked':'' }}
-                            class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-700 peer-checked:bg-orange-500 rounded-full transition peer cursor-pointer"
-                             onclick="this.previousElementSibling.click()"></div>
-                        <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4 pointer-events-none"></div>
-                    </div>
-                </label>
                 <label class="flex items-center justify-between cursor-pointer">
                     <div>
                         <p class="text-slate-300 text-sm">Destination</p>
@@ -493,6 +525,13 @@ function toggleSponsoredFields() {
     sponsorGroup.classList.toggle('hidden', !sponsorToggle.checked);
 }
 
+function toggleFeaturedPositionFields() {
+    const featuredToggle = document.getElementById('is_featured_toggle');
+    const featuredGroup = document.getElementById('featured_position_group');
+    if (!featuredToggle || !featuredGroup) return;
+    featuredGroup.classList.toggle('hidden', !featuredToggle.checked);
+}
+
 function togglePublicationMode() {
     const publicationMode = document.getElementById('publication_mode');
     const scheduledGroup = document.getElementById('scheduled_at_group');
@@ -544,6 +583,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sponsorToggle) {
         sponsorToggle.addEventListener('change', toggleSponsoredFields);
         toggleSponsoredFields();
+    }
+    const featuredToggle = document.getElementById('is_featured_toggle');
+    if (featuredToggle) {
+        featuredToggle.addEventListener('change', toggleFeaturedPositionFields);
+        toggleFeaturedPositionFields();
     }
     const articleImagesInput = document.getElementById('article_images');
     if (articleImagesInput) {

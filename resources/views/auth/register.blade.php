@@ -10,18 +10,12 @@
     @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        serif: ['Playfair Display', 'Georgia', 'serif'],
-                        sans:  ['Inter', 'system-ui', 'sans-serif'],
-                    },
                     colors: {
-                        gold: { 400: '#fa9a3c', 500: '#f2790f', 600: '#d4630a' },
-                        dark: { 800: '#e9e5d9', 900: '#e9e5d9' },
+                        amber: { 400: '#fa9a3c', 500: '#f2790f', 600: '#9f4709' }
                     }
                 }
             }
@@ -29,510 +23,278 @@
     </script>
     @include('partials.theme-light-bridge')
     <style>
-        * { box-sizing: border-box; }
-        body {
-            background:
-                radial-gradient(900px 500px at 12% 8%, rgba(242, 121, 15,0.14), transparent 60%),
-                radial-gradient(700px 420px at 88% 90%, rgba(99,102,241,0.10), transparent 62%),
-                #0a0907;
-        }
-        .auth-shell {
-            position: relative;
-        }
-        .auth-shell::before {
-            content: "";
-            position: absolute;
-            inset: -14px;
-            border-radius: 28px;
-            background: linear-gradient(135deg, rgba(242, 121, 15,0.18), rgba(255,255,255,0.03), rgba(242, 121, 15,0.08));
-            filter: blur(14px);
-            opacity: .45;
-            pointer-events: none;
-        }
-        .glass-panel {
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: linear-gradient(145deg, rgba(20,18,14,0.88), rgba(13,11,9,0.92));
-            backdrop-filter: blur(8px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-        .aside-panel {
-            max-width: 100%;
-            justify-self: stretch;
-            background:
-                radial-gradient(120% 120% at 0% 0%, rgba(242, 121, 15,0.12), transparent 58%),
-                linear-gradient(155deg, rgba(25,22,18,0.9), rgba(12,10,8,0.9));
-        }
-        .aside-panel::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            pointer-events: none;
-            background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 30%);
-            opacity: .6;
-        }
-        .aside-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .4rem;
-            border: 1px solid rgba(242, 121, 15,0.3);
-            background: rgba(242, 121, 15,0.09);
-            color: #f3d8a0;
-            border-radius: 999px;
-            padding: .28rem .62rem;
-            font-size: .67rem;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-        .aside-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: .9rem;
-            margin-bottom: .75rem;
-        }
-        .aside-brand {
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-        }
-        .aside-logo-wrap {
-            position: relative;
-            border-radius: .9rem;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(242, 121, 15,0.55), rgba(255,255,255,0.18), rgba(242, 121, 15,0.22));
-            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
-        }
-        .aside-logo-inner {
-            border-radius: calc(.9rem - 2px);
-            overflow: hidden;
-        }
-        .aside-title {
-            margin: 0;
-            color: #fa9a3c;
-            font-size: 1.06rem;
-            line-height: 1.2;
-            font-weight: 700;
-        }
-        .aside-subtitle {
-            margin-top: .2rem;
-            font-size: .72rem;
-            color: #6b7280;
-        }
-        .aside-content {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap: .8rem;
-            align-items: start;
-        }
-        .aside-summary {
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(233, 229, 217, 0.02);
-            border-radius: .85rem;
-            padding: .65rem .8rem;
-        }
-        .aside-chip-list {
-            display: grid;
-            gap: .45rem;
-        }
-        .account-type-card {
-            border: 1px solid rgba(242, 121, 15,0.35);
-            background:
-                radial-gradient(120% 140% at 50% 0%, rgba(242, 121, 15,0.2), rgba(242, 121, 15,0.08) 45%, rgba(242, 121, 15,0.03) 100%);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 12px 30px rgba(0,0,0,0.32);
-        }
-        .account-type-kicker {
-            font-size: .82rem;
-            letter-spacing: .22em;
-            text-transform: uppercase;
-            font-weight: 900;
-            color: #a3450a;
-        }
-        .account-type-value {
-            margin-top: .35rem;
-            font-size: clamp(1.8rem, 3vw, 2.35rem);
-            line-height: 1.05;
-            font-weight: 900;
-            color: #1c1915;
-        }
-        .account-type-note {
-            margin-top: .4rem;
-            font-size: .74rem;
-            color: #d1a74d;
-            letter-spacing: .03em;
-        }
-        .stat-chip {
-            border: 1px solid rgba(242, 121, 15,0.25);
-            background: linear-gradient(135deg, rgba(242, 121, 15,0.16), rgba(242, 121, 15,0.06));
-            color: #f5d28e;
-            border-radius: .7rem;
-            font-size: .72rem;
-            padding: .45rem .6rem;
-            white-space: nowrap;
-        }
-        @media (max-width: 640px) {
-            .aside-top {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .aside-content {
-                grid-template-columns: 1fr;
-            }
-            .aside-chip-list {
-                grid-template-columns: 1fr;
-            }
-        }
-        .field-input {
-            background: rgba(9,8,7,0.92);
-            border: 1px solid rgba(255,255,255,0.12);
-        }
-        .field-input:focus {
-            border-color: rgba(242, 121, 15,0.5);
-            box-shadow: 0 0 0 3px rgba(242, 121, 15,0.12);
-        }
-        .plan-card input[type="radio"]:checked + label {
-            border-color: rgba(242, 121, 15,0.62);
-            background: linear-gradient(140deg, rgba(242, 121, 15,0.18), rgba(242, 121, 15,0.06));
-            box-shadow: 0 10px 24px rgba(0,0,0,0.34), 0 0 0 1px rgba(242, 121, 15,0.2) inset;
-        }
-        .step-panel {
-            transition: opacity .35s ease, transform .35s ease;
-        }
-        .step-panel.is-hidden {
-            opacity: 0;
-            transform: translateX(20px);
-            pointer-events: none;
-        }
-        .step-panel.is-active {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .payment-card {
-            border: 1px solid rgba(242, 121, 15,0.22);
-            background:
-                radial-gradient(110% 150% at 0% 0%, rgba(242, 121, 15,0.12), rgba(242, 121, 15,0.03) 42%, rgba(12,10,8,0.9) 100%),
-                linear-gradient(145deg, rgba(18,16,13,0.9), rgba(11,10,8,0.94));
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 1.25rem;
-        }
-        .payment-step-badge {
-            background: linear-gradient(135deg, #fa9a3c, #f2790f);
-            color: #111827;
-            box-shadow: 0 6px 18px rgba(242, 121, 15,0.28);
-        }
-        .payment-step-title {
-            color: #a3450a;
-        }
-        .payment-label {
-            color: #2d2a23;
-        }
-        .payment-note {
-            color: #544f47;
-        }
-        .payment-icon {
-            color: #a54a0b;
-        }
-        .payment-field {
-            border: 1px solid rgba(255,255,255,0.14);
-            border-radius: 10px;
-            background: rgba(9,8,7,0.92);
-            color: #f9fafb;
-        }
-        .payment-field::placeholder {
-            color: #6b7280;
-        }
-        .payment-field:focus {
-            border-color: rgba(242, 121, 15,0.5);
-            box-shadow: 0 0 0 3px rgba(242, 121, 15,0.14);
-            outline: none;
-        }
-        html:not(.dark) body {
-            background:
-                radial-gradient(900px 500px at 12% 8%, rgba(242, 121, 15,0.08), transparent 60%),
-                radial-gradient(700px 420px at 88% 90%, rgba(99,102,241,0.06), transparent 62%),
-                #ffffff;
-        }
-        html:not(.dark) .glass-panel {
-            border-color: rgba(0,0,0,0.1);
-            background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(247,243,235,0.98));
-            box-shadow: 0 16px 36px rgba(0,0,0,0.08);
-        }
-        html:not(.dark) .aside-panel {
-            background:
-                radial-gradient(120% 120% at 0% 0%, rgba(242, 121, 15,0.08), transparent 58%),
-                linear-gradient(155deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98));
-        }
-        html:not(.dark) .field-input,
-        html:not(.dark) .payment-field {
-            background:#e9e5d9;
-            color: #1c1915;
-            border-color: rgba(0,0,0,0.16);
+        html:not(.dark) .bg-slate-800\/60 { background-color:rgba(0,0,0,0.04) !important; }
+        html:not(.dark) .border-slate-600 { border-color:#c2b89e !important; }
+        html:not(.dark) .placeholder-slate-500::placeholder { color:#665f52 !important; }
+        .step-panel { transition: opacity .3s ease, transform .3s ease; }
+        .step-panel.is-hidden { opacity: 0; transform: translateX(16px); pointer-events: none; }
+        .step-panel.is-active { opacity: 1; transform: translateX(0); }
+        .plan-radio input[type="radio"]:checked + label {
+            border-color: rgba(242,121,15,0.6);
+            background: rgba(242,121,15,0.1);
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 font-sans">
+<body class="min-h-screen bg-green-950 flex flex-col">
+    @include('partials.page-background')
 
-    <div class="auth-shell w-full max-w-7xl py-4">
+@include('partials.public-top-nav')
 
-        <div class="max-w-5xl mx-auto">
-            {{-- Card --}}
-            <div class="glass-panel rounded-3xl p-5 sm:p-6 lg:p-7">
-                <aside class="glass-panel aside-panel rounded-3xl p-4 sm:p-5 mb-5">
-                    <div class="aside-top">
-                        <span class="aside-badge"><i class="fas fa-star text-[10px]"></i>Espace pro</span>
-                        <p class="text-[11px] text-gray-500">Inscription prestataire</p>
+<div class="flex-1 flex items-center justify-center p-4 py-10">
+<div class="w-full max-w-2xl">
+
+    {{-- Retour accueil --}}
+    <div class="mb-4">
+        <a href="{{ route('home') }}"
+           class="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:bg-slate-700 hover:text-white">
+            <i class="fas fa-arrow-left text-xs"></i>
+            Retour à l'accueil
+        </a>
+    </div>
+
+    {{-- Logo / Brand --}}
+    <div class="text-center mb-8">
+        @if(!empty($siteBrand['logo_url']))
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 border border-slate-600 mb-4 overflow-hidden p-1">
+                <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
+            </div>
+        @else
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-500 mb-4">
+                <i class="fas fa-gem text-white text-2xl"></i>
+            </div>
+        @endif
+        <h1 class="text-3xl font-bold text-orange-400 tracking-wide">{{ $siteBrand['site_name'] }}</h1>
+        <p class="text-slate-400 text-sm mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}</p>
+        <span class="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-300 text-[11px] font-semibold uppercase tracking-wide">
+            <i class="fas fa-star text-[10px]"></i> Espace pro — Inscription prestataire
+        </span>
+    </div>
+
+    {{-- Card --}}
+    <div class="bg-green-900 border border-slate-700 rounded-2xl shadow-2xl p-6 sm:p-8">
+        <h2 class="text-white text-xl font-semibold mb-1">Créer votre compte</h2>
+        <p class="text-slate-500 text-sm mb-6">Publiez votre activité, choisissez votre forfait et activez votre présence en ligne rapidement.</p>
+
+        @if(session('info'))
+            <div class="mb-5 p-3 rounded-lg border border-green-700 bg-green-900/40 text-green-300 text-sm">
+                {{ session('info') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="mb-5 p-3 rounded-lg border border-red-700 bg-red-900/40 text-red-300 text-sm flex items-start gap-2">
+                <i class="fas fa-circle-exclamation mt-0.5 shrink-0"></i>
+                <ul class="space-y-0.5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('register.post') }}" class="space-y-4" id="register-step-form">
+        @csrf
+        <div id="register-step-1" class="step-panel is-active space-y-4">
+
+            <input type="hidden" name="role" value="provider">
+            <input type="hidden" name="category_slug" value="{{ $selectedCategorySlug ?? '' }}">
+
+            @if(isset($selectedPlan) && $selectedPlan)
+                <input type="hidden" name="plan_id" value="{{ $selectedPlan->id }}">
+                <div class="rounded-xl border border-orange-500/30 bg-orange-500/10 p-3.5 flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-medium text-orange-300/80 uppercase tracking-wide mb-1">Forfait sélectionné</p>
+                        <p class="text-sm font-semibold text-white truncate">{{ $selectedPlan->name_fr }}</p>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            {{ $selectedPlan->providerCategory?->name_fr ?? 'Toutes catégories' }}
+                            · {{ number_format((float) $selectedPlan->price_monthly, 0, ',', ' ') }} FCFA/mois
+                        </p>
                     </div>
-                    <div class="aside-content">
-                        <div>
-                            <div class="aside-brand">
-                                @if(!empty($siteBrand['logo_url']))
-                                    <div class="aside-logo-wrap">
-                                        <div class="aside-logo-inner inline-flex items-center justify-center w-16 h-16 bg-white/5 border border-white/10 overflow-hidden p-1">
-                                            <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="aside-logo-wrap">
-                                        <div class="aside-logo-inner inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600">
-                                            <i class="fas fa-gem text-black text-xl"></i>
-                                        </div>
-                                    </div>
-                                @endif
-                                <div>
-                                    <h1 class="aside-title font-serif">{{ $siteBrand['site_name'] }}</h1>
-                                    <p class="aside-subtitle">{{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}</p>
-                                </div>
-                            </div>
-                            <div class="aside-summary mt-3">
-                                <p class="text-gray-200 text-xs font-semibold mb-1">Compte prestataire</p>
-                                <p class="text-gray-500 text-xs leading-relaxed">Publiez votre activité, choisissez votre forfait et activez votre présence en ligne rapidement.</p>
-                            </div>
-                        </div>
-                        <div class="aside-chip-list">
-                            <p class="stat-chip"><i class="fas fa-check text-orange-300 mr-2"></i>Création rapide</p>
-                            <p class="stat-chip"><i class="fas fa-check text-orange-300 mr-2"></i>Choix du forfait</p>
-                            <p class="stat-chip"><i class="fas fa-check text-orange-300 mr-2"></i>Activation immédiate</p>
-                        </div>
+                    <a href="{{ route('plans.public') }}" class="shrink-0 text-xs font-medium text-orange-300 hover:text-orange-200 transition whitespace-nowrap">
+                        Changer d'offre
+                    </a>
+                </div>
+            @elseif(isset($plans) && $plans->isNotEmpty())
+                @php $resolvedPlanId = (int) old('plan_id', $selectedPlanId ?? 0); @endphp
+                <div id="provider-plan-picker">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <p class="text-xs font-medium text-slate-400">Type de compte prestataire</p>
+                        <a href="{{ route('plans.public') }}" class="text-[11px] text-orange-400 hover:text-orange-300 transition">Voir toutes les offres par catégorie</a>
                     </div>
-                </aside>
-
-                <h2 class="text-white text-xl font-semibold mb-1">Créer votre compte</h2>
-                <p class="text-gray-500 text-sm mb-6">Rejoignez la communauté Trésor Ivoire.</p>
-
-            @if(session('info'))
-                <div class="mb-5 p-3 rounded-lg border border-green-500/30 bg-green-500/10 text-green-200 text-sm">{{ session('info') }}</div>
-            @endif
-
-            {{-- Erreurs globales --}}
-            @if ($errors->any())
-                <div class="mb-5 p-3 rounded-lg border border-red-500/30 bg-red-500/10 text-red-300 text-sm flex items-start gap-2">
-                    <i class="fas fa-circle-exclamation mt-0.5 shrink-0"></i>
-                    <ul class="space-y-0.5">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                    <div class="grid gap-2 sm:grid-cols-3">
+                        @foreach($plans as $plan)
+                            <div class="plan-radio">
+                                <input type="radio" name="plan_id" id="plan_{{ $plan->id }}" value="{{ $plan->id }}" class="sr-only"
+                                       {{ $resolvedPlanId === (int) $plan->id ? 'checked' : '' }}>
+                                <label for="plan_{{ $plan->id }}"
+                                       class="h-full flex flex-col items-start justify-between gap-2 p-3 rounded-xl border border-slate-600 bg-slate-800 cursor-pointer transition text-slate-300 hover:border-slate-500">
+                                    <span class="min-w-0">
+                                        <span class="block text-sm font-semibold text-white truncate">{{ $plan->name_fr }}</span>
+                                        @if(!empty($plan->benefits_text))
+                                            <span class="block text-xs text-slate-500 truncate">{{ $plan->benefits_text }}</span>
+                                        @endif
+                                    </span>
+                                    <span class="shrink-0 text-xs font-semibold text-orange-400">
+                                        {{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA/mois
+                                    </span>
+                                </label>
+                            </div>
                         @endforeach
-                    </ul>
+                    </div>
+                    <p class="text-[11px] text-slate-600 mt-2">Le forfait choisi sera utilisé pour finaliser l'abonnement après création du compte.</p>
                 </div>
             @endif
 
-                <form method="POST" action="{{ route('register.post') }}" class="space-y-4" id="register-step-form">
-                @csrf
-                <div id="register-step-1" class="step-panel is-active space-y-4">
-
-                <div class="grid lg:grid-cols-2 gap-3">
-                    <input type="hidden" name="role" value="provider">
-                    <div class="account-type-card rounded-xl px-4 py-4 text-center">
-                        <p class="account-type-kicker">Type de compte</p>
-                        <p class="account-type-value">Prestataire</p>
-                        <p class="account-type-note">Espace professionnel activé</p>
-                    </div>
-
-                @php
-                    $resolvedPlanId = (int) old('plan_id', $selectedPlanId ?? request('plan'));
-                    if ($resolvedPlanId <= 0 && isset($plans) && $plans->isNotEmpty()) {
-                        $resolvedPlanId = (int) $plans->first()->id;
-                    }
-                @endphp
-                @if(isset($plans) && $plans->isNotEmpty())
-                    <div id="provider-plan-picker">
-                        <p class="text-xs font-medium text-gray-400 mb-3">Type de compte prestataire</p>
-                        <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                            @foreach($plans as $plan)
-                                <div class="plan-card">
-                                    <input
-                                        type="radio"
-                                        name="plan_id"
-                                        id="plan_{{ $plan->id }}"
-                                        value="{{ $plan->id }}"
-                                        class="sr-only"
-                                        {{ $resolvedPlanId === (int) $plan->id ? 'checked' : '' }}
-                                    >
-                                    <label
-                                        for="plan_{{ $plan->id }}"
-                                        class="h-full flex flex-col items-start justify-between gap-2 p-3 rounded-xl border border-white/10 cursor-pointer transition-all duration-200 text-gray-300 hover:border-white/20"
-                                    >
-                                        <span class="min-w-0">
-                                            <span class="block text-sm font-semibold text-white truncate">{{ $plan->name_fr }}</span>
-                                            @if(!empty($plan->benefits_text))
-                                                <span class="block text-xs text-gray-500 truncate">{{ $plan->benefits_text }}</span>
-                                            @endif
-                                        </span>
-                                        <span class="shrink-0 text-xs font-semibold text-orange-300">
-                                            {{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA/mois
-                                        </span>
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
-                        <p class="text-[11px] text-gray-600 mt-2">Le forfait choisi sera utilisé pour finaliser l’abonnement après création du compte.</p>
-                    </div>
-                @endif
-                </div>
-
-                {{-- Prénom + Nom --}}
-                <div class="grid lg:grid-cols-2 gap-4">
-                    <div>
-                        <label for="first_name" class="block text-xs font-medium text-gray-400 mb-1.5">Prénom <span class="text-red-400">*</span></label>
-                        <div class="relative">
-                            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
-                            <input id="first_name" name="first_name" type="text" required maxlength="80"
-                                   value="{{ old('first_name') }}" autocomplete="given-name" placeholder="Jean"
-                                   class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('first_name') border-red-500/60 @enderror">
-                        </div>
-                        @error('first_name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label for="last_name" class="block text-xs font-medium text-gray-400 mb-1.5">Nom <span class="text-red-400">*</span></label>
-                        <div class="relative">
-                            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
-                            <input id="last_name" name="last_name" type="text" required maxlength="80"
-                                   value="{{ old('last_name') }}" autocomplete="family-name" placeholder="Kouassi"
-                                   class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('last_name') border-red-500/60 @enderror">
-                        </div>
-                        @error('last_name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-                    </div>
-                </div>
-
-                {{-- E-mail --}}
-                <div class="grid lg:grid-cols-2 gap-4">
+            {{-- Prénom + Nom --}}
+            <div class="grid lg:grid-cols-2 gap-4">
                 <div>
-                    <label for="email" class="block text-xs font-medium text-gray-400 mb-1.5">Adresse e-mail <span class="text-red-400">*</span></label>
+                    <label for="first_name" class="block text-slate-300 text-sm font-medium mb-1.5">Prénom <span class="text-red-400">*</span></label>
                     <div class="relative">
-                        <i class="fas fa-at absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
+                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-500"><i class="fas fa-user text-sm"></i></span>
+                        <input id="first_name" name="first_name" type="text" required maxlength="80"
+                               value="{{ old('first_name') }}" autocomplete="given-name" placeholder="Jean"
+                               class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition @error('first_name') border-red-500 @enderror">
+                    </div>
+                    @error('first_name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="last_name" class="block text-slate-300 text-sm font-medium mb-1.5">Nom <span class="text-red-400">*</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-500"><i class="fas fa-user text-sm"></i></span>
+                        <input id="last_name" name="last_name" type="text" required maxlength="80"
+                               value="{{ old('last_name') }}" autocomplete="family-name" placeholder="Kouassi"
+                               class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition @error('last_name') border-red-500 @enderror">
+                    </div>
+                    @error('last_name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            {{-- E-mail + Téléphone --}}
+            <div class="grid lg:grid-cols-2 gap-4">
+                <div>
+                    <label for="email" class="block text-slate-300 text-sm font-medium mb-1.5">Adresse e-mail <span class="text-red-400">*</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-500"><i class="fas fa-envelope text-sm"></i></span>
                         <input id="email" name="email" type="email" required maxlength="255"
                                value="{{ old('email') }}" autocomplete="email" placeholder="vous@exemple.ci"
-                               class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('email') border-red-500/60 @enderror">
+                               class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition @error('email') border-red-500 @enderror">
                     </div>
                     @error('email')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
-
-                {{-- Téléphone (facultatif visiteur, recommandé prestataire) --}}
                 <div>
-                    <label for="phone" class="block text-xs font-medium text-gray-400 mb-1.5">Téléphone <span class="text-gray-600">(facultatif)</span></label>
+                    <label for="phone" class="block text-slate-300 text-sm font-medium mb-1.5">Téléphone <span class="text-slate-600">(facultatif)</span></label>
                     <div class="relative">
-                        <i class="fas fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
+                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-500"><i class="fas fa-phone text-sm"></i></span>
                         <input id="phone" name="phone" type="tel" maxlength="20"
                                value="{{ old('phone') }}" autocomplete="tel" placeholder="+225 07 00 00 00 00"
-                               class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('phone') border-red-500/60 @enderror">
+                               class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition @error('phone') border-red-500 @enderror">
                     </div>
                     @error('phone')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
-                </div>
+            </div>
 
-                {{-- Mot de passe --}}
-                <div class="grid lg:grid-cols-2 gap-4">
+            {{-- Mot de passe --}}
+            <div class="grid lg:grid-cols-2 gap-4">
                 <div>
-                    <label for="password" class="block text-xs font-medium text-gray-400 mb-1.5">Mot de passe <span class="text-red-400">*</span></label>
+                    <label for="password" class="block text-slate-300 text-sm font-medium mb-1.5">Mot de passe <span class="text-red-400">*</span></label>
                     <div class="relative">
-                        <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
+                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-500"><i class="fas fa-lock text-sm"></i></span>
                         <input id="password" name="password" type="password" required
                                autocomplete="new-password" placeholder="8 caractères minimum"
-                               class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none @error('password') border-red-500/60 @enderror">
+                               class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition @error('password') border-red-500 @enderror">
                     </div>
                     @error('password')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
-
-                {{-- Confirmation --}}
                 <div>
-                    <label for="password_confirmation" class="block text-xs font-medium text-gray-400 mb-1.5">Confirmer le mot de passe <span class="text-red-400">*</span></label>
+                    <label for="password_confirmation" class="block text-slate-300 text-sm font-medium mb-1.5">Confirmer le mot de passe <span class="text-red-400">*</span></label>
                     <div class="relative">
-                        <i class="fas fa-lock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-orange-500/40 text-xs"></i>
+                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-500"><i class="fas fa-lock text-sm"></i></span>
                         <input id="password_confirmation" name="password_confirmation" type="password" required
                                autocomplete="new-password" placeholder="Répétez le mot de passe"
-                               class="field-input w-full pl-9 pr-3 py-2.5 rounded-lg text-sm text-white placeholder:text-gray-600 transition focus:outline-none">
+                               class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition">
                     </div>
                 </div>
-                </div>
-
-                {{-- Submit --}}
-                    <button type="button" id="go-to-payment"
-                            class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2 mt-2"
-                            style="background: linear-gradient(135deg,#fa9a3c,#f2790f); box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
-                        <i class="fas fa-user-plus text-xs"></i>
-                        Créer mon compte
-                    </button>
-                </div>
-
-                <div id="register-step-2" class="step-panel is-hidden hidden space-y-4" aria-hidden="true">
-                    <div class="payment-card">
-                        <div class="flex items-center gap-3 mb-6">
-                            <span class="payment-step-badge inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold">4</span>
-                            <h3 class="payment-step-title text-lg font-semibold">Paiement de l'abonnement</h3>
-                        </div>
-
-                        <div class="space-y-5">
-                            <div>
-                                <label for="payment_method" class="payment-label block text-sm font-semibold mb-2">Moyen de paiement <span class="text-red-400">*</span></label>
-                                <div class="relative">
-                                    <i class="payment-icon fas fa-credit-card absolute left-3 top-1/2 -translate-y-1/2 text-sm"></i>
-                                    <select id="payment_method" name="payment_method" required class="payment-field w-full pl-10 pr-3 py-3 text-sm">
-                                        <option value="">Sélectionner un moyen de paiement</option>
-                                        <option value="mobile_money">Mobile Money</option>
-                                        <option value="card">Carte bancaire</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="payment_phone" class="payment-label block text-sm font-semibold mb-2">Numéro pour le paiement <span class="text-red-400">*</span></label>
-                                <div class="relative">
-                                    <i class="payment-icon fas fa-mobile-screen-button absolute left-3 top-1/2 -translate-y-1/2 text-sm"></i>
-                                    <input id="payment_phone" name="payment_phone" type="tel" required placeholder="Numéro Mobile Money" class="payment-field w-full pl-10 pr-3 py-3 text-sm">
-                                </div>
-                                <p class="payment-note text-sm mt-2">Numéro associé à votre compte Mobile Money</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <button type="button" id="back-to-account"
-                                class="sm:w-auto w-full py-3 px-5 rounded-xl font-semibold text-sm text-gray-200 border border-white/20 hover:border-white/35 transition">
-                            Retour
-                        </button>
-                        <button type="submit"
-                                class="w-full py-3 rounded-xl font-bold text-sm text-black transition-all duration-200 flex items-center justify-center gap-2"
-                                style="background: linear-gradient(135deg,#fa9a3c,#f2790f); box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
-                            <i class="fas fa-check-circle text-xs"></i>
-                            Confirmer le paiement
-                        </button>
-                    </div>
-                </div>
-                </form>
             </div>
+
+            {{-- CGU --}}
+            <div class="flex items-start gap-2.5">
+                <input id="terms" name="terms" type="checkbox" value="1" required
+                       class="mt-0.5 w-4 h-4 rounded bg-slate-700 border-slate-600 text-orange-500 focus:ring-orange-500 @error('terms') border-red-500 @enderror">
+                <label for="terms" class="text-slate-400 text-xs leading-relaxed">
+                    J'accepte les
+                    <a href="{{ route('information.show', 'conditions-generales-utilisation') }}" target="_blank" class="text-orange-400 hover:text-orange-300 transition">conditions générales d'utilisation</a>
+                    de {{ $siteBrand['site_name'] }}.
+                </label>
+            </div>
+
+            {{-- Submit --}}
+            <button type="button" id="go-to-payment"
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-lg transition duration-150 flex items-center justify-center gap-2 text-sm mt-2">
+                <i class="fas fa-user-plus text-sm"></i>
+                Créer mon compte
+            </button>
         </div>
 
-        {{-- Lien connexion --}}
-        <p class="text-center text-sm text-gray-600 mt-6">
-            Déjà inscrit ?
-            <a href="{{ route('login') }}" class="text-orange-400 hover:text-orange-300 font-medium transition">Se connecter</a>
-        </p>
-        <p class="text-center text-gray-700 text-xs mt-3">
-            &copy; {{ date('Y') }} {{ $siteBrand['site_name'] }}
-        </p>
+        <div id="register-step-2" class="step-panel is-hidden hidden space-y-5" aria-hidden="true">
+            <div class="rounded-xl border border-slate-700 bg-slate-800/50 p-5">
+                <div class="flex items-center gap-3 mb-5">
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-orange-500 text-white text-sm font-bold">2</span>
+                    <h3 class="text-white text-base font-semibold">Paiement de l'abonnement</h3>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="payment_method" class="block text-slate-300 text-sm font-medium mb-1.5">Moyen de paiement <span class="text-red-400">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-3 flex items-center text-slate-500"><i class="fas fa-credit-card text-sm"></i></span>
+                            <select id="payment_method" name="payment_method" required
+                                    class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition">
+                                <option value="">Sélectionner un moyen de paiement</option>
+                                <option value="mobile_money">Mobile Money</option>
+                                <option value="card">Carte bancaire</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="payment_phone" class="block text-slate-300 text-sm font-medium mb-1.5">Numéro pour le paiement <span class="text-red-400">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-3 flex items-center text-slate-500"><i class="fas fa-mobile-screen-button text-sm"></i></span>
+                            <input id="payment_phone" name="payment_phone" type="tel" required placeholder="Numéro Mobile Money"
+                                   class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition">
+                        </div>
+                        <p class="text-slate-500 text-xs mt-1.5">Numéro associé à votre compte Mobile Money</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button type="button" id="back-to-account"
+                        class="sm:w-auto w-full py-2.5 px-5 rounded-lg font-semibold text-sm text-slate-300 border border-slate-600 hover:border-slate-500 hover:text-white transition">
+                    Retour
+                </button>
+                <button type="submit"
+                        class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-lg transition duration-150 flex items-center justify-center gap-2 text-sm">
+                    <i class="fas fa-check-circle text-sm"></i>
+                    Confirmer le paiement
+                </button>
+            </div>
+        </div>
+        </form>
     </div>
+
+    {{-- Lien connexion --}}
+    <p class="text-center text-slate-500 text-sm mt-6">
+        Déjà inscrit ?
+        <a href="{{ route('login') }}" class="text-orange-400 hover:text-orange-300 font-medium transition">Se connecter</a>
+    </p>
+    <p class="text-center text-slate-600 text-xs mt-3">
+        &copy; {{ date('Y') }} {{ $siteBrand['site_name'] }} — Tous droits réservés
+    </p>
+</div>
+</div>
+
+@include('partials.homepage-footer')
 
 <script>
     (function () {
@@ -557,7 +319,7 @@
                 if (panel.classList.contains('is-hidden')) {
                     panel.classList.add('hidden');
                 }
-            }, 360);
+            }, 320);
         }
 
         function showPanel(panel) {

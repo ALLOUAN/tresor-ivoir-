@@ -112,8 +112,63 @@
             </div>
         </div>
         @endif
+
+        @if($reservation->payment_status === \App\Models\Reservation::PAYMENT_DEPOSIT_PAID)
+        <div class="border-t border-slate-800 pt-4">
+            <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">Remboursement</p>
+            <form method="POST" action="{{ route('admin.reservations.refund', $reservation) }}"
+                  onsubmit="return confirm('Enregistrer ce remboursement ? Cette action ajuste le portefeuille du prestataire.');"
+                  class="flex flex-wrap items-end gap-3">
+                @csrf
+                <div>
+                    <label class="block text-slate-400 text-xs mb-1">Montant à rembourser (XOF)</label>
+                    <input type="number" name="amount_xof" min="1" max="{{ (int) $reservation->deposit_amount_xof }}"
+                           value="{{ (int) $reservation->deposit_amount_xof }}"
+                           class="w-40 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-slate-400 text-xs mb-1">Note (optionnel)</label>
+                    <input type="text" name="note" maxlength="500" placeholder="Motif du remboursement"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
+                </div>
+                <button type="submit" class="inline-flex items-center gap-2 bg-rose-600/80 hover:bg-rose-500 text-white text-sm font-semibold px-4 py-2.5 rounded-lg">
+                    <i class="fas fa-rotate-left text-xs"></i> Enregistrer le remboursement
+                </button>
+            </form>
+            <p class="text-slate-600 text-[11px] mt-2">Remboursement manuel — l'exécution réelle (CinetPay ou autre) reste à effectuer hors système ; cette action met à jour le portefeuille et le statut de la réservation.</p>
+        </div>
+        @endif
     </div>
     @endif
+
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5 sm:p-6">
+        <h3 class="text-white font-semibold text-sm mb-4">Fiche d'enregistrement voyageur</h3>
+        @if($reservation->guestRegistration)
+            @php $reg = $reservation->guestRegistration; @endphp
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Voyageur</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->full_name }}</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Document</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->labelForDocumentType() }} — {{ $reg->document_number }}</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Envoyée le</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->submitted_at?->format('d/m/Y à H:i') }}</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ $reg->document_scan_front_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-id-card mr-1"></i>Pièce recto</a>
+                <a href="{{ $reg->document_scan_back_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-id-card mr-1"></i>Pièce verso</a>
+                <a href="{{ $reg->selfie_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-camera-retro mr-1"></i>Selfie</a>
+                <a href="{{ $reg->signature_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-signature mr-1"></i>Signature</a>
+            </div>
+        @else
+            <p class="text-slate-500 text-sm"><i class="fas fa-circle-info mr-1"></i>Le client n'a pas encore complété sa fiche d'enregistrement.</p>
+        @endif
+    </div>
 
     <div class="bg-green-900 border border-slate-800 rounded-xl p-5 sm:p-6">
         <h3 class="text-white font-semibold text-sm mb-4">Statut</h3>
@@ -125,7 +180,7 @@
                     <option value="{{ $value }}" @selected($reservation->status === $value)>{{ $label }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-400 hover:to-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+            <button type="submit" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-floppy-disk"></i>
                 Enregistrer
             </button>

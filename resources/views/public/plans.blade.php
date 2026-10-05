@@ -12,16 +12,10 @@
     @include('partials.theme-light-bridge')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        serif:   ['Playfair Display', 'Georgia', 'serif'],
-                        elegant: ['Cormorant Garamond', 'Georgia', 'serif'],
-                        sans:    ['Inter', 'system-ui', 'sans-serif'],
-                    },
                     colors: {
                         gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
                         dark: { 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
@@ -43,9 +37,25 @@
         .price-monthly, .price-yearly { transition: opacity .2s ease; }
         .feature-check { color: #f2790f; }
         .feature-cross { color: #4b5563; }
+        /* Image de fond configurable (back-office) de la section des plans. */
+        .plans-bg {
+            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55));
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .plans-bg[style*="--plans-bg-image"] {
+            background-image: var(--plans-bg-image, none);
+        }
+        .category-card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; cursor: pointer; }
+        .category-card:hover { transform: translateY(-4px); }
+        .category-card.is-selected { border-color: #f2790f; box-shadow: 0 0 0 2px rgba(242,121,15,0.35), 0 16px 40px rgba(242,121,15,0.12); }
+        .cat-panel { animation: cat-panel-in .3s ease; }
+        @keyframes cat-panel-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-dark-900 text-white antialiased font-sans">
+    @include('partials.page-background')
 
 @include('partials.public-top-nav')
 
@@ -58,8 +68,6 @@
 
 {{-- HERO --}}
 <section class="pt-16 pb-16 text-center relative overflow-hidden">
-    <div class="absolute inset-0 opacity-5" style="background-image:repeating-linear-gradient(45deg,#f2790f 0,#f2790f 1px,transparent 0,transparent 50%);background-size:20px 20px"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(242, 121, 15,0.07),transparent 70%)"></div>
     <div class="relative max-w-2xl mx-auto px-4">
         <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-3">Visibilité & croissance</p>
         <h1 class="font-serif text-4xl sm:text-5xl font-bold mb-4 leading-tight">Choisissez votre offre</h1>
@@ -90,110 +98,63 @@
     </div>
 </section>
 
-{{-- PLANS --}}
-<section class="pb-20 px-4">
-    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        @foreach($plans as $i => $plan)
-        @php
-            $isPopular  = $plan->code === 'silver' || ($i === 1 && $plans->count() >= 2);
-            $icons      = ['fa-seedling','fa-star','fa-gem'];
-            $iconColors = ['text-emerald-400','text-gold-400','text-green-400'];
-            $badgeBg    = ['bg-emerald-500/10 border-emerald-500/20 text-emerald-300','bg-gold-500/10 border-gold-500/20 text-gold-300','bg-green-500/10 border-green-500/20 text-green-300'];
-            $icon       = $icons[$i % 3];
-            $iconColor  = $iconColors[$i % 3];
-            $badge      = $badgeBg[$i % 3];
-            $savings    = $plan->price_monthly > 0
-                ? round(100 - ($plan->price_yearly / ($plan->price_monthly * 12) * 100))
-                : 0;
-        @endphp
-
-        <div class="plan-card relative flex flex-col rounded-2xl border p-6
-            {{ $isPopular ? 'plan-popular border-gold-500/40 bg-gradient-to-b from-dark-700 to-dark-800' : 'border-white/8 bg-dark-800/60' }}">
-
-            @if($isPopular)
-            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gold-500 text-dark-900 text-xs font-black px-4 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">
-                ⭐ Plus populaire
-            </div>
-            @endif
-
-            {{-- En-tête plan --}}
-            <div class="mb-6">
-                <div class="w-12 h-12 rounded-xl {{ $isPopular ? 'bg-gold-500/15' : 'bg-white/5' }} flex items-center justify-center mb-4">
-                    <i class="fas {{ $icon }} {{ $iconColor }} text-xl"></i>
+{{-- CATÉGORIES --}}
+<section class="px-4 pb-4">
+    <div class="max-w-5xl mx-auto">
+        <p class="text-center text-gray-500 text-sm mb-6">
+            <i class="fas fa-hand-pointer text-gold-400 mr-1.5"></i>
+            Commencez par choisir votre secteur d'activité
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="category-cards">
+            @foreach($rootCategories as $cat)
+            <button type="button"
+                    class="category-card text-left rounded-2xl border border-white/8 bg-dark-800/60 p-4 {{ $selectedCategorySlug === $cat->slug ? 'is-selected' : '' }}"
+                    data-category-slug="{{ $cat->slug }}">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+                     style="background: {{ $cat->color_hex ? $cat->color_hex.'26' : 'rgba(242,121,15,0.15)' }};">
+                    <i class="fas {{ $cat->icon ?: 'fa-tag' }} text-lg" style="color: {{ $cat->color_hex ?: '#f2790f' }};"></i>
                 </div>
-                <h2 class="font-serif text-xl font-bold mb-1">{{ $plan->name_fr }}</h2>
-                <p class="text-gray-500 text-sm leading-relaxed">{{ $plan->benefits_text ?: 'Boostez votre visibilité auprès de milliers de voyageurs.' }}</p>
-            </div>
-
-            {{-- Prix --}}
-            <div class="mb-6">
-                <div class="price-monthly">
-                    <div class="flex items-end gap-1">
-                        <span class="font-serif text-3xl font-bold">{{ number_format((float)$plan->price_monthly, 0, ',', ' ') }}</span>
-                        <span class="text-gray-500 text-sm mb-1">FCFA / mois</span>
-                    </div>
-                    <p class="text-gray-600 text-xs mt-1">Engagement mensuel, résiliable à tout moment</p>
-                </div>
-                <div class="price-yearly hidden">
-                    <div class="flex items-end gap-1">
-                        <span class="font-serif text-3xl font-bold">{{ number_format((float)($plan->price_yearly / 12), 0, ',', ' ') }}</span>
-                        <span class="text-gray-500 text-sm mb-1">FCFA / mois</span>
-                    </div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <p class="text-gray-600 text-xs">soit {{ number_format((float)$plan->price_yearly, 0, ',', ' ') }} FCFA / an</p>
-                        @if($savings > 0)
-                        <span class="text-[10px] bg-gold-500/15 text-gold-400 px-1.5 py-0.5 rounded-full font-semibold">-{{ $savings }}%</span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            {{-- Features --}}
-            <ul class="space-y-2.5 mb-8 flex-1">
-                @php
-                    if (!empty($plan->features_json)) {
-                        // Fonctionnalités définies depuis le back-office
-                        $features = array_map(fn($f) => [
-                            'label' => $f['label'] ?? '',
-                            'ok'    => (bool) ($f['included'] ?? false),
-                        ], $plan->features_json);
-                    } else {
-                        // Fallback sur les champs booléens du plan
-                        $features = [
-                            ['label' => 'Badge vérifié',           'ok' => $plan->has_verified_badge],
-                            ['label' => 'Photos ('.$plan->photos_limit.')', 'ok' => $plan->photos_limit > 0],
-                            ['label' => 'Vidéo de présentation',   'ok' => $plan->has_video],
-                            ['label' => 'Mise en avant accueil',   'ok' => $plan->has_homepage],
-                            ['label' => 'Campagne newsletter',     'ok' => $plan->has_newsletter],
-                            ['label' => 'Posts réseaux sociaux',   'ok' => $plan->has_social_posts],
-                            ['label' => 'Statistiques avancées',   'ok' => in_array($plan->stats_level, ['advanced', 'full'])],
-                            ['label' => 'Support prioritaire',     'ok' => in_array($plan->support_level, ['chat', 'dedicated'])],
-                        ];
-                    }
-                @endphp
-                @foreach($features as $feat)
-                <li class="flex items-center gap-2.5 text-sm {{ $feat['ok'] ? 'text-gray-200' : 'text-gray-600' }}">
-                    <i class="fas {{ $feat['ok'] ? 'fa-check feature-check' : 'fa-xmark feature-cross' }} text-xs w-4 text-center"></i>
-                    {{ $feat['label'] }}
-                </li>
-                @endforeach
-            </ul>
-
-            {{-- CTA --}}
-            <a href="{{ route('subscriptions.checkout', $plan) }}"
-               class="block text-center py-3 rounded-xl font-bold text-sm transition-all duration-200
-               {{ $isPopular
-                   ? 'text-dark-900 hover:opacity-90'
-                   : 'border border-gold-500/30 text-gold-300 hover:border-gold-400/60 hover:bg-gold-500/5' }}"
-               @if($isPopular) style="background:linear-gradient(135deg,#fa9a3c,#f2790f)" @endif>
-                @guest Choisir ce plan @else Souscrire maintenant @endguest
-                <i class="fas fa-arrow-right text-xs ml-1"></i>
-            </a>
+                <p class="font-semibold text-sm text-white">{{ $cat->name_fr }}</p>
+                <p class="text-gray-600 text-xs mt-1">
+                    {{ ($plansByCategory[$cat->slug] ?? collect())->count() }} forfait(s) disponible(s)
+                </p>
+            </button>
+            @endforeach
         </div>
-        @endforeach
-
     </div>
+</section>
+
+{{-- PLANS --}}
+@php
+    $plansImage = \Illuminate\Support\Facades\Schema::hasTable('plans_section_images')
+        ? \App\Models\PlansSectionImage::query()->find(1)
+        : null;
+@endphp
+<section class="pb-20 px-4 {{ ($plansImage && $plansImage->isVisible()) ? 'plans-bg' : '' }}"
+    @if($plansImage && $plansImage->isVisible())
+        style="--plans-bg-image: url('{{ $plansImage->image_url }}');"
+    @endif
+    id="plans-section"
+>
+    <p id="no-category-hint" class="max-w-lg mx-auto text-center text-gray-600 text-sm py-10 {{ $selectedCategorySlug ? 'hidden' : '' }}">
+        Sélectionnez une catégorie ci-dessus pour découvrir les forfaits qui lui sont dédiés.
+    </p>
+
+    @foreach($rootCategories as $cat)
+    @php $catPlans = $plansByCategory[$cat->slug] ?? collect(); @endphp
+    <div class="cat-panel max-w-5xl mx-auto {{ $selectedCategorySlug === $cat->slug ? '' : 'hidden' }}" data-category-panel="{{ $cat->slug }}">
+        <h2 class="text-center font-serif text-2xl font-bold mb-8">{{ $cat->name_fr }}</h2>
+        @if($catPlans->isEmpty())
+            <p class="text-center text-gray-600 text-sm py-10">Aucun forfait actif pour cette catégorie pour le moment.</p>
+        @else
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach($catPlans as $i => $plan)
+                    @include('public.partials._plan-card', ['plan' => $plan, 'i' => $i, 'count' => $catPlans->count(), 'category' => $cat])
+                @endforeach
+            </div>
+        @endif
+    </div>
+    @endforeach
 
     {{-- Garanties --}}
     <div class="max-w-3xl mx-auto mt-14 grid grid-cols-1 sm:grid-cols-3 gap-5 text-center">
@@ -263,6 +224,31 @@
             document.querySelectorAll('.price-yearly').forEach(el  => el.classList.add('hidden'));
         }
     });
+
+    // Sélection de catégorie : révèle son panneau de forfaits, sans rechargement de page.
+    (function () {
+        const cards = document.querySelectorAll('.category-card');
+        const panels = document.querySelectorAll('.cat-panel');
+        const hint = document.getElementById('no-category-hint');
+
+        function selectCategory(slug, scroll) {
+            cards.forEach(c => c.classList.toggle('is-selected', c.dataset.categorySlug === slug));
+            panels.forEach(p => p.classList.toggle('hidden', p.dataset.categoryPanel !== slug));
+            if (hint) hint.classList.add('hidden');
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('categorie', slug);
+            window.history.replaceState({}, '', url);
+
+            if (scroll) {
+                document.getElementById('plans-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => selectCategory(card.dataset.categorySlug, true));
+        });
+    })();
 </script>
 
 @include('partials.homepage-footer')

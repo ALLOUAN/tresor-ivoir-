@@ -149,14 +149,18 @@ class FinanceManagementController extends Controller
         $validated = $request->validate([
             'provider_id' => ['required', 'exists:providers,id'],
             'plan_id' => ['required', 'exists:subscription_plans,id'],
-            'status' => ['required', 'in:active,suspended,cancelled,expired'],
+            'status' => ['required', 'in:pending,active,suspended,cancelled,expired'],
             'billing_cycle' => ['required', 'in:monthly,yearly'],
-            'payment_method' => ['required', 'in:orange_money,mtn_momo,wave,moov_money,card,paypal'],
+            'payment_method' => ['required', 'in:orange_money,mtn_momo,wave,moov_money,card,paypal,manual'],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['required', 'date', 'after:starts_at'],
             'auto_renew' => ['nullable', 'boolean'],
             'cancellation_reason' => ['nullable', 'string'],
         ]);
+
+        if ($validated['status'] === 'active') {
+            $this->cancelOtherActiveSubscriptions($validated['provider_id']);
+        }
 
         Subscription::create([
             'provider_id' => $validated['provider_id'],
@@ -179,14 +183,18 @@ class FinanceManagementController extends Controller
         $validated = $request->validate([
             'provider_id' => ['required', 'exists:providers,id'],
             'plan_id' => ['required', 'exists:subscription_plans,id'],
-            'status' => ['required', 'in:active,suspended,cancelled,expired'],
+            'status' => ['required', 'in:pending,active,suspended,cancelled,expired'],
             'billing_cycle' => ['required', 'in:monthly,yearly'],
-            'payment_method' => ['required', 'in:orange_money,mtn_momo,wave,moov_money,card,paypal'],
+            'payment_method' => ['required', 'in:orange_money,mtn_momo,wave,moov_money,card,paypal,manual'],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['required', 'date', 'after:starts_at'],
             'auto_renew' => ['nullable', 'boolean'],
             'cancellation_reason' => ['nullable', 'string'],
         ]);
+
+        if ($validated['status'] === 'active') {
+            $this->cancelOtherActiveSubscriptions($validated['provider_id'], $subscription->id);
+        }
 
         $subscription->update([
             'provider_id' => $validated['provider_id'],
@@ -216,6 +224,8 @@ class FinanceManagementController extends Controller
             ? $subscription->ends_at->copy()
             : now();
 
+        $this->cancelOtherActiveSubscriptions($subscription->provider_id, $subscription->id);
+
         $subscription->update([
             'ends_at' => $baseDate->addMonths((int) $validated['extend_by_months']),
             'status' => 'active',
@@ -231,6 +241,24 @@ class FinanceManagementController extends Controller
         $payment->load(['provider.user', 'subscription.plan', 'invoice']);
 
         return view('admin.finance.payment-show', compact('payment'));
+    }
+
+    /**
+     * Un prestataire ne doit avoir qu'un seul abonnement "active" à la fois — évite les doublons
+     * lorsqu'un admin crée, modifie ou prolonge manuellement un abonnement (même garde-fou que
+     * SubscriptionService::createSubscription() pour le parcours de paiement public).
+     */
+    private function cancelOtherActiveSubscriptions(int $providerId, ?int $exceptSubscriptionId = null): void
+    {
+        Subscription::query()
+            ->where('provider_id', $providerId)
+            ->where('status', 'active')
+            ->when($exceptSubscriptionId, fn ($query) => $query->where('id', '!=', $exceptSubscriptionId))
+            ->update([
+                'status' => 'cancelled',
+                'cancelled_at' => now(),
+                'cancellation_reason' => 'Remplacé par un abonnement créé/modifié manuellement en back-office.',
+            ]);
     }
 
     public function settings(): View
@@ -269,6 +297,9 @@ class FinanceManagementController extends Controller
             // Réservations d'hébergement
             'reservation_deposit_percent' => ['nullable', 'numeric', 'min:1', 'max:100'],
             'reservation_commission_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'wallet_payout_release_delay_days' => ['nullable', 'integer', 'min:0', 'max:90'],
+            'art_commission_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'art_auto_release_delay_days' => ['nullable', 'integer', 'min:0', 'max:90'],
         ]);
 
         $booleanKeys = [

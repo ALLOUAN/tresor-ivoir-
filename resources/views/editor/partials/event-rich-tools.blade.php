@@ -1,4 +1,4 @@
-{{-- TinyMCE + auto-sauvegarde (édition) / brouillon local (création) + prévisualisation --}}
+{{-- Summernote + auto-sauvegarde (édition) / brouillon local (création) + prévisualisation --}}
 @php
     $editorMode = isset($event) && $event ? 'edit' : 'create';
     $autosaveUrl = $editorMode === 'edit' ? route('editor.events.autosave', $event) : null;
@@ -6,6 +6,8 @@
     $localKey = 'tresor_editor_event_draft_v1';
     $errorsPresent = $errorsPresent ?? false;
 @endphp
+
+@include('editor.partials.summernote-assets')
 
 @if($editorMode === 'create')
 <div id="event-preview-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-green-950/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="event-preview-modal-title">
@@ -21,7 +23,6 @@
 </div>
 @endif
 
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
 (function () {
     const AUTOSAVE_URL = @json($autosaveUrl);
@@ -29,10 +30,11 @@
     const LOCAL_KEY = @json($localKey);
     const ERRORS_PRESENT = @json($errorsPresent);
     const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    const IMAGE_UPLOAD_URL = @json(route('editor.events.description-image'));
 
     const PAYLOAD_KEYS = [
-        'title_fr', 'title_en', 'slug', 'category_id', 'description_fr', 'description_en',
-        'cover_url', 'cover_alt', 'ticket_url', 'starts_at', 'ends_at', 'location_name', 'city', 'address',
+        'title_fr', 'title_en', 'subtitle_fr', 'subtitle_en', 'slug', 'category_id', 'description_fr', 'description_en',
+        'cover_url', 'cover_alt', 'ticket_url', 'starts_at', 'ends_at', 'location_name', 'city', 'address', 'audience',
         'latitude', 'longitude', 'provider_id', 'organizer_name', 'organizer_phone', 'organizer_email',
         'status', 'capacity', 'registration_deadline', 'timezone', 'recurrence_rule',
         'price', 'meta_title_fr', 'meta_desc_fr', 'meta_title_en', 'meta_desc_en',
@@ -65,7 +67,7 @@
     function runAutosave() {
         const form = document.getElementById('eventEditorForm');
         if (!form || !AUTOSAVE_URL) return;
-        if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+        window.RichEditor.sync();
         const payload = collectEventPayload(form);
         const statusEl = document.getElementById('autosaveStatus');
         fetch(AUTOSAVE_URL, {
@@ -104,7 +106,7 @@
     function saveLocalDraft() {
         const form = document.getElementById('eventEditorForm');
         if (!form || !LOCAL_KEY) return;
-        if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+        window.RichEditor.sync();
         try {
             const data = collectEventPayload(form);
             data._savedAt = new Date().toISOString();
@@ -128,7 +130,7 @@
         const form = document.getElementById('eventEditorForm');
         if (!form) return;
         Object.keys(parsed).forEach(function (k) {
-            if (k === '_savedAt' || k === 'is_free' || k === 'is_recurring') return;
+            if (k === '_savedAt' || k === 'is_free' || k === 'is_recurring' || k === 'description_fr' || k === 'description_en') return;
             const el = form.querySelector('[name="' + k + '"]');
             if (el && typeof parsed[k] === 'string') el.value = parsed[k];
         });
@@ -142,20 +144,15 @@
             const grp = document.getElementById('recurrence_group');
             if (grp) grp.classList.toggle('hidden', !parsed.is_recurring);
         }
-        if (typeof tinymce !== 'undefined') {
-            ['description_fr', 'description_en'].forEach(function (id) {
-                const ed = tinymce.get(id);
-                const ta = document.getElementById(id);
-                if (ed && ta) ed.setContent(ta.value || '');
-            });
-        }
+        if (typeof parsed.description_fr === 'string') window.RichEditor.setHtml('description_fr', parsed.description_fr);
+        if (typeof parsed.description_en === 'string') window.RichEditor.setHtml('description_en', parsed.description_en);
     }
 
     window.openEventPreviewModal = function () {
         const modal = document.getElementById('event-preview-modal');
         const body = document.getElementById('event-preview-body');
         if (!modal || !body) return;
-        if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+        window.RichEditor.sync();
         const form = document.getElementById('eventEditorForm');
         const title = (form && form.querySelector('[name="title_fr"]')) ? form.querySelector('[name="title_fr"]').value : 'Sans titre';
         const starts = (form && form.querySelector('[name="starts_at"]')) ? form.querySelector('[name="starts_at"]').value : '';
@@ -186,31 +183,23 @@
     };
 
     document.addEventListener('DOMContentLoaded', function () {
-        if (typeof tinymce === 'undefined') return;
+        if (!window.RichEditor || !window.RichEditor.available()) return;
         if (!document.getElementById('description_fr') && !document.getElementById('description_en')) return;
 
-        tinymce.init({
-            selector: '#description_fr,#description_en',
+        window.RichEditor.init('#description_fr,#description_en', {
             height: 280,
-            menubar: false,
-            branding: false,
-            promotion: false,
-            plugins: 'lists link autoresize code',
-            toolbar: 'undo redo | bold italic | bullist numlist | link | removeformat | code',
-            skin: 'oxide-dark',
-            content_css: 'dark',
-            setup: function (editor) {
-                editor.on('init change keyup Undo Redo', function () {
-                    scheduleAutosave();
-                    scheduleLocalDraft();
-                });
+            uploadUrl: IMAGE_UPLOAD_URL,
+            csrf: CSRF,
+            onChange: function () {
+                scheduleAutosave();
+                scheduleLocalDraft();
             },
         });
 
         const form = document.getElementById('eventEditorForm');
         if (form) {
             form.addEventListener('submit', function () {
-                if (typeof tinymce !== 'undefined') tinymce.triggerSave();
+                window.RichEditor.sync();
             });
             PAYLOAD_KEYS.forEach(function (k) {
                 const el = form.querySelector('[name="' + k + '"]');

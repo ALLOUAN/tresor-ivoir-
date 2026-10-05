@@ -30,12 +30,12 @@
 </div>
 
 <div>
-    <label class="block text-xs text-slate-400 mb-2">Position sur la page d'accueil</label>
+    <label class="block text-xs text-slate-400 mb-2">Position à l'écran</label>
     <div class="hp-position-picker relative w-full rounded-lg border border-slate-700 bg-slate-800 overflow-hidden cursor-crosshair select-none"
          style="aspect-ratio: 3 / 4;" id="{{ $prefix }}position_picker">
         <div class="absolute inset-0 opacity-40" style="background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px); background-size: 10% 10%;"></div>
         <div class="absolute inset-0 flex items-center justify-center text-slate-600 text-[11px] pointer-events-none px-4 text-center leading-relaxed">
-            Cliquez pour placer la bulle<br>(représente toute la page, de haut en bas)
+            Cliquez pour placer la bulle<br>(représente l'écran visible, du haut vers le bas)
         </div>
         <div id="{{ $prefix }}position_dot" class="absolute w-4 h-4 rounded-full bg-orange-500 border-2 border-white shadow-lg pointer-events-none" style="top:50%; left:50%; transform: translate(-50%,-50%);"></div>
     </div>
@@ -104,6 +104,21 @@
     </div>
 </div>
 
+<div>
+    <label class="block text-xs text-slate-400 mb-2">Pages où afficher la bulle (en plus de l'accueil, toujours inclus)</label>
+    <div id="{{ $prefix }}pages_list" class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 bg-slate-800/60 border border-slate-700 rounded-lg p-3">
+        @foreach(\App\Models\HomepageBubble::SELECTABLE_PAGES as $pageKey => $pageInfo)
+            <label class="flex items-center gap-2 cursor-pointer group">
+                <input type="checkbox" name="pages[]" value="{{ $pageKey }}"
+                       id="{{ $prefix }}page_{{ \Illuminate\Support\Str::slug($pageKey, '_') }}"
+                       data-page-key="{{ $pageKey }}"
+                       class="rounded border-slate-600 bg-slate-800 text-orange-500 {{ $pageKey === 'all' ? 'hp-page-all' : 'hp-page-specific' }}">
+                <span class="text-sm text-slate-300 group-hover:text-white transition {{ $pageKey === 'all' ? 'font-semibold' : '' }}">{{ $pageInfo['label'] }}</span>
+            </label>
+        @endforeach
+    </div>
+</div>
+
 <script>
 (function () {
     var picker = document.getElementById('{{ $prefix }}position_picker');
@@ -135,5 +150,23 @@
 
     window['{{ $prefix }}syncBubblePicker'] = updateFromInputs;
     updateFromInputs();
+})();
+
+(function () {
+    var list = document.getElementById('{{ $prefix }}pages_list');
+    if (!list) return;
+    var allBox = list.querySelector('.hp-page-all');
+    var specificBoxes = list.querySelectorAll('.hp-page-specific');
+
+    allBox.addEventListener('change', function () {
+        if (allBox.checked) {
+            specificBoxes.forEach(function (b) { b.checked = false; });
+        }
+    });
+    specificBoxes.forEach(function (b) {
+        b.addEventListener('change', function () {
+            if (b.checked) allBox.checked = false;
+        });
+    });
 })();
 </script>

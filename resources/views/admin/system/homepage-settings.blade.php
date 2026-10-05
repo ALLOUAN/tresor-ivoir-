@@ -57,7 +57,7 @@
         <div class="pt-2">
             <button type="submit"
                     @disabled(!($hasHomeDestinationColumn ?? false))
-                    class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+                    class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-floppy-disk"></i>
                 Enregistrer
             </button>

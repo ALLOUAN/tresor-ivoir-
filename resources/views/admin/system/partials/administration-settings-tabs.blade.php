@@ -75,4 +75,13 @@
     <a href="{{ route('admin.administration.gallery-hero-image') }}" class="{{ $appearanceTabClass }} {{ ($active ?? '') === 'gallery-hero-image' ? $appearanceTabActive : $appearanceTabIdle }}">
         <i class="fas fa-camera-retro {{ ($active ?? '') === 'gallery-hero-image' ? 'text-green-400' : '' }}"></i> Page Galerie (fond)
     </a>
+    <a href="{{ route('admin.administration.login-background-image') }}" class="{{ $appearanceTabClass }} {{ ($active ?? '') === 'login-background-image' ? $appearanceTabActive : $appearanceTabIdle }}">
+        <i class="fas fa-right-to-bracket {{ ($active ?? '') === 'login-background-image' ? 'text-green-400' : '' }}"></i> Page Connexion (fond)
+    </a>
+    <a href="{{ route('admin.administration.plans-image') }}" class="{{ $appearanceTabClass }} {{ ($active ?? '') === 'plans-image' ? $appearanceTabActive : $appearanceTabIdle }}">
+        <i class="fas fa-gem {{ ($active ?? '') === 'plans-image' ? 'text-green-400' : '' }}"></i> Page Abonnements (fond)
+    </a>
+    <a href="{{ route('admin.administration.search-image') }}" class="{{ $appearanceTabClass }} {{ ($active ?? '') === 'search-image' ? $appearanceTabActive : $appearanceTabIdle }}">
+        <i class="fas fa-magnifying-glass {{ ($active ?? '') === 'search-image' ? 'text-green-400' : '' }}"></i> Page Recherche (fond)
+    </a>
 </div>

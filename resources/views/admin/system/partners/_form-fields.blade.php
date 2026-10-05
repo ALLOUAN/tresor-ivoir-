@@ -85,7 +85,7 @@
                 <label class="flex items-center gap-3 cursor-pointer">
                     <input type="hidden" name="is_active" value="0">
                     <input type="checkbox" name="is_active" value="1"
-                        class="rounded border-slate-600 bg-slate-800 text-green-500 focus:ring-green-500/30 w-4 h-4"
+                        class="rounded border-slate-600 bg-slate-800 text-orange-500 focus:ring-orange-500/30 w-4 h-4"
                         @checked(old('is_active', $partner->is_active ? '1' : '0') === '1')>
                     <span class="text-slate-300 text-sm">Partenaire actif</span>
                 </label>

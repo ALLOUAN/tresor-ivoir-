@@ -33,23 +33,23 @@
 <div class="bg-green-900 border border-slate-800 rounded-xl p-4 mb-5">
     <form method="GET" action="{{ route('admin.tourist.sites.index') }}" class="flex flex-wrap gap-3 items-end">
         <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher un site…"
-            class="w-48 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none transition placeholder-slate-600">
+            class="w-48 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none transition placeholder-slate-600">
         <select name="city"
-            class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+            class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none">
             <option value="">Toutes les villes</option>
             @foreach($cities as $c)
             <option value="{{ $c->id }}" {{ $cityId == $c->id ? 'selected':'' }}>{{ $c->name }}</option>
             @endforeach
         </select>
         <select name="category"
-            class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+            class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none">
             <option value="">Toutes catégories</option>
             @foreach($categories as $cat)
             <option value="{{ $cat->id }}" {{ $catId == $cat->id ? 'selected':'' }}>{{ $cat->name }}</option>
             @endforeach
         </select>
         <select name="active"
-            class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-300 text-xs outline-none">
+            class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm outline-none">
             <option value="">Tous statuts</option>
             <option value="1" {{ $active === '1' ? 'selected':'' }}>Actifs</option>
             <option value="0" {{ $active === '0' ? 'selected':'' }}>Inactifs</option>

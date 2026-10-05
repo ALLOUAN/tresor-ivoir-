@@ -62,6 +62,13 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+            // Utilisé par spatie/laravel-backup (mysqldump) — vide par défaut (mysqldump
+            // supposé sur le PATH, cas normal en production Linux). À renseigner en local
+            // uniquement si mysqldump n'est pas sur le PATH (ex. Laragon Windows, binaires
+            // sous laragon/bin/mysql/mysql-x.y.z/bin/ non exposés globalement).
+            'dump' => [
+                'dump_binary_path' => env('DB_DUMP_BINARY_PATH', ''),
+            ],
         ],
 
         'mariadb' => [

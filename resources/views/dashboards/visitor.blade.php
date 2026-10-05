@@ -5,6 +5,8 @@
 
 @section('content')
 
+@include('partials.visitor-account-nav')
+
 @if(session('newsletter_success'))
     <div class="mb-5 px-4 py-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-200 text-sm rounded-xl flex items-center gap-2">
         <i class="fas fa-circle-check"></i> {{ session('newsletter_success') }}
@@ -122,6 +124,93 @@
 </div>
 @endif
 
+{{-- ── Statistiques réservations ───────────────────────────────────────── --}}
+@if(($reservation_stats['total'] ?? 0) > 0)
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+    @php
+        $dashStatCards = [
+            ['label' => 'Total', 'value' => $reservation_stats['total'], 'icon' => 'fa-layer-group', 'bg' => 'bg-slate-700', 'color' => 'text-slate-300'],
+            ['label' => 'À venir', 'value' => $reservation_stats['upcoming'], 'icon' => 'fa-clock', 'bg' => 'bg-blue-500/20', 'color' => 'text-blue-300'],
+            ['label' => 'En cours', 'value' => $reservation_stats['ongoing'], 'icon' => 'fa-hourglass-half', 'bg' => 'bg-emerald-500/20', 'color' => 'text-emerald-300'],
+            ['label' => 'Terminées', 'value' => $reservation_stats['completed'], 'icon' => 'fa-circle-check', 'bg' => 'bg-orange-500/20', 'color' => 'text-orange-300'],
+            ['label' => 'Annulées', 'value' => $reservation_stats['cancelled'], 'icon' => 'fa-circle-xmark', 'bg' => 'bg-rose-500/20', 'color' => 'text-rose-300'],
+        ];
+    @endphp
+    @foreach($dashStatCards as $card)
+        <a href="{{ route('visitor.reservations.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
+            <div class="w-8 h-8 rounded-lg {{ $card['bg'] }} flex items-center justify-center mb-2">
+                <i class="fas {{ $card['icon'] }} {{ $card['color'] }} text-sm"></i>
+            </div>
+            <p class="text-white text-xl font-bold">{{ $card['value'] }}</p>
+            <p class="text-slate-500 text-xs mt-0.5">{{ $card['label'] }}</p>
+        </a>
+    @endforeach
+</div>
+@endif
+
+{{-- ── Mes réservations / Mes reçus ────────────────────────────────────── --}}
+@if(($my_reservations ?? collect())->isNotEmpty())
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+    <div class="xl:col-span-2">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-white font-semibold flex items-center gap-2">
+                <i class="fas fa-bed text-orange-400"></i> Mes réservations
+            </h2>
+            <a href="{{ route('visitor.reservations.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
+        </div>
+        <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
+            @foreach($my_reservations as $reservation)
+                <div class="flex items-center gap-4 px-5 py-3.5">
+                    <div class="shrink-0 w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+                        <i class="fas fa-hotel text-orange-400/80 text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-sm font-medium truncate">{{ $reservation->accommodation_name }}</p>
+                        <p class="text-slate-500 text-xs mt-0.5">
+                            {{ $reservation->check_in->format('d/m/Y') }} → {{ $reservation->check_out->format('d/m/Y') }}
+                            · <span class="text-orange-400/80">{{ $reservation->reference }}</span>
+                        </p>
+                    </div>
+                    <a href="{{ route('visitor.reservations.show', $reservation) }}"
+                       class="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition">
+                        Voir les détails
+                    </a>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <div>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-white font-semibold flex items-center gap-2">
+                <i class="fas fa-receipt text-orange-400"></i> Derniers reçus
+            </h2>
+            @if(($latest_receipts ?? collect())->isNotEmpty())
+            <a href="{{ route('visitor.receipts.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
+            @endif
+        </div>
+        <div class="space-y-3">
+            @forelse($latest_receipts ?? [] as $receipt)
+                <a href="{{ $receipt->receiptUrl() }}" class="group flex items-center gap-3 bg-green-900 border border-slate-800 hover:border-orange-700/40 rounded-xl p-3.5 transition">
+                    <div class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+                        <i class="fas fa-receipt text-orange-400/80 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-sm font-medium truncate group-hover:text-orange-300 transition">{{ $receipt->accommodation_name }}</p>
+                        <p class="text-slate-500 text-xs mt-0.5">{{ $receipt->reference }}</p>
+                    </div>
+                </a>
+            @empty
+                <div class="bg-green-900 border border-slate-800 rounded-xl p-6 text-center text-slate-500 text-sm">
+                    <i class="fas fa-receipt text-slate-700 text-2xl mb-2 block"></i>
+                    Aucun reçu pour le moment.
+                </div>
+            @endforelse
+        </div>
+    </div>
+</div>
+@endif
+
 {{-- ── Two columns ─────────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
 
@@ -144,7 +233,7 @@
             @foreach($featured_articles as $article)
             <a href="{{ route('articles.show', $article->slug_fr) }}" class="group bg-green-900 border border-slate-800 rounded-xl overflow-hidden hover:border-orange-700/50 transition">
                 {{-- Cover placeholder --}}
-                <div class="h-32 bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center relative overflow-hidden">
+                <div class="h-32 bg-slate-800 flex items-center justify-center relative overflow-hidden">
                     <i class="fas fa-image text-slate-600 text-3xl"></i>
                     @if($article->is_featured)
                     <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">

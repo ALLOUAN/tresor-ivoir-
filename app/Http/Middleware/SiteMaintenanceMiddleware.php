@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\SiteSetting;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -48,6 +49,14 @@ class SiteMaintenanceMiddleware
         }
 
         if ($request->is('admin') || $request->is('admin/*')) {
+            return true;
+        }
+
+        // Un administrateur authentifié voit le site normalement pendant la
+        // maintenance (vérification/prévisualisation) — vérifié explicitement
+        // par rôle, pas par simple authentification, pour qu'un visiteur ou
+        // prestataire connecté ne puisse pas contourner la maintenance.
+        if (Auth::check() && Auth::user()->role === 'admin') {
             return true;
         }
 

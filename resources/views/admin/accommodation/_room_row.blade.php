@@ -51,6 +51,22 @@
                    placeholder="Climatisation, TV, Coffre-fort"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
         </div>
+        <div>
+            <span class="text-[11px] text-slate-500 mb-1 block">Lits</span>
+            <input type="text" name="room_beds[]"
+                   value="{{ $r['beds'] ?? '' }}" placeholder="1 lit double"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
+        </div>
+        <div class="col-span-2">
+            <span class="text-[11px] text-slate-500 mb-1 block">Description</span>
+            <textarea name="room_description[]" rows="2" placeholder="Description de cette chambre…"
+                      class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none resize-none">{{ $r['description'] ?? '' }}</textarea>
+        </div>
+        <div class="col-span-2">
+            <span class="text-[11px] text-slate-500 mb-1 block">Conditions applicables à cette chambre</span>
+            <textarea name="room_conditions[]" rows="2" placeholder="Ex : petit-déjeuner inclus, non remboursable…"
+                      class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none resize-none">{{ $r['conditions'] ?? '' }}</textarea>
+        </div>
         <div class="col-span-2">
             {{-- Étiquette + bouton ajouter URL --}}
             <div class="flex items-center justify-between mb-1.5">

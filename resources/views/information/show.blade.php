@@ -7,7 +7,6 @@
     @include('partials.theme-init')
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -31,6 +30,7 @@
     @include('partials.theme-light-bridge')
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
+    @include('partials.page-background')
 
 @include('partials.public-top-nav')
 

@@ -10,11 +10,37 @@
     $publicNavItems = [
         ['label' => 'Accueil',               'icon' => 'fas fa-house',            'href' => route('home'),               'active' => request()->routeIs('home')],
         ['label' => 'Tourisme',              'icon' => 'fas fa-umbrella-beach',   'href' => route('tourist.cities'),     'active' => request()->routeIs('tourist.*')],
+        [
+            'label' => 'Résidences & Hôtels', 'shortLabel' => 'Hôtels & Résidences', 'icon' => 'fas fa-bed',
+            'href' => route('accommodations.index'), 'dropdown' => true,
+            'active' => request()->routeIs('accommodations.*') || (request()->routeIs('providers.index') && request()->get('categorie')),
+        ],
         ['label' => 'Cultures & Traditions', 'shortLabel' => 'Cultures', 'icon' => 'fas fa-masks-theater',    'href' => route('cultural.peoples'),   'active' => request()->routeIs('cultural.*')],
-        ['label' => 'Annuaire',              'icon' => 'fas fa-address-book',     'href' => route('providers.index'),    'active' => request()->routeIs('providers.*')],
+        ['label' => 'Annuaire',              'icon' => 'fas fa-address-book',     'href' => route('providers.index'),    'active' => request()->routeIs('providers.*') && ! request()->get('categorie')],
         ['label' => 'Magazine',              'icon' => 'fas fa-newspaper',        'href' => route('articles.index'),     'active' => request()->routeIs('articles.*') || request()->routeIs('discoveries.*')],
         ['label' => 'Événements',            'icon' => 'fas fa-calendar-days',    'href' => route('events.index'),       'active' => request()->routeIs('events.*')],
     ];
+    // Secteurs d'activité racine (configurés depuis /admin/prestataires/categories) — alimente
+    // dynamiquement le menu déroulant "Hôtels & Résidences" ; toute catégorie ajoutée/désactivée
+    // depuis le back-office se répercute automatiquement ici, sans toucher au code.
+    $providerSectors = \App\Models\ProviderCategory::where('is_active', true)
+        ->whereNull('parent_id')
+        ->orderBy('sort_order')->orderBy('name_fr')
+        ->get();
+    // Chaque secteur ayant sa propre fiche riche (mirroir du système Hôtels) est redirigé vers sa
+    // page dédiée plutôt que l'annuaire générique filtré ; les secteurs pas encore migrés vers ce
+    // patron retombent sur l'annuaire (?categorie=...).
+    $sectorUrl = function (\App\Models\ProviderCategory $sector): string {
+        return match ($sector->slug) {
+            'loisirs-culture' => route('leisure.index'),
+            'art-creations' => route('art.index'),
+            'restaurants' => route('restaurant.index'),
+            'sites-touristiques' => route('tourist-experience.index'),
+            'agences-voyages' => route('travel-agency.index'),
+            'transports' => route('transport-company.index'),
+            default => route('providers.index', ['categorie' => $sector->slug]),
+        };
+    };
     $publicGalleryActive = request()->routeIs('gallery.public');
     $headerImage = $headerImage ?? (\Illuminate\Support\Facades\Schema::hasTable('header_images')
         ? \App\Models\HeaderImage::query()->find(1)
@@ -246,6 +272,37 @@
         .flash-ticker-item--urgent .flash-ticker-marker { animation: none; }
     }
 
+    /* Toutes les tailles ci-dessus sont pensées pour desktop (badge 46px, texte
+       18-19px…) — sans ces surcharges, sur un écran de téléphone le badge et le
+       bouton fermer à eux seuls occupent presque toute la largeur et ne
+       laissent quasiment plus de place au texte défilant. */
+    @media (max-width: 639px) {
+        .flash-ticker-badge {
+            gap: 8px;
+            padding: 6px 14px 6px 6px;
+        }
+        .flash-ticker-badge-orb { width: 32px; height: 32px; }
+        .flash-ticker-badge-icon { font-size: 14px; }
+        .flash-ticker-badge-copy { font-size: 12px; gap: 4px; }
+        .flash-ticker-badge-title { display: none; }
+        .flash-ticker-item {
+            font-size: 14px;
+            padding: 7px 14px;
+        }
+        .flash-ticker-marker {
+            width: 8px; height: 8px;
+            margin-right: 9px;
+        }
+        .flash-ticker-sep {
+            height: 22px;
+            margin: 0 4px;
+        }
+        .flash-ticker-close {
+            width: 34px; height: 34px;
+            font-size: 14px;
+        }
+    }
+
     /* ── Header ──────────────────────────────────────────── */
     .public-header {
         background-image: linear-gradient(180deg, rgba(255, 255, 255,0.92) 0%, rgba(255, 255, 255,0.72) 55%, rgba(255, 255, 255,0.45) 100%), var(--header-bg-image, none);
@@ -258,7 +315,7 @@
         transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
     }
     .public-header[style*="--header-bg-image"] {
-        background-image: linear-gradient(180deg, rgba(255, 255, 255,0.6) 0%, rgba(255, 255, 255,0.45) 55%, rgba(255, 255, 255,0.3) 100%), var(--header-bg-image, none);
+        background-image: var(--header-bg-image, none);
     }
     .public-header.header-scrolled {
         background-image: linear-gradient(180deg, rgba(233, 229, 217, 0.97), rgba(233, 229, 217, 0.97)), var(--header-bg-image, none) !important;
@@ -269,11 +326,11 @@
         border-bottom-color: rgba(34,197,94,0.65);
     }
     .public-header.header-scrolled[style*="--header-bg-image"] {
-        background-image: linear-gradient(180deg, rgba(233, 229, 217, 0.65), rgba(233, 229, 217, 0.65)), var(--header-bg-image, none) !important;
+        background-image: var(--header-bg-image, none) !important;
     }
     .public-nav-pill {
         position: relative;
-        padding: 0.5rem 0.7rem;
+        padding: 0.5rem 0.5rem;
         border-radius: 9999px;
         font-size: 0.8125rem;
         font-weight: 500;
@@ -282,7 +339,7 @@
         transition: .2s ease;
     }
     @media (min-width: 1280px) {
-        .public-nav-pill { padding: 0.5rem 0.75rem; }
+        .public-nav-pill { padding: 0.5rem 0.55rem; }
     }
     .public-nav-pill:hover {
         color: #1c1915;
@@ -308,6 +365,12 @@
         background: rgba(34,197,94,0.10);
         box-shadow: inset 0 0 0 1px rgba(34,197,94,0.28);
     }
+    /* Panneau du mega-menu "Hôtels & Résidences" : fond toujours sombre,
+       non affecté par le pont de theme clair (qui réécrit text-gray-200 en
+       texte sombre, ce qui le rendait invisible sur ce fond resté sombre). */
+    #hotels-nav-panel .text-gray-200 { color: #e5e7eb !important; }
+    #hotels-nav-panel a:hover { color: #ffffff !important; background-color: rgba(255,255,255,0.05) !important; }
+    #hotels-nav-panel .border-white\/10 { border-color: rgba(255,255,255,0.1) !important; }
     .logo-ring {
         position: relative;
         border-radius: 1rem;
@@ -384,7 +447,7 @@
     }
     .btn-gold-header {
         border-radius: 9999px;
-        background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
+        background: #22c55e;
         box-shadow: 0 4px 20px rgba(34,197,94,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
         transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
     }
@@ -412,6 +475,13 @@
 
     /* ── Dropdown "Mon espace" ───────────────────────────── */
     :root {
+        --dd-bg: rgba(8,10,14,0.96);
+        --dd-border: rgba(255,255,255,0.07);
+        --dd-shadow: 0 32px 64px -8px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.06);
+        --dd-divider: rgba(255,255,255,0.06);
+        --dd-head-gradient: rgba(242, 121, 15,0.07);
+    }
+    html:not(.dark) {
         --dd-bg: rgba(255,253,248,0.99);
         --dd-border: rgba(0,0,0,0.09);
         --dd-shadow: 0 24px 48px -8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.9);
@@ -500,7 +570,7 @@
         style="--header-bg-image: url('{{ $headerImage->image_url }}');"
     @endif
 >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[4.25rem] md:h-[5.25rem] flex items-center justify-between gap-4 md:gap-8">
+    <div class="max-w-[96rem] mx-auto px-4 sm:px-6 lg:px-8 h-[4.25rem] md:h-[5.25rem] grid grid-cols-[auto_1fr_auto] items-center gap-4 md:gap-6">
         <a href="{{ route('home') }}" class="flex items-center gap-3 sm:gap-3.5 shrink-0 group">
             @if(!empty($siteBrand['logo_url']))
                 <div class="logo-ring shrink-0">
@@ -525,20 +595,87 @@
             </div>
         </a>
 
-        <nav class="hidden lg:flex items-center gap-0 xl:gap-0.5">
+        <nav class="hidden min-[1400px]:flex items-center justify-center gap-0.5 min-w-0 overflow-x-hidden overflow-y-visible">
             @foreach($publicNavItems as $item)
-            <a href="{{ $item['href'] }}"
-               class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 xl:gap-1.5 {{ $item['active'] ? 'is-active' : '' }}">
-                <i class="{{ $item['icon'] }} text-[11px] opacity-80 hidden 2xl:inline"></i>
-                <span class="2xl:hidden">{{ $item['shortLabel'] ?? $item['label'] }}</span>
-                <span class="hidden 2xl:inline">{{ $item['label'] }}</span>
-            </a>
+                @if(!empty($item['dropdown']))
+                <div class="relative" id="hotels-nav-dropdown">
+                    <a href="{{ $item['href'] }}"
+                       class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $item['active'] ? 'is-active' : '' }}">
+                        <i class="{{ $item['icon'] }} text-[10px] opacity-80"></i>
+                        {{ $item['shortLabel'] ?? $item['label'] }}
+                        <i class="fas fa-chevron-down text-[7px] opacity-60 shrink-0 transition-transform duration-200" id="hotels-nav-chevron"></i>
+                    </a>
+                    <div class="hidden fixed z-[9999]" id="hotels-nav-panel">
+                        <div class="w-64 rounded-xl border border-white/10 bg-[#0f2a18] shadow-2xl py-2 font-plus">
+                            <a href="{{ route('accommodations.index') }}"
+                               class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5 hover:text-white transition">
+                                <i class="fas fa-bed text-[11px] w-4 text-center" style="color:#E8A838;"></i> Hôtels
+                            </a>
+                            @foreach($providerSectors as $sector)
+                                @continue($sector->slug === 'hotels')
+                                <a href="{{ $sectorUrl($sector) }}"
+                                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5 hover:text-white transition">
+                                    <i class="fas {{ $sector->icon ?: 'fa-tag' }} text-[11px] w-4 text-center" style="color: {{ $sector->color_hex ?: '#f2790f' }};"></i> {{ $sector->name_fr }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <script>
+                (function () {
+                    var wrap = document.getElementById('hotels-nav-dropdown');
+                    if (!wrap || wrap.dataset.wired) return;
+                    wrap.dataset.wired = '1';
+                    var panel = document.getElementById('hotels-nav-panel');
+                    var chevron = document.getElementById('hotels-nav-chevron');
+                    // Sort le panneau de la hiérarchie du menu (position:fixed calculée en JS) pour
+                    // échapper à tout ancêtre qui le tronquerait/masquerait (overflow, stacking context...).
+                    document.body.appendChild(panel);
+                    var closeTimer = null;
+                    function position() {
+                        var rect = wrap.getBoundingClientRect();
+                        panel.style.left = rect.left + 'px';
+                        panel.style.top = (rect.bottom + 8) + 'px';
+                    }
+                    function open() {
+                        clearTimeout(closeTimer);
+                        position();
+                        panel.classList.remove('hidden');
+                        chevron.classList.add('rotate-180');
+                    }
+                    function scheduleClose() {
+                        clearTimeout(closeTimer);
+                        closeTimer = setTimeout(function () {
+                            panel.classList.add('hidden');
+                            chevron.classList.remove('rotate-180');
+                        }, 200);
+                    }
+                    wrap.addEventListener('mouseenter', open);
+                    wrap.addEventListener('mouseleave', scheduleClose);
+                    wrap.addEventListener('focusin', open);
+                    wrap.addEventListener('focusout', scheduleClose);
+                    panel.addEventListener('mouseenter', function () { clearTimeout(closeTimer); });
+                    panel.addEventListener('mouseleave', scheduleClose);
+                    window.addEventListener('scroll', function () {
+                        if (!panel.classList.contains('hidden')) panel.classList.add('hidden');
+                    }, true);
+                    window.addEventListener('resize', function () {
+                        if (!panel.classList.contains('hidden')) position();
+                    });
+                })();
+                </script>
+                @else
+                <a href="{{ $item['href'] }}"
+                   class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $item['active'] ? 'is-active' : '' }}">
+                    <i class="{{ $item['icon'] }} text-[10px] opacity-80"></i>
+                    {{ $item['shortLabel'] ?? $item['label'] }}
+                </a>
+                @endif
             @endforeach
             <a href="{{ route('gallery.public') }}"
-               class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 xl:gap-1.5 {{ $publicGalleryActive ? 'is-active' : '' }}">
-                <i class="fas fa-camera-retro text-[11px] opacity-80 hidden 2xl:inline"></i>
-                <span class="2xl:hidden">Galerie</span>
-                <span class="hidden 2xl:inline">Galerie Tresors d'Ivoire</span>
+               class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $publicGalleryActive ? 'is-active' : '' }}">
+                <i class="fas fa-camera-retro text-[10px] opacity-80"></i>
+                Galerie
             </a>
         </nav>
 
@@ -559,7 +696,7 @@
 
             @auth
             @php $__initials = strtoupper(substr(auth()->user()->first_name ?? '', 0, 1) . substr(auth()->user()->last_name ?? '', 0, 1)); @endphp
-            <div class="relative hidden sm:block" id="nav-user-dropdown-wrap">
+            <div class="relative block" id="nav-user-dropdown-wrap">
 
                 {{-- Trigger --}}
                 <button type="button" id="nav-user-dropdown-btn"
@@ -640,8 +777,20 @@
                                 <a href="{{ route('visitor.dashboard') }}" class="nav-dd-lnk">
                                     <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
                                 </a>
+                                <a href="{{ route('visitor.reservations.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-bed"></i></span> Mes réservations
+                                </a>
+                                <a href="{{ route('visitor.receipts.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-receipt"></i></span> Mes reçus
+                                </a>
+                                <a href="{{ route('visitor.wallet.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-wallet"></i></span> Mon portefeuille
+                                </a>
                                 <a href="{{ route('visitor.purchases.index') }}" class="nav-dd-lnk">
                                     <span class="nav-dd-icon"><i class="fas fa-image"></i></span> Mes achats
+                                </a>
+                                <a href="{{ route('visitor.art-orders.index') }}" class="nav-dd-lnk">
+                                    <span class="nav-dd-icon"><i class="fas fa-palette"></i></span> Mes commandes Art
                                 </a>
                                 <a href="{{ route('visitor.profile.edit') }}" class="nav-dd-lnk">
                                     <span class="nav-dd-icon"><i class="fas fa-user-pen"></i></span> Mon profil
@@ -684,19 +833,50 @@
             @endauth
 
             <button id="public-menu-toggle" type="button"
-                class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-gray-200 hover:text-white hover:border-green-500/30 hover:bg-green-500/5 transition">
+                class="min-[1400px]:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-gray-200 hover:text-white hover:border-green-500/30 hover:bg-green-500/5 transition">
                 <i class="fas fa-bars-staggered text-sm"></i>
             </button>
         </div>
     </div>
 
     {{-- Mobile menu --}}
-    <div id="public-mobile-menu" class="mobile-menu-ultra lg:hidden hidden">
+    <div id="public-mobile-menu" class="mobile-menu-ultra min-[1400px]:hidden hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-1.5 font-plus">
             @foreach($publicNavItems as $item)
-            <a href="{{ $item['href'] }}" class="block px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $item['active'] ? 'is-active' : '' }}">
-                {{ $item['label'] }}
-            </a>
+                @if(!empty($item['dropdown']))
+                <div>
+                    <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.fa-chevron-down').classList.toggle('rotate-180')"
+                            class="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $item['active'] ? 'is-active' : '' }}">
+                        <span>{{ $item['label'] }}</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200"></i>
+                    </button>
+                    <div class="hidden">
+                        <div class="flex flex-col divide-y divide-black/5 px-2 py-1">
+                            <a href="{{ route('accommodations.index') }}" class="flex items-center gap-3 px-2 py-2.5 group">
+                                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:#E8A83826;">
+                                    <i class="fas fa-bed text-sm" style="color:#E8A838;"></i>
+                                </div>
+                                <p class="font-semibold text-xs text-gray-800 flex-1">Hôtels</p>
+                                <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
+                            </a>
+                            @foreach($providerSectors as $sector)
+                                @continue($sector->slug === 'hotels')
+                                <a href="{{ $sectorUrl($sector) }}" class="flex items-center gap-3 px-2 py-2.5 group">
+                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background: {{ $sector->color_hex ? $sector->color_hex.'26' : 'rgba(242,121,15,0.15)' }};">
+                                        <i class="fas {{ $sector->icon ?: 'fa-tag' }} text-sm" style="color: {{ $sector->color_hex ?: '#f2790f' }};"></i>
+                                    </div>
+                                    <p class="font-semibold text-xs text-gray-800 flex-1">{{ $sector->name_fr }}</p>
+                                    <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @else
+                <a href="{{ $item['href'] }}" class="block px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $item['active'] ? 'is-active' : '' }}">
+                    {{ $item['label'] }}
+                </a>
+                @endif
             @endforeach
             <a href="{{ route('gallery.public') }}"
                class="w-full text-left block px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $publicGalleryActive ? 'is-active' : '' }}">
@@ -718,7 +898,7 @@
 @php
     $flashAllDismissible = $activeFlashInfos->every(fn ($f) => $f->is_dismissible);
     $flashIdsKey = $activeFlashInfos->pluck('id')->implode(',');
-    $flashDuration = max(20, $activeFlashInfos->count() * 6);
+    $flashDuration = max(35, $activeFlashInfos->count() * 10);
 @endphp
 <div id="flash-ticker" class="flash-ticker relative z-10 overflow-hidden text-white"
      data-flash-ids="{{ $flashIdsKey }}" role="region" aria-label="Fil d'actualités">
@@ -727,7 +907,7 @@
     <div class="flash-ticker-accent absolute inset-x-0 top-0 h-px pointer-events-none" aria-hidden="true"></div>
     <div class="flash-ticker-accent-bottom absolute inset-x-0 bottom-0 h-px pointer-events-none" aria-hidden="true"></div>
 
-    <div class="relative mx-auto flex min-h-[4.5rem] max-w-[95rem] items-center gap-5 px-5 py-4 md:min-h-[5.75rem] md:gap-8 md:px-10">
+    <div class="relative mx-auto flex min-h-[3.75rem] max-w-[95rem] items-center gap-2.5 px-3 py-2.5 sm:min-h-[4.5rem] sm:gap-5 sm:px-5 sm:py-4 md:min-h-[5.75rem] md:gap-8 md:px-10">
         <div class="shrink-0">
             <span class="flash-ticker-badge">
                 <span class="flash-ticker-badge-orb">
@@ -913,3 +1093,5 @@
         if (document.getElementById('contact-modal-autoopen')) window.openContactModal();
     })();
 </script>
+
+@include('partials.homepage-bubbles')

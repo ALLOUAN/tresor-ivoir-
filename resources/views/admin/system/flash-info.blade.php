@@ -21,7 +21,7 @@
 
 @php
     $typeMeta = [
-        'info'    => ['label' => 'Info',    'icon' => 'fa-circle-info',        'badge' => 'bg-sky-500/20 text-sky-300 border-sky-500/30'],
+        'info'    => ['label' => 'Info',    'icon' => 'fa-circle-info',        'badge' => 'bg-slate-500/20 text-slate-300 border-slate-500/30'],
         'success' => ['label' => 'Succès',  'icon' => 'fa-circle-check',       'badge' => 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'],
         'warning' => ['label' => 'Alerte',  'icon' => 'fa-triangle-exclamation','badge' => 'bg-amber-500/20 text-amber-300 border-amber-500/30'],
         'urgent'  => ['label' => 'Urgent',  'icon' => 'fa-bolt',                'badge' => 'bg-rose-500/20 text-rose-300 border-rose-500/30'],
@@ -56,7 +56,7 @@
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $flash->is_active ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-600/30 text-slate-300 border border-slate-600/40' }}">
                             {{ $flash->is_active ? 'Actif' : 'Inactif' }}
                         </span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600/25 text-green-200 border border-green-500/35">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/20 text-slate-300 border border-slate-600/40">
                             Ordre : {{ $flash->display_order }}
                         </span>
                         @if($flash->link_url)
@@ -86,7 +86,7 @@
                             data-is-dismissible="{{ $flash->is_dismissible ? '1' : '0' }}"
                             data-starts-at="{{ $flash->starts_at?->format('Y-m-d\TH:i') }}"
                             data-ends-at="{{ $flash->ends_at?->format('Y-m-d\TH:i') }}"
-                            class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-green-600/90 hover:bg-green-500 text-white transition"
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/90 hover:bg-orange-400 text-white transition"
                             title="Modifier">
                         <i class="fas fa-pen"></i>
                     </button>
@@ -114,7 +114,7 @@
             <div class="text-center py-14 text-slate-500 border border-dashed border-slate-700 rounded-xl">
                 <i class="fas fa-bullhorn text-3xl mb-3 text-slate-600"></i>
                 <p>Aucun message flash info pour le moment.</p>
-                <button type="button" onclick="openCreateFlashModal()" class="mt-4 text-green-400 hover:text-green-300 text-sm font-medium">Ajouter le premier message</button>
+                <button type="button" onclick="openCreateFlashModal()" class="mt-4 text-orange-400 hover:text-orange-300 text-sm font-medium">Ajouter le premier message</button>
             </div>
         @endforelse
     </div>
@@ -140,7 +140,7 @@
                 @include('admin.system.partials.flash-info-form-fields')
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeCreateFlashModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Ajouter</button>
                 </div>
             </form>
         </div>
@@ -162,7 +162,7 @@
                 @include('admin.system.partials.flash-info-form-fields', ['isEdit' => true])
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeEditFlashModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Annuler</button>
-                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button>
                 </div>
             </form>
         </div>

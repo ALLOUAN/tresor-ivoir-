@@ -57,11 +57,11 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-lg border border-slate-700 bg-slate-800/30 px-4 py-3">
             <div>
                 <p class="text-sm font-medium text-white">Mode maintenance</p>
-                <p class="text-xs text-slate-500 mt-0.5">Le site public affichera la page d'attente. Le back-office admin reste accessible.</p>
+                <p class="text-xs text-slate-500 mt-0.5">Le site public affichera la page d'attente aux visiteurs. Les administrateurs connectés continuent de voir le site normalement (back-office et pages publiques), pour vérifier le rendu réel pendant la maintenance.</p>
             </div>
             <label class="inline-flex items-center gap-3 cursor-pointer shrink-0">
                 <input type="checkbox" name="maintenance_mode" value="1"
-                       class="h-5 w-5 rounded border-slate-600 bg-slate-800 text-green-600 focus:ring-green-500"
+                       class="h-5 w-5 rounded border-slate-600 bg-slate-800 text-orange-500 focus:ring-orange-500"
                        @checked($errors->any() ? old('maintenance_mode') === '1' : $settings->maintenance_mode)>
                 <span class="text-sm text-slate-300">Activer</span>
             </label>
@@ -103,7 +103,7 @@
 
         <div class="pt-2">
             <button type="submit"
-                    class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+                    class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
                 <i class="fas fa-floppy-disk"></i>
                 Enregistrer les paramètres
             </button>

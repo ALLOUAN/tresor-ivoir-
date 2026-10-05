@@ -18,6 +18,7 @@ class Provider extends Model
         'website', 'facebook_url', 'instagram_url', 'tiktok_url', 'linkedin_url',
         'price_range', 'price_min', 'price_max',
         'status', 'is_verified', 'is_featured',
+        'payout_method', 'payout_account_number', 'payout_account_name',
         'meta_title_fr', 'meta_desc_fr', 'meta_title_en', 'meta_desc_en',
         'published_at',
     ];
@@ -81,6 +82,21 @@ class Provider extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function payoutRequests()
+    {
+        return $this->hasMany(PayoutRequest::class);
+    }
+
+    public function debts()
+    {
+        return $this->hasMany(ProviderDebt::class);
+    }
+
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
@@ -121,13 +137,68 @@ class Provider extends Model
         return $this->hasMany(ProviderConversation::class);
     }
 
+    public function clientConversations()
+    {
+        return $this->hasMany(Conversation::class);
+    }
+
     public function accommodation()
     {
         return $this->hasOne(Accommodation::class);
     }
 
+    public function leisureVenue()
+    {
+        return $this->hasOne(LeisureVenue::class);
+    }
+
+    public function restaurant()
+    {
+        return $this->hasOne(Restaurant::class);
+    }
+
+    public function touristExperience()
+    {
+        return $this->hasOne(TouristExperience::class);
+    }
+
+    public function travelAgency()
+    {
+        return $this->hasOne(TravelAgency::class);
+    }
+
+    public function transportCompany()
+    {
+        return $this->hasOne(TransportCompany::class);
+    }
+
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function menuItems()
+    {
+        return $this->hasMany(MenuItem::class);
+    }
+
+    public function tourPackages()
+    {
+        return $this->hasMany(TourPackage::class);
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
+
+    public function transportOffers()
+    {
+        return $this->hasMany(TransportOffer::class);
+    }
+
+    public function artworks()
+    {
+        return $this->hasMany(Artwork::class);
     }
 }

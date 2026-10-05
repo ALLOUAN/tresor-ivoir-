@@ -27,9 +27,13 @@
 
         {{-- Racine --}}
         <div class="flex items-center gap-4 px-5 py-4 border-b border-slate-800">
-            <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 overflow-hidden"
                 style="background-color: {{ $root->color }}22; border: 1px solid {{ $root->color }}44">
-                <i class="{{ $root->icon }}" style="color: {{ $root->color }}; font-size: 14px;"></i>
+                @if($root->icon_image_url)
+                    <img src="{{ $root->icon_image_url }}" alt="" class="w-full h-full object-cover">
+                @else
+                    <i class="{{ $root->icon }}" style="color: {{ $root->color }}; font-size: 14px;"></i>
+                @endif
             </div>
             <div class="flex-1 min-w-0">
                 <p class="text-white font-semibold text-sm">{{ $root->name }}</p>
@@ -56,21 +60,29 @@
 
         {{-- Formulaire édition racine --}}
         <div id="edit-root-{{ $root->id }}" class="hidden px-5 py-4 bg-slate-800/50 border-b border-slate-800">
-            <form method="POST" action="{{ route('admin.cultural.domains.update', $root) }}">
+            <form method="POST" action="{{ route('admin.cultural.domains.update', $root) }}" enctype="multipart/form-data">
                 @csrf @method('PUT')
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div><label class="text-xs text-slate-400 mb-1 block">Nom</label>
                         <input type="text" name="name" value="{{ $root->name }}" required
-                            class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                     <div><label class="text-xs text-slate-400 mb-1 block">Icône FontAwesome</label>
                         <input type="text" name="icon" value="{{ $root->icon }}" placeholder="fas fa-music"
-                            class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                     <div><label class="text-xs text-slate-400 mb-1 block">Couleur (hex)</label>
                         <input type="text" name="color" value="{{ $root->color }}" placeholder="#8B5CF6"
-                            class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                    <div class="md:col-span-3"><label class="text-xs text-slate-400 mb-1 block">Icône en image <span class="text-slate-600">(remplace l'icône FontAwesome si définie)</span></label>
+                        <div class="flex items-center gap-3">
+                            @if($root->icon_image_url)
+                            <img src="{{ $root->icon_image_url }}" class="w-9 h-9 object-cover rounded-lg border border-slate-700 shrink-0">
+                            @endif
+                            <input type="file" name="icon_image_file" accept="image/jpeg,image/png,image/webp"
+                                class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 outline-none file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-200 file:text-xs"></div>
+                    </div>
                     <div class="md:col-span-3"><label class="text-xs text-slate-400 mb-1 block">Description</label>
                         <input type="text" name="description" value="{{ $root->description }}"
-                            class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                     <div class="md:col-span-3 flex justify-end gap-2">
                         <button type="button" onclick="closeEditDomainModal('root-{{ $root->id }}')"
                             class="px-3 py-1.5 bg-slate-700 text-slate-300 text-xs rounded-lg transition">Annuler</button>
@@ -86,9 +98,13 @@
         <div class="divide-y divide-slate-800">
             @foreach($root->children as $child)
             <div class="flex items-center gap-4 px-5 py-3 pl-12">
-                <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 overflow-hidden"
                     style="background-color: {{ $child->color }}22">
-                    <i class="{{ $child->icon }}" style="color: {{ $child->color }}; font-size: 11px;"></i>
+                    @if($child->icon_image_url)
+                        <img src="{{ $child->icon_image_url }}" alt="" class="w-full h-full object-cover">
+                    @else
+                        <i class="{{ $child->icon }}" style="color: {{ $child->color }}; font-size: 11px;"></i>
+                    @endif
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-slate-300 text-sm">{{ $child->name }}</p>
@@ -113,18 +129,26 @@
             </div>
             {{-- Formulaire édition sous-domaine --}}
             <div id="edit-child-{{ $child->id }}" class="hidden px-5 py-4 pl-12 bg-slate-800/30">
-                <form method="POST" action="{{ route('admin.cultural.domains.update', $child) }}">
+                <form method="POST" action="{{ route('admin.cultural.domains.update', $child) }}" enctype="multipart/form-data">
                     @csrf @method('PUT')
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div><label class="text-xs text-slate-400 mb-1 block">Nom</label>
                             <input type="text" name="name" value="{{ $child->name }}" required
-                                class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                         <div><label class="text-xs text-slate-400 mb-1 block">Icône</label>
                             <input type="text" name="icon" value="{{ $child->icon }}"
-                                class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
                         <div><label class="text-xs text-slate-400 mb-1 block">Couleur</label>
                             <input type="text" name="color" value="{{ $child->color }}"
-                                class="w-full bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none"></div>
+                        <div class="md:col-span-3"><label class="text-xs text-slate-400 mb-1 block">Icône en image <span class="text-slate-600">(remplace l'icône FontAwesome si définie)</span></label>
+                            <div class="flex items-center gap-3">
+                                @if($child->icon_image_url)
+                                <img src="{{ $child->icon_image_url }}" class="w-7 h-7 object-cover rounded-lg border border-slate-700 shrink-0">
+                                @endif
+                                <input type="file" name="icon_image_file" accept="image/jpeg,image/png,image/webp"
+                                    class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 outline-none file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-200 file:text-xs"></div>
+                        </div>
                         <div class="md:col-span-3 flex justify-end gap-2">
                             <button type="button" onclick="closeEditDomainModal('child-{{ $child->id }}')"
                                 class="px-3 py-1.5 bg-slate-700 text-slate-300 text-xs rounded-lg">Annuler</button>
@@ -149,9 +173,9 @@
                 <input type="hidden" name="parent_id" value="{{ $root->id }}">
                 <div class="flex gap-2">
                     <input type="text" name="name" placeholder="Nom du sous-domaine…" required maxlength="100"
-                        class="flex-1 bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                        class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     <input type="text" name="icon" placeholder="fas fa-…" maxlength="80"
-                        class="w-32 bg-green-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                        class="w-32 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     <button type="submit"
                         class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-black font-semibold text-xs rounded-lg transition">Ajouter</button>
                 </div>
@@ -176,7 +200,7 @@
             <button onclick="document.getElementById('modal-domain-create').classList.add('hidden')"
                 class="text-slate-500 hover:text-white transition"><i class="fas fa-times"></i></button>
         </div>
-        <form method="POST" action="{{ route('admin.cultural.domains.store') }}" class="p-5 space-y-4">
+        <form method="POST" action="{{ route('admin.cultural.domains.store') }}" enctype="multipart/form-data" class="p-5 space-y-4">
             @csrf
             <div class="grid grid-cols-2 gap-4">
                 <div class="col-span-2">
@@ -193,6 +217,11 @@
                     <label class="text-xs text-slate-400 mb-1 block">Couleur (hex)</label>
                     <input type="text" name="color" placeholder="#8B5CF6"
                         class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                </div>
+                <div class="col-span-2">
+                    <label class="text-xs text-slate-400 mb-1 block">Icône en image <span class="text-slate-600">(remplace l'icône FontAwesome si définie)</span></label>
+                    <input type="file" name="icon_image_file" accept="image/jpeg,image/png,image/webp"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 outline-none file:mr-2 file:px-2 file:py-1 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-200 file:text-xs">
                 </div>
                 <div class="col-span-2">
                     <label class="text-xs text-slate-400 mb-1 block">Description</label>

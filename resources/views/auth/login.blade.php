@@ -30,14 +30,34 @@
         html:not(.dark) .bg-slate-800\/60 { background-color:rgba(0,0,0,0.04) !important; }
         html:not(.dark) .border-slate-600 { border-color:#c2b89e !important; }
         html:not(.dark) .placeholder-slate-500::placeholder { color:#665f52 !important; }
+        /* Image de fond configurable (back-office) de la page de connexion. */
+        .login-bg {
+            background-image: linear-gradient(rgba(6,25,17,.80), rgba(6,25,17,.80)), var(--login-bg-image, none);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
+@php
+    $loginBackgroundImage = \Illuminate\Support\Facades\Schema::hasTable('login_background_images')
+        ? \App\Models\LoginBackgroundImage::query()->find(1)
+        : null;
+    $hasCustomLoginBg = $loginBackgroundImage && $loginBackgroundImage->isVisible();
+@endphp
 <body class="min-h-screen bg-green-950 flex flex-col">
+    @unless($hasCustomLoginBg)
+        @include('partials.page-background')
+    @endunless
 
 @include('partials.public-top-nav')
 
-    <div class="flex-1 flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
+    <div class="flex-1 flex items-center justify-center p-4 relative {{ $hasCustomLoginBg ? 'login-bg' : '' }}"
+        @if($hasCustomLoginBg)
+            style="--login-bg-image: url('{{ $loginBackgroundImage->image_url }}');"
+        @endif
+    >
+    <div class="w-full max-w-md relative">
         {{-- Retour accueil --}}
         <div class="mb-4">
             <a href="{{ route('home') }}"
@@ -145,6 +165,16 @@
                     Se connecter
                 </button>
             </form>
+
+            {{-- Pas encore de compte --}}
+            <div class="mt-6 pt-5 border-t border-slate-700 text-center">
+                <p class="text-slate-400 text-sm mb-3">Pas encore de compte ?</p>
+                <button type="button" data-open-register-modal
+                   class="w-full inline-flex items-center justify-center gap-2 bg-transparent border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-semibold py-2.5 rounded-lg transition duration-150 text-sm">
+                    <i class="fas fa-user-plus"></i>
+                    S'inscrire
+                </button>
+            </div>
         </div>
 
         <p class="text-center text-slate-600 text-xs mt-6">
@@ -152,6 +182,9 @@
         </p>
     </div>
     </div>
+
+@include('partials.homepage-footer')
+@include('partials.register-choice-modal')
 
 </body>
 </html>

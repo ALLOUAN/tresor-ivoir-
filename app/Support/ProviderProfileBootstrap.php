@@ -12,8 +12,12 @@ class ProviderProfileBootstrap
 {
     /**
      * Crée une fiche prestataire minimale (brouillon) si l’utilisateur est prestataire et n’en a pas encore.
+     *
+     * @param  string|null  $categorySlug  Slug de catégorie racine choisie par l'utilisateur (parcours
+     *                                      « catégorie d'abord » sur /abonnements). À défaut, repli sur
+     *                                      la catégorie racine active la mieux classée (comportement historique).
      */
-    public static function ensure(User $user): ?Provider
+    public static function ensure(User $user, ?string $categorySlug = null): ?Provider
     {
         if ($user->role !== 'provider') {
             return null;
@@ -24,8 +28,13 @@ class ProviderProfileBootstrap
             return $existing;
         }
 
-        $categoryId = ProviderCategory::query()
+        $category = $categorySlug
+            ? ProviderCategory::where('slug', $categorySlug)->where('is_active', true)->whereNull('parent_id')->first()
+            : null;
+
+        $categoryId = $category?->id ?? ProviderCategory::query()
             ->where('is_active', true)
+            ->whereNull('parent_id')
             ->orderBy('sort_order')
             ->value('id');
 
