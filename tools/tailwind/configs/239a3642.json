@@ -1,0 +1,46 @@
+{
+ "files": [
+  "errors/maintenance-site.blade.php"
+ ],
+ "config": {
+  "theme": {
+   "extend": {
+    "animation": {
+     "blob": "blob 18s ease-in-out infinite",
+     "blob-slow": "blob 24s ease-in-out infinite reverse",
+     "float": "float 6s ease-in-out infinite",
+     "shimmer": "shimmer 3s ease-in-out infinite"
+    },
+    "keyframes": {
+     "blob": {
+      "0%, 100%": {
+       "transform": "translate(0, 0) scale(1)"
+      },
+      "33%": {
+       "transform": "translate(30px, -50px) scale(1.05)"
+      },
+      "66%": {
+       "transform": "translate(-20px, 20px) scale(0.95)"
+      }
+     },
+     "float": {
+      "0%, 100%": {
+       "transform": "translateY(0)"
+      },
+      "50%": {
+       "transform": "translateY(-8px)"
+      }
+     },
+     "shimmer": {
+      "0%, 100%": {
+       "opacity": "0.4"
+      },
+      "50%": {
+       "opacity": "1"
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -605,6 +605,10 @@ class CulturalElementSeeder extends Seeder
             unset($el['slug']);
             $el['slug'] = $slug;
 
+            // Corrections factuelles (UNESCO, peuples d'origine, sources) : voir Data\CulturalCorrections.
+            $el = \Database\Seeders\Data\CulturalCorrections::apply($slug, $el);
+            $el['sources'] ??= \Database\Seeders\Data\CulturalCorrections::sources()[$slug] ?? null;
+
             $element = CulturalElement::withTrashed()->updateOrCreate(['slug' => $slug], $el);
             if ($element->trashed()) {
                 $element->restore();

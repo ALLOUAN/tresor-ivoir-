@@ -16,13 +16,15 @@ use Illuminate\View\View;
 
 class ActivityController extends Controller
 {
+    use \App\Http\Controllers\Concerns\ValidatesActivityMarketFields;
+
     public function __construct(
         private readonly ImageUploadSecurityService $imageUpload,
     ) {}
 
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -144,7 +146,7 @@ class ActivityController extends Controller
             'price_xof' => ['required', 'integer', 'min:0'],
             'duration_minutes' => ['nullable', 'integer', 'min:1', 'max:10080'],
             'max_participants' => ['nullable', 'integer', 'min:1', 'max:999'],
-        ]);
+        ]) + $this->activityMarketData($request);
     }
 
     /**

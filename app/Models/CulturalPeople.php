@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CulturalPeople extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     protected $table = 'cultural_peoples';
 
     protected $fillable = [
@@ -15,6 +17,7 @@ class CulturalPeople extends Model
         'description', 'histoire', 'symboles',
         'thumbnail', 'cover_images',
         'is_featured', 'is_active', 'sort_order',
+        'sources',
     ];
 
     protected function casts(): array
@@ -23,6 +26,7 @@ class CulturalPeople extends Model
             'symboles'     => 'array',
             'cover_images' => 'array',
             'is_featured'  => 'boolean',
+            'sources' => 'array',
             'is_active'    => 'boolean',
         ];
     }

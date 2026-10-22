@@ -13,7 +13,7 @@ class ProfileController extends Controller
 {
     private function getProvider(): Provider
     {
-        $provider = Auth::user()->providers()->first();
+        $provider = Provider::forUser(Auth::id());
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }

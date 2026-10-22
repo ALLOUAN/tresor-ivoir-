@@ -171,7 +171,7 @@ class VisitorConversationController extends Controller
 
         return redirect()
             ->route('visitor.conversations.show', $conversation)
-            ->with('success', 'Message envoyé.')
+            ->with('success', __('Message envoyé.'))
             ->with('chat_warning', $this->contentGuard->warningMessageFor($scan['reasons']));
     }
 
@@ -224,7 +224,7 @@ class VisitorConversationController extends Controller
         }
 
         return back()
-            ->with('success', 'Message envoyé.')
+            ->with('success', __('Message envoyé.'))
             ->with('chat_warning', $this->contentGuard->warningMessageFor($scan['reasons']));
     }
 
@@ -256,7 +256,7 @@ class VisitorConversationController extends Controller
             $admin->notify(new NewConversationReportNotification($report));
         }
 
-        return back()->with('success', 'Signalement envoyé à l\'équipe de modération.');
+        return back()->with('success', __('Signalement envoyé à l\'équipe de modération.'));
     }
 
     public function block(Conversation $conversation): RedirectResponse
@@ -267,7 +267,7 @@ class VisitorConversationController extends Controller
             $conversation->update(['client_blocked_at' => now()]);
         }
 
-        return back()->with('success', 'Utilisateur bloqué. Vous ne recevrez plus de messages de sa part.');
+        return back()->with('success', __('Utilisateur bloqué. Vous ne recevrez plus de messages de sa part.'));
     }
 
     public function downloadAttachment(Conversation $conversation, ConversationAttachment $attachment)

@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Annuaire des prestataires — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ __('Annuaire des prestataires') }} — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -33,7 +32,6 @@
         }
         /* Image de fond configurable (back-office) du bandeau de la page Annuaire. */
         .providers-hero {
-            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55));
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -42,6 +40,7 @@
             background-image: var(--providers-hero-bg-image, none);
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="bg-[#ffffff] text-white">
     @include('partials.page-background')
@@ -58,20 +57,24 @@
             style="--providers-hero-bg-image: url('{{ $providersHeroImage->image_url }}');"
         @endif
     >
-        <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
-        <a href="{{ route('home') }}" class="absolute top-6 right-6 z-10 text-orange-400 text-sm hover:text-orange-300 transition">Retour accueil</a>
+        <a href="{{ route('home') }}" class="absolute top-6 right-6 z-10 rounded-full bg-white/95 px-3.5 py-1.5 text-sm font-medium shadow-sm hover:underline" style="color:#b9500a">{{ __('← Retour accueil') }}</a>
         <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-            <div class="inline-block rounded-2xl bg-green-950/70 backdrop-blur-md px-6 py-8 sm:px-12 sm:py-10">
-                <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">Annuaire</p>
+            <div class="ti-hero-card inline-block rounded-2xl px-6 py-8 sm:px-12 sm:py-10">
+                <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">{{ __('Annuaire') }}</p>
                 <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
-                    Annuaire des prestataires
+                    {{ __('Annuaire des prestataires') }}
                 </h1>
                 <p class="text-gray-200 text-xl max-w-2xl mx-auto">
-                    Trouvez les meilleures adresses par ville, catégorie et gamme de prix.
+                    {{ __('Trouvez les meilleures adresses par ville, catégorie et gamme de prix.') }}
                 </p>
             </div>
         </div>
     </section>
+
+@include('partials.hero-separator')
+
+{{-- Recommandations personnalisées (module IA 1) --}}
+@include('partials.ai-reco-strip', ['limit' => 4, 'heading' => __('Recommandé pour vous')])
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <div class="providers-filter-shell bg-[#ffffff] border border-white/8 rounded-xl p-4 mb-6">
@@ -80,42 +83,42 @@
                     type="text"
                     name="q"
                     value="{{ $search }}"
-                    placeholder="Nom, ville ou description..."
+                    placeholder="{{ __('Nom, ville ou description...') }}"
                     class="md:col-span-2 bg-[#ffffff] border border-white/10 rounded-lg px-3 py-2 text-sm"
                 >
                 <select name="categorie" class="bg-[#ffffff] border border-white/10 rounded-lg px-3 py-2 text-sm">
-                    <option value="">Toutes catégories</option>
+                    <option value="">{{ __('Toutes catégories') }}</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->slug }}" @selected($activeCategory?->id === $cat->id)>
-                            {{ $cat->name_fr }} ({{ $cat->providers_count }})
+                            {{ $cat->localized('name') }} ({{ $cat->providers_count }})
                         </option>
                     @endforeach
                 </select>
                 <select name="ville" class="bg-[#ffffff] border border-white/10 rounded-lg px-3 py-2 text-sm">
-                    <option value="">Toutes villes</option>
+                    <option value="">{{ __('Toutes villes') }}</option>
                     @foreach($cities as $v)
                         <option value="{{ $v }}" @selected($city === $v)>{{ $v }}</option>
                     @endforeach
                 </select>
                 <select name="prix" class="bg-[#ffffff] border border-white/10 rounded-lg px-3 py-2 text-sm">
-                    <option value="">Tous prix</option>
-                    @foreach(['budget' => 'Budget', 'mid' => 'Moyen', 'premium' => 'Premium', 'luxury' => 'Luxe'] as $value => $label)
+                    <option value="">{{ __('Tous prix') }}</option>
+                    @foreach(['budget' => __('Budget'), 'mid' => __('Moyen'), 'premium' => __('Premium'), 'luxury' => __('Luxe')] as $value => $label)
                         <option value="{{ $value }}" @selected($price === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
                 <select name="tri" class="bg-[#ffffff] border border-white/10 rounded-lg px-3 py-2 text-sm">
-                    <option value="rating" @selected($sort === 'rating')>Tri: mieux notés</option>
-                    <option value="name" @selected($sort === 'name')>Tri: nom</option>
-                    <option value="newest" @selected($sort === 'newest')>Tri: plus récents</option>
-                    <option value="views" @selected($sort === 'views')>Tri: plus vus</option>
+                    <option value="rating" @selected($sort === 'rating')>{{ __('Tri: mieux notés') }}</option>
+                    <option value="name" @selected($sort === 'name')>{{ __('Tri: nom') }}</option>
+                    <option value="newest" @selected($sort === 'newest')>{{ __('Tri: plus récents') }}</option>
+                    <option value="views" @selected($sort === 'views')>{{ __('Tri: plus vus') }}</option>
                 </select>
                 <label class="md:col-span-2 text-gray-300 text-sm flex items-center gap-2">
                     <input type="checkbox" name="verifie" value="1" @checked(request()->boolean('verifie'))>
-                    Prestataires vérifiés uniquement
+                    {{ __('Prestataires vérifiés uniquement') }}
                 </label>
                 <div class="md:col-span-4 flex items-center gap-2">
-                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-black font-semibold text-sm px-4 py-2 rounded-lg">Filtrer</button>
-                    <a href="{{ route('providers.index') }}" class="bg-[#ffffff] hover:bg-[#ffffff] border border-white/10 text-white text-sm px-4 py-2 rounded-lg transition">Réinitialiser</a>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-black font-semibold text-sm px-4 py-2 rounded-lg">{{ __('Filtrer') }}</button>
+                    <a href="{{ route('providers.index') }}" class="bg-[#ffffff] hover:bg-[#ffffff] border border-white/10 text-white text-sm px-4 py-2 rounded-lg transition">{{ __('Réinitialiser') }}</a>
                 </div>
             </form>
         </div>
@@ -136,20 +139,30 @@
                         <div class="flex items-center justify-between gap-2">
                             <p class="text-white font-semibold">{{ $provider->name }}</p>
                             @if($provider->is_verified)
-                                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-full">Vérifié</span>
+                                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-full">{{ __('Vérifié') }}</span>
                             @endif
                         </div>
-                        <p class="text-gray-500 text-xs mt-1">{{ $provider->category->name_fr ?? 'Catégorie' }} · {{ $provider->city ?: 'N/A' }}</p>
-                        <p class="text-gray-300 text-sm mt-2">{{ $provider->short_desc_fr ?: \Illuminate\Support\Str::limit($provider->description_fr, 90) }}</p>
+                        <p class="text-gray-500 text-xs mt-1">{{ collect([$provider->category->localized('name') ?? null, $provider->city])->filter()->join(' · ') }}</p>
+                        <p class="text-gray-300 text-sm mt-2 line-clamp-2">{{ $provider->short_desc_fr ?: \Illuminate\Support\Str::limit($provider->localized('description'), 90) }}</p>
+                        @php
+                            $cardRating = (float) ($provider->rating_avg ?? 0);
+                            $cardPrice = ['budget' => __('Économique'), 'mid' => __('Intermédiaire'), 'premium' => __('Haut de gamme'), 'luxury' => __('Luxe')][$provider->price_range] ?? null;
+                        @endphp
                         <div class="mt-3 flex items-center justify-between text-xs">
-                            <span class="text-orange-400">{{ number_format((float) ($provider->rating_avg ?? 0), 1) }} ★</span>
-                            <span class="text-gray-500 uppercase">{{ $provider->price_range ?: 'n/a' }}</span>
+                            @if($cardRating > 0)
+                                <span class="font-semibold text-[#1d1a16]"><i class="fas fa-star text-[10px] mr-1" style="color:#b8892b"></i>{{ number_format($cardRating, 1, ',', ' ') }}</span>
+                            @else
+                                <span class="text-gray-500">{{ __('Pas encore d’avis') }}</span>
+                            @endif
+                            @if($cardPrice)
+                                <span class="text-gray-500">{{ $cardPrice }}</span>
+                            @endif
                         </div>
                     </div>
                 </a>
             @empty
                 <div class="col-span-3 bg-[#ffffff] border border-white/8 rounded-xl p-8 text-center text-gray-500">
-                    Aucun prestataire trouvé avec ces filtres.
+                    {{ __('Aucun prestataire trouvé avec ces filtres.') }}
                 </div>
             @endforelse
         </div>

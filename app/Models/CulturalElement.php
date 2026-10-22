@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CulturalElement extends Model
 {
-    use SoftDeletes;
+    use \App\Models\Concerns\HasLocalizedFields, SoftDeletes;
 
     protected $fillable = [
         // Relations
@@ -28,6 +28,7 @@ class CulturalElement extends Model
 
         // Méta
         'is_featured', 'is_active', 'views_count', 'sort_order',
+        'sources',
     ];
 
     protected function casts(): array
@@ -38,6 +39,7 @@ class CulturalElement extends Model
             'meilleure_periode' => 'array',
             'practical_info'    => 'array',
             'is_featured'       => 'boolean',
+            'sources' => 'array',
             'is_active'         => 'boolean',
         ];
     }

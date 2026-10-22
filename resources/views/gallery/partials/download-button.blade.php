@@ -8,7 +8,7 @@
 <a href="{{ url($img->url) }}" download
    class="{{ $class ?? '' }} gallery-download-btn"
    data-media-uuid="{{ $img->uuid }}"
-   title="Télécharger" aria-label="Télécharger cette image"
+   title="{{ __('Télécharger') }}" aria-label="{{ __('Télécharger cette image') }}"
    onclick="event.stopPropagation();">
     <i class="fas fa-download text-xs"></i>
     <span class="download-count">{{ $count }}</span>

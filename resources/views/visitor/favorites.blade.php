@@ -1,7 +1,7 @@
 @extends('layouts.visitor-public')
 
-@section('title', 'Mes favoris')
-@section('page-title', 'Wishlist / Favoris')
+@section('title', __('Mes favoris'))
+@section('page-title', __('Mes favoris'))
 
 @section('content')
 <div class="max-w-5xl mx-auto">
@@ -23,36 +23,34 @@
                         @if($item instanceof \App\Models\Provider)
                             {{ $item->name }}
                         @elseif($item instanceof \App\Models\Article)
-                            {{ $item->title_fr }}
+                            {{ $item->localized('title') }}
                         @elseif($item instanceof \App\Models\Event)
-                            {{ $item->title_fr }}
+                            {{ $item->localized('title') }}
                         @else
-                            Élément
+                            {{ __('Élément') }}
                         @endif
                     </p>
-                    <p class="text-xs text-slate-500 mt-1">Ajouté {{ $favorite->created_at->diffForHumans() }}</p>
+                    <p class="text-xs text-slate-500 mt-1">{{ __('Ajouté') }} {{ $favorite->created_at->diffForHumans() }}</p>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     @if($item instanceof \App\Models\Provider)
-                        <a href="{{ route('providers.show', $item->slug) }}" class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">Voir</a>
+                        <a href="{{ route('providers.show', $item->slug) }}" class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">{{ __('Voir') }}</a>
                     @elseif($item instanceof \App\Models\Article)
-                        <a href="{{ route('articles.show', $item->slug_fr) }}" class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">Voir</a>
+                        <a href="{{ route('articles.show', $item->slug_fr) }}" class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">{{ __('Voir') }}</a>
                     @elseif($item instanceof \App\Models\Event)
-                        <a href="{{ route('events.show', $item->slug) }}" class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">Voir</a>
+                        <a href="{{ route('events.show', $item->slug) }}" class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">{{ __('Voir') }}</a>
                     @endif
                     <form method="POST" action="{{ route('visitor.favorites.destroy', $favorite) }}">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-xs px-3 py-1.5 rounded bg-rose-900/30 hover:bg-rose-900/50 text-rose-300 border border-rose-700/40">
-                            Retirer
+                            {{ __('Retirer') }}
                         </button>
                     </form>
                 </div>
             </div>
         @empty
-            <div class="px-5 py-10 text-center text-slate-500 text-sm">
-                Aucun favori pour le moment.
-            </div>
+            @include('partials.visitor-empty', ['icon' => 'heart', 'title' => __('Aucun favori pour le moment.'), 'text' => __('Touchez le cœur sur un établissement, un article ou un événement pour le retrouver ici.'), 'cta' => ['url' => route('providers.index'), 'label' => __('Explorer les adresses'), 'icon' => 'map-point']])
         @endforelse
     </div>
 

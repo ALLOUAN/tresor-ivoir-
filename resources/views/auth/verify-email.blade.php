@@ -1,204 +1,224 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @if(!empty($siteBrand['favicon_url']))
         <link rel="icon" href="{{ $siteBrand['favicon_url'] }}" type="image/png">
     @endif
-    <title>Vérifiez votre e-mail — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ __('Vérifiez votre e-mail') }} — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: { 400: '#fa9a3c', 500: '#f2790f', 600: '#d4630a' },
-                        dark: { 800: '#e9e5d9', 900: '#e9e5d9' },
-                    }
-                }
-            }
-        }
-    </script>
     @include('partials.theme-light-bridge')
+    @php
+        $vEmail = auth()->user()->email;
+        $vDomain = strtolower((string) \Illuminate\Support\Str::after($vEmail, '@'));
+        // Raccourci vers la messagerie de la personne (fournisseurs courants seulement).
+        $vInbox = match (true) {
+            in_array($vDomain, ['gmail.com', 'googlemail.com'], true) => ['Gmail', 'https://mail.google.com/mail/u/0/#inbox'],
+            (bool) preg_match('/^(outlook|hotmail|live|msn)\./', $vDomain) => ['Outlook', 'https://outlook.live.com/mail/0/'],
+            (bool) preg_match('/^yahoo\./', $vDomain) => ['Yahoo Mail', 'https://mail.yahoo.com/'],
+            in_array($vDomain, ['icloud.com', 'me.com'], true) => ['iCloud Mail', 'https://www.icloud.com/mail'],
+            default => null,
+        };
+    @endphp
     <style>
+        /* Vérification de l'e-mail : dernière étape. Code en 6 cases (un seul vrai champ, collage et
+           remplissage automatique compatibles), validité affichée, renvoi temporisé. Aplats. */
         * { box-sizing: border-box; }
-        body {
-            background:
-                radial-gradient(900px 560px at 8% 10%, rgba(242, 121, 15,0.15), transparent 62%),
-                radial-gradient(760px 460px at 92% 88%, rgba(99,102,241,0.11), transparent 64%),
-                #0a0907;
+        body { margin: 0; min-height: 100vh; background: #f6f3ed; color: #1d1a16; font-family: 'Inter', sans-serif; }
+        .ve-stage { position: relative; overflow: hidden; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 16px 40px; }
+        .ve-stage > .ivm .ivm-g { opacity: .22 !important; }
+        .ve-brand { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 8px 16px 8px 8px; border-radius: 999px; background: #fff; border: 1px solid #e8e1d3; text-decoration: none; color: #1d1a16; }
+        .ve-brand img { width: 40px; height: 40px; border-radius: 999px; object-fit: contain; }
+        .ve-brand b { font-family: 'Playfair Display', serif; font-size: 17px; }
+        .ve-card { position: relative; z-index: 1; width: 100%; max-width: 540px; overflow: hidden; border-radius: 28px; background: #fff; border: 1px solid #e8e1d3; }
+
+        .ve-head { position: relative; overflow: hidden; padding: 26px 30px 30px; background: #123a25; color: #fff; text-align: center; }
+        .ve-head .ivm-g { opacity: .1 !important; }
+        .ve-head .ivm-g > * { stroke: #f6c38f !important; }
+        .ve-head .ivm-band { height: 6px; }
+        .ve-head > :not(.ivm):not(.ivm-band) { position: relative; z-index: 1; }
+        .ve-step { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #f6c38f; }
+        .ve-icon { width: 64px; height: 64px; margin: 16px auto 0; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: #fff; color: #b9500a; }
+        .ve-icon .ico { width: 32px; height: 32px; font-size: 32px; }
+        .ve-icon .ico svg { width: 32px; height: 32px; }
+        .ve-title { margin: 14px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(25px, 3vw, 30px); font-weight: 700; line-height: 1.15; color: #fff; }
+        .ve-sub { margin: 8px auto 0; max-width: 40ch; font-size: 15px; line-height: 1.55; color: #cfe6d7; }
+        .ve-sub b { color: #fff; overflow-wrap: anywhere; white-space: nowrap; }
+        @media (max-width: 520px) { .ve-sub b { white-space: normal; } }
+
+        .ve-body { padding: 24px 30px 26px; }
+        .ve-alert { display: flex; align-items: flex-start; gap: 10px; margin: 0 0 18px; padding: 12px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; }
+        .ve-alert .ico { flex: none; width: 18px; height: 18px; margin-top: 1px; }
+        .ve-alert.is-ok { background: #eef6ef; border: 1px solid #cfe4d3; color: #1f5a33; }
+        .ve-alert.is-warn { background: #fdf4ec; border: 1px solid #f1dcc4; color: #9a4308; }
+
+        .ve-label { display: block; margin: 0 0 10px; text-align: center; font-size: 14px; font-weight: 700; color: #1d1a16; }
+        .ve-otp { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; max-width: 400px; margin: 0 auto; }
+        .ve-otp span { height: 62px; border-radius: 16px; border: 1.5px solid #e1d7c4; background: #fbf9f5; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: #1d1a16; font-variant-numeric: tabular-nums; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease; }
+        .ve-otp span.is-filled { background: #fff; border-color: #cfc2a8; }
+        .ve-otp span.is-active { border-color: #b9500a; background: #fff; box-shadow: 0 0 0 4px rgba(185,80,10,.12); }
+        .ve-otp span.is-active:empty::after { content: ''; width: 2px; height: 26px; background: #b9500a; animation: ve-blink 1s steps(1) infinite; }
+        @keyframes ve-blink { 50% { opacity: 0; } }
+        .ve-otp.is-error span { border-color: #c0362c; background: #fff; }
+        /* Le vrai champ couvre les cases : clavier, collage et code proposé par le téléphone fonctionnent. */
+        html .ve-otp input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0 !important; background: transparent !important; color: transparent !important; caret-color: transparent; font-size: 16px; letter-spacing: 1em; cursor: text; }
+        .ve-err { margin: 10px 0 0; text-align: center; font-size: 13.5px; font-weight: 600; color: #b42318; }
+
+        .ve-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 13px; color: #6b6458; }
+        .ve-meta li { display: inline-flex; align-items: center; gap: 6px; }
+        .ve-meta li > .ico { width: 15px; height: 15px; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #1f8079; }
+
+        .ve-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 52px; border: 0; border-radius: 999px; background: #b9500a; color: #fff; font: inherit; font-size: 15.5px; font-weight: 800; text-decoration: none; cursor: pointer; transition: background .15s ease; }
+        .ve-btn:hover { background: #9a4308; }
+        .ve-btn .ico { width: 18px; height: 18px; }
+        .ve-btn[disabled] { opacity: .55; cursor: default; }
+        .ve-btn.is-ghost { background: #fff; color: #3a2f22; border: 1.5px solid #e1d7c4; }
+        .ve-btn.is-ghost:hover:not([disabled]) { border-color: #b9500a; color: #9a4308; background: #fff; }
+        .ve-submit { margin-top: 20px; }
+        .ve-inbox { margin-top: 10px; }
+
+        .ve-help { margin: 22px 0 0; padding: 16px; border-radius: 18px; background: #fbf9f5; border: 1px solid #ece5d6; }
+        .ve-help p { margin: 0 0 10px; font-size: 13.5px; font-weight: 700; color: #1d1a16; }
+        .ve-help ul { display: grid; gap: 6px; margin: 0 0 14px; padding: 0; list-style: none; font-size: 13.5px; line-height: 1.45; color: #4a443a; }
+        .ve-help li { display: flex; gap: 8px; }
+        .ve-help li::before { content: ''; flex: none; width: 6px; height: 6px; margin-top: 7px; border-radius: 2px; transform: rotate(45deg); background: #d9650f; }
+        .ve-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin: 18px 0 0; font-size: 13.5px; color: #6b6458; }
+        .ve-link { border: 0; padding: 0; background: none; font: inherit; font-weight: 700; color: #9a4308; cursor: pointer; text-decoration: none; }
+        .ve-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+        .ve-copy { position: relative; z-index: 1; margin: 18px 0 0; font-size: 12.5px; color: #8a7f6b; }
+        .ve-card a:focus-visible, .ve-card button:focus-visible, .ve-brand:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+
+        @media (max-width: 520px) {
+            .ve-stage { justify-content: flex-start; padding: 16px 12px 28px; }
+            .ve-brand { margin-bottom: 14px; }
+            .ve-card { border-radius: 22px; }
+            .ve-head { padding: 20px 18px 24px; }
+            .ve-icon { width: 54px; height: 54px; margin-top: 12px; border-radius: 16px; }
+            .ve-title { font-size: 23px; }
+            .ve-sub { font-size: 14px; }
+            .ve-body { padding: 18px 16px 20px; }
+            .ve-otp { gap: 6px; }
+            .ve-otp span { height: 54px; border-radius: 13px; font-size: 22px; }
         }
-        .verify-shell {
-            position: relative;
-        }
-        .verify-shell::before {
-            content: "";
-            position: absolute;
-            inset: -16px;
-            border-radius: 30px;
-            background: linear-gradient(145deg, rgba(242, 121, 15,0.2), rgba(255,255,255,0.03), rgba(242, 121, 15,0.08));
-            filter: blur(16px);
-            opacity: .45;
-            pointer-events: none;
-        }
-        .verify-card {
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.12);
-            background:
-                radial-gradient(110% 130% at 0% 0%, rgba(242, 121, 15,0.14), rgba(242, 121, 15,0.04) 45%, rgba(13,11,9,0.92) 100%),
-                linear-gradient(145deg, rgba(20,18,14,0.9), rgba(13,11,9,0.94));
-            box-shadow: 0 24px 56px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05);
-            backdrop-filter: blur(8px);
-        }
-        .verify-badge {
-            background: linear-gradient(135deg,#fa9a3c,#f2790f);
-            color: #111827;
-            box-shadow: 0 10px 24px rgba(242, 121, 15,0.34);
-        }
-        .verify-input {
-            border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(0,0,0,0.26);
-            color: #fff;
-        }
-        .verify-input::placeholder { color: #6b7280; }
-        .verify-input:focus {
-            outline: none;
-            border-color: rgba(242, 121, 15,0.55);
-            box-shadow: 0 0 0 4px rgba(242, 121, 15,0.14);
-        }
-        .verify-step {
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(233, 229, 217, 0.02);
-        }
-        html:not(.dark) body {
-            background:
-                radial-gradient(900px 560px at 8% 10%, rgba(242, 121, 15,0.08), transparent 62%),
-                radial-gradient(760px 460px at 92% 88%, rgba(99,102,241,0.06), transparent 64%),
-                #ffffff;
-        }
-        html:not(.dark) .verify-card {
-            border-color: rgba(0,0,0,0.1);
-            background:
-                radial-gradient(110% 130% at 0% 0%, rgba(242, 121, 15,0.08), rgba(242, 121, 15,0.03) 45%, rgba(255,255,255,0.95) 100%),
-                linear-gradient(145deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98));
-            box-shadow: 0 16px 36px rgba(0,0,0,0.08);
-        }
-        html:not(.dark) .verify-step { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); }
-        html:not(.dark) .verify-input { border-color: rgba(0,0,0,0.18); background:#e9e5d9; color: #1c1915; }
+        @media (prefers-reduced-motion: reduce) { .ve-otp span.is-active:empty::after { animation: none; } }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 font-sans">
-    @include('partials.page-background')
+<body>
+<div class="ve-stage">
+    @include('partials.ivorian-motifs', ['culture' => 'national'])
 
-    <div class="verify-shell w-full max-w-md py-8">
+    <a href="{{ route('home') }}" class="ve-brand">
+        @if(!empty($siteBrand['logo_url']))<img src="{{ $siteBrand['logo_url'] }}" alt="">@endif
+        <b>{{ $siteBrand['site_name'] }}</b>
+    </a>
 
-        {{-- Logo --}}
-        <div class="text-center mb-8">
-            @if(!empty($siteBrand['logo_url']))
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/5 border border-white/10 mb-4 overflow-hidden p-1">
-                    <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
-                </div>
-            @else
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 mb-4">
-                    <i class="fas fa-gem text-black text-2xl"></i>
-                </div>
-            @endif
-            <h1 class="text-2xl font-bold font-serif" style="color:#fa9a3c">{{ $siteBrand['site_name'] }}</h1>
+    <div class="ve-card">
+        <div class="ve-head">
+            @include('partials.ivorian-motifs', ['culture' => 'newsletter'])
+            <p class="ve-step">{{ __('Dernière étape') }}</p>
+            <div class="ve-icon" aria-hidden="true"><x-icon name="shield-check" /></div>
+            <h1 class="ve-title">{{ __('Vérifiez votre e-mail') }}</h1>
+            <p class="ve-sub">{{ __('Nous avons envoyé un code à 6 chiffres à') }} <b>{{ $vEmail }}</b></p>
         </div>
 
-        {{-- Card --}}
-        <div class="verify-card rounded-3xl p-8 text-center">
-
-            {{-- Icône --}}
-            <div class="verify-badge inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5">
-                <i class="fas fa-envelope-circle-check text-black text-2xl"></i>
-            </div>
-
-            <h2 class="text-white text-xl font-semibold mb-2">Vérification du code</h2>
-            <p class="text-gray-300 text-sm leading-relaxed mb-6">
-                Un code de vérification a été envoyé à <span class="text-white font-medium">{{ auth()->user()->email }}</span>.
-                Saisissez ce code pour activer votre compte.
-            </p>
-
-            {{-- Message succès renvoi --}}
+        <div class="ve-body">
             @if(session('status'))
-                <div class="mb-5 p-3 rounded-xl border border-green-500/30 bg-green-500/10 text-green-300 text-sm flex items-start gap-2 text-left">
-                    <i class="fas fa-circle-check mt-0.5 shrink-0 text-green-400"></i>
-                    <p>{{ session('status') }}</p>
-                </div>
+                <div class="ve-alert is-ok" role="status"><x-icon name="check-circle" /><p style="margin:0">{{ session('status') }}</p></div>
+            @endif
+            @if(session('mail_warning'))
+                <div class="ve-alert is-warn" role="alert"><x-icon name="danger-circle" /><p style="margin:0">{{ session('mail_warning') }}</p></div>
             @endif
 
-            {{-- Saisie du code OTP --}}
-            <form method="POST" action="{{ route('verification.code') }}" class="mb-5 text-left">
+            {{-- Saisie du code (un seul champ « verification_code ») --}}
+            <form method="POST" action="{{ route('verification.code') }}" data-ve-form>
                 @csrf
-                <label for="verification_code" class="block text-xs font-medium text-gray-300 mb-1.5">
-                    Entrez le code à 6 chiffres
-                </label>
-                <input
-                    id="verification_code"
-                    name="verification_code"
-                    type="text"
-                    inputmode="numeric"
-                    pattern="[0-9]{6}"
-                    maxlength="6"
-                    required
-                    value="{{ old('verification_code') }}"
-                    placeholder="000000"
-                    class="verify-input w-full px-3 py-2.5 rounded-xl tracking-[0.35em] text-center text-lg"
-                >
-                @error('verification_code')
-                    <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
-                @enderror
+                <label for="verification_code" class="ve-label">{{ __('Entrez le code à 6 chiffres') }}</label>
+                <div class="ve-otp @error('verification_code') is-error @enderror" data-ve-otp>
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                    <input id="verification_code" name="verification_code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="14" required
+                           autocomplete="one-time-code" autofocus value="{{ old('verification_code') }}"
+                           @error('verification_code') aria-invalid="true" aria-describedby="code-err" @enderror>
+                </div>
+                @error('verification_code')<p class="ve-err" id="code-err" role="alert">{{ $message }}</p>@enderror
 
-                <button type="submit"
-                        class="w-full py-2.5 rounded-xl mt-3 font-semibold text-sm text-black transition-all duration-200 hover:-translate-y-0.5"
-                        style="background: #f2790f; box-shadow: 0 4px 20px rgba(242, 121, 15,0.3)">
-                    <i class="fas fa-check mr-1.5 text-xs"></i>
-                    Vérifier le code
-                </button>
+                <ul class="ve-meta">
+                    <li><x-icon name="clock-circle" />{{ __('Code valable 10 minutes') }}</li>
+                    <li><x-icon name="shield-check" />{{ __('Ne le partagez avec personne') }}</li>
+                </ul>
+
+                <button type="submit" class="ve-btn ve-submit" data-ve-submit><x-icon name="check-circle" />{{ __('Vérifier le code') }}</button>
             </form>
 
-            {{-- Étapes --}}
-            <div class="verify-step rounded-xl p-4 mb-6 text-left space-y-3">
-                <div class="flex items-start gap-3">
-                    <span class="w-5 h-5 rounded-full bg-gold-500/20 text-gold-400 text-xs flex items-center justify-center shrink-0 mt-0.5 font-bold">1</span>
-                    <p class="text-gray-300 text-xs leading-relaxed">Ouvrez votre boîte e-mail et cherchez le code envoyé par <span class="text-gray-100">{{ $siteBrand['site_name'] }}</span>.</p>
-                </div>
-                <div class="flex items-start gap-3">
-                    <span class="w-5 h-5 rounded-full bg-gold-500/20 text-gold-400 text-xs flex items-center justify-center shrink-0 mt-0.5 font-bold">2</span>
-                    <p class="text-gray-300 text-xs leading-relaxed">Saisissez le code reçu dans le champ ci-dessus.</p>
-                </div>
-                <div class="flex items-start gap-3">
-                    <span class="w-5 h-5 rounded-full bg-gold-500/20 text-gold-400 text-xs flex items-center justify-center shrink-0 mt-0.5 font-bold">3</span>
-                    <p class="text-gray-300 text-xs leading-relaxed">Vous serez redirigé vers votre espace personnel.</p>
-                </div>
+            @if($vInbox)
+                <a href="{{ $vInbox[1] }}" target="_blank" rel="noopener" class="ve-btn is-ghost ve-inbox"><x-icon name="link" />{{ __('Ouvrir :app', ['app' => $vInbox[0]]) }}</a>
+            @endif
+
+            <div class="ve-help">
+                <p>{{ __('Vous n\'avez rien reçu ?') }}</p>
+                <ul>
+                    <li>{{ __('Patientez une minute : l\'e-mail peut mettre un peu de temps à arriver.') }}</li>
+                    <li>{{ __('Regardez dans les courriers indésirables (spam) et l\'onglet Promotions.') }}</li>
+                    <li>{{ __('Vérifiez que l\'adresse ci-dessus est bien la vôtre.') }}</li>
+                </ul>
+                <form method="POST" action="{{ route('verification.send') }}" data-ve-resend>
+                    @csrf
+                    <button type="submit" class="ve-btn is-ghost" data-ve-resend-btn><x-icon name="restart" /><span data-ve-resend-txt>{{ __('Renvoyer le code') }}</span></button>
+                </form>
             </div>
 
-            {{-- Renvoyer le code --}}
-            <form method="POST" action="{{ route('verification.send') }}">
+            <form method="POST" action="{{ route('logout') }}" class="ve-foot">
                 @csrf
-                <button type="submit"
-                        class="w-full py-2.5 rounded-xl border border-gold-400/70 bg-gold-500/10 text-gold-100 hover:text-white hover:border-gold-300 hover:bg-gold-500/20 transition text-sm font-semibold mb-3">
-                    <i class="fas fa-rotate-right mr-1.5 text-xs"></i>
-                    Renvoyer le code de vérification
-                </button>
+                <span>{{ __('Ce n\'est pas votre adresse ?') }}</span>
+                <button type="submit" class="ve-link">{{ __('Utiliser un autre compte') }}</button>
             </form>
-
-            {{-- Déconnexion --}}
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="text-xs text-gray-300 hover:text-gray-100 transition">
-                    Utiliser un autre compte
-                </button>
-            </form>
-
         </div>
-
-        <p class="text-center text-gray-400 text-xs mt-6">&copy; {{ date('Y') }} {{ $siteBrand['site_name'] }}</p>
     </div>
 
+    <p class="ve-copy">&copy; {{ date('Y') }} {{ $siteBrand['site_name'] }}</p>
+</div>
+
+<script>
+(function () {
+    var form = document.querySelector('[data-ve-form]'), wrap = document.querySelector('[data-ve-otp]');
+    if (!form || !wrap) return;
+    var input = document.getElementById('verification_code'), boxes = wrap.querySelectorAll('span');
+
+    function paint() {
+        var v = input.value, focused = document.activeElement === input;
+        boxes.forEach(function (b, i) {
+            b.textContent = v[i] || '';
+            b.classList.toggle('is-filled', !!v[i]);
+            b.classList.toggle('is-active', focused && i === Math.min(v.length, 5));
+        });
+    }
+    input.addEventListener('input', function () {
+        var clean = input.value.replace(/\D/g, '').slice(0, 6);
+        if (clean !== input.value) input.value = clean;
+        wrap.classList.remove('is-error');
+        paint();
+        // Six chiffres saisis ou collés : envoi automatique.
+        if (clean.length === 6 && !form.dataset.sent) { form.dataset.sent = '1'; form.querySelector('[data-ve-submit]').disabled = true; form.submit(); }
+    });
+    input.addEventListener('focus', paint);
+    input.addEventListener('blur', paint);
+    form.addEventListener('submit', function () { form.dataset.sent = '1'; form.querySelector('[data-ve-submit]').disabled = true; });
+    paint();
+
+    // Renvoi : patienter 30 s entre deux demandes (le compteur reprend après un rechargement).
+    var btn = document.querySelector('[data-ve-resend-btn]'), label = document.querySelector('[data-ve-resend-txt]');
+    var base = label.textContent, waitTxt = {{ \Illuminate\Support\Js::from(__('Renvoyer le code dans :s s')) }}, KEY = 've_resend_at';
+    function left() { var t = 0; try { t = +sessionStorage.getItem(KEY) || 0; } catch (e) {} return Math.max(0, Math.ceil((t + 30000 - Date.now()) / 1000)); }
+    function tick() {
+        var s = left();
+        btn.disabled = s > 0;
+        label.textContent = s > 0 ? waitTxt.replace(':s', s) : base;
+        if (s > 0) setTimeout(tick, 1000);
+    }
+    document.querySelector('[data-ve-resend]').addEventListener('submit', function () { try { sessionStorage.setItem(KEY, String(Date.now())); } catch (e) {} });
+    @if(session('status') || session('mail_warning')) try { if (!sessionStorage.getItem(KEY)) sessionStorage.setItem(KEY, String(Date.now())); } catch (e) {} @endif
+    tick();
+})();
+</script>
 </body>
 </html>

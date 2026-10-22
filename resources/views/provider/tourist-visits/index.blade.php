@@ -10,11 +10,7 @@
         <i class="fas fa-circle-check"></i> {{ session('success') }}
     </div>
 @endif
-@if(session('error'))
-    <div class="mb-4 px-4 py-3 bg-rose-900/30 border border-rose-700/40 text-rose-200 text-sm rounded-xl flex items-center gap-2">
-        <i class="fas fa-circle-exclamation"></i> {{ session('error') }}
-    </div>
-@endif
+{{-- Les erreurs (session('error')) sont affichées par le layout. --}}
 
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
     <div class="bg-gradient-to-br from-green-900/40 to-green-900 border border-green-500/30 rounded-xl p-4">

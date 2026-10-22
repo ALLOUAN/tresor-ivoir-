@@ -16,15 +16,16 @@ class ReservationPricingService
      *
      * @return array{nights:int, total_xof:int|null, deposit_xof:int|null, commission_xof:int|null, commission_rate_percent:float, deposit_rate_percent:float}
      */
-    public function compute(string $checkIn, string $checkOut, int $roomsCount, ?int $roomPriceXof): array
+    public function compute(string $checkIn, string $checkOut, int $roomsCount, ?int $roomPriceXof, ?int $totalOverrideXof = null): array
     {
         $checkInDate = new \DateTimeImmutable($checkIn);
         $checkOutDate = new \DateTimeImmutable($checkOut);
         $nights = max(1, $checkInDate->diff($checkOutDate)->days);
 
-        $totalXof = $roomPriceXof !== null
+        // Total fourni (tarifs saisonniers / remises, cf. RoomRates) sinon prix fixe × nuits × chambres.
+        $totalXof = $totalOverrideXof ?? ($roomPriceXof !== null
             ? $roomPriceXof * $nights * $roomsCount
-            : null;
+            : null);
 
         $depositRate = $this->depositPercent();
         $commissionRate = $this->commissionPercent();
@@ -33,9 +34,13 @@ class ReservationPricingService
             ? (int) round($totalXof * $depositRate / 100)
             : null;
 
-        $commissionXof = $depositXof !== null
-            ? (int) round($depositXof * $commissionRate / 100)
-            : null;
+        // Base de commission réglable par l'admin : l'acompte (historique) ou le total du séjour.
+        // Sur le total, la commission reste plafonnée à l'acompte, seule somme encaissée en ligne.
+        $commissionXof = match (true) {
+            $depositXof === null => null,
+            $this->commissionBase() === 'total' => min($depositXof, (int) round($totalXof * $commissionRate / 100)),
+            default => (int) round($depositXof * $commissionRate / 100),
+        };
 
         return [
             'nights' => $nights,
@@ -59,6 +64,12 @@ class ReservationPricingService
         $value = $this->setting('reservation_commission_percent');
 
         return $value !== null ? (float) $value : self::DEFAULT_COMMISSION_PERCENT;
+    }
+
+    /** 'deposit' (défaut) ou 'total'. */
+    public function commissionBase(): string
+    {
+        return $this->setting('reservation_commission_base') === 'total' ? 'total' : 'deposit';
     }
 
     protected function setting(string $key): ?string

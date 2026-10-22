@@ -1,7 +1,7 @@
 @extends('layouts.visitor-public')
 
-@section('title', 'Mon profil')
-@section('page-title', 'Mon profil visiteur')
+@section('title', __('Mon profil'))
+@section('page-title', __('Mon profil'))
 
 @section('content')
 <div class="max-w-3xl mx-auto">
@@ -21,7 +21,7 @@
         <div class="bg-green-900 border border-slate-800 rounded-xl p-5 space-y-5">
             <div class="flex items-center gap-2">
                 <i class="fas fa-user-pen text-orange-400"></i>
-                <h2 class="text-white text-sm font-semibold">Informations personnelles</h2>
+                <h2 class="text-white text-sm font-semibold">{{ __('Informations personnelles') }}</h2>
             </div>
 
             <div class="flex items-center gap-4">
@@ -34,23 +34,23 @@
                 </div>
                 <div>
                     <label class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium cursor-pointer transition">
-                        <i class="fas fa-camera"></i> Changer la photo
+                        <i class="fas fa-camera"></i> {{ __('Changer la photo') }}
                         <input type="file" name="avatar" accept="image/jpeg,image/jpg,image/png,image/webp" class="hidden">
                     </label>
-                    <p class="text-slate-500 text-[11px] mt-1.5">JPEG, PNG ou WEBP, 3 Mo max.</p>
+                    <p class="text-slate-500 text-[11px] mt-1.5">{{ __('JPEG, PNG ou WEBP, 3 Mo max.') }}</p>
                     @error('avatar') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm text-slate-300 mb-1">Prénom</label>
+                    <label class="block text-sm text-slate-300 mb-1">{{ __('Prénom') }}</label>
                     <input type="text" name="first_name" value="{{ old('first_name', $user->first_name) }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     @error('first_name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm text-slate-300 mb-1">Nom</label>
+                    <label class="block text-sm text-slate-300 mb-1">{{ __('Nom') }}</label>
                     <input type="text" name="last_name" value="{{ old('last_name', $user->last_name) }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     @error('last_name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
@@ -59,13 +59,13 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm text-slate-300 mb-1">E-mail</label>
+                    <label class="block text-sm text-slate-300 mb-1">{{ __('E-mail') }}</label>
                     <input type="email" name="email" value="{{ old('email', $user->email) }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     @error('email') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm text-slate-300 mb-1">Téléphone</label>
+                    <label class="block text-sm text-slate-300 mb-1">{{ __('Téléphone') }}</label>
                     <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     @error('phone') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
@@ -73,10 +73,10 @@
             </div>
 
             <div>
-                <label class="block text-sm text-slate-300 mb-1">Langue</label>
+                <label class="block text-sm text-slate-300 mb-1">{{ __('Langue') }}</label>
                 <select name="locale" class="w-full md:w-64 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
-                    <option value="fr" @selected(old('locale', $user->locale) === 'fr')>Français</option>
-                    <option value="en" @selected(old('locale', $user->locale) === 'en')>English</option>
+                    <option value="fr" @selected(old('locale', $user->locale) === 'fr')>{{ __('Français') }}</option>
+                    <option value="en" @selected(old('locale', $user->locale) === 'en')>{{ __('English') }}</option>
                 </select>
                 @error('locale') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
@@ -86,22 +86,22 @@
         <div id="securite" class="bg-green-900 border rounded-xl p-5 space-y-4 {{ request()->query('securite') ? 'border-orange-500/50' : 'border-slate-800' }}">
             <div class="flex items-center gap-2">
                 <i class="fas fa-shield-halved text-orange-400"></i>
-                <h2 class="text-white text-sm font-semibold">Sécurité — changer le mot de passe</h2>
+                <h2 class="text-white text-sm font-semibold">{{ __('Sécurité — changer le mot de passe') }}</h2>
             </div>
-            <p class="text-slate-500 text-xs -mt-2">Laissez ces champs vides si vous ne souhaitez pas changer de mot de passe.</p>
+            <p class="text-slate-500 text-xs -mt-2">{{ __('Laissez ces champs vides si vous ne souhaitez pas changer de mot de passe.') }}</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm text-slate-300 mb-1">Mot de passe actuel</label>
+                    <label class="block text-sm text-slate-300 mb-1">{{ __('Mot de passe actuel') }}</label>
                     <input type="password" name="current_password" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     @error('current_password') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm text-slate-300 mb-1">Nouveau mot de passe</label>
+                    <label class="block text-sm text-slate-300 mb-1">{{ __('Nouveau mot de passe') }}</label>
                     <input type="password" name="new_password" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     @error('new_password') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm text-slate-300 mb-1">Confirmation</label>
+                    <label class="block text-sm text-slate-300 mb-1">{{ __('Confirmation') }}</label>
                     <input type="password" name="new_password_confirmation" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                 </div>
             </div>
@@ -109,7 +109,7 @@
 
         <div class="flex justify-end">
             <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-black text-sm font-semibold px-4 py-2 rounded-lg">
-                Enregistrer
+                {{ __('Enregistrer') }}
             </button>
         </div>
     </form>

@@ -1,7 +1,7 @@
 @php
     $alt = trim((string) ($img->alt_text ?? ''));
     if ($alt === '') {
-        $alt = trim((string) ($img->title ?? $img->original_name ?? 'Photo'));
+        $alt = trim((string) ($img->title ?? $img->original_name ?? __('Photo')));
     }
     $title = trim((string) ($img->title ?? ''));
     $showUrl = filled($img->uuid) ? route('gallery.public.show', $img->uuid) : url($img->url);

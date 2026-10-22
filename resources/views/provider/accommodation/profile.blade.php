@@ -122,6 +122,13 @@
                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('description', $accom->description ?? '') }}</textarea>
                     </div>
                     <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-400 mb-1">Annulation gratuite jusqu'à</label>
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            <input type="number" name="free_cancellation_days" min="0" max="365" placeholder="{{ \App\Models\Reservation::DEFAULT_FREE_CANCELLATION_DAYS }}"
+                                   value="{{ old('free_cancellation_days', $accom->free_cancellation_days ?? '') }}"
+                                   class="w-24 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                            <span class="text-xs text-slate-400 flex-1 min-w-[200px]">jours avant l'arrivée. Dans ce délai, le client annule en ligne et récupère tout son acompte ; après, l'acompte reste acquis à l'établissement. Vide = {{ \App\Models\Reservation::DEFAULT_FREE_CANCELLATION_DAYS }} jours.</span>
+                        </div>
                         <label class="block text-xs text-slate-400 mb-1">Conditions de réservation / d'annulation</label>
                         <textarea name="cancellation_policy" rows="4" placeholder="Ex : Annulation gratuite jusqu'à 48h avant l'arrivée. Au-delà, la première nuit est facturée..."
                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('cancellation_policy', $accom->cancellation_policy ?? '') }}</textarea>

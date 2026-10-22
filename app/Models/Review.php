@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     protected $fillable = [
-        'provider_id', 'user_id', 'rating',
+        'provider_id', 'user_id', 'reservation_id', 'is_verified', 'rating',
         'rating_quality', 'rating_price', 'rating_welcome', 'rating_clean',
         'title', 'comment', 'author_name', 'visit_date',
         'status', 'moderated_by', 'moderated_at', 'rejection_reason', 'ip_address',
@@ -18,6 +18,7 @@ class Review extends Model
         return [
             'visit_date' => 'date',
             'moderated_at' => 'datetime',
+            'is_verified' => 'boolean',
         ];
     }
 
@@ -49,6 +50,42 @@ class Review extends Model
     public function latestReply()
     {
         return $this->hasOne(ReviewReply::class)->latestOfMany();
+    }
+
+    /**
+     * Preuve de passage de l'auteur chez ce prestataire : un séjour payé déjà commencé, ou une
+     * visite payée. Retourne [reservation_id|null, vérifié?].
+     *
+     * @return array{0: ?int, 1: bool}
+     */
+    public static function verifiedStayFor(User $user, Provider $provider): array
+    {
+        $reservation = Reservation::ownedBy($user)
+            ->where('provider_id', $provider->id)
+            ->where('status', '!=', Reservation::STATUS_CANCELLED)
+            ->where('payment_status', Reservation::PAYMENT_DEPOSIT_PAID)
+            ->whereDate('check_in', '<=', now()->toDateString())
+            ->latest('check_in')
+            ->first();
+        if ($reservation) {
+            return [$reservation->id, true];
+        }
+
+        $booked = BookingRequest::where('user_id', $user->id)
+            ->where('provider_id', $provider->id)
+            ->where('status', BookingRequest::STATUS_CONFIRMED)
+            ->whereDate('booking_date', '<=', now()->toDateString())
+            ->exists();
+        if ($booked) {
+            return [null, true];
+        }
+
+        $visited = TouristVisit::where('user_id', $user->id)
+            ->where('provider_id', $provider->id)
+            ->where('status', TouristVisit::STATUS_PAID)
+            ->exists();
+
+        return [null, $visited];
     }
 
     public function isApproved(): bool

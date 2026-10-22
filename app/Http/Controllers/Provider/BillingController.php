@@ -23,7 +23,7 @@ class BillingController extends Controller
 {
     public function plans(SubscriptionPlanCatalog $catalog): View
     {
-        $provider = Provider::where('user_id', Auth::id())->with('category.parent')->first();
+        $provider = Provider::forUserQuery(Auth::id())->with('category.parent')->first();
 
         // Catégorie racine du prestataire (même résolution que resources/views/layouts/app.blade.php) :
         // si des forfaits actifs ciblent spécifiquement cette racine (ex. Art & Créations), on
@@ -62,7 +62,7 @@ class BillingController extends Controller
 
     public function checkout(SubscriptionPlan $plan, CinetPayService $cinetPay): View|RedirectResponse
     {
-        $provider = Provider::where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
 
         if (! $provider) {
             return redirect()->route('provider.dashboard')
@@ -77,7 +77,7 @@ class BillingController extends Controller
 
     public function initiate(Request $request, SubscriptionPlan $plan, PaymentGatewayService $gatewayService): RedirectResponse
     {
-        $provider = Provider::where('user_id', Auth::id())->firstOrFail();
+        $provider = Provider::forUserQuery(Auth::id())->firstOrFail();
 
         $validated = $request->validate([
             'billing_cycle' => ['required', 'in:monthly,yearly'],
@@ -197,7 +197,7 @@ class BillingController extends Controller
 
     public function confirmation(Payment $payment): View
     {
-        $provider = Provider::where('user_id', Auth::id())->firstOrFail();
+        $provider = Provider::forUserQuery(Auth::id())->firstOrFail();
 
         abort_unless((int) $payment->provider_id === (int) $provider->id, 403);
 
@@ -255,7 +255,7 @@ class BillingController extends Controller
 
     public function invoices(): View|RedirectResponse
     {
-        $provider = Provider::where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
 
         if (! $provider) {
             return redirect()->route('provider.dashboard')

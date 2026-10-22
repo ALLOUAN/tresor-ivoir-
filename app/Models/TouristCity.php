@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class TouristCity extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     protected $fillable = [
         'name', 'slug', 'district', 'region_administrative',
         'description', 'thumbnail', 'cover_image',
         'latitude', 'longitude', 'website',
         'is_featured', 'is_active', 'sort_order',
+        'sources',
     ];
 
     protected function casts(): array
@@ -21,6 +24,7 @@ class TouristCity extends Model
             'latitude'    => 'float',
             'longitude'   => 'float',
             'is_featured' => 'boolean',
+            'sources' => 'array',
             'is_active'   => 'boolean',
         ];
     }

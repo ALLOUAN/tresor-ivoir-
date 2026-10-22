@@ -82,6 +82,11 @@
                     <button class="dp-nav-link" data-url="{{ route('provider.analytics') }}" data-title="Statistiques">
                         <i class="fas fa-chart-line w-4 text-center"></i> Statistiques
                     </button>
+                    @if(config('ai.enabled', true))
+                    <button class="dp-nav-link" data-url="{{ route('provider.insights') }}" data-title="Analyse avancée">
+                        <i class="fas fa-chart-area w-4 text-center"></i> Analyse avancée
+                    </button>
+                    @endif
                     <button class="dp-nav-link" data-url="{{ route('provider.billing.plans') }}" data-title="Mon forfait">
                         <i class="fas fa-gem w-4 text-center"></i> Mon forfait
                     </button>

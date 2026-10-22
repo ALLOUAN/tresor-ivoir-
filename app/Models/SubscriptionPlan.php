@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SubscriptionPlan extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     protected $fillable = [
         'code', 'name_fr', 'name_en',
         'price_monthly', 'price_quarterly', 'price_semiannual', 'price_yearly',

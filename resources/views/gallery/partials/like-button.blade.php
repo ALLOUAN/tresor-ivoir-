@@ -7,7 +7,7 @@
     data-media-uuid="{{ $img->uuid }}"
     data-liked="{{ $liked ? '1' : '0' }}"
     aria-pressed="{{ $liked ? 'true' : 'false' }}"
-    aria-label="Aimer cette image">
+    aria-label="{{ __('Aimer cette image') }}">
     <i class="{{ $liked ? 'fas text-red-500' : 'far' }} fa-heart text-[11px] like-icon"></i>
     <span class="like-count">{{ $count }}</span>
 </button>

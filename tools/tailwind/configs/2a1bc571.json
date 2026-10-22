@@ -1,0 +1,66 @@
+{
+ "files": [
+  "welcome.blade.php"
+ ],
+ "config": {
+  "theme": {
+   "extend": {
+    "colors": {
+     "gold": {
+      "300": "#fdbe7b",
+      "400": "#fa9a3c",
+      "500": "#f2790f",
+      "600": "#d4630a"
+     },
+     "ivory": {
+      "50": "#fdfaf3",
+      "100": "#faf3e0"
+     },
+     "dark": {
+      "400": "#e9e5d9",
+      "500": "#e9e5d9",
+      "600": "#e9e5d9",
+      "700": "#e9e5d9",
+      "800": "#e9e5d9",
+      "900": "#e9e5d9"
+     }
+    },
+    "animation": {
+     "fade-up": "fadeUp .8s ease forwards",
+     "fade-in": "fadeIn .6s ease forwards",
+     "slide-down": "slideDown .4s ease forwards"
+    },
+    "keyframes": {
+     "fadeUp": {
+      "0%": {
+       "opacity": "0",
+       "transform": "translateY(30px)"
+      },
+      "100%": {
+       "opacity": "1",
+       "transform": "translateY(0)"
+      }
+     },
+     "fadeIn": {
+      "0%": {
+       "opacity": "0"
+      },
+      "100%": {
+       "opacity": "1"
+      }
+     },
+     "slideDown": {
+      "0%": {
+       "opacity": "0",
+       "transform": "translateY(-10px)"
+      },
+      "100%": {
+       "opacity": "1",
+       "transform": "translateY(0)"
+      }
+     }
+    }
+   }
+  }
+ }
+}

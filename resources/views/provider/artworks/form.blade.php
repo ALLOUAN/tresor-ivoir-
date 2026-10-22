@@ -83,6 +83,8 @@
             </div>
         </div>
 
+        @include('partials.artwork-market-fields', ['artwork' => $artwork])
+
         <div>
             <label class="block text-slate-400 text-xs mb-1.5">Photos de l'œuvre</label>
             @if($artwork->exists && !empty($artwork->images))

@@ -27,6 +27,7 @@
     .note-editable td, .note-editable th { border: 1px solid #cbd5e1; padding: .35rem .6rem; }
     .note-editable hr { border: 0; border-top: 1px solid #d6cfba; margin: 1rem 0; }
 </style>
+@include('partials.lettrine-style')
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/lang/summernote-fr-FR.min.js"></script>
@@ -35,6 +36,37 @@ window.RichEditor = (function ($) {
     'use strict';
 
     const FONT_NAMES = ['Arial', 'Georgia', 'Inter', 'Oswald', 'Times New Roman', 'Verdana'];
+
+    /** Bouton « Lettrine » : ajoute / retire la lettrine et le filet sur le paragraphe où se trouve le curseur. */
+    function lettrineButton(context) {
+        const ui = $.summernote.ui;
+        return ui.button({
+            contents: '<span style="font-family:Oswald,Impact,sans-serif;font-weight:700;color:#e11d2a;font-size:15px;line-height:1">L</span> Lettrine',
+            tooltip: 'Lettrine et filet rouge sur le paragraphe en cours (cliquer à nouveau pour retirer)',
+            click: function () {
+                const editable = context.layoutInfo.editable[0];
+                const sel = window.getSelection();
+                let node = sel && sel.anchorNode && editable.contains(sel.anchorNode) ? sel.anchorNode : null;
+                if (!node) {
+                    const rng = context.invoke('editor.getLastRange');
+                    node = rng && rng.sc && editable.contains(rng.sc) ? rng.sc : null;
+                }
+                // Remonte jusqu'au bloc de premier niveau de la zone d'édition.
+                while (node && node.parentNode !== editable) node = node.parentNode;
+                if (!node || node.nodeType !== 1) {
+                    alert('Placez le curseur dans le paragraphe à mettre en lettrine.');
+                    return;
+                }
+                if (node.nodeName !== 'P') {
+                    alert('La lettrine s\'applique à un paragraphe de texte (pas à un titre, une liste ou une image).');
+                    return;
+                }
+                node.classList.toggle('lettrine');
+                if (!node.classList.length) node.removeAttribute('class');
+                context.triggerEvent('change', context.layoutInfo.editable.html());
+            },
+        }).render();
+    }
     const registry = [];
 
     function available() {
@@ -83,10 +115,12 @@ window.RichEditor = (function ($) {
                     ['fontsize', ['fontsize']],
                     ['color', ['color']],
                     ['para', ['ul', 'ol', 'paragraph']],
+                    ['magazine', ['lettrine']],
                     ['table', ['table']],
                     ['insert', ['link', 'picture', 'video', 'hr']],
                     ['view', ['fullscreen', 'codeview', 'help']],
                 ],
+                buttons: { lettrine: lettrineButton },
                 styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
                 addDefaultFonts: false,
                 fontNames: FONT_NAMES,

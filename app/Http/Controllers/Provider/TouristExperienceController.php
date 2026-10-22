@@ -20,7 +20,7 @@ class TouristExperienceController extends Controller
 
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -192,6 +192,8 @@ class TouristExperienceController extends Controller
             'thumbnail_file' => 'nullable|file|image|max:5120',
             'visit_individual_price_xof' => 'nullable|integer|min:0',
             'visit_guide_supplement_xof' => 'nullable|integer|min:0',
+            'visit_child_price_xof' => 'nullable|integer|min:0',
+            'visit_resident_price_xof' => 'nullable|integer|min:0',
         ]);
     }
 

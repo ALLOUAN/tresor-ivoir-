@@ -1,0 +1,6 @@
+{
+    "private": true,
+    "description": "Compilation du CSS Tailwind 3 des pages publiques (remplace le CDN cdn.tailwindcss.com). Indépendant du Vite/Tailwind 4 de la racine.",
+    "scripts": { "build": "node build.js" },
+    "devDependencies": { "tailwindcss": "3.4.17" }
+}

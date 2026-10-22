@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TouristSite extends Model
 {
-    use SoftDeletes;
+    use \App\Models\Concerns\HasLocalizedFields, SoftDeletes;
 
     protected $fillable = [
         // Relations
@@ -32,6 +32,7 @@ class TouristSite extends Model
 
         // Méta
         'is_featured', 'is_active', 'views_count', 'sort_order',
+        'sources',
     ];
 
     protected function casts(): array
@@ -44,6 +45,7 @@ class TouristSite extends Model
             'schedules'         => 'array',
             'practical_info'    => 'array',
             'is_featured'       => 'boolean',
+            'sources' => 'array',
             'is_active'         => 'boolean',
         ];
     }

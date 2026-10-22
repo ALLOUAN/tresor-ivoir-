@@ -58,6 +58,18 @@
     </url>
     @endforeach
 
+    {{-- Hébergements, restaurants, loisirs, sites, régions, cultures --}}
+    @foreach($listings ?? [] as [$routeName, $rows, $priority])
+    @foreach($rows as $row)
+    <url>
+        <loc>{{ route($routeName, $row->slug) }}</loc>
+        @if($row->updated_at)<lastmod>{{ $row->updated_at->toAtomString() }}</lastmod>@endif
+        <changefreq>weekly</changefreq>
+        <priority>{{ $priority }}</priority>
+    </url>
+    @endforeach
+    @endforeach
+
     {{-- Prestataires --}}
     @foreach($providers as $provider)
     <url>

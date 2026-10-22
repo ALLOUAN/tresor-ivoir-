@@ -1,43 +1,105 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @if(!empty($siteBrand['favicon_url']))
         <link rel="icon" href="{{ $siteBrand['favicon_url'] }}" type="image/png">
     @endif
-    <title>Connexion — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ __('Connexion') }} — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        amber: {
-                            400: '#fa9a3c',
-                            500: '#f2790f',
-                            600: '#9f4709',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    @include('partials.theme-light-bridge')
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        @include('partials.theme-light-bridge')
     <style>
-        html:not(.dark) .bg-slate-800\/60 { background-color:rgba(0,0,0,0.04) !important; }
-        html:not(.dark) .border-slate-600 { border-color:#c2b89e !important; }
-        html:not(.dark) .placeholder-slate-500::placeholder { color:#665f52 !important; }
         /* Image de fond configurable (back-office) de la page de connexion. */
         .login-bg {
-            background-image: linear-gradient(rgba(6,25,17,.80), rgba(6,25,17,.80)), var(--login-bg-image, none);
+            background-image: linear-gradient(rgba(6, 25, 17, 0.8), rgba(6, 25, 17, 0.8)), var(--login-bg-image, none);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }
+
+        .login-shell { background: #ffffff; border: 1px solid #e8e1d3; box-shadow: 0 20px 50px rgb(29 26 22 / .10); }
+
+        /* Panneau de marque : vert forêt, texte clair (couleurs en CSS : le pont de thème
+           clair réécrit les utilitaires text-white). */
+        .login-aside { background: #14532d; color: #ffffff; position: relative; }
+        .login-aside::after { /* filet or discret en haut du panneau */
+            content: ''; position: absolute; left: 40px; top: 0; width: 56px; height: 3px; background: #b8892b;
+        }
+        .login-aside__kicker { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #f0c987; }
+        .login-aside__title { margin-top: 14px; font-family: var(--font-serif); font-size: 40px; line-height: 1.1; font-weight: 700; color: #ffffff; }
+        .login-aside__lead { margin-top: 14px; max-width: 26rem; font-size: 15px; line-height: 1.65; color: rgba(255,255,255,.82); }
+        .login-aside__list { margin-top: 30px; display: grid; gap: 14px; }
+        .login-aside__list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: rgba(255,255,255,.9); }
+        .login-aside__list i {
+            flex-shrink: 0; width: 30px; height: 30px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,.1); color: #f0c987; font-size: 12px;
+        }
+        .login-aside__list span { padding-top: 5px; }
+        .login-aside__note { margin-top: 32px; font-size: 12.5px; color: rgba(255,255,255,.7); }
+        .login-aside__note i { margin-right: 6px; color: #f0c987; }
+
+        /* Formulaire */
+        .login-back { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #6b6458; }
+        .login-back:hover { color: #b9500a; }
+        .login-title { margin-top: 22px; font-family: var(--font-serif); font-size: 30px; font-weight: 700; color: #1d1a16; }
+        .login-subtitle { margin-top: 4px; margin-bottom: 26px; font-size: 14px; color: #6b6458; }
+        .login-label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #1d1a16; }
+        html:not(.dark) .login-input {
+            width: 100%; height: 46px;
+            padding: 0 14px 0 42px;
+            background: #ffffff !important;
+            border: 1px solid #d8cdb8 !important;
+            border-radius: 10px;
+            font-size: 15px; color: #1d1a16 !important;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+        html:not(.dark) .login-input:hover { border-color: #c4b79c !important; }
+        html:not(.dark) .login-input:focus { outline: none; border-color: #b9500a !important; box-shadow: 0 0 0 3px rgb(185 80 10 / .2) !important; }
+        html:not(.dark) .login-input.is-invalid { border-color: #c0362c !important; }
+        .login-input-icon { position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; color: #8f8778; font-size: 13px; pointer-events: none; }
+        .login-eye {
+            position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+            width: 36px; height: 36px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: #6b6458; font-size: 14px;
+        }
+        .login-eye:hover { background: #f3eee4; color: #1d1a16; }
+        .login-check { width: 17px; height: 17px; accent-color: #b9500a; }
+        .login-link { color: #b9500a; }
+        .login-link:hover { color: #9a4308; text-decoration: underline; text-underline-offset: 3px; }
+        .login-submit {
+            width: 100%; height: 48px; border-radius: 10px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 15px; font-weight: 600;
+        }
+        .login-alert { margin-bottom: 18px; padding: 12px 14px; border-radius: 10px; border: 1px solid; border-left-width: 4px; display: flex; gap: 10px; font-size: 14px; }
+        .login-alert--error { background: #fdeceb; border-color: #f5c2bd; border-left-color: #c0362c; color: #8a241c; }
+        .login-alert--success { background: #eef6f0; border-color: #d9ecdf; border-left-color: #1b6b3a; color: #14532d; }
+        .login-signup {
+            margin-top: 28px; padding-top: 22px; border-top: 1px solid #e8e1d3;
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px;
+            font-size: 14px; color: #6b6458;
+        }
+
+        /* Avec l'image de fond d'admin (voile sombre), le cadre ressort sur la photo. */
+        .login-bg .login-shell { box-shadow: 0 24px 60px rgb(0 0 0 / .35); }
+
+        /* Motifs ivoiriens : trame autour de la carte (fond crème), filigrane écru dans le panneau vert */
+        .login-stage > .ivm .ivm-g { opacity: .24 !important; }
+        .login-shell { position: relative; z-index: 1; }
+        .login-aside { overflow: hidden; }
+        .login-aside > :not(.ivm) { position: relative; z-index: 1; }
+        .login-aside .ivm-g { opacity: .05 !important; }
+        .login-aside .ivm-g > * { stroke: #f6c38f !important; }
+        .login-aside .ivm-g > circle[fill] { fill: #f6c38f !important; }
+        @media (max-width: 1023px) {
+            .login-shell { max-width: 30rem; }
+        }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-803c04c8.css') }}?v={{ @filemtime(public_path('css/tw-803c04c8.css')) }}">
 </head>
 @php
     $loginBackgroundImage = \Illuminate\Support\Facades\Schema::hasTable('login_background_images')
@@ -52,50 +114,54 @@
 
 @include('partials.public-top-nav')
 
-    <div class="flex-1 flex items-center justify-center p-4 relative {{ $hasCustomLoginBg ? 'login-bg' : '' }}"
+    <div class="login-stage flex-1 flex items-center justify-center px-4 py-10 sm:py-14 relative overflow-hidden {{ $hasCustomLoginBg ? 'login-bg' : '' }}"
         @if($hasCustomLoginBg)
             style="--login-bg-image: url('{{ $loginBackgroundImage->image_url }}');"
         @endif
     >
-    <div class="w-full max-w-md relative">
-        {{-- Retour accueil --}}
-        <div class="mb-4">
-            <a href="{{ route('home') }}"
-               class="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:bg-slate-700 hover:text-white">
-                <i class="fas fa-arrow-left text-xs"></i>
-                Retour à l'accueil
+    @unless($hasCustomLoginBg)
+        @include('partials.ivorian-motifs', ['culture' => 'national'])
+    @endunless
+    <div class="login-shell w-full max-w-5xl grid lg:grid-cols-[1fr_1.05fr] overflow-hidden rounded-2xl">
+
+        {{-- Panneau de marque (grand écran) : ce que permet un compte --}}
+        <aside class="login-aside hidden lg:flex flex-col justify-between p-10 xl:p-12">
+            @include('partials.ivorian-motifs', ['culture' => 'cultures', 'band' => false])
+            <div>
+                <p class="login-aside__kicker">{{ __('Espace membres') }}</p>
+                <h1 class="login-aside__title">{{ __('Bon retour') }}<br>{{ __('parmi nous.') }}</h1>
+                <p class="login-aside__lead">{{ __('Retrouvez vos réservations, vos échanges et vos adresses favorites en Côte d\'Ivoire.') }}</p>
+
+                <ul class="login-aside__list">
+                    <li><i class="fas fa-bed"></i><span>{{ __('Réservez un hébergement et suivez vos acomptes') }}</span></li>
+                    <li><i class="fas fa-comments"></i><span>{{ __('Échangez en toute sécurité avec les prestataires') }}</span></li>
+                    <li><i class="fas fa-heart"></i><span>{{ __('Gardez vos lieux et événements favoris') }}</span></li>
+                    <li><i class="fas fa-store"></i><span>{{ __('Prestataire ? Gérez votre fiche et vos demandes') }}</span></li>
+                </ul>
+            </div>
+            <p class="login-aside__note"><i class="fas fa-shield-halved"></i> {{ __('Connexion sécurisée — vos données restent privées.') }}</p>
+        </aside>
+
+        {{-- Formulaire --}}
+        <div class="login-panel p-7 sm:p-10 xl:p-12">
+            <a href="{{ route('home') }}" class="login-back">
+                <i class="fas fa-arrow-left text-[11px]"></i> {{ __('Retour à l\'accueil') }}
             </a>
-        </div>
 
-        {{-- Logo / Brand --}}
-        <div class="text-center mb-8">
-            @if(!empty($siteBrand['logo_url']))
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 border border-slate-600 mb-4 overflow-hidden p-1">
-                    <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
-                </div>
-            @else
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-500 mb-4">
-                    <i class="fas fa-gem text-white text-2xl"></i>
-                </div>
-            @endif
-            <h1 class="text-3xl font-bold text-orange-400 tracking-wide">{{ $siteBrand['site_name'] }}</h1>
-            <p class="text-slate-400 text-sm mt-1">{{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}</p>
-        </div>
-
-        {{-- Card --}}
-        <div class="bg-green-900 border border-slate-700 rounded-2xl shadow-2xl p-8">
-            <h2 class="text-white text-xl font-semibold mb-6">Connexion à votre espace</h2>
+            <h2 class="login-title">{{ __('Connexion') }}</h2>
+            <p class="login-subtitle">{{ __('Accédez à votre espace') }} {{ $siteBrand['site_name'] }}.</p>
 
             @if ($errors->any())
-                <div class="mb-4 p-3 bg-red-900/40 border border-red-700 rounded-lg text-red-300 text-sm flex items-start gap-2">
+                <div class="login-alert login-alert--error" role="alert">
                     <i class="fas fa-circle-exclamation mt-0.5 shrink-0"></i>
                     <span>{{ $errors->first() }}</span>
                 </div>
             @endif
 
             @if (session('status'))
-                <div class="mb-4 p-3 bg-green-900/40 border border-green-700 rounded-lg text-green-300 text-sm">
-                    {{ session('status') }}
+                <div class="login-alert login-alert--success" role="status">
+                    <i class="fas fa-circle-check mt-0.5 shrink-0"></i>
+                    <span>{{ session('status') }}</span>
                 </div>
             @endif
 
@@ -104,13 +170,9 @@
 
                 {{-- Email --}}
                 <div>
-                    <label for="email" class="block text-slate-300 text-sm font-medium mb-1.5">
-                        Adresse e-mail
-                    </label>
+                    <label for="email" class="login-label">{{ __('Adresse e-mail') }}</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-500">
-                            <i class="fas fa-envelope text-sm"></i>
-                        </span>
+                        <span class="login-input-icon"><i class="fas fa-envelope"></i></span>
                         <input
                             id="email"
                             name="email"
@@ -120,7 +182,7 @@
                             autofocus
                             autocomplete="email"
                             placeholder="vous@exemple.ci"
-                            class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition @error('email') border-red-500 @enderror"
+                            class="login-input @error('email') is-invalid @enderror"
                         >
                     </div>
                 </div>
@@ -128,17 +190,11 @@
                 {{-- Password --}}
                 <div>
                     <div class="flex items-center justify-between mb-1.5">
-                        <label for="password" class="block text-slate-300 text-sm font-medium">
-                            Mot de passe
-                        </label>
-                        <a href="{{ route('password.request') }}" class="text-xs text-orange-400 hover:text-orange-300 transition">
-                            Mot de passe oublié ?
-                        </a>
+                        <label for="password" class="login-label !mb-0">{{ __('Mot de passe') }}</label>
+                        <a href="{{ route('password.request') }}" class="login-link text-xs">{{ __('Mot de passe oublié ?') }}</a>
                     </div>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-500">
-                            <i class="fas fa-lock text-sm"></i>
-                        </span>
+                        <span class="login-input-icon"><i class="fas fa-lock"></i></span>
                         <input
                             id="password"
                             name="password"
@@ -146,42 +202,51 @@
                             required
                             autocomplete="current-password"
                             placeholder="••••••••"
-                            class="w-full bg-slate-800 border border-slate-600 text-white placeholder-slate-500 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                            class="login-input pr-12"
                         >
+                        <button type="button" class="login-eye" data-toggle-password="password" aria-label="{{ __('Afficher le mot de passe') }}" aria-pressed="false">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
                 </div>
 
                 {{-- Remember me --}}
-                <div class="flex items-center gap-2">
-                    <input id="remember" name="remember" type="checkbox"
-                        class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-orange-500 focus:ring-orange-500">
-                    <label for="remember" class="text-slate-400 text-sm">Se souvenir de moi</label>
-                </div>
+                <label for="remember" class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                    <input id="remember" name="remember" type="checkbox" class="login-check">
+                    <span class="text-sm" style="color:#4a443a">{{ __('Se souvenir de moi') }}</span>
+                </label>
 
                 {{-- Submit --}}
-                <button type="submit"
-                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-lg transition duration-150 flex items-center justify-center gap-2 text-sm">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Se connecter
+                <button type="submit" class="btn-primary login-submit">
+                    {{ __('Se connecter') }} <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             </form>
 
             {{-- Pas encore de compte --}}
-            <div class="mt-6 pt-5 border-t border-slate-700 text-center">
-                <p class="text-slate-400 text-sm mb-3">Pas encore de compte ?</p>
-                <button type="button" data-open-register-modal
-                   class="w-full inline-flex items-center justify-center gap-2 bg-transparent border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-semibold py-2.5 rounded-lg transition duration-150 text-sm">
-                    <i class="fas fa-user-plus"></i>
-                    S'inscrire
+            <div class="login-signup">
+                <span>{{ __('Pas encore de compte ?') }}</span>
+                <button type="button" data-open-register-modal class="login-link font-semibold">
+                    {{ __('Créer un compte') }} <i class="fas fa-arrow-right text-[10px] ml-0.5"></i>
                 </button>
             </div>
         </div>
+    </div>
+    </div>
 
-        <p class="text-center text-slate-600 text-xs mt-6">
-            &copy; {{ date('Y') }} {{ $siteBrand['site_name'] }} — Tous droits réservés
-        </p>
-    </div>
-    </div>
+    <script>
+        // Afficher / masquer le mot de passe (aucun effet sur l'envoi du formulaire).
+        document.querySelectorAll('[data-toggle-password]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var input = document.getElementById(btn.getAttribute('data-toggle-password'));
+                if (!input) return;
+                var show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+                btn.setAttribute('aria-label', show ? {{ \Illuminate\Support\Js::from(__('Masquer le mot de passe')) }} : {{ \Illuminate\Support\Js::from(__('Afficher le mot de passe')) }});
+                btn.querySelector('i').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+            });
+        });
+    </script>
 
 @include('partials.homepage-footer')
 @include('partials.register-choice-modal')

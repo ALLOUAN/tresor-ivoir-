@@ -297,6 +297,11 @@ class FinanceManagementController extends Controller
             // Réservations d'hébergement
             'reservation_deposit_percent' => ['nullable', 'numeric', 'min:1', 'max:100'],
             'reservation_commission_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'reservation_commission_base' => ['nullable', 'in:deposit,total'],
+            'booking_commission_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'free_cancellation_days' => ['nullable', 'integer', 'min:0', 'max:365'],
+            'reservation_request_expiry_hours' => ['nullable', 'integer', 'min:1', 'max:720'],
+            'provider_free_access' => ['nullable', 'boolean'],
             'wallet_payout_release_delay_days' => ['nullable', 'integer', 'min:0', 'max:90'],
             'art_commission_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'art_auto_release_delay_days' => ['nullable', 'integer', 'min:0', 'max:90'],
@@ -312,6 +317,7 @@ class FinanceManagementController extends Controller
             'method_paypal',
             'cycle_monthly_active',
             'cycle_yearly_active',
+            'provider_free_access',
         ];
 
         foreach ($booleanKeys as $key) {

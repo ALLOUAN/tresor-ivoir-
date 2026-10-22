@@ -39,7 +39,7 @@ class ReservationPaymentController extends Controller
             'room_id' => ['nullable', 'string', 'max:40'],
             'room_name' => ['required', 'string', 'max:255'],
             'room_price_xof' => ['required', 'integer', 'min:1'],
-            'check_in' => ['required', 'date'],
+            'check_in' => ['required', 'date', 'after_or_equal:today'],
             'check_out' => ['required', 'date', 'after:check_in'],
             'rooms_count' => ['required', 'integer', 'min:1', 'max:20'],
             'guests_count' => ['required', 'integer', 'min:1', 'max:50'],
@@ -48,6 +48,7 @@ class ReservationPaymentController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'message' => ['nullable', 'string', 'max:2000'],
             'payment_method' => ['nullable', 'in:cinetpay,wallet'],
+            'promo_code' => ['nullable', 'string', 'max:30'],
         ]);
         $paymentMethod = $validated['payment_method'] ?? 'cinetpay';
 
@@ -73,13 +74,29 @@ class ReservationPaymentController extends Controller
         }
         $roomName = (string) $room['name'];
         $roomId = $room['id'] ?? null;
+        $units = Reservation::roomUnits($room);
+        if (Reservation::roomClosedDuring($room, $validated['check_in'], $validated['check_out'])) {
+            return response()->json([
+                'success' => false,
+                'message' => "L'établissement a fermé cette chambre à la vente sur une partie de ces dates. Merci de choisir d'autres dates.",
+            ], 422);
+        }
         $validated['room_price_xof'] = (int) $room['price_xof'];
+
+        $quote = app(\App\Services\RoomRates::class)->quote($room, $validated['check_in'], $validated['check_out'], (int) $validated['rooms_count']);
+        $promoCheck = app(\App\Services\ProviderPromoService::class)->check($accommodation->provider_id, $validated['promo_code'] ?? null, (int) $quote['total']);
+        if ($promoCheck['error']) {
+            return response()->json(['success' => false, 'message' => $promoCheck['error']], 422);
+        }
+        $promo = $promoCheck['promo'];
+        $discount = $promoCheck['discount'];
 
         $calc = $pricing->compute(
             $validated['check_in'],
             $validated['check_out'],
             $validated['rooms_count'],
-            $validated['room_price_xof']
+            $validated['room_price_xof'],
+            $quote['total'] - $discount
         );
 
         if (! $calc['deposit_xof']) {
@@ -92,11 +109,15 @@ class ReservationPaymentController extends Controller
         // Verrou + vérification + création dans la même transaction (cf. ReservationController::store
         // pour le détail du raisonnement) : évite qu'une requête concurrente sur la même chambre ne
         // passe le contrôle de chevauchement avant que celle-ci n'ait committé.
-        $reservation = DB::transaction(function () use ($accommodation, $roomName, $roomId, $validated, $calc, $paymentMethod) {
+        $reservation = DB::transaction(function () use ($accommodation, $roomName, $roomId, $units, $validated, $calc, $paymentMethod, $promo, $discount) {
             Accommodation::whereKey($accommodation->id)->lockForUpdate()->first();
 
-            if (Reservation::hasConflict($accommodation->id, $roomName, $validated['check_in'], $validated['check_out'], null, $roomId)) {
+            if (Reservation::hasConflict($accommodation->id, $roomName, $validated['check_in'], $validated['check_out'], null, $roomId, $units, (int) $validated['rooms_count'])) {
                 return null;
+            }
+
+            if ($promo && ! app(\App\Services\ProviderPromoService::class)->consume($promo)) {
+                throw \Illuminate\Validation\ValidationException::withMessages(['promo_code' => __('Ce code promo vient d\'atteindre son nombre maximal d\'utilisations.')]);
             }
 
             return Reservation::create([
@@ -113,6 +134,8 @@ class ReservationPaymentController extends Controller
                 'rooms_count' => $validated['rooms_count'],
                 'guests_count' => $validated['guests_count'],
                 'total_xof' => $calc['total_xof'],
+                'promo_code' => $promo?->code,
+                'promo_discount_xof' => $discount ?: null,
                 'full_name' => $validated['full_name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'] ?? null,
@@ -177,7 +200,7 @@ class ReservationPaymentController extends Controller
 
         if (! $cinetPay->isConfigured()) {
             return redirect()->to($reservation->guestRegistrationUrl())
-                ->with('error', 'Le paiement en ligne n\'est pas encore configuré. Contactez l\'hôtel directement.');
+                ->with('error', __('Le paiement en ligne n\'est pas encore configuré. Contactez l\'hôtel directement.'));
         }
 
         [$firstName, $lastName] = $this->splitName($reservation->full_name);
@@ -235,14 +258,14 @@ class ReservationPaymentController extends Controller
 
         if (! $payment) {
             return redirect()->route('home')
-                ->with('error', 'Paiement introuvable. Contactez le support si vous avez été débité.');
+                ->with('error', __('Paiement introuvable. Contactez le support si vous avez été débité.'));
         }
 
         if ($payment->status === 'completed') {
             session()->forget('pending_reservation_payment_id');
 
             return redirect()->to($payment->reservation->confirmationUrl())
-                ->with('success', 'Votre acompte a bien été payé !');
+                ->with('success', __('Votre acompte a bien été payé !'));
         }
 
         $statusResult = $cinetPay->checkPaymentStatus($payment->gateway_txn_id);
@@ -252,18 +275,18 @@ class ReservationPaymentController extends Controller
             session()->forget('pending_reservation_payment_id');
 
             return redirect()->to($payment->reservation->confirmationUrl())
-                ->with('success', 'Votre acompte a bien été payé !');
+                ->with('success', __('Votre acompte a bien été payé !'));
         }
 
         if (($statusResult['status'] ?? '') === 'PENDING') {
             return redirect()->to($payment->reservation->establishmentUrl())
-                ->with('info', 'Votre paiement est en cours de traitement. Vous serez notifié dès confirmation.');
+                ->with('info', __('Votre paiement est en cours de traitement. Vous serez notifié dès confirmation.'));
         }
 
         $this->markFailed($payment, 'Retour CinetPay : statut '.($statusResult['status'] ?? '?'));
 
         return redirect()->to($payment->reservation->establishmentUrl())
-            ->with('error', 'Le paiement n\'a pas abouti. Vous pouvez réessayer.');
+            ->with('error', __('Le paiement n\'a pas abouti. Vous pouvez réessayer.'));
     }
 
     // ── ÉTAPE 2B : Webhook CinetPay ───────────────────────────────────────

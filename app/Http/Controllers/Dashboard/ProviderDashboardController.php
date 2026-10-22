@@ -12,7 +12,7 @@ class ProviderDashboardController extends Controller
 {
     public function index()
     {
-        $provider = Provider::where('user_id', Auth::id())
+        $provider = Provider::forUserQuery(Auth::id())
             ->with(['category'])
             ->first();
 

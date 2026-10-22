@@ -188,6 +188,7 @@ class HomepageBubbleManagementController extends Controller
         if ($size <= 0 || $size > ($maxKb * 1024)) {
             abort(422, "Le fichier {$field} dépasse la taille autorisée.");
         }
+        \App\Support\ImageUploadGuard::assert($file, $field);
     }
 
     /**

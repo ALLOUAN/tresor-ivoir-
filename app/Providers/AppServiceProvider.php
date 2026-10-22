@@ -24,6 +24,27 @@ class AppServiceProvider extends ServiceProvider
         $this->registerGates();
         $this->registerSiteBrandingComposer();
         $this->registerHomepageBubblesComposer();
+        $this->registerAiModeration();
+    }
+
+    /**
+     * Modération assistée : chaque enregistrement d'un article, d'un avis, d'un prestataire ou
+     * d'un événement déclenche une analyse qui alimente la file de l'administrateur. Elle ne
+     * modifie jamais le contenu ni son statut, et une erreur d'analyse n'empêche jamais la sauvegarde.
+     */
+    private function registerAiModeration(): void
+    {
+        foreach ([\App\Models\Article::class, \App\Models\Review::class, \App\Models\Provider::class, \App\Models\Event::class] as $model) {
+            $model::saved(function ($m) {
+                try {
+                    if (config('ai.enabled', true) && config('ai.moderation.auto', true) && Schema::hasTable('moderation_reports')) {
+                        app(\App\Services\Ai\Moderation\ModerationService::class)->analyzeModel($m);
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning('Modération assistée : analyse impossible ('.$e->getMessage().')');
+                }
+            });
+        }
     }
 
     /**

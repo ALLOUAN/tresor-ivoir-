@@ -1,0 +1,473 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\TouristCategory;
+use App\Models\TouristCity;
+use App\Models\TouristSite;
+use Database\Seeders\Concerns\SeedsMissingReferenceData;
+use Database\Seeders\Data\IvorianSources as S;
+use Illuminate\Database\Seeder;
+
+/**
+ * Sites touristiques par ville et par catégorie : comble les villes sans aucun site (Abengourou,
+ * Aboisso, Bouaké, Dabou, Daloa, Jacqueville, Séguéla, Soubré, Agboville…) et les catégories
+ * restées vides (Sites culturels, Cérémonies & rituels, Gastronomie & maquis, Sports & aventure,
+ * Vie nocturne, Lacs & cours d'eau).
+ *
+ * Chaque fiche s'appuie sur des sources publiques consultées en octobre 2026 (Wikipédia, UNESCO / PNUE,
+ * presse ivoirienne : Fraternité Matin, AIP, Abidjan.net ; guides). Volontairement sans tarif, horaires,
+ * téléphone, coordonnées ni photo : ces informations changent et doivent être vérifiées sur place puis
+ * saisies dans l'administration (Tourisme › Sites). Les fiches sont créées actives ; la mise en avant
+ * est réservée aux sites les mieux documentés.
+ *
+ * Avec les seeders précédents, chacune des 40 villes du référentiel a désormais au moins un site.
+ * Pour les villes de l'intérieur peu documentées (Adzopé, Bongouanou, Mankono…), les fiches reprennent
+ * prudemment ce qu'en disent la presse officielle (AIP) et les portails publics : à enrichir sur place.
+ *
+ * Sans risque sur une base en production : un site déjà présent (même slug) n'est jamais modifié,
+ * seules ses sources sont complétées si elles sont vides.
+ *
+ *   php artisan db:seed --class=TouristSiteByCitySeeder --force
+ */
+class TouristSiteByCitySeeder extends Seeder
+{
+    use SeedsMissingReferenceData;
+
+    public function run(): void
+    {
+        $cities = TouristCity::pluck('id', 'slug');
+        $cats = TouristCategory::pluck('id', 'slug');
+
+        $src = fn (string $label, string $url): array => ['label' => $label, 'url' => $url];
+        $abidjanNet = fn (string $title, int $id): array => $src("Abidjan.net — {$title}", "https://news.abidjan.net/articles/{$id}");
+
+        $sites = [
+            // ── Abengourou (Indénié-Djuablin) : la « Route des Rois » ──────────
+            ['abengourou', 'monuments-patrimoine', 'Cour royale de l\'Indénié', 'cour-royale-indenie-abengourou',
+                "Résidence du roi de l'Indénié, royaume agni fondé au XVIIIe siècle, au cœur de la « cité royale » d'Abengourou.",
+                "Abengourou abrite la cour du roi de l'Indénié, royaume agni (akan) fondé au XVIIIe siècle. La ville en est le siège depuis la fin du XIXe siècle, lorsque le roi Amoakon Diyé y transféra la capitale, jusque-là à Zaranou.\n\nLa cour royale est une étape de la « Route des Rois », l'un des circuits structurants de la stratégie touristique nationale « Sublime Côte d'Ivoire », que le ministère du Tourisme a visité en novembre 2025. La visite se prépare auprès de la cour, en respectant le protocole royal.",
+                [S::wiki('Abengourou'), $src('Kanaga Africa Tours — The Royal Court of Abengourou', 'https://www.kanaga-at.com/en/trip-info/ivory-coast/the-royal-court-of-abengourou/'), $src('KOACI — Relance du tourisme domestique : sites culturels d\'Abengourou, Agnibilékrou et Bondoukou (2025)', 'https://www.koaci.com/article/2025/11/22/cote-divoire/culture/cote-divoire-relance-du-tourisme-domestique-siandou-fofana-renforce-lattractivite-des-sites-culturels-dabengourou-agnibilekrou-et-bondoukou_192169.html')],
+                true],
+            ['abengourou', 'musees-galeries', 'Musée des attributs royaux de l\'Indénié', 'musee-attributs-royaux-indenie',
+                "Musée installé dans l'ancien palais du roi Amoakon Diyé : regalia, objets de cour et rites funéraires agni.",
+                "Le musée des attributs royaux occupe l'ancien palais du roi Amoakon Diyé, celui qui fit d'Abengourou la capitale de l'Indénié. Rénové sous le règne de Nanan Boa Kouassi III, il présente les objets de la royauté agni et documente les rites funéraires de la cour, souvent comparés par les guides à ceux de l'Égypte ancienne.",
+                [$abidjanNet('Musée des attributs royaux, ancienne résidence d\'Houphouët-Boigny, pierre sacrée : à la découverte du patrimoine de l\'Indénié-Djuablin', 452193)],
+                false],
+            ['abengourou', 'musees-galeries', 'Musée Charles Bieth', 'musee-charles-bieth-abengourou',
+                "Musée d'art africain lié à une école de peinture fondée en 1969, où ont débuté Aboudia et Drissa Diarra.",
+                "Le musée Charles Bieth réunit des œuvres d'art africain à Abengourou. Il est associé à une école de peinture fondée en 1969, qui a accompagné les débuts de plusieurs artistes ivoiriens reconnus, dont le peintre Aboudia et Drissa Diarra.",
+                [$src('Kanaga Africa Tours — The Royal Court of Abengourou', 'https://www.kanaga-at.com/en/trip-info/ivory-coast/the-royal-court-of-abengourou/')],
+                false],
+            ['abengourou', 'ceremonies-rituels', 'Fête de l\'igname de l\'Indénié', 'fete-igname-indenie',
+                "Nouvel an des Agni N'dénian, célébré chaque année à la cour royale d'Abengourou (281e édition en 2026).",
+                "La fête de l'igname ouvre la nouvelle année des Agni N'dénian. Elle rend hommage au tubercule qui, selon la tradition, a permis aux ancêtres de survivre à la famine lors de leur migration depuis l'actuel Ghana vers les forêts de l'Est ivoirien. C'est un temps de purification, de partage et de renouvellement du pacte avec les ancêtres, marqué par la vénération du tabouret royal.\n\nCélébrée à la cour royale d'Abengourou entre février et mars selon les années (281e édition en mars 2026), elle s'accompagne de manifestations populaires : courses, soirées de contes, conférences. La date exacte est fixée chaque année par la cour.",
+                [$src('Fraternité Matin — Fête de l\'igname à Abengourou', 'https://www.fratmat.info/article/238477/culture/fete-de-ligname-a-abengourou-le-roi-nanan-boa-kouassi-iii-exprime-sa-reconnaissance-au-chef-de-letat'), $abidjanNet('278e fête de l\'igname dans l\'Indénié', 718059), $abidjanNet('Fête des ignames 2017 à Abengourou : la culture agni N\'dénian à l\'épreuve des sciences sociales', 609762)],
+                false],
+
+            // ── Aboisso (Sud-Comoé) ─────────────────────────────────────────
+            ['aboisso', 'sites-historiques', 'Krindjabo, capitale du royaume Sanwi', 'krindjabo-royaume-sanwi',
+                "Siège historique du royaume Sanwi, l'un des plus anciens royaumes akan du pays, à 9 km d'Aboisso.",
+                "Krindjabo est la capitale traditionnelle du royaume Sanwi, l'un des plus anciens royaumes akan de Côte d'Ivoire. Le village, à environ 9 km d'Aboisso, conserve l'ancienne cour royale, dont l'entrée est gardée par deux vieux canons, souvenirs des relations avec les Français avant l'indépendance ; une partie du bâtiment sert encore aux affaires du royaume.\n\nLa visite se fait en s'adressant à la cour royale, dans le respect des usages.",
+                [S::wiki('Krindjabo', 'Krindjabo'), $abidjanNet('Évasion dans le Sanwi : Aboisso, une cité au bord de la Bia', 315902)],
+                true],
+            ['aboisso', 'lacs-cours-eau', 'Lac d\'Ayamé', 'lac-ayame',
+                "Grand lac de retenue sur la Bia, formé en 1959 par le barrage d'Ayamé, entouré de villages de pêcheurs.",
+                "Le lac d'Ayamé s'est formé derrière le barrage hydroélectrique d'Ayamé I, construit sur la Bia en 1959 ; sa mise en eau a noyé environ 16 000 hectares de forêt. Quatorze villages riverains vivent de la pêche sur ses rives.\n\nLes abords des ouvrages hydroélectriques sont dangereux : la baignade et la navigation près des barrages sont à proscrire, et la pêche y est réglementée.",
+                [$src('Bois et Forêts des Tropiques (CIRAD) — étude sur le lac d\'Ayamé', 'https://revues.cirad.fr/index.php/BFT/article/view/19386/37736'), $abidjanNet('Activités à proximité des barrages hydroélectriques : les dangers pour la population', 461882)],
+                false],
+
+            // ── Agboville (Agnéby-Tiassa) ───────────────────────────────────
+            ['agboville', 'sites-historiques', 'Route des esclaves de Kanga-Gnanzè', 'route-esclaves-kanga-gnanze',
+                "Site de mémoire de la traite négrière, mis en avant par la direction régionale du tourisme de l'Agnéby-Tiassa.",
+                "Dans l'Agnéby-Tiassa, la route des esclaves de Kanga-Gnanzè est présentée par la direction régionale du tourisme comme le principal site du tourisme de mémoire de la région, aux côtés de l'agrotourisme (cacao, palmier, ananas) et de l'écotourisme dans les forêts classées. La visite se prépare auprès de la direction régionale du tourisme d'Agboville.",
+                [$abidjanNet('Le directeur de la bourse régionale du tourisme de l\'Agnéby-Tiassa', 696813)],
+                false],
+
+            // ── Bingerville ─────────────────────────────────────────────────
+            ['bingerville', 'parcs-reserves-naturelles', 'Réserve naturelle partielle de Dahliafleur', 'reserve-naturelle-dahliafleur',
+                "Petite réserve forestière de Bingerville, créée en 2013 pour la biodiversité et l'écotourisme aux portes d'Abidjan.",
+                "Créée par le décret n° 2013-127 du 20 février 2013 dans la commune de Bingerville, la réserve naturelle partielle de Dahliafleur protège un îlot de forêt au cœur d'une zone en forte urbanisation. Sa végétation associe forêts secondaires, jachères et bambouseraies.\n\nGérée par l'Office ivoirien des parcs et réserves (OIPR), elle a pour vocation la conservation de la biodiversité et le développement d'activités écotouristiques ; l'accès est régi par la loi sur les parcs nationaux et réserves.",
+                [$src('PNUE / LEAP — Décret n° 2013-127 du 20 février 2013 portant création de la réserve de Dahliafleur', 'https://leap.unep.org/en/countries/ci/national-legislation/decret-2013-127-du-20-fevrier-2013-portant-creation-de-la-reserve'), $src('Protected Planet — Réserve naturelle de Dahliafleur', 'https://protectedplanet.net/555622116')],
+                false],
+
+            // ── Bouaké (Gbêkê) ──────────────────────────────────────────────
+            ['bouake', 'architecture-sacree', 'Cathédrale Sainte-Thérèse-de-l\'Enfant-Jésus', 'cathedrale-sainte-therese-bouake',
+                "Cathédrale de l'archidiocèse de Bouaké, construite en 1962, en cours de réhabilitation depuis juin 2026.",
+                "Construite en 1962, la cathédrale Sainte-Thérèse-de-l'Enfant-Jésus est le siège de l'archidiocèse de Bouaké, deuxième ville du pays.\n\nElle a été fermée fin juin 2026 pour des travaux de réhabilitation annoncés pour neuf mois (bâtiment principal, clocher et nouvelles statues) : vérifiez sa réouverture avant de vous déplacer.",
+                [$src('GCatholic — Cathédrale Sainte-Thérèse, Bouaké', 'https://gcatholic.org/churches/africa/3033.htm'), $src('Fraternité Matin — Bouaké : la cathédrale Sainte-Thérèse fermée pour réhabilitation (2026)', 'https://www.fratmat.info/article/2642919/regions/bouake-la-cathedrale-sainte-therese-de-lenfant-jesus-fermee-pour-rehabilitation')],
+                false],
+            ['bouake', 'ceremonies-rituels', 'Paquinou, la Pâques baoulé', 'paquinou-pays-baoule',
+                "Pendant le week-end de Pâques, les Baoulé rentrent au village : trois jours de retrouvailles, de danses et de fêtes.",
+                "Le Paquinou est la manière baoulé de vivre Pâques : plus qu'une fête religieuse, c'est le grand retour au village. Pendant trois jours, les familles se retrouvent, les villages s'animent de danses traditionnelles comme le goli, et les gares routières de Bouaké connaissent leur plus forte affluence de l'année.\n\nL'édition 2026 a été lancée officiellement à Bouaké. La fête suit le calendrier de Pâques ; hébergements et transports se réservent longtemps à l'avance.",
+                [$src('Le360 Afrique — À Paquinou, Pâques des Baoulés, la communauté des villages est souveraine', 'https://afrique.le360.ma/afrique-de-louest/cote-divoire/cote-divoire-a-paquinou-paques-des-baoules-la-communaute-des-villages-est-souveraine_HQNLN3M2L5EHHOESTSYKID4KTU/'), $abidjanNet('« Mi Paquinou » ou le caractère traditionnel de la fête de Pâques en pays baoulé', 495637)],
+                false],
+            ['bouake', 'villages-ethnies', 'Sakassou, siège de la royauté baoulé', 'sakassou-royaute-baoule',
+                "À 45 km de Bouaké, Sakassou garde le trône de l'aire baoulé et la mémoire de la reine Abla Pokou.",
+                "Capitale des Walèbo, Sakassou est dépositaire du trône royal de toute l'aire baoulé. La tradition y rattache la reine Abla Pokou, qui, selon le récit fondateur, sacrifia son fils pour faire traverser le fleuve Comoé à son peuple : le nom « Baoulé » en garderait la mémoire.\n\nSakassou est aussi connue pour l'Adjanou, danse purificatrice exécutée exclusivement par des femmes initiées. Les cérémonies se visitent en s'adressant à la chefferie, avec discrétion.",
+                [$src('Fraternité Matin — 2e édition du Festival Abla Pokou : à l\'école de la reine-fondatrice baoulé', 'https://www.fratmat.info/article/75163/Culture/2e-edition-du-festival-abla-pokou-a-lecole-de-la-reine-fondatrice-baoule'), $abidjanNet('Le festival de la Route des Rois, une mine d\'or à exploiter', 340266)],
+                false],
+
+            // ── Dabou (Grands-Ponts) ────────────────────────────────────────
+            ['dabou', 'sites-historiques', 'Fort Faidherbe de Dabou', 'fort-faidherbe-dabou',
+                "Poste militaire français bâti en 1853 sous Faidherbe pour surveiller la lagune Ébrié, aujourd'hui en ruine.",
+                "Construit en 1853 sous la direction de Louis Faidherbe, alors capitaine du génie, et inauguré le 10 octobre 1853 après l'expédition de l'amiral Baudin, le fort de Dabou (aussi appelé fort Binger) devait surveiller le trafic sur la lagune Ébrié et protéger le commerce. Son terrain fut cédé par les chefs de Débrimou lors du traité de Dabou.\n\nPillé pendant la crise post-électorale de 2011, le fort est très dégradé : c'est un lieu de mémoire coloniale à découvrir avec prudence.",
+                [$src('Fraternité Matin — Patrimoine culturel : le fort Faidherbe de Dabou se meurt', 'https://www.fratmat.info/article/233272/culture/patrimoine-culturel-le-fort-faidherbe-de-dabou-se-meurt'), $src('Smithsonian Institution Archives — « La Résidence, fortin construit par Faidherbe », Dabou', 'https://si.edu/object/archives/components/sova-eepa-2001-001-ref1547')],
+                false],
+
+            // ── Daloa (Haut-Sassandra) ──────────────────────────────────────
+            ['daloa', 'villages-ethnies', 'Singes sacrés de Gbétitapéa', 'singes-sacres-gbetitapea',
+                "Village proche de Daloa où des singes vivent protégés dans une forêt sacrée, liés aux ancêtres par la tradition.",
+                "À une dizaine de kilomètres de Daloa, le village de Gbétitapéa protège une forêt où vivent des singes considérés comme sacrés : la tradition locale les relie aux ancêtres, et il est interdit de leur faire du mal. La visite se fait en s'adressant au chef du village.",
+                [$src('Le Routard — Visiter le Haut-Sassandra', 'https://www.routard.com/fr/guide/afrique/cote-d-ivoire/haut-sassandra')],
+                false],
+
+            // ── Jacqueville (Grands-Ponts) ──────────────────────────────────
+            ['jacqueville', 'plages-lagunes', 'Plages de Jacqueville', 'plages-jacqueville',
+                "Presqu'île entre lagune Ébrié et océan, reliée depuis 2015 par le pont Philippe-Grégoire-Yacé : plages et week-ends.",
+                "La presqu'île de Jacqueville s'étire entre la lagune Ébrié et l'océan Atlantique. Longtemps accessible seulement par bac, elle est reliée depuis 2015 au continent par le pont Philippe-Grégoire-Yacé (600 m), ce qui en a fait une destination de week-end prisée des Abidjanais.\n\nLes localités côtières d'Abrebi, Sassako, Avagou, Ahua et Jacqueville disposent d'aménagements touristiques. La baignade demande de la prudence en raison des courants de l'océan.",
+                [$abidjanNet('9 mois après l\'inauguration du pont Philippe-Grégoire-Yacé, Jacqueville renoue avec le développement', 578429), $src('Revue de géographie de Ouagadougou — aménagements touristiques du littoral de Jacqueville', 'https://revuegeographieouaga.com/wp-content/uploads/2023/07/08_RGO_308_SOGBOU.pdf')],
+                false],
+
+            // ── Séguéla (Worodougou) ────────────────────────────────────────
+            ['seguela', 'architecture-sacree', 'Grande mosquée de Séguéla', 'grande-mosquee-seguela',
+                "Mosquée historique du Worodougou, la principale des nombreuses mosquées de la ville.",
+                "La grande mosquée de Séguéla est la principale des mosquées de la ville, qui compte plusieurs dizaines de lieux de prière. Selon la tradition locale rapportée par la presse, elle remonte au XVIe siècle, comme celles de Kani et de Siana, présentées comme des lieux de visite et d'élévation spirituelle.\n\nLes visites se font en dehors des heures de prière, en tenue couverte.",
+                [$abidjanNet('Amadou Soumahoro offre des tapis de prière à la grande mosquée de Séguéla', 695624), S::wiki('Séguéla')],
+                false],
+
+            // ── Soubré (Nawa) ───────────────────────────────────────────────
+            ['soubre', 'cascades-montagnes', 'Chutes de la Nawa', 'chutes-nawa-soubre',
+                "Chutes du fleuve Sassandra près de Soubré, mises en valeur avec le grand barrage hydroélectrique.",
+                "Près de Soubré, le fleuve Sassandra franchit les chutes de la Nawa, l'un des sites naturels les plus connus de l'Ouest ivoirien. Le barrage hydroélectrique de Soubré (275 MW), construit entre 2013 et 2017, a été accompagné d'un projet de mise en valeur touristique des chutes.\n\nUne petite route longe le Sassandra en aval du barrage jusqu'aux chutes. Les abords de l'ouvrage sont réglementés.",
+                [$src('Gouvernement de Côte d\'Ivoire — Fiche technique du barrage de Soubré', 'https://www.gouv.ci/doc/Fiche%20technique%20%20Barrage%20Soubre_Lancement-250213.pdf'), $src('Économie ivoirienne — Région de la Nawa, pôle compétitif', 'https://economie-ivoirienne.ci/index.php/pole-competitif/region-de-la-nawa.html')],
+                true],
+            ['soubre', 'lacs-cours-eau', 'Lac de Buyo', 'lac-buyo',
+                "Vaste lac de retenue sur le Sassandra, formé en 1980 : pirogue, pêche et oiseaux en lisière du parc de Taï.",
+                "Le lac de Buyo s'est formé en 1980 derrière le barrage de Buyo sur le Sassandra, avec une retenue d'environ 900 km². Ses rives se prêtent aux balades à pied et en pirogue, à la pêche et à l'observation des oiseaux ; le lac borde le Parc national de Taï.\n\nLa qualité de l'eau a souffert des rejets agricoles : la baignade n'est pas recommandée.",
+                [S::wiki('Lac_de_Buyo', 'Lac de Buyo'), $src('Économie ivoirienne — Région de la Nawa, pôle compétitif', 'https://economie-ivoirienne.ci/index.php/pole-competitif/region-de-la-nawa.html')],
+                false],
+
+            // ── Korhogo (Poro) ──────────────────────────────────────────────
+            ['korhogo', 'musees-galeries', 'Musée Péléforo Gbon Coulibaly', 'musee-peleforo-gbon-coulibaly',
+                "Musée régional installé dans le palais de 1950 du chef Péléforo Gbon Coulibaly : culture sénoufo et Poro.",
+                "Installé dans le palais que fit bâtir en 1950 le chef Péléforo Gbon Coulibaly, le musée régional de Korhogo présente la culture sénoufo et l'histoire de la famille dirigeante du Poro : masques, statues d'ancêtres et textiles.\n\nEn 2024, seules deux salles du rez-de-chaussée étaient ouvertes en attendant la rénovation du reste du bâtiment : renseignez-vous sur place.",
+                // Pas d'article en français : article anglais de Wikipédia.
+                [$src('Wikipedia (en) — Musée Péléforo Gbon Coulibaly', 'https://en.wikipedia.org/wiki/Mus%C3%A9e_P%C3%A9l%C3%A9f%C3%A9ro_Gbon_Coulibaly'), $src('Komoot — Musée Péléforo Gbon Coulibaly', 'https://www.komoot.com/highlight/6629496')],
+                false],
+
+            // ── Abidjan : catégories encore vides ───────────────────────────
+            ['abidjan', 'sites-culturels', 'Palais de la Culture Bernard-Binlin-Dadié', 'palais-culture-treichville',
+                "Grand complexe culturel de Treichville, au bord de la lagune : concerts, théâtre, expositions (salle de 4 000 places).",
+                "Sur la lagune, à Treichville, le Palais de la Culture Bernard-Binlin-Dadié est le principal complexe culturel du pays : concerts, spectacles, théâtre, expositions et conférences. Sa grande salle, la salle Anoumabo, accueille jusqu'à 4 000 spectateurs.\n\nPillé pendant la crise de 2010-2011, il a fait l'objet d'un vaste programme de réhabilitation. La programmation est annoncée par les organisateurs de chaque spectacle.",
+                [$src('Annuaire CI — PCBD, Palais de la Culture Bernard Binlin Dadié', 'https://annuaireci.com/en/entreprises/pcbd-palais-de-la-culture-bernard-binlin-dadie-abidjan-cote-divoire/'), $abidjanNet('Palais de la Culture : la réhabilitation va coûter 15 milliards de FCFA', 447700), $src('Fraternité Matin — Concert d\'Aïcha Traoré au Palais de la Culture de Treichville (2024)', 'https://www.fratmat.info/article/240634/culture/etoile-mandingue-le-concert-triomphal-daicha-traore-au-palais-de-la-culture-de-treichville')],
+                true],
+            ['abidjan', 'musees-galeries', 'Fondation Donwahi pour l\'art contemporain', 'fondation-donwahi',
+                "Lieu de référence de l'art contemporain à Cocody depuis 2008 : expositions, résidences, jardin de sculptures.",
+                "Créée en 2008 à Cocody, la Fondation Donwahi se consacre à la promotion de l'art contemporain : expositions, résidences d'artistes, rencontres et événements culturels. Installée dans un ensemble de villas des années 1970, elle a présenté des artistes de premier plan, dont le photographe Samuel Fosso.\n\nFermée pendant la crise post-électorale, elle a rouvert en 2013 et compte parmi les acteurs majeurs de la scène artistique d'Abidjan.",
+                [$src('Le Routard — Cocody (Abidjan)', 'https://www.routard.com/fr/guide/afrique/cote-d-ivoire/abidjan-et-lagune/cocody'), $src('Art Basel — Abidjan, West Africa\'s premier hub for contemporary culture', 'https://www.artbasel.com/stories/abidjan-ivory-coast-west-africa-premier-hub-for-contemporary-culture?lang=fr')],
+                false],
+            ['abidjan', 'artisanat-marches', 'Centre artisanal de la ville d\'Abidjan (CAVA)', 'centre-artisanal-cava-abidjan',
+                "Village d'artisans entre Treichville et Marcory : pagnes, toiles de Korhogo, sculptures, à négocier sur place.",
+                "Organisé comme un village, avec ses petites cases et ses allées arborées, le Centre artisanal de la ville d'Abidjan (CAVA) réunit des artisans ivoiriens et ouest-africains : textiles, batiks, toiles peintes de Korhogo, sculptures sur bois. Le marchandage fait partie de la visite.\n\nLes guides le situent dans le secteur Treichville-Marcory ; confirmez l'adresse avant de vous déplacer.",
+                [$src('Annuaire CI — CAVA, Centre artisanal de la ville d\'Abidjan', 'https://annuaireci.com/entreprises/cava-centre-artisanal-de-la-ville-dabidjan-abidjan-cote-divoire/'), $src('Génération Voyage — Visiter Abidjan : 9 incontournables', 'https://generationvoyage.fr/?p=371126')],
+                false],
+            ['abidjan', 'sports-aventure', 'Ivoire Golf Club', 'ivoire-golf-club',
+                "Parcours de 18 trous (par 73) à la Riviera, dans un cadre arboré au bord de la lagune.",
+                "L'Ivoire Golf Club, à Cocody-Riviera, propose un parcours de 18 trous de type « parkland », par 73, d'environ 6 600 mètres depuis les départs blancs, avec practice, caddies et voiturettes. Le parcours a été rénové et réinauguré en février 2013 après les dégâts de la crise de 2010-2011.\n\nLe club est privé : renseignez-vous sur les conditions d'accès des visiteurs.",
+                [$src('GolfPass — Ivoire Golf Club, carte de score et parcours', 'https://www.golfpass.com/courses/31853-ivoire-golf-club/scorecard-and-layout'), $abidjanNet('Golf : cérémonie d\'inauguration du parcours de golf (2013)', 451769)],
+                false],
+            ['abidjan', 'vie-nocturne-divertissement', 'Rue Princesse (Yopougon)', 'rue-princesse-yopougon',
+                "Rue légendaire des maquis et des boîtes de Yopougon, berceau de la scène coupé-décalé.",
+                "À Yopougon, la Rue Princesse a été pendant des années l'adresse la plus célèbre de la nuit abidjanaise : maquis, bars, boîtes de nuit et restaurants de cuisine locale, où se sont fait connaître de nombreux artistes du coupé-décalé.\n\nUne grande partie de la rue a été rasée en 2011 lors de l'opération d'assainissement « Pays propre » ; des établissements ont ensuite rouvert dans un cadre réaménagé. L'ambiance reste celle d'un quartier populaire très animé le soir.",
+                [S::wiki('Rue_Princesse', 'Rue Princesse'), $abidjanNet('Voici le nouveau visage de la Rue Princesse', 419238)],
+                false],
+            ['abidjan', 'gastronomie-maquis', 'Allocodrome de Cocody', 'allocodrome-cocody',
+                "Grand espace de grillades en plein air de Cocody : alloco, poisson et poulet braisés, attiéké.",
+                "Un allocodrome est un espace en plein air où se regroupent grilleurs et restauratrices autour de tables partagées. Celui de la rue Washington, à Cocody, est réputé pour ses grillades : alloco (banane plantain frite), poisson et poulet braisés servis avec de l'attiéké, des oignons et du piment. Il s'anime surtout en soirée.",
+                [$src('iExplore — Côte d\'Ivoire, food and restaurants', 'https://www.iexplore.com/articles/travel-guides/africa/cote-divoire/food-and-restaurants'), $src('GoAfrica Online — Restaurants à Abidjan', 'https://www.goafricaonline.com/ci/articles/9-restaurants-abidjan')],
+                false],
+
+            // ── Grand-Bassam et Assinie ─────────────────────────────────────
+            ['grand-bassam', 'ceremonies-rituels', 'Abissa, nouvel an des N\'zima', 'abissa-grand-bassam',
+                "Une semaine de danses et de tambours, chaque année en octobre-novembre, pour le nouvel an du peuple N'zima Kotoko.",
+                "L'Abissa marque le nouvel an des N'zima Kotoko de Grand-Bassam, peuple du groupe akan. Pendant une semaine, entre octobre et novembre, la ville vit au rythme des rites, des danses et des tambours, dans une ambiance de critique sociale où chacun peut dire ses vérités.\n\nLa fête s'ouvre avec la sortie du tambour sacré, l'Edo-n'gbolé, une semaine avant la cérémonie officielle ; la danse se déroule en trois temps (Siedu, Gouazo, Ewudolé). Son inscription au patrimoine culturel immatériel de l'UNESCO a été proposée.",
+                [$src('Fraternité Matin — Grand-Bassam : l\'Abissa ou le Nouvel an pour le peuple N\'zima Kotoko', 'https://www.fratmat.info/article/70195/Culture/grand-bassam-labissa-ou-le-nouvel-an-pour-le-peuple-nzima-kotoko'), $src('APA News — Le festival Abissa enflamme Grand-Bassam', 'https://fr.apanews.net/culture/rci-le-festival-abissa-enflamme-grand-bassam/')],
+                true],
+            // ── Villes de l'intérieur sans fiche jusqu'ici ──────────────────
+            ['adzope', 'cascades-montagnes', 'Mont Mafa', 'mont-mafa-becedi-brignan',
+                "Relief de Bécédi-Brignan, considéré comme le site touristique de la région de la Mé, près d'Adzopé.",
+                "Le mont Mafa, à Bécédi-Brignan, est présenté par la direction départementale du Tourisme d'Adzopé comme un site touristique de la région de la Mé : c'est par sa visite que se sont achevées, en mars 2026, les journées de promotion du tourisme en milieu scolaire. La visite se prépare auprès de la direction départementale du Tourisme d'Adzopé.",
+                [$src('AIP — Des élèves sensibilisés aux opportunités du tourisme à Yakassé-Attobrou (mars 2026)', 'https://www.aip.ci/?p=340283')],
+                false],
+            ['bongouanou', 'cascades-montagnes', 'Collines de N\'Guinou', 'collines-nguinou',
+                "Collines du Moronou répertoriées comme site touristique par le ministère de la Culture.",
+                "Les collines de N'Guinou, dans la région du Moronou dont Bongouanou est le chef-lieu, sont répertoriées comme site touristique par le ministère de la Culture. Lors du Morofwè N'Ganda Festival de juillet 2026, consacré à la sauvegarde du patrimoine du Moronou, les organisateurs ont engagé avec les autorités traditionnelles un travail de collecte de l'histoire du site. La visite se fait en s'adressant à la chefferie de N'Guinou.",
+                [$src('AIP — Le Morofwè N\'Ganda Festival mobilise les populations pour sauvegarder le patrimoine culturel du Moronou (juillet 2026)', 'https://www.aip.ci/cote-divoire-aip-le-morofwe-nganda-festival-mobilise-les-populations-pour-sauvegarder-le-patrimoine-culturel-du-moronou/')],
+                false],
+            ['daoukro', 'sites-culturels', 'Festival international de la culture et des arts de Daoukro (FICAD)', 'ficad-daoukro',
+                "Festival de Daoukro qui fait de l'Iffou un carrefour des cultures ivoiriennes : danses, concerts, foire gastronomique.",
+                "Né du carnaval de Daoukro et devenu FICAD en 2009, le Festival international de la culture et des arts de Daoukro a pour mission de promouvoir le patrimoine culturel et touristique de la région de l'Iffou. Ses éditions associent danses traditionnelles, concerts, foire gastronomique et commerciale, et accueillent des troupes de toute la Côte d'Ivoire et de pays invités.\n\nLe festival se tient selon les années au printemps ou en été (19e édition en août 2024) : vérifiez les dates de l'édition en cours.",
+                [$src('Fraternité Matin — 16e Ficad : Daoukro, carrefour du brassage des cultures ivoiriennes', 'https://www.fratmat.info/article/201721/culture/16e-ficad-daoukro-carrefour-du-brassage-des-cultures-ivoiriennes'), $abidjanNet('La 17e édition du Ficad lancée', 703277)],
+                false],
+            ['dimbokro', 'monuments-patrimoine', 'Pont ferroviaire du N\'Zi', 'pont-ferroviaire-nzi-dimbokro',
+                "Pont métallique de 1910 sur le N'Zi, emblème de Dimbokro, la « ville ferroviaire » du chemin de fer Abidjan-Niger.",
+                "Construit en 1910 pour le chemin de fer Abidjan-Niger, le pont métallique qui franchit le N'Zi à Dimbokro a valu à la ville son surnom de « ville ferroviaire ». Il compte, avec la gare coloniale et la cathédrale, parmi les repères du patrimoine de la ville.\n\nLe pont est un ouvrage ferroviaire en service : on l'admire depuis les berges, sans s'engager sur les voies.",
+                [$abidjanNet('Enquête express : Dimbokro, une ville aux allures touristiques', 325948), $abidjanNet('Dimbokro, un département aux énormes potentialités', 663413)],
+                false],
+            ['divo', 'sites-culturels', 'Djaka Festival', 'djaka-festival-divo',
+                "Festival annuel des arts et cultures dida, godié, éga, néyo et avikam, chaque mois d'août à Divo depuis 2006.",
+                "Créé en 2006 au village d'Akabia par des cadres du département de Divo, le Djaka Festival met en valeur les cultures dida, godié, éga, néyo et avikam du Lôh-Djiboua : danses, musiques, tenues traditionnelles, gastronomie. Il se tient chaque année en août, principalement au stade municipal de Divo ; l'édition 2026 a célébré ses vingt ans.",
+                [$src('AIP — 20 ans du Djaka Festival : le Lôh-Djiboua invité à s\'enraciner dans ses traditions', 'https://www.aip.ci/cote-divoire-aip-20-ans-du-djaka-festival-le-loh-djiboua-invite-a-senraciner-dans-ses-traditions-pour-reussir-la-modernisation-de-la-region/'), $src('Fraternité Matin — Divo : la 10e édition du Djaka festival placée sous le signe de la paix', 'https://www.fratmat.info/article/209964/regions/divo/divo-la-10eme-edition-du-djaka-festival-de-divo-placee-sous-le-signe-de-la-paix')],
+                false],
+            ['gagnoa', 'villages-ethnies', 'Forêt sacrée d\'Olibribouo', 'foret-sacree-olibribouo',
+                "Forêt sacrée au cœur d'un village guébié près de Gagnoa, où les singes sortent se faire nourrir par les habitants.",
+                "Au village d'Olibribouo, dans la sous-préfecture de Gnagbodougnoa, à quelques kilomètres de Gagnoa, une forêt sacrée abrite des singes protégés par la tradition. Habitants et singes cohabitent paisiblement : les animaux sortent régulièrement de la forêt pour être nourris par les villageois.\n\nPrésentée par la direction régionale du tourisme du Gôh parmi les sites sacrés de la région, elle se visite en s'adressant au chef du village.",
+                [$src('Voie de femme — Quinzaine du tourisme : à la découverte de sites sacrés du Gôh (2021)', 'https://voiedefemme.net/2021/09/13/quinzaine-du-tourisme-a-la-decouverte-de-sites-acres-du-goh/'), $src('Yafohi Travel — La forêt sacrée d\'Olibribouo', 'https://www.yafohi-travel.com/fr/sites-touristiques/1275/la-foret-sacree-d-olibribouo')],
+                false],
+            ['mankono', 'lacs-cours-eau', 'Sources de Tonuho et Kawakouho', 'sources-tonuho-kawakouho',
+                "Sources d'eau du Béré, connues localement comme « glissades », parmi les curiosités naturelles de la région.",
+                "La région du Béré, dont Mankono est le chef-lieu, compte parmi ses attraits les sources d'eau de Tonuho et de Kawakouho, appelées localement « glissades ». La visite se prépare auprès de la direction départementale du Tourisme de Mankono, qui oriente les visiteurs vers les villages concernés.",
+                [$src('Économie ivoirienne — Béré region, pôle compétitif', 'https://www.economie-ivoirienne.ci/en/pole-competitif/bere-region.html')],
+                false],
+            ['minignan', 'sites-historiques', 'Sokoro : mosquée ancienne et case de Samory Touré', 'sokoro-mosquee-case-samory',
+                "À Sokoro (département de Minignan), la plus vieille mosquée de la région et la case où aurait séjourné Samory Touré.",
+                "Sous-préfecture du département de Minignan, dans la région du Folon, Sokoro abrite la plus ancienne mosquée de la région, datée de 1577 selon les sources locales, ainsi que la case historique dans laquelle l'Almamy Samory Touré aurait séjourné lors de sa conquête du nord de la Côte d'Ivoire.\n\nLa visite se fait en s'adressant à l'imam et à la chefferie, en dehors des heures de prière.",
+                [S::wiki('Sokoro_(Côte_d\'Ivoire)', 'Sokoro (Côte d\'Ivoire)')],
+                false],
+            ['touba', 'cascades-montagnes', 'Chutes de Minbala', 'chutes-minbala-touba',
+                "Chutes d'eau dans un cadre naturel paisible, à 12 km de Touba, parmi les sept sites phares du Bafing.",
+                "À 12 km de Touba, les chutes de Minbala offrent un cadre naturel propice à la détente. Elles figurent parmi les sept sites retenus en 2026 pour promouvoir les richesses patrimoniales du Bafing, avec le lac aux silures sacrés de Silakoro, les montagnes sacrées de Booko, les grottes de Toutié et le parc national du mont Sangbé.",
+                [$src('AIP — Sept sites touristiques pour promouvoir les richesses patrimoniales du Bafing (octobre 2026)', 'https://www.aip.ci/cote-divoire-aip-sept-sites-touristiques-pour-promouvoir-les-richesses-patrimoniales-du-bafing/')],
+                false],
+            ['touba', 'lacs-cours-eau', 'Lac aux silures sacrés de Silakoro', 'lac-silures-sacres-silakoro',
+                "Lac réputé intarissable, à 13 km de Touba, où vivent des silures sacrés protégés par la tradition.",
+                "À Silakoro, à 13 km de Touba, un lac dit intarissable abrite des silures sacrés que la tradition interdit de pêcher. La visite se fait en s'adressant aux garants de la tradition du village.",
+                [$src('AIP — Sept sites touristiques pour promouvoir les richesses patrimoniales du Bafing (octobre 2026)', 'https://www.aip.ci/cote-divoire-aip-sept-sites-touristiques-pour-promouvoir-les-richesses-patrimoniales-du-bafing/')],
+                false],
+            ['touba', 'architecture-sacree', 'Mosquée de Ganhoué', 'mosquee-ganhoue',
+                "Mosquée plusieurs fois centenaire du Bafing, entourée de rochers sacrés liés à deux érudits.",
+                "La mosquée de Ganhoué, dans le Bafing, est plusieurs fois centenaire. Non loin se trouvent des rochers sacrés (Silakoro-Ganhoué) que la tradition rattache à deux érudits, Moussa Bakayoko et Bamba Youssouf. Visite en dehors des heures de prière, en tenue couverte.",
+                [$src('AIP — Sept sites touristiques pour promouvoir les richesses patrimoniales du Bafing (octobre 2026)', 'https://www.aip.ci/cote-divoire-aip-sept-sites-touristiques-pour-promouvoir-les-richesses-patrimoniales-du-bafing/')],
+                false],
+
+            // — Lot 2 : grandes villes et catégories encore vides (sources vérifiées en octobre 2026) —
+            ['abidjan', 'sites-culturels', 'Village Ki-Yi M\'Bock', 'village-ki-yi-mbock',
+                "Village-école panafricain des arts fondé en 1985 par Werewere Liking à la Riviera : théâtre, musique, danse.",
+                "Fondé en 1985 par l'écrivaine et dramaturge Werewere Liking, le village Ki-Yi M'Bock, à Cocody-Riviera, est à la fois une communauté d'artistes et un lieu de formation aux arts de la scène : théâtre, musique, danse, marionnettes et arts plastiques. Il dispose d'un musée et d'un espace de spectacle ; la fondation a célébré ses 40 ans d'existence.\n\nSpectacles et visites selon la programmation : se renseigner auprès de la fondation.",
+                [$src('Afrik.com — Le Ki-Yi M\'Bock, un village au cœur d\'Abidjan', 'https://www.afrik.com/cote-d-ivoire-le-ki-yi-m-bock-un-village-au-coeur-d-abidjan'), $src('APA News — 40 ans d\'existence de la Fondation panafricaine Ki-Yi', 'https://fr.apanews.net/culture/rci-40-ans-dexistence-de-la-fondation-panafricaine-ki-yi/'), S::wiki('Werewere_Liking', 'Werewere Liking')],
+                false],
+            ['abidjan', 'plages-lagunes', 'Île Boulay', 'ile-boulay',
+                "Île de la lagune Ébrié, à quelques minutes de bateau d'Abidjan : villages, plages lagunaires et verdure.",
+                "Face au port d'Abidjan, l'île Boulay se rejoint en quelques minutes de bateau. Elle abrite des villages de pêcheurs, des plages lagunaires et une végétation dense. Des balades lagunaires et des excursions guidées y sont proposées au départ d'Abidjan.\n\nSe renseigner sur les traversées avant de partir.",
+                [S::wiki('Île_Boulay', 'Île Boulay'), $abidjanNet('Le SITA offre des balades lagunaires et des excursions guidées', 589666), $src('Accor — Que faire sur la lagune Ébrié à Abidjan', 'https://all.accor.com/a/fr/limitless/thematics/top-things-to-do/ebrie-lagoon-abidjan.html')],
+                false],
+            ['yamoussoukro', 'architecture-sacree', 'Grande Mosquée de Yamoussoukro', 'grande-mosquee-yamoussoukro',
+                "Grande mosquée de la capitale, reconnaissable à ses minarets, l'une des visites principales de la ville.",
+                "Reconnaissable à son architecture et à ses minarets, la Grande Mosquée compte parmi les visites principales de Yamoussoukro, avec la basilique Notre-Dame de la Paix, la Fondation Félix Houphouët-Boigny et le lac aux crocodiles.\n\nVisite en dehors des heures de prière, en tenue couverte et avec l'accord des responsables du lieu.",
+                [$src('Le Routard — Yamoussoukro', 'https://www.routard.com/fr/guide/afrique/cote-d-ivoire/region-des-lacs/yamoussoukro')],
+                false],
+            ['man', 'ceremonies-rituels', 'Festival des 18 Montagnes', 'festival-18-montagnes-man',
+                "Festival de Man consacré aux masques, aux danses et aux traditions de l'Ouest montagneux.",
+                "Organisé à Man, le Festival des 18 Montagnes met à l'honneur les masques et les danses traditionnelles des peuples de l'Ouest ivoirien, avec sorties de masques, concours et spectacles. Il se tient en été ; les dates varient chaque année et sont annoncées par les organisateurs et la presse régionale.",
+                [$abidjanNet('Festival des 18 Montagnes : la 2e édition a démarré jeudi', 488843), $src('Kanaga Africa Tours — Man Mask Festival', 'https://www.kanaga-at.com/en/trip/ivory-coast/man-mask-festival-cav03ps250702/')],
+                false],
+            ['san-pedro', 'plages-lagunes', 'Baie des Sirènes de Grand-Béréby', 'baie-sirenes-grand-bereby',
+                "Baie de sable et de rochers à Grand-Béréby, entrée en 2023 au Club des plus belles baies du monde.",
+                "À Grand-Béréby, à l'ouest de San-Pédro, la baie des Sirènes déroule une plage de sable bordée de cocotiers et de rochers. En 2023, la région de San-Pédro a intégré le Club des plus belles baies du monde.\n\nBaignade à pratiquer avec prudence : la mer peut être forte sur le littoral ouest.",
+                [$src('Fraternité Matin — Club des plus belles baies du monde : la région de San-Pédro intègre le groupe (2023)', 'https://www.fratmat.info/article/230027/culture/-club-des-plus-belles-baies-du-monde-la-region-de-san-pedro-integre-le-select-groupe'), $src('KOACI — La région de San-Pédro intègre l\'association des plus belles baies du monde (2023)', 'https://www.koaci.com/index.php/article/2023/06/27/cote-divoire/societe/cote-divoire-la-region-de-san-pedro-integre-lassociation-des-plus-belles-baies-du-monde_170390.html'), S::wiki('Grand-Béréby')],
+                false],
+            ['grand-bassam', 'sites-historiques', 'Pont de la Victoire et marche des femmes de 1949', 'pont-victoire-grand-bassam',
+                "Lieu de mémoire de la marche des femmes sur Grand-Bassam, du 22 au 24 décembre 1949.",
+                "Du 22 au 24 décembre 1949, des femmes venues d'Abidjan et de toute la colonie ont marché sur Grand-Bassam pour réclamer la libération des militants du RDA détenus à la prison de la ville. Le pont de la Victoire, qui relie la ville nouvelle au quartier historique, est associé au souvenir de cette marche, commémorée chaque année.",
+                [S::wiki('Marche_des_femmes_sur_Grand-Bassam', 'Marche des femmes sur Grand-Bassam'), $src('Fraternité Matin — La marche des dames glorieuses sur Bassam, le devoir de mémoire', 'https://www.fratmat.info/article/223242/culture/la-marche-des-dames-glorieuses-sur-bassam-le-devoir-de-memoire-de-nandouhard-akueson')],
+                false],
+            ['bondoukou', 'ceremonies-rituels', 'Kurubi, la fête des jeunes filles', 'kurubi-bondoukou',
+                "Danse des jeunes filles pendant le ramadan, surtout la 27e nuit : la grande tradition de Bondoukou.",
+                "Le Kurubi (ou Kroubi) est une fête traditionnelle de Bondoukou : pendant le mois de ramadan, et surtout lors de la 27e nuit, les jeunes filles parées défilent et dansent de quartier en quartier. Il compte parmi les festivals qui animent le Gontougo.\n\nLes dates suivent le calendrier lunaire du ramadan.",
+                [$abidjanNet('Rétro 2022 : des festivals pour promouvoir les richesses culturelles du Gontougo', 716525), $abidjanNet('Célébration du Kroubi à Bondoukou', 374392)],
+                false],
+            ['katiola', 'artisanat-marches', 'Poterie mangoro de Katiola', 'poterie-mangoro-katiola',
+                "Poterie traditionnelle façonnée à la main par les femmes de Katiola, célébrée par le Festipom.",
+                "À Katiola, les femmes potières perpétuent la poterie mangoro : jarres, canaris et plats façonnés à la main selon un savoir-faire transmis de génération en génération. Le Festipom, festival de la poterie mangoro, la met à l'honneur et plaide pour sa reconnaissance par l'UNESCO.\n\nLes ateliers se visitent avec l'accord des potières ; les pièces s'achètent sur place.",
+                [$src('Fraternité Matin — Artisanat : le Festipom célèbre la poterie mangoro', 'https://www.fratmat.info/article/214464/culture/artisanat-le-festipom-celebre-la-poterie-mangoro-de-cote-divoire')],
+                false],
+            ['korhogo', 'ceremonies-rituels', 'Balafon sénoufo (patrimoine immatériel UNESCO)', 'balafon-senoufo-korhogo',
+                "Musique du balafon des Sénoufo, inscrite au patrimoine immatériel de l'UNESCO, élargie à la Côte d'Ivoire en 2012.",
+                "Instrument à lames de bois et calebasses résonantes, le balafon accompagne les travaux, les fêtes, les funérailles et les rites du pays sénoufo. Les pratiques et expressions culturelles liées au balafon des communautés sénoufo du Mali, du Burkina Faso et de la Côte d'Ivoire figurent sur la liste représentative du patrimoine culturel immatériel de l'UNESCO, élargie à la Côte d'Ivoire en 2012.\n\nKorhogo et ses villages permettent de l'entendre lors des cérémonies et des festivals.",
+                [S::ich('balafon des communautés sénoufo', 'les-pratiques-et-expressions-culturelles-liees-au-balafon-des-communautes-senoufo-du-mali-du-burkina-faso-et-de-cote-d-ivoire-00641'), $src('Connection ivoirienne — Patrimoine de l\'UNESCO : « Nous devons promouvoir le balafon » (2012)', 'https://connectionivoirienne.net/2012/12/08/patrimoine-de-lunesco-maurice-bandaman-nous-devons-promouvoir-le-balafon/')],
+                false],
+            ['boundiali', 'ceremonies-rituels', 'Djéguélé Festival', 'festival-djeguele-boundiali',
+                "Festival du balafon de Boundiali, créé en 2016 : concours de groupes et danses de la Bagoué.",
+                "Créé en 2016, le Djéguélé Festival réunit chaque année à Boundiali des groupes de balafon et des troupes de danse de la Bagoué, avec un concours et des prix. L'édition 2025 a été saluée comme un succès populaire et culturel.\n\nLes dates sont annoncées chaque année par les organisateurs.",
+                [$src('Connection ivoirienne — Le Djéguélé Festival 2025 à Boundiali, un succès populaire et culturel', 'https://connectionivoirienne.net/2025/05/02/le-djeguele-festival-2025-a-boundiali-fut-un-succes-populaire-et-culturel-selon-kone-dodo/'), $src('AIP — Meilleur prix du balafon au Djéguélé Festival 2026', 'https://www.aip.ci/cote-divoire-aip-le-groupe-le-kouho-de-karga-de-kanakono-remporte-le-meilleur-prix-du-balafon-au-djeguele-festival-2026/')],
+                false],
+            ['sassandra', 'sites-historiques', 'Phare et wharf de Sassandra', 'phare-wharf-sassandra',
+                "Phare, vestiges du wharf et bâtiments coloniaux : les étapes du circuit historique de Sassandra.",
+                "Ancien port colonial, Sassandra a conservé un patrimoine que l'on découvre sous forme de circuit : le phare qui domine l'océan, les vestiges du wharf, la cathédrale Saint-André et plusieurs bâtiments de l'époque coloniale, dont certains sont aujourd'hui dégradés.\n\nLa visite se fait de préférence avec un guide local.",
+                [$src('Fraternité Matin — Circuit touristique à Sassandra, voyage au cœur d\'une ville-mémoire (reportage)', 'https://www.fratmat.info/article/2644305/culture/circuit-touristique-a-sassandra-voyage-au-cur-dune-ville-memoire-bercee-par-latlantique-reportage'), $abidjanNet('Le ministre Bandama visite des sites historiques de Sassandra', 652710)],
+                false],
+            ['grand-lahou', 'sites-historiques', 'Ancienne ville de Grand-Lahou et Lahou-Kpanda', 'ancienne-ville-grand-lahou',
+                "Ancien comptoir rongé par l'océan, déplacé en 1973 : Lahou-Kpanda résiste entre mer et lagune.",
+                "Ancien comptoir colonial à l'embouchure du Bandama, Grand-Lahou a été rongé par l'érosion côtière : la ville a été déplacée sur la terre ferme en 1973, tandis que le village de Lahou-Kpanda, sur la bande de sable entre l'océan et la lagune, recule devant la montée des eaux.\n\nUn lieu de mémoire et un témoignage frappant du recul du littoral, accessible par la lagune.",
+                [S::wiki('Grand-Lahou'), $src('Connection ivoirienne — Grand-Lahou, le village qui s\'efface, mangé par l\'océan (2016)', 'https://connectionivoirienne.net/2016/11/17/grand-lahou-en-cote-divoire-le-village-qui-sefface-mange-par-locean/')],
+                false],
+            ['ferkessedougou', 'sites-culturels', 'Tchologo Festival', 'tchologo-festival',
+                "Festival de fin d'année du Tchologo, entre Ferkessédougou, Kong et Ouangolo.",
+                "Le Tchologo Festival se tient chaque fin d'année, autour de la fin décembre, entre Ferkessédougou, Kong et Ouangolo. Il valorise les danses et les musiques traditionnelles des peuples de la région, avec concerts et animations.\n\nLes dates de chaque édition sont annoncées par les organisateurs.",
+                [$abidjanNet('Les lampions se sont éteints sur la 6e édition du Tchologo Festival', 607106)],
+                false],
+
+            // — Lot 3 —
+            ['abidjan', 'monuments-patrimoine', 'La Pyramide du Plateau', 'la-pyramide-plateau',
+                "Immeuble pyramidal du Plateau (1968-1973), signé Rinaldo Olivieri : une icône de l'architecture moderne.",
+                "Construite entre 1968 et 1973 sur les plans de l'architecte italien Rinaldo Olivieri, La Pyramide est l'un des bâtiments les plus singuliers du Plateau : un immeuble en gradins pensé pour réunir commerces, bureaux et espaces publics, à la manière d'un marché africain à la verticale. Longtemps délaissé, il est revenu à l'État en 2021, qui en a annoncé la réhabilitation ; des artistes ont peint des fresques sur sa façade en 2023.\n\nÀ admirer de l'extérieur ; se renseigner avant toute visite intérieure.",
+                [$src('Wikipedia (en) — La Pyramide (building)', 'https://en.wikipedia.org/wiki/La_Pyramide_(building)'), $abidjanNet('Rétrocédé à l\'État, l\'immeuble La Pyramide sera bientôt réhabilité', 696129)],
+                false],
+            ['abidjan', 'musees-galeries', 'Rotonde des Arts contemporains', 'rotonde-des-arts-plateau',
+                "Centre d'art contemporain du Plateau fondé en 2009 par Yacouba Konaté, lieu de l'Abidjan Art Week.",
+                "Installée dans la Plaza Nour Al Hayat, au Plateau, la Rotonde des Arts contemporains a été fondée en 2009 par le critique d'art Yacouba Konaté. Ni tout à fait galerie, ni musée, ce centre d'arts accueille des expositions d'artistes ivoiriens et étrangers et fait partie des lieux de l'Abidjan Art Week.",
+                [$abidjanNet('« La Rotonde des Arts contemporains », un espace de rencontres et de développement culturel', 363128), $abidjanNet('« De sœur à sœur » sur les cimaises de la Rotonde des Arts contemporains', 551126), $src('Art Basel — Abidjan, West Africa\'s premier hub for contemporary culture', 'https://www.artbasel.com/stories/abidjan-ivory-coast-west-africa-premier-hub-for-contemporary-culture?lang=fr')],
+                false],
+            ['yamoussoukro', 'sports-aventure', 'Président Golf Club', 'president-golf-club-yamoussoukro',
+                "Parcours de 18 trous (par 72) ouvert en 1980, hôte de l'Open de golf de Côte d'Ivoire.",
+                "Le golf de Yamoussoukro propose un parcours de 18 trous, par 72, ouvert en 1980 autour d'un plan d'eau central. Il accueille régulièrement l'Open de golf de Côte d'Ivoire et des pro-am.\n\nTarifs et conditions d'accès à demander au club.",
+                [$src('GolfPass — President Golf Club', 'https://www.golfpass.com/courses/31855-president-golf-club/'), $abidjanNet('Le golf de Yamoussoukro relance ses activités avec le 1er Pro-Am du Bélier', 495258), $src('Fraternité Matin — Open de golf de Côte d\'Ivoire à Yamoussoukro', 'https://www.fratmat.info/article/229736/sports/open-de-golf-de-cote-divoire-la-bataille-de-pros-fait-rage-a-yamoussoukro')],
+                false],
+            ['grand-bassam', 'artisanat-marches', 'Village artisanal de Grand-Bassam', 'village-artisanal-grand-bassam',
+                "À l'entrée de la ville, des centaines d'artisans sur près de 3 km : bois, bronze, batik, céramique.",
+                "Depuis les années 1970, des artisans sont installés de part et d'autre de la voie qui mène à Grand-Bassam, sur près de 3 kilomètres : sculpteurs sur bois, bronziers, bijoutiers, vanniers, teinturiers de batik et céramistes. Une halte prisée des visiteurs venus d'Abidjan ; les prix se négocient.\n\nTrès dépendante du tourisme, l'activité a souffert de la crise sanitaire.",
+                [$abidjanNet('Activités artisanales en période électorale : les touristes disparaissent', 380358), $src('Le360 Afrique — Les artisans de Grand-Bassam tentent de rebondir (2021)', 'https://afrique.le360.ma/cote-divoire/societe/2021/11/27/36172-video-cote-divoire-durement-touches-par-la-pandemie-les-artisans-de-grand-bassam-tentent/')],
+                false],
+
+            // — Lot 4 : villes qui n'avaient qu'un site —
+            ['bouna', 'monuments-patrimoine', 'Palais royal de Bouna', 'palais-royal-bouna',
+                "Palais du royaume koulango inauguré en 2024 pour ses 400 ans : salles, musée des civilisations, bibliothèque.",
+                "Le palais royal de Bouna, dont la construction a débuté en 2016, a été inauguré le 30 novembre 2024 lors des festivités des 400 ans du royaume koulango de Bouna. L'édifice abrite de grandes salles, des bureaux, un musée des civilisations et une bibliothèque consacrée à l'histoire et aux traditions koulango, peuple reconnu comme propriétaire terrien ancestral du Bounkani. Des sculptures ornent son entrée.\n\nBouna est aussi l'une des portes d'entrée du parc national de la Comoé. Visite à organiser auprès de la cour royale.",
+                [$src('AIP — Le palais royal de Bouna, joyau architectural et symbole de la tradition koulango (2024)', 'https://www.aip.ci/cote-divoire-aip-le-palais-royal-de-bouna-joyau-architectural-et-symbole-de-la-tradition-koulango-portrait/')],
+                false],
+            ['daloa', 'ceremonies-rituels', 'Soukalo Festival de Kibouo', 'soukalo-festival-kibouo',
+                "Festival annuel du village de Kibouo, près de Daloa, autour de Soukalo, aire protégée devenue site touristique.",
+                "À Kibouo, village du Haut-Sassandra proche de Daloa, le Soukalo Festival se tient chaque année en août ; sa 24e édition a eu lieu en 2024. Au programme : parade dans le village, reboisement, conférence, concert mettant en avant le répertoire culturel local, stands et maquis.\n\nLe village met en avant Soukalo, devenu une aire protégée nationale et un site touristique, ainsi que la sépulture du botaniste Jean Lorougnon Guédé, dont l'université de Daloa porte le nom.",
+                [$src('AIP — La 24e édition de Soukalo Festival prévue en août à Kibouo (2024)', 'https://www.aip.ci/cote-divoire-aip-la-24e-edition-de-soukalo-festival-prevue-en-aout-a-kibouo/')],
+                false],
+            ['gagnoa', 'ceremonies-rituels', 'Djadjoh Carnaval', 'djadjoh-carnaval-gagnoa',
+                "Carnaval de Gagnoa : grand défilé des tenues et danses bété, gagou et gouro du Gôh.",
+                "Organisé par l'association Gagnoa Culture, le Djadjoh Carnaval est devenu un rendez-vous culturel majeur de la région du Gôh. Son principal attrait est le grand défilé à travers la ville, qui met en valeur les tenues traditionnelles et les danses des Bété, des Gagou et des Gouro.\n\nIl se tient habituellement en décembre ; les dates sont annoncées par les organisateurs.",
+                [$src('Fraternité Matin — 5e Djadjoh Carnaval : Gagnoa retrouve son carnaval phare en décembre', 'https://www.fratmat.info/article/207072/culture/5e-djadjoh-carnaval-gagnoa-retrouve-son-carnaval-phare-en-decembre')],
+                false],
+            ['gagnoa', 'sites-culturels', 'Gbagbadê Festival, arts et cultures en pays bhété', 'gbagbade-festival-gagnoa',
+                "Festival des arts et cultures bhété à Gagnoa, lancé en 2021 : concours, chansonniers, soirée de gala.",
+                "Le Festival des arts et cultures en pays bhété, baptisé Gbagbadê Festival, a tenu sa première édition à Gagnoa en août 2021. Piloté par Pascale Ziéga Guillet, il propose des compétitions, des prestations de chansonniers, le concours du plus bel homme en pays bhété (Bagnon) et une soirée de gala à l'hôtel de ville.\n\nDates des éditions suivantes à vérifier auprès des organisateurs.",
+                [$src('Fraternité Matin — Festival des arts et cultures en pays bhété (2021)', 'https://www.fratmat.info/article/214468/culture/festival-des-arts-et-cultures-en-pays-bhete-un-rendez-vous-typiquement-traditionnel-pour-celebrer-un-peuple')],
+                false],
+            ['agboville', 'ceremonies-rituels', 'Djidja, fête de l\'igname en pays abbey', 'djidja-fete-igname-agboville',
+                "Fête de l'igname et de la purification des Abbey, célébrée canton par canton autour d'Agboville.",
+                "Le Djidja (« plonger dans l'eau », ou purification) est la fête de l'igname du peuple abbey. Elle est célébrée successivement par les cantons de la région d'Agboville, de septembre à décembre. Pendant trois jours, danses et mets locaux s'enchaînent, en particulier le foufou d'igname.\n\nLes dates varient selon les cantons : se renseigner auprès des chefferies.",
+                [$abidjanNet('Agboville / fête traditionnelle : le canton Tchoffo célèbre l\'igname en pays abbey', 476147), $src('KOACI — Clôture de la fête de l\'igname en pays Khos (2022)', 'https://www.koaci.com/index.php/article/2022/11/27/cote-divoire/societe/cote-divoire-ceremonie-de-cloture-de-la-fete-de-ligname-en-pays-kho-voici-les-voeux-de-pierre-dimba-au-peuple-abbey_165015.html')],
+                false],
+            ['agboville', 'sites-culturels', 'Festival Sêyêyê', 'festival-seyeye-agboville',
+                "Festival des jeunes d'Agboville pour la culture, les arts et la gastronomie de l'Agnéby-Tiassa.",
+                "Porté par des jeunes de la ville, le Festival Sêyêyê vise à promouvoir le patrimoine culturel, artistique et gastronomique de l'Agnéby-Tiassa : défilés traditionnels, spectacles, danses et cuisine locale. Sa troisième édition s'est tenue en décembre 2021.\n\nDates des éditions suivantes à vérifier auprès des organisateurs.",
+                [$src('Fraternité Matin — 3e édition du Festival Sêyêyê (2021)', 'https://www.fratmat.info/article/216658/culture/3e-edition-du-festival-seyeye-les-jeunes-dagboville-font-la-promotion-de-leur-culture')],
+                false],
+            ['bouafle', 'ceremonies-rituels', 'Zaouli, danse des Gouro (patrimoine immatériel UNESCO)', 'zaouli-marahoue',
+                "Musique et danse masquée des Gouro, inscrite au patrimoine immatériel de l'UNESCO, célébrée dans la Marahoué.",
+                "Le Zaouli est une musique et une danse populaires des communautés gouro, exécutée par un danseur masqué aux pas d'une rapidité spectaculaire. Il est inscrit sur la liste représentative du patrimoine culturel immatériel de l'UNESCO. Avec le Saplô, il fait partie des danses traditionnelles célébrées dans la région de la Marahoué, dont Bouaflé est le chef-lieu, lors des fêtes et des festivals.",
+                [S::ich('Zaouli, musique et danse populaires des communautés gouro', 'zaouli-musique-et-danse-populaires-des-communautes-gouro-de-cote-d-ivoire-01277'), $abidjanNet('La monographie de la région de la Marahoué', 680279)],
+                false],
+            ['duekoue', 'ceremonies-rituels', 'Festival Akinhindy, culture wê', 'festival-akinhindy-duekoue',
+                "Festival culturel wê du Guémon et du Cavally, organisé à Duékoué et Guiglo.",
+                "Le festival Akinhindy promeut les œuvres et vestiges culturels du peuple wê des régions du Guémon et du Cavally. Sa 3e édition s'est tenue le 30 octobre 2020 à Duékoué et à Guiglo, autour de la paix et de la cohésion sociale.\n\nDates des éditions suivantes à vérifier auprès des organisateurs.",
+                [$src('Fraternité Matin — Duékoué/Guiglo : 3e édition du festival culturel Akinhindy (2020)', 'https://www.fratmat.info/article/209141/culture/duekoueguiglo-la-cohesion-sociale-au-cur-de-la-3e-edition-du-festival-culturel-akinhindy')],
+                false],
+            ['daoukro', 'sites-historiques', 'Pont de la légende de la reine Abla Pokou', 'pont-abla-pokou-daoukro',
+                "Selon la direction régionale du tourisme, le pont lié à la légende d'Abla Pokou existe encore à Daoukro.",
+                "La légende fondatrice des Baoulé raconte que la reine Abla Pokou, fuyant le pays ashanti, sacrifia son enfant pour permettre à son peuple de franchir le fleuve. Selon la direction régionale du tourisme, le lieu où l'enfant de la reine aurait été jeté existe encore au niveau de Daoukro, dans l'Iffou.\n\nSite de mémoire à découvrir avec un guide local.",
+                [$abidjanNet('Le tourisme culturel dominant dans la région de l\'Indénié-Djuablin (dossier)', 690095)],
+                false],
+            ['adzope', 'sites-culturels', 'Festival Vœu Loeu', 'festival-voeu-loeu-adzope',
+                "Grand rendez-vous estival de la culture akyé à Adzopé, sacré meilleur événement culturel de la Mé en 2024.",
+                "Le festival Vœu Loeu (anciennement Bal Poussière) s'est donné pour objectif de promouvoir et valoriser le patrimoine culturel akyé. Il se tient chaque été au stade d'Adzopé : sa 8e édition s'est achevée le 17 août 2024 avec Meiway et le Zo Gang. Il a été distingué en 2024 comme meilleur événement culturel de la région de la Mé.\n\nDates de chaque édition annoncées par les organisateurs.",
+                [$src('Fraternité Matin — Festival Vœu Loeu 8 : Meiway et le Zo Gang à Adzopé (2024)', 'https://www.fratmat.info/article/409041/culture/festival-voeu-loeu-8-meiway-et-le-zo-gang-en-demonstration-de-force-a-adzope'), $src('Fraternité Matin — Meilleur événement culturel de la Mé : le festival Vœu Loeu sacré (2024)', 'https://www.fratmat.info/article/2473599/culture/keren-dormeilleur-evenement-culturel-de-la-me-le-festival-vu-loeu-sacre')],
+                false],
+            ['odienne', 'monuments-patrimoine', 'Grande mosquée et tombe de Vakaba Touré', 'grande-mosquee-odienne',
+                "Grande mosquée de 1975 réhabilitée par la commune, et tombe de Vakaba Touré, fondateur d'Odienné.",
+                "Odienné a été fondée par des Malinké sous la conduite de Vakaba Touré (1800-1858), fondateur du royaume du Kabadougou dont la ville fut la capitale ; sa tombe se trouve dans la ville. La grande mosquée d'Odienné, construite en 1975, a été réhabilitée par la commune.\n\nVisite de la mosquée en dehors des heures de prière, en tenue couverte ; la tombe se visite avec l'accord des notables.",
+                [$abidjanNet('La mairie réhabilite la grande mosquée d\'Odienné', 519640), $src('Wikipedia (en) — Odienné', 'https://en.wikipedia.org/wiki/Odienn%C3%A9')],
+                false],
+
+            // — Lot 5 : dernières villes à un seul site —
+            ['seguela', 'villages-ethnies', 'Siana : mosquée ancienne et forêt sacrée', 'siana-seguela',
+                "Village à 22 km de Séguéla : mosquée de la fin du XVIIIe siècle et forêt entourée de légendes.",
+                "À 22 km de Séguéla, le village de Siana (Sylla-Nan) conserve une mosquée que la tradition date de la fin du XVIIIe siècle, construite par les Bakayoko de Séguéla et les gens du village. Tout près, une forêt dite hantée est entourée d'interdits et de légendes transmis par les anciens.\n\nLa piste, très dégradée en saison des pluies, demande un véhicule tout-terrain. La forêt ne se visite qu'avec un guide du village et dans le respect des interdits.",
+                [$abidjanNet('Destination Côte d\'Ivoire : à la découverte des offres touristiques du Worodougou (2011)', 416585)],
+                false],
+            ['kong', 'gastronomie-maquis', 'Festival national de la cuisine ivoirienne', 'festival-cuisine-ivoirienne-kong',
+                "La ville historique de Kong a accueilli en octobre 2026 la 4e édition du Festival national de la cuisine ivoirienne.",
+                "Les 16 et 17 octobre 2026, Kong a accueilli la quatrième édition du Festival national de la cuisine ivoirienne : des finalistes venus des régions touristiques du pays y ont concouru en cuisine traditionnelle du terroir et en cuisine de chefs. L'événement vise à préserver les recettes traditionnelles et à valoriser les produits locaux ; le ministre du Tourisme y a lancé « l'Appel de Kong » en faveur des métiers de la gastronomie.\n\nLe lieu et les dates des éditions suivantes sont annoncés par le ministère du Tourisme.",
+                [$src('Fraternité Matin — Festival national de la cuisine ivoirienne : Kong célèbre les saveurs du terroir (2026)', 'https://www.fratmat.info/article/2645192/culture/festival-national-de-la-cuisine-ivoirienne-kong-celebre-les-saveurs-du-terroir'), $src('AIP — Kong : le festival de la cuisine ivoirienne au service du patrimoine culinaire national (2026)', 'https://www.aip.ci/cote-divoire-aip-kong-le-festival-de-la-cuisine-ivoirienne-au-service-de-la-valorisation-du-patrimoine-culinaire-national/'), $src('Fraternité Matin — Le ministre Siandou Fofana lance « l\'Appel de Kong » (2026)', 'https://www.fratmat.info/article/2645264/culture/cuisine-ivoirienne-le-ministre-siandou-fofana-lance-lappel-de-kong-')],
+                false],
+            ['jacqueville', 'ceremonies-rituels', 'Festival des 3A', 'festival-3a-jacqueville',
+                "Festival des arts et cultures des peuples de Jacqueville, chaque mois d'août depuis plusieurs éditions.",
+                "Le Festival des 3A célèbre le patrimoine culturel des peuples de la région de Jacqueville, dont les Alladjan. Il se tient en août : la 6e édition s'est ouverte le 10 août 2024 et la 7e le 9 août 2025. L'édition 2026 annonçait « N'Kpohou Tchi », un camping traditionnel alladjan pour s'immerger dans les savoir-faire et le mode de vie des communautés, ainsi qu'une grande parade des troupes traditionnelles, des artisans et des chefs.\n\nDates de chaque édition annoncées par les organisateurs.",
+                [$src('Fraternité Matin — Festival des 3A : la 6e édition ouverte à Jacqueville (2024)', 'https://www.fratmat.info/article/278116/culture/tourisme/festival-de-la-culture-et-des-arts-des-3a-la-6e-edition-ouverte-a-jacqueville'), $src('Fraternité Matin — 7e édition du Festival des 3A (2025)', 'https://www.fratmat.info/article/2636079/culture/7-edition-du-festival-des-3a-jacqueville-celebre-la-paix-et-la-cohesion'), $abidjanNet('Festival des 3A 2026 : Jacqueville met la femme au cœur du développement', 748502)],
+                false],
+            ['dabou', 'ceremonies-rituels', 'Festival du Lôdjoukrou et fêtes de génération adioukrou', 'festival-lodjoukrou-dabou',
+                "Patrimoine adioukrou de Dabou : festival du Lôdjoukrou et grandes fêtes de génération comme l'Ebeb.",
+                "Le pays adioukrou, autour de Dabou, est organisé en classes d'âge qui se transmettent le pouvoir lors de grandes fêtes de génération, dont l'Ebeb. Le festival du Lôdjoukrou a pour mission de promouvoir ce patrimoine culturel : sa 4e édition, en 2022, était consacrée à l'Ebeb.\n\nLes fêtes de génération sont propres à chaque village et suivent leur calendrier : se renseigner auprès des chefferies.",
+                [$src('Fraternité Matin — Dabou : 4e édition du festival du Lôdjoukrou, l\'Ebeb à l\'honneur (2022)', 'https://www.fratmat.info/article/218174/culture/dabou4eme-edition-du-festival-du-lodjoukrou-l-ebeb-a-lhonneur'), $abidjanNet('Fête de génération en pays adjoukrou : la génération Nigbessi prend le pouvoir', 419996), $src('Wikipedia (en) — Adjoukrou people', 'https://en.wikipedia.org/wiki/Adjoukrou_people')],
+                false],
+            ['toumodi', 'ceremonies-rituels', 'Paquinou Eklôliké de Toumodi', 'paquinou-toumodi',
+                "Le Paquinou, fête baoulé de Pâques, célébré à Toumodi, porte d'entrée du Bélier.",
+                "À Pâques, le pays baoulé célèbre le Paquinou, grand moment de retrouvailles des familles au village. Toumodi, ville carrefour et porte d'entrée du Bélier, organise ses propres festivités, le « Paquinou Eklôliké », ouvertes en présence des chefs traditionnels, des élus et des autorités.\n\nLes dates suivent le calendrier de Pâques.",
+                [$abidjanNet('Toumodi renoue avec « Paquinou Eklôliké » (2022)', 706941), $abidjanNet('Lancement de Paquinou 2015 à Toumodi', 528455), $src('Fraternité Matin — Paquinou Eklôliké, Paquinou N\'Goa… les initiatives de Pâques 2022', 'https://www.fratmat.info/article/220018/societe/-paquinou-eklolike-paquinou-ngoa-paquinou-a-konankankro-ces-initiatives-qui-ont-marque-paques-2022')],
+                false],
+            ['guiglo', 'artisanat-marches', 'Yorodéhé, festival du pagne tissé wê', 'yorodehe-pagne-tisse-guiglo',
+                "Festival du pagne tissé de l'Ouest : défilé de mode et savoir-faire wê, 11e édition à Guiglo en 2025.",
+                "Le Yorodéhé (« nouveau soleil » en langue wê) valorise le pagne tissé de l'Ouest ivoirien par des défilés de mode. Après dix ans à Abidjan, sa 11e édition s'est tenue à Guiglo les 4 et 5 juillet 2025, pour mettre en avant les tisserands de la région.\n\nLieu et dates des éditions suivantes à vérifier auprès des organisateurs.",
+                [$abidjanNet('Mode / Yorodéhé 2025 : Guiglo accueille la 11e édition', 742867)],
+                false],
+            ['bongouanou', 'ceremonies-rituels', 'Baanan fetw, fête de la banane plantain de Banabo', 'baanan-fetw-banabo',
+                "Fête de la banane plantain du village agni de Banabo, à 10 km de Bongouanou.",
+                "Sur le modèle des fêtes de l'igname, le village de Banabo, à une dizaine de kilomètres de Bongouanou, célèbre le « Baanan fetw », la fête de la banane plantain en agni. La fête met à l'honneur cette culture, présentée comme un levier contre la pauvreté et pour l'autosuffisance alimentaire du Moronou.\n\nDates à vérifier auprès du village.",
+                [$abidjanNet('Tourisme : « Baanan fetw » ou la fête de la banane plantain célébrée à Banabo', 486761)],
+                false],
+            ['dimbokro', 'sites-culturels', 'Festival du tourisme de Dimbokro (Festourdim)', 'festourdim-dimbokro',
+                "Festival lancé en 2015 : visite des sites touristiques du département, danses traditionnelles, concours de beauté.",
+                "La première édition du Festival du tourisme de Dimbokro (Festourdim), en mai 2015, a commencé par la visite d'une dizaine de sites touristiques du département, avant une soirée de danses traditionnelles, avec des troupes venues du Burkina Faso, et un concours de beauté.\n\nÉditions suivantes à vérifier auprès de la direction départementale du tourisme.",
+                [$abidjanNet('Festival du tourisme de Dimbokro : un creuset pour les relations ivoiro-burkinabè (2015)', 553052), $abidjanNet('Dimbokro : plaidoyer pour un tourisme durable dans le département', 553051)],
+                false],
+
+            ['assinie', 'sports-aventure', 'Surf à Assinie', 'surf-assinie',
+                "Le principal spot de surf du pays : beach break de sable, écoles et surf camps, étape de l'Africa Surf Tour.",
+                "Assinie est le spot de surf de référence en Côte d'Ivoire : un beach break sur fond de sable, avec des vagues gauches et droites. Les meilleures conditions s'obtiennent par houle de sud à sud-ouest, vent de nord-est et marée moyenne à haute. Le site dispose d'une école de surf et de surf camps, et a accueilli une étape de l'Africa Surf Tour.\n\nAttention aux courants et à l'eau trouble près de l'embouchure.",
+                [$src('Surf-Forecast — Assinie, guide du spot', 'https://www.surf-forecast.com/breaks/Assinie_1/reviews'), $src('Figaro Nautisme — En Côte d\'Ivoire, le surf prend doucement son essor (2025)', 'https://figaronautisme.meteoconsult.fr/actus-nautisme-flash/2025-03-06/76044-en-cote-d-ivoire-le-surf-prend-doucement-son-essor')],
+                false],
+        ];
+
+        $rows = [];
+        $order = 200;
+        foreach ($sites as [$city, $cat, $name, $slug, $short, $description, $sources, $featured]) {
+            if (! isset($cities[$city], $cats[$cat])) {
+                $this->command?->warn("Site « {$name} » ignoré : ville « {$city} » ou catégorie « {$cat} » introuvable.");
+
+                continue;
+            }
+            $rows[] = [
+                'city_id' => $cities[$city],
+                'category_id' => $cats[$cat],
+                'name' => $name,
+                'slug' => $slug,
+                'short_description' => $short,
+                'description' => $description,
+                'is_featured' => $featured,
+                'is_active' => true,
+                'sort_order' => $order++,
+                'sources' => $sources,
+            ];
+        }
+
+        $this->report('Sites touristiques par ville', $this->seedMissing(TouristSite::class, $rows));
+    }
+}

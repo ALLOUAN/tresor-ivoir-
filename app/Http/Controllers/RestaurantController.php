@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Restaurant;
 use App\Models\TouristCity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 /**
@@ -28,12 +29,12 @@ class RestaurantController extends Controller
         $restaurants = (match ($sort) {
             'recent' => $query->orderByDesc('created_at'),
             'popularite' => $query->orderByDesc('views_count'),
-            default => $query->orderByDesc('is_featured'),
-        })->get();
+            default => $query->orderByDesc('is_featured')->orderBy('sort_order'),
+        })->orderBy('name')->get();
 
-        $cities = $cityId
-            ? TouristCity::where('id', $cityId)->get()
-            : TouristCity::active()->orderBy('name')->get();
+        // Filtre « ville » : toutes les villes qui ont au moins un restaurant actif, même quand une
+        // ville est déjà sélectionnée (sinon la liste ne proposait plus qu'elle).
+        $cities = TouristCity::whereIn('id', Restaurant::active()->select('city_id'))->orderBy('name')->get();
 
         return view('restaurants.index', [
             'restaurants' => $restaurants,
@@ -52,15 +53,7 @@ class RestaurantController extends Controller
 
         $restaurant->incrementViews();
 
-        $menuByCategory = collect();
-        if ($restaurant->provider) {
-            $menuByCategory = $restaurant->provider->menuItems()
-                ->where('is_available', true)
-                ->with('category')
-                ->orderBy('sort_order')
-                ->get()
-                ->groupBy(fn ($item) => $item->category?->name_fr ?? 'Autres');
-        }
+        $menuByCategory = $this->menuByCategory($restaurant);
 
         $reviews = $restaurant->provider
             ? $restaurant->provider->approvedReviews()->latest()->take(5)->get()
@@ -69,6 +62,8 @@ class RestaurantController extends Controller
         $related = Restaurant::active()
             ->where('id', '!=', $restaurant->id)
             ->where('city_id', $restaurant->city_id)
+            ->orderByDesc('is_featured')
+            ->orderBy('name')
             ->limit(3)
             ->get();
 
@@ -85,16 +80,31 @@ class RestaurantController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        $menuByCategory = collect();
-        if ($restaurant->provider) {
-            $menuByCategory = $restaurant->provider->menuItems()
-                ->where('is_available', true)
-                ->with('category')
-                ->orderBy('sort_order')
-                ->get()
-                ->groupBy(fn ($item) => $item->category?->name_fr ?? 'Autres');
-        }
+        $menuByCategory = $this->menuByCategory($restaurant);
 
         return view('restaurants.menu', compact('restaurant', 'menuByCategory'));
+    }
+
+    /**
+     * Plats disponibles, regroupés par catégorie dans l'ordre défini par l'administration
+     * (ordre des catégories, puis ordre et nom des plats) — et non plus au hasard des insertions.
+     */
+    private function menuByCategory(Restaurant $restaurant): Collection
+    {
+        if (! $restaurant->provider) {
+            return collect();
+        }
+
+        return $restaurant->provider->menuItems()
+            ->where('is_available', true)
+            ->with('category')
+            ->get()
+            ->sortBy([
+                fn ($a, $b) => ($a->category?->sort_order ?? PHP_INT_MAX) <=> ($b->category?->sort_order ?? PHP_INT_MAX),
+                fn ($a, $b) => (string) $a->category?->name_fr <=> (string) $b->category?->name_fr,
+                fn ($a, $b) => (int) $a->sort_order <=> (int) $b->sort_order,
+                fn ($a, $b) => strcasecmp($a->name, $b->name),
+            ])
+            ->groupBy(fn ($item) => $item->category?->localized('name') ?: ($item->category?->name_fr ?? __('Autres')));
     }
 }

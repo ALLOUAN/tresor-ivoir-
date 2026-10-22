@@ -1,7 +1,7 @@
 @extends('layouts.visitor-public')
 
-@section('title', 'Mes achats')
-@section('page-title', 'Mes achats')
+@section('title', __('Mes achats'))
+@section('page-title', __('Mes achats'))
 
 @section('content')
 <div class="max-w-5xl mx-auto">
@@ -15,10 +15,10 @@
     @if($purchases->isEmpty())
         <div class="bg-green-900 border border-slate-800 rounded-xl p-14 text-center">
             <i class="fas fa-image text-slate-700 text-4xl mb-3 block"></i>
-            <p class="text-slate-400 text-sm">Vous n'avez pas encore effectué d'achat.</p>
+            <p class="text-slate-400 text-sm">{{ __('Vous n\'avez pas encore effectué d\'achat.') }}</p>
             <a href="{{ route('gallery.public') }}" class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-black text-sm font-semibold transition">
                 <i class="fas fa-images text-xs"></i>
-                Découvrir la galerie
+                {{ __('Découvrir la galerie') }}
             </a>
         </div>
     @else
@@ -45,10 +45,10 @@
                             {{ $media->title ?? $media->original_name }}
                         </p>
                         <p class="text-slate-500 text-xs mt-0.5">
-                            Acheté le {{ $purchase->paid_at->format('d/m/Y à H:i') }}
+                            {{ __('Acheté le') }} {{ $purchase->paid_at->format('d/m/Y à H:i') }}
                         </p>
                         <p class="text-orange-400 text-xs font-semibold mt-0.5">
-                            {{ number_format((float) $purchase->amount, 0, ',', ' ') }} FCFA
+                            {{ number_format((float) $purchase->amount, 0, ',', ' ') }} {{ __('FCFA') }}
                         </p>
                     </div>
 
@@ -57,13 +57,13 @@
                         <a href="{{ route('gallery.public.show', $media->uuid) }}"
                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium transition">
                             <i class="fas fa-eye text-[10px]"></i>
-                            Voir
+                            {{ __('Voir') }}
                         </a>
                         @if($media->file_path)
                             <a href="{{ route('visitor.purchases.download', $purchase->uuid) }}"
                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 text-orange-300 text-xs font-medium transition">
                                 <i class="fas fa-download text-[10px]"></i>
-                                Télécharger
+                                {{ __('Télécharger') }}
                             </a>
                         @endif
                     </div>

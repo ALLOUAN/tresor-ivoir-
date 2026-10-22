@@ -1,475 +1,429 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $people->name }} — Cultures Ivoiriennes — {{ $siteBrand['site_name'] ?? 'Trésors d\'Ivoire' }}</title>
+    <title>{{ $people->name }} — {{ __('Cultures Ivoiriennes') }} — {{ $siteBrand['site_name'] ?? 'Trésors d\'Ivoire' }}</title>
+    @include('partials.share-meta', ['title' => $people->name.' — Cultures ivoiriennes', 'description' => $people->description, 'image' => $people->cover_images ?: $people->thumbnail])
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; } .font-serif { font-family: 'Playfair Display', serif; } html { scroll-behavior: smooth; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+    @include('partials.offer-page-theme')
     <style>
-        body { font-family: 'Inter', sans-serif; background:#e9e5d9; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
-        .hero-img { transition: transform 8s ease; }
-        .hero-wrap:hover .hero-img { transform: scale(1.04); }
-        .tabs-bar { position: sticky; top: 0; z-index: 30; background: rgba(233, 229, 217, .92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.06); }
-        .tab-btn { position: relative; padding: 14px 20px; font-size: 13px; font-weight: 500; color: #64748b; cursor: pointer; transition: color .2s; white-space: nowrap; }
-        .tab-btn.active { color: #f2790f; }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: #f2790f; border-radius: 2px 2px 0 0; }
-        .tab-btn:hover:not(.active) { color: #cbd5e1; }
-        .tab-section { display: none; }
-        .tab-section.active { display: block; }
-        .element-card { transition: transform .2s ease, border-color .2s ease; }
-        .element-card:hover { transform: translateY(-3px); }
-        html:not(.dark) body { background:#e9e5d9; color: #1c1915; }
-        html:not(.dark) .tabs-bar { background: rgba(245,240,235,.95); border-color: rgba(0,0,0,.08); }
-        html:not(.dark) .info-block { background:#e9e5d9 !important; border-color: rgba(0,0,0,.08) !important; }
+        /* Fiche d'un peuple, charte du site et couleurs du logo (coucher de soleil, palmier, lagune, soleil, mer, or, brun).
+           Photo entière sans texte posé dessus, carte d'identité, onglets qui suivent la lecture, patrimoine filtrable. */
+        .cp { max-width: 1180px; margin: 0 auto; padding: 22px 20px 64px; }
+        .cp-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: #6b6458; }
+        .cp-crumb li:first-child a { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #e6dccb; color: #9a4308; font-weight: 700; text-decoration: none; }
+        .cp-crumb li:first-child a:hover { border-color: #b9500a; }
+        .cp-crumb .sep { color: #c2b89e; }
+        .cp-crumb [aria-current] { font-weight: 700; color: #1d1a16; }
+
+        /* Héros */
+        .cp-hero-wrap { position: relative; overflow: hidden; background: #f3ead8; border-bottom: 1px solid #e3d5bb; }
+        .cp-hero-wrap .ivm-g { opacity: .16 !important; }
+        .cp-hero { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 34px; align-items: center; max-width: 1180px; margin: 0 auto; padding: 18px 20px 52px; }
+        .cp-hero__txt { padding: 26px 28px; border-radius: 28px; background: #f6efe1; border: 1px solid #e3d5bb; }
+        .cp-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+        .cp-pill { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 11.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; background: #fff; border: 1px solid #e3d5bb; color: #9a4308; }
+        .cp-pill .ico { font-size: 14px; }
+        .cp-pill.is-green { color: #1b6b3a; }
+        .cp-title { margin: 14px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(40px, 3.4vw + 18px, 72px); font-weight: 700; line-height: 1; letter-spacing: -.02em; color: #1d1a16; }
+        .cp-lead { margin: 14px 0 0; font-size: 16.5px; line-height: 1.7; color: #3a2f22; }
+        .cp-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .cp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 48px; padding: 0 20px; border-radius: 999px; font-size: 14.5px; font-weight: 700; text-decoration: none; border: 0; cursor: pointer; white-space: nowrap; transition: background .15s ease, border-color .15s ease; }
+        .cp-btn .ico { font-size: 18px; }
+        .cp-btn.is-main { background: #b9500a; color: #fff; }
+        .cp-btn.is-main:hover { background: #9a4308; color: #fff; }
+        .cp-btn.is-line { background: #fff; color: #9a4308; border: 1.5px solid #b9500a; }
+        .cp-btn.is-line:hover { background: #fdf4ec; }
+        .cp-btn.is-icon { width: 48px; padding: 0; background: #fff; color: #9a4308; border: 1.5px solid #e6dccb; }
+        .cp-btn:focus-visible, .cp-chip:focus-visible, .cp-el:focus-visible, .cp-other:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .cp-credit { margin: 14px 0 0; font-size: 11.5px; font-style: italic; color: #8a7f6b; }
+        .cp-credit b { font-style: normal; color: #9a4308; }
+
+        .cp-cover { position: relative; aspect-ratio: 4 / 3; border-radius: 28px; overflow: hidden; background: #e9e1d2; border: 1px solid #e3d5bb; }
+        .people-hero-layer { position: absolute; inset: 0; transition: opacity .7s ease; }
+        .people-hero-layer img { width: 100%; height: 100%; object-fit: cover; }
+        .cp-cover__empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 64px; color: #b9500a; background: #fdf4ec; }
+        .cp-cover__ui { position: absolute; left: 14px; right: 14px; bottom: 14px; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        #people-hero-dots { display: flex; gap: 5px; padding: 8px 10px; border-radius: 999px; background: #fff; }
+        .people-hero-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 999px; background: #e3d5bb; cursor: pointer; transition: width .25s ease, background .25s ease; }
+        .people-hero-dot[aria-selected="true"] { width: 20px; background: #b9500a; }
+        .cp-arrows { display: flex; gap: 6px; }
+        .cp-arrows button { width: 38px; height: 38px; border-radius: 999px; border: 0; background: #fff; color: #9a4308; font-size: 19px; font-weight: 700; cursor: pointer; }
+        .cp-arrows button:hover { background: #fdf4ec; }
+        .cp-count { position: absolute; top: 14px; right: 14px; z-index: 30; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: 999px; background: #fff; font-size: 12px; font-weight: 800; color: #3a2f22; }
+
+        /* Sections */
+        .cp-main { display: flex; flex-direction: column; gap: 56px; margin-top: 30px; }
+        .cp-sec { scroll-margin-top: 150px; }
+        .cp-label { margin: 0 0 6px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #b9500a; }
+        .cp-h2 { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.3vw + 18px, 34px); font-weight: 700; color: #1d1a16; }
+        .cp-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin-bottom: 20px; }
+
+        /* Palette du logo, en rotation */
+        .lc { --c: 217,101,15; }
+        .lc.c2 { --c: 74,138,42; } .lc.c3 { --c: 31,128,121; } .lc.c4 { --c: 201,138,12; } .lc.c5 { --c: 44,110,143; } .lc.c6 { --c: 176,134,28; } .lc.c7 { --c: 122,74,42; }
+
+        /* Présentation : domaines */
+        .cp-intro { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+        .cp-intro p.cp-text { margin: 0; font-size: 16.5px; line-height: 1.8; color: #3a2f22; }
+        .cp-domains { padding: 22px; border-radius: 24px; background: #fff; border: 1px solid #ece5d6; }
+        .cp-domains h3 { margin: 0 0 14px; font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #6b6458; }
+        .cp-dlist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .cp-dom { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 14px; background: rgba(var(--c), .07); border: 1px solid rgba(var(--c), .16); color: #1d1a16; font-size: 13.5px; font-weight: 600; text-decoration: none; cursor: pointer; text-align: left; transition: background .15s ease; }
+        .cp-dom:hover { background: rgba(var(--c), .13); }
+        .cp-dom i { flex: none; width: 30px; height: 30px; border-radius: 10px; background: rgb(var(--c)); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
+        .cp-dom em { margin-left: auto; font-style: normal; font-size: 12px; font-weight: 800; color: rgb(var(--c)); }
+
+        /* Patrimoine */
+        .cp-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+        .cp-chips::-webkit-scrollbar { display: none; }
+        .cp-chip { flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 6px; border-radius: 999px; border: 1px solid #e8e1d3; background: #fff; color: #3a2f22; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background .15s ease, border-color .15s ease, color .15s ease; }
+        .cp-chip i { width: 28px; height: 28px; border-radius: 999px; background: rgba(var(--c), .14); color: rgb(var(--c)); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+        .cp-chip:hover { border-color: rgba(var(--c), .55); }
+        .cp-chip.is-on { background: rgb(var(--c)); border-color: rgb(var(--c)); color: #fff; }
+        .cp-chip.is-on i { background: rgba(255,255,255,.22); color: #fff; }
+        .cp-chip em { font-style: normal; font-size: 12px; opacity: .75; }
+        .cp-els { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+        .cp-el { position: relative; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; }
+        .cp-el[hidden] { display: none; }
+        .cp-el:hover { border-color: #d8cdb8; box-shadow: 0 18px 34px -26px rgba(29,26,22,.55); }
+        .cp-el__img { position: relative; aspect-ratio: 16 / 10; background: rgba(var(--c), .1); display: flex; align-items: center; justify-content: center; color: rgb(var(--c)); font-size: 40px; overflow: hidden; }
+        .cp-el__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+        .cp-el:hover .cp-el__img img { transform: scale(1.04); }
+        .cp-el__risk { position: absolute; top: 12px; left: 12px; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: #fff; font-size: 11px; font-weight: 800; }
+        .cp-el__risk .dot { width: 7px; height: 7px; border-radius: 999px; background: currentColor; }
+        .cp-el__risk.is-vulnerable { color: #b45309; } .cp-el__risk.is-en_danger { color: #b42318; } .cp-el__risk.is-disparu { color: #57534e; }
+        .cp-el__star { position: absolute; top: 12px; right: 12px; display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 999px; background: #fff; color: #9a4308; font-size: 11px; font-weight: 800; }
+        .cp-el__body { flex: 1; display: flex; flex-direction: column; padding: 16px 18px 18px; }
+        .cp-el__body small { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: rgb(var(--c)); }
+        .cp-el__body b { margin-top: 6px; font-family: 'Playfair Display', serif; font-size: 19px; line-height: 1.25; color: #1d1a16; }
+        .cp-el__body p { margin: 6px 0 0; font-size: 13.5px; line-height: 1.55; color: #4a443a; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .cp-el__go { margin-top: auto; padding-top: 12px; font-size: 13.5px; font-weight: 700; color: #9a4308; }
+        .cp-empty { padding: 34px; border-radius: 24px; background: #fff; border: 1px dashed #d8cdb8; text-align: center; color: #6b6458; }
+
+        /* Symboles */
+        .cp-syms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .cp-sym { display: flex; gap: 14px; padding: 18px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
+        .cp-sym > span { flex: none; width: 46px; height: 46px; border-radius: 15px; background: rgba(var(--c), .12); color: rgb(var(--c)); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+        .cp-sym small { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #8a7f6b; }
+        .cp-sym b { display: block; margin-top: 4px; font-size: 15.5px; line-height: 1.4; color: #1d1a16; }
+
+        /* Histoire */
+        .cp-story { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+        .cp-story__text { padding: 28px 30px; border-radius: 26px; background: #fff; border: 1px solid #ece5d6; }
+        .cp-story__text p { margin: 0; font-size: 16.5px; line-height: 1.85; color: #3a2f22; white-space: pre-line; }
+        .cp-story__text p::first-letter { float: left; margin: 6px 10px 0 0; font-family: 'Playfair Display', serif; font-size: 58px; line-height: .8; color: #b9500a; }
+        .cp-sources { padding: 22px; border-radius: 24px; background: #123a25; color: #fff; }
+        .cp-sources h3 { margin: 0 0 12px; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #f6c38f; }
+        .cp-sources ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: s; }
+        .cp-sources li { counter-increment: s; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; font-size: 13.5px; line-height: 1.45; }
+        .cp-sources li::before { content: counter(s); width: 26px; height: 26px; border-radius: 999px; background: rgba(255,255,255,.12); color: #f6c38f; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+        .cp-sources a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,.35); text-underline-offset: 3px; overflow-wrap: anywhere; }
+        .cp-sources a:hover { text-decoration-color: #f6c38f; }
+        .cp-sources p { margin: 0; font-size: 13.5px; color: #cfe6d7; }
+
+        /* Autres peuples */
+        .cp-others { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+        .cp-other { display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; }
+        .cp-other:hover { border-color: #d8cdb8; box-shadow: 0 16px 30px -24px rgba(29,26,22,.5); }
+        .cp-other__img { aspect-ratio: 4 / 3; background: rgba(var(--c), .1); color: rgb(var(--c)); display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; position: relative; }
+        .cp-other__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .cp-other__body { padding: 12px 14px 14px; }
+        .cp-other__body b { display: block; font-family: 'Playfair Display', serif; font-size: 17px; color: #1d1a16; }
+        .cp-other__body span { display: block; margin-top: 3px; font-size: 12.5px; color: #6b6458; }
+
+        @media (max-width: 1023px) {
+            .cp-hero { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+            .cp-cover { order: -1; }
+            .cp-intro, .cp-story { grid-template-columns: minmax(0, 1fr); }
+            .cp-els, .cp-syms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .cp-others { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 640px) {
+            .cp { padding: 16px 16px 48px; }
+            .cp-hero { padding: 14px 16px 44px; }
+            .cp-hero__txt { padding: 18px 16px; border-radius: 22px; }
+            .cp-title { font-size: clamp(34px, 10vw, 44px); }
+            .cp-lead { font-size: 15px; }
+            .cp-actions .cp-btn { flex: 1 1 auto; }
+            .cp-actions .cp-btn.is-icon { flex: none; }
+            .cp-cover { border-radius: 22px; }
+            .cp-dlist, .cp-els, .cp-syms { grid-template-columns: minmax(0, 1fr); }
+            .cp-story__text { padding: 20px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .people-hero-layer, .cp-el__img img { transition: none; } }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="min-h-screen">
     @include('partials.page-background')
+    @include('partials.public-top-nav')
+@php
+    $coverImages = $people->cover_images ?? [];
+    $culture = \App\Support\IvorianCulture::forPeople($people->slug);
+    $riskLabels = ['vulnerable' => __('Vulnérable'), 'en_danger' => __('En danger'), 'disparu' => __('Disparu')];
+    // Couleur du logo attribuée à chaque domaine, stable sur toute la page
+    $domainColor = $domains->values()->mapWithKeys(fn ($d, $i) => [$d->id => 'c'.(($i % 7) + 1)]);
+    $domainCount = $elements->groupBy('domain_id')->map->count();
+    $symbols = $people->symboles ?? [];
+    $sources = $people->sources ?? [];
+@endphp
 
-@include('partials.public-top-nav')
-
-{{-- ══ HERO ══════════════════════════════════════════════════════════════════ --}}
-<section class="hero-wrap relative h-[500px] md:h-[640px] overflow-hidden">
-
-    @php $coverImages = $people->cover_images ?? []; @endphp
-
-    @if(!empty($coverImages))
-    <div id="people-hero-carousel" class="absolute inset-0 z-0 h-full w-full overflow-hidden">
-        @foreach($coverImages as $i => $img)
-        <div class="people-hero-layer absolute inset-0 transition-opacity duration-700 ease-out {{ $i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
-             data-people-hero-layer="{{ $i }}">
-            <img src="{{ $img }}" alt="Bannière {{ $people->name }}"
-                class="hero-img w-full h-full object-cover scale-105"
-                style="object-position: center 40%;"
-                @if($i > 0) loading="lazy" @endif>
-        </div>
-        @endforeach
+<section class="cp-hero-wrap">
+    @include('partials.ivorian-motifs', ['culture' => $culture['key']])
+    <div style="position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:20px 20px 0">
+        <ol class="cp-crumb" aria-label="{{ __('Fil d\'Ariane') }}">
+            <li><a href="{{ route('cultural.peoples') }}"><i class="fas fa-arrow-left" aria-hidden="true"></i>{{ __('Cultures') }}</a></li>
+            <li class="sep" aria-hidden="true">/</li>
+            <li aria-current="page">{{ $people->name }}</li>
+        </ol>
     </div>
-    @else
-    <div class="w-full h-full"
-        style="background: #e9e5d9;">
-        <div class="absolute inset-0 flex items-center justify-center opacity-10">
-            <i class="fas fa-users text-white" style="font-size: 12rem;"></i>
-        </div>
-    </div>
-    @endif
-
-    <div class="absolute inset-0 z-20 pointer-events-none" style="background: linear-gradient(to top, rgba(255, 255, 255,1) 0%, rgba(255, 255, 255,.55) 40%, rgba(255, 255, 255,.1) 100%);"></div>
-    <div class="absolute inset-0 z-20 pointer-events-none" style="background: linear-gradient(to right, rgba(255, 255, 255,.55) 0%, transparent 60%);"></div>
-
-    @if(count($coverImages) > 1)
-    {{-- Flèches --}}
-    <button type="button" id="people-hero-prev" aria-label="Bannière précédente"
-        class="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/70 border border-black/10 text-[#1c1915] hover:bg-orange-500 hover:text-white transition shadow-lg backdrop-blur-sm">
-        <i class="fas fa-chevron-left text-sm"></i>
-    </button>
-    <button type="button" id="people-hero-next" aria-label="Bannière suivante"
-        class="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/70 border border-black/10 text-[#1c1915] hover:bg-orange-500 hover:text-white transition shadow-lg backdrop-blur-sm">
-        <i class="fas fa-chevron-right text-sm"></i>
-    </button>
-
-    {{-- Indicateurs --}}
-    <div class="absolute top-20 right-6 z-30 flex items-center gap-1.5 rounded-full bg-white/60 border border-black/10 px-3 py-1.5 backdrop-blur-sm" id="people-hero-dots" role="tablist" aria-label="Choisir une bannière">
-        @foreach($coverImages as $i => $img)
-        <button type="button"
-            class="people-hero-dot h-2 rounded-full transition-all {{ $i === 0 ? 'w-6 bg-orange-500' : 'w-2 bg-black/25 hover:bg-black/50' }}"
-            data-people-hero-dot="{{ $i }}" aria-label="Bannière {{ $i + 1 }}" aria-selected="{{ $i === 0 ? 'true' : 'false' }}"></button>
-        @endforeach
-    </div>
-    @endif
-
-    {{-- Breadcrumb --}}
-    <div class="absolute top-6 left-0 right-0 z-30 max-w-6xl mx-auto px-6">
-        <nav class="flex items-center gap-1.5 text-xs text-white/50">
-            <a href="{{ route('cultural.peoples') }}" class="hover:text-orange-400 transition flex items-center gap-1">
-                <i class="fas fa-users text-orange-400/60 text-[10px]"></i> Cultures
-            </a>
-            <i class="fas fa-chevron-right text-[8px]"></i>
-            <span class="text-white/80 truncate">{{ $people->name }}</span>
-        </nav>
-    </div>
-
-    {{-- Contenu bas --}}
-    <div class="absolute bottom-0 left-0 right-0 z-30 max-w-6xl mx-auto px-6 pb-10">
-        {{-- Badges --}}
-        <div class="flex flex-wrap gap-2 mb-4">
-            @if($people->is_featured)
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500 text-black text-xs font-bold">
-                <i class="fas fa-star text-[10px]"></i> Peuple vedette
-            </span>
-            @endif
-            @if($people->zone_geographique)
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white text-xs">
-                <i class="fas fa-compass text-orange-400/70 text-[10px]"></i>
-                {{ $people->zone_geographique }}
-            </span>
-            @endif
-            @if($people->famille_linguistique)
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/70 text-xs">
-                <i class="fas fa-language text-orange-400/50 text-[10px]"></i>
-                {{ $people->famille_linguistique }}
-            </span>
-            @endif
+    <header class="cp-hero">
+        <div class="cp-hero__txt">
+            <div class="cp-pills">
+                <span class="cp-pill"><x-icon name="map-point" />{{ $culture['label'] }}</span>
+                @if($people->zone_geographique)<span class="cp-pill">{{ $people->zone_geographique }}</span>@endif
+                @if($people->is_featured)<span class="cp-pill is-green"><x-icon name="star" />{{ __('Peuple vedette') }}</span>@endif
+            </div>
+            <h1 class="cp-title">{{ $people->name }}</h1>
+            @if($people->description)<p class="cp-lead">{{ $people->localized('description') }}</p>@endif
+            <div class="cp-actions">
+                <a href="#patrimoine" class="cp-btn is-main"><x-icon name="masks" />{{ __('Explorer le patrimoine') }}</a>
+                @if($people->histoire)<a href="#histoire" class="cp-btn is-line"><x-icon name="book" />{{ __('Son histoire') }}</a>@endif
+                <button type="button" class="cp-btn is-icon" data-cp-share data-done="{{ __('Lien copié') }}" aria-label="{{ __('Partager') }}" title="{{ __('Partager') }}"><x-icon name="share" /></button>
+            </div>
+            <p class="cp-credit"><b>{{ $culture['label'] }}</b> · {{ $culture['credit'] }}</p>
         </div>
 
-        <h1 class="font-serif text-4xl md:text-5xl font-bold text-white leading-tight mb-4 drop-shadow-xl">
-            {{ $people->name }}
-        </h1>
-
-        <div class="flex flex-wrap items-center gap-4 text-sm">
-            @if($people->capitale_culturelle)
-            <span class="flex items-center gap-1.5 text-orange-300 font-semibold">
-                <i class="fas fa-landmark text-xs"></i> {{ $people->capitale_culturelle }}
-            </span>
+        <div class="cp-cover hero-wrap">
+            @if(! empty($coverImages))
+                @foreach($coverImages as $i => $img)
+                    <div class="people-hero-layer {{ $i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}" data-people-hero-layer="{{ $i }}">
+                        <img src="{{ $img }}" alt="{{ __(':p — photo :n', ['p' => $people->name, 'n' => $i + 1]) }}" @if($i > 0) loading="lazy" @endif decoding="async">
+                    </div>
+                @endforeach
+                @if(count($coverImages) > 1)
+                    <span class="cp-count"><x-icon name="gallery" />{{ count($coverImages) }}</span>
+                    <div class="cp-cover__ui">
+                        <div id="people-hero-dots" role="tablist" aria-label="{{ __('Choisir une photo') }}">
+                            @foreach($coverImages as $i => $img)
+                                <button type="button" class="people-hero-dot" data-people-hero-dot="{{ $i }}" aria-label="{{ __('Photo :n', ['n' => $i + 1]) }}" aria-selected="{{ $i === 0 ? 'true' : 'false' }}"></button>
+                            @endforeach
+                        </div>
+                        <div class="cp-arrows">
+                            <button type="button" id="people-hero-prev" aria-label="{{ __('Photo précédente') }}">‹</button>
+                            <button type="button" id="people-hero-next" aria-label="{{ __('Photo suivante') }}">›</button>
+                        </div>
+                    </div>
+                @endif
+            @elseif($people->thumbnail)
+                <img src="{{ $people->thumbnail }}" alt="{{ $people->name }}" style="width:100%;height:100%;object-fit:cover">
+            @else
+                <span class="cp-cover__empty"><x-icon name="users-group-rounded" /></span>
             @endif
-            @if($people->langue_principale)
-            <span class="flex items-center gap-1.5 text-white/60">
-                <i class="fas fa-comment-dots text-orange-400/60 text-xs"></i>
-                {{ $people->langue_principale }}
-            </span>
-            @endif
-            @if($people->population_estimee)
-            <span class="flex items-center gap-1.5 text-white/50">
-                <i class="fas fa-people-group text-xs"></i>
-                ~{{ number_format($people->population_estimee) }} personnes
-            </span>
-            @endif
-            <span class="flex items-center gap-1.5 text-white/40">
-                <i class="fas fa-book-open text-xs"></i>
-                {{ $elements->count() }} élément(s) culturel(s)
-            </span>
         </div>
-    </div>
+    </header>
 </section>
 
-{{-- ══ ONGLETS STICKY ═══════════════════════════════════════════════════════ --}}
-<div class="tabs-bar">
-    <div class="max-w-6xl mx-auto px-6 flex items-center gap-0 overflow-x-auto">
-        <button class="tab-btn active" onclick="showTab('presentation', this)">
-            <i class="fas fa-align-left mr-1.5"></i>Présentation
-        </button>
-        @if($elements->isNotEmpty())
-        <button class="tab-btn" onclick="showTab('elements', this)">
-            <i class="fas fa-masks-theater mr-1.5"></i>Éléments culturels
-            <span class="ml-1.5 text-xs bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded-full">{{ $elements->count() }}</span>
-        </button>
-        @endif
-        @if(!empty($people->symboles))
-        <button class="tab-btn" onclick="showTab('symboles', this)">
-            <i class="fas fa-star-of-life mr-1.5"></i>Symboles
-        </button>
-        @endif
-        @if($people->histoire)
-        <button class="tab-btn" onclick="showTab('histoire', this)">
-            <i class="fas fa-scroll mr-1.5"></i>Histoire
-        </button>
-        @endif
-    </div>
-</div>
+<main class="cp">
+    {{-- ══ CARTE D'IDENTITÉ ══ --}}
+    <ul class="ox-keys">
+        @if($people->langue_principale)<li><x-icon name="chat-round-dots" /><span><small>{{ __('Langue') }}</small><b>{{ $people->langue_principale }}</b></span></li>@endif
+        @if($people->famille_linguistique)<li><x-icon name="global" /><span><small>{{ __('Famille linguistique') }}</small><b>{{ $people->famille_linguistique }}</b></span></li>@endif
+        @if($people->capitale_culturelle)<li><x-icon name="buildings" /><span><small>{{ __('Capitale culturelle') }}</small><b>{{ $people->capitale_culturelle }}</b></span></li>@endif
+        @if($people->population_estimee)<li><x-icon name="users-group-rounded" /><span><small>{{ __('Population estimée') }}</small><b>≈ {{ number_format($people->population_estimee, 0, ',', ' ') }}</b></span></li>@endif
+        <li class="is-ok"><x-icon name="masks" /><span><small>{{ __('Patrimoine') }}</small><b>{{ $elements->count() }} {{ $elements->count() > 1 ? __('éléments') : __('élément') }}</b></span></li>
+    </ul>
 
-{{-- ══ CONTENU PRINCIPAL ════════════════════════════════════════════════════ --}}
-<div class="max-w-6xl mx-auto px-6 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <nav class="ox-tabs" data-ox-tabs aria-label="{{ __('Sections de la page') }}">
+        <a href="#presentation">{{ __('Présentation') }}</a>
+        <a href="#patrimoine">{{ __('Patrimoine') }} ({{ $elements->count() }})</a>
+        @if(! empty($symbols))<a href="#symboles">{{ __('Symboles') }}</a>@endif
+        <a href="#histoire">{{ __('Histoire & sources') }}</a>
+        @if($others->isNotEmpty())<a href="#autres">{{ __('Autres peuples') }}</a>@endif
+    </nav>
 
-        {{-- ── COLONNE PRINCIPALE ─────────────────────────────────────────── --}}
-        <div class="lg:col-span-2 space-y-8">
-
-            {{-- ONGLET : Présentation --}}
-            <div id="tab-presentation" class="tab-section active space-y-8">
-
-                @if($people->description)
-                <p class="text-lg text-slate-300 font-light leading-relaxed border-l-2 border-orange-500/60 pl-5 italic">
-                    {{ $people->description }}
-                </p>
-                @endif
-
-                {{-- Domaines culturels représentés --}}
+    <div class="cp-main">
+        {{-- ══ PRÉSENTATION ══ --}}
+        <section class="ox-sec cp-sec" id="presentation">
+            <div class="cp-head"><div><p class="cp-label">{{ __('Présentation') }}</p><h2 class="cp-h2">{{ __('Qui sont les :p ?', ['p' => $people->name]) }}</h2></div></div>
+            <div class="cp-intro">
+                <p class="cp-text">{{ $people->localized('description') ?: __('La présentation de ce peuple sera bientôt documentée.') }}</p>
                 @if($domains->isNotEmpty())
-                <div>
-                    <h2 class="text-white font-serif text-xl font-bold mb-4">Domaines culturels</h2>
-                    @php
-                        // Palette aux couleurs du drapeau ivoirien, appliquée en rotation
-                        // (une couleur différente par bouton) plutôt que la couleur libre
-                        // par domaine — identité visuelle cohérente sur cette section.
-                        $domainPalette = [
-                            'background:#f2790f18; border-color:#f2790f40; color:#c25e0a', // orange
-                            'background:#ffffff; border-color:#00000018; color:#1c1915',   // blanc
-                            'background:#16a34a18; border-color:#16a34a40; color:#15803d', // vert
-                        ];
-                    @endphp
-                    <div class="flex flex-wrap gap-2">
-                        @foreach($domains as $domain)
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm"
-                            style="{{ $domainPalette[$loop->index % 3] }}">
-                            @if($domain->icon)<i class="{{ $domain->icon }} text-xs"></i>@endif
-                            {{ $domain->name }}
-                        </span>
+                    <div class="cp-domains">
+                        <h3>{{ __('Domaines culturels') }}</h3>
+                        <div class="cp-dlist">
+                            @foreach($domains as $d)
+                                <button type="button" class="cp-dom lc {{ $domainColor[$d->id] }}" data-cp-goto="{{ $d->id }}">
+                                    <i class="{{ $d->icon ?: 'fas fa-star' }}" aria-hidden="true"></i>{{ $d->name }}<em>{{ $domainCount[$d->id] ?? 0 }}</em>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </section>
+
+        {{-- ══ PATRIMOINE ══ --}}
+        <section class="ox-sec cp-sec" id="patrimoine">
+            <div class="cp-head"><div><p class="cp-label">{{ __('Patrimoine') }}</p><h2 class="cp-h2">{{ __('Le patrimoine culturel :p', ['p' => $people->name]) }}</h2></div></div>
+            @if($elements->isEmpty())
+                <p class="cp-empty">{{ __('Aucun élément culturel enregistré pour l\'instant.') }}</p>
+            @else
+                @if($domains->count() > 1)
+                    <div class="cp-chips" role="group" aria-label="{{ __('Filtrer par domaine') }}">
+                        <button type="button" class="cp-chip lc c7 is-on" data-cp-filter="all" aria-pressed="true"><i class="fas fa-border-all" aria-hidden="true"></i>{{ __('Tout') }} <em>{{ $elements->count() }}</em></button>
+                        @foreach($domains as $d)
+                            <button type="button" class="cp-chip lc {{ $domainColor[$d->id] }}" data-cp-filter="{{ $d->id }}" aria-pressed="false"><i class="{{ $d->icon ?: 'fas fa-star' }}" aria-hidden="true"></i>{{ $d->name }} <em>{{ $domainCount[$d->id] ?? 0 }}</em></button>
                         @endforeach
                     </div>
-                </div>
                 @endif
-            </div>
-
-            {{-- ONGLET : Éléments culturels --}}
-            <div id="tab-elements" class="tab-section space-y-4">
-                <h2 class="text-white font-serif text-xl font-bold mb-4">
-                    Patrimoine culturel du peuple {{ $people->name }}
-                </h2>
-
-                @if($elements->isEmpty())
-                <div class="text-center py-16 text-slate-500 border border-slate-800 rounded-2xl">
-                    <i class="fas fa-masks-theater text-4xl mb-3 block text-slate-700"></i>
-                    Aucun élément culturel enregistré pour l'instant.
-                </div>
-                @else
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="cp-els">
                     @foreach($elements as $el)
-                    @php
-                        $riskColors = [
-                            'stable'     => ['bg' => '#16a34a18', 'border' => '#16a34a40', 'text' => '#4ade80'],
-                            'vulnerable' => ['bg' => '#9f470918', 'border' => '#9f470940', 'text' => '#fb923c'],
-                            'en_danger'  => ['bg' => '#dc262618', 'border' => '#dc262640', 'text' => '#f87171'],
-                            'disparu'    => ['bg' => '#71717118', 'border' => '#71717140', 'text' => '#9ca3af'],
-                        ];
-                        $rc = $riskColors[$el->niveau_risque] ?? $riskColors['stable'];
-                    @endphp
-                    <a href="{{ route('cultural.element', $el->slug) }}"
-                        class="element-card flex gap-4 bg-[#ffffff] border border-slate-800 hover:border-orange-500/30 rounded-2xl p-4 group">
-                        <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-slate-800">
-                            @if($el->thumbnail)
-                            <img src="{{ $el->thumbnail }}" alt="{{ $el->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            @elseif($el->domain)
-                            <div class="w-full h-full flex items-center justify-center text-xl"
-                                style="{{ $el->domain->color ? 'background:'.$el->domain->color.'22; color:'.$el->domain->color : 'background:#e9e5d9; color:#475569' }}">
-                                <i class="{{ $el->domain->icon ?: 'fas fa-masks-theater' }}"></i>
-                            </div>
-                            @else
-                            <div class="w-full h-full flex items-center justify-center bg-slate-800">
-                                <i class="fas fa-masks-theater text-slate-600 text-xl"></i>
-                            </div>
-                            @endif
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start justify-between gap-2 mb-1">
-                                <h3 class="text-white font-semibold group-hover:text-orange-400 transition text-sm leading-snug">{{ $el->name }}</h3>
-                                @if($el->niveau_risque && $el->niveau_risque !== 'stable')
-                                <span class="shrink-0 text-[10px] px-2 py-0.5 rounded-full border font-medium"
-                                    style="background:{{ $rc['bg'] }}; border-color:{{ $rc['border'] }}; color:{{ $rc['text'] }}">
-                                    {{ ucfirst(str_replace('_', ' ', $el->niveau_risque)) }}
-                                </span>
+                        @php $cc = $el->domain ? ($domainColor[$el->domain->id] ?? 'c1') : 'c7'; @endphp
+                        <a href="{{ route('cultural.element', $el->slug) }}" class="cp-el lc {{ $cc }}" data-cp-domain="{{ $el->domain_id }}">
+                            <span class="cp-el__img">
+                                <i class="{{ $el->domain?->icon ?: 'fas fa-masks-theater' }}" aria-hidden="true"></i>
+                                @if($el->thumbnail)<img src="{{ $el->thumbnail }}" alt="{{ $el->name }}" loading="lazy" decoding="async" onerror="this.remove()">@endif
+                                @if($el->niveau_risque && $el->niveau_risque !== 'stable' && isset($riskLabels[$el->niveau_risque]))
+                                    <span class="cp-el__risk is-{{ $el->niveau_risque }}"><span class="dot" aria-hidden="true"></span>{{ $riskLabels[$el->niveau_risque] }}</span>
                                 @endif
-                            </div>
-                            @if($el->domain)
-                            <p class="text-xs mb-1" style="{{ $el->domain->color ? 'color:'.$el->domain->color : 'color:#94a3b8' }}">
-                                @if($el->domain->icon)<i class="{{ $el->domain->icon }} text-[10px] mr-0.5"></i>@endif
-                                {{ $el->domain->name }}
-                            </p>
-                            @endif
-                            @if($el->short_description)
-                            <p class="text-slate-500 text-xs line-clamp-2">{{ $el->short_description }}</p>
-                            @endif
-                        </div>
-                    </a>
+                                @if($el->is_featured)<span class="cp-el__star"><x-icon name="star" />{{ __('À la une') }}</span>@endif
+                            </span>
+                            <span class="cp-el__body">
+                                @if($el->domain)<small>{{ $el->domain->name }}</small>@endif
+                                <b>{{ $el->name }}</b>
+                                @if($el->short_description)<p>{{ $el->localized('short_description') }}</p>@endif
+                                <span class="cp-el__go">{{ __('Découvrir') }} →</span>
+                            </span>
+                        </a>
                     @endforeach
                 </div>
-                @endif
-            </div>
+            @endif
+        </section>
 
-            {{-- ONGLET : Symboles --}}
-            <div id="tab-symboles" class="tab-section space-y-4">
-                <h2 class="text-white font-serif text-xl font-bold mb-4">Symboles du peuple {{ $people->name }}</h2>
-
-                @if(!empty($people->symboles))
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    @foreach($people->symboles as $symbole)
-                    <div class="info-block bg-[#ffffff] border border-slate-800 rounded-xl p-4 flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-orange-500/15 flex items-center justify-center shrink-0 mt-0.5">
-                            <i class="fas fa-star-of-life text-orange-400 text-xs"></i>
+        {{-- ══ SYMBOLES ══ --}}
+        @if(! empty($symbols))
+            <section class="ox-sec cp-sec" id="symboles">
+                <div class="cp-head"><div><p class="cp-label">{{ __('Repères') }}</p><h2 class="cp-h2">{{ __('Symboles et repères :p', ['p' => $people->name]) }}</h2></div></div>
+                <div class="cp-syms">
+                    @foreach($symbols as $s)
+                        <div class="cp-sym lc c{{ ($loop->index % 7) + 1 }}">
+                            <span aria-hidden="true">{{ mb_strtoupper(mb_substr((string) ($s['label'] ?? '•'), 0, 1)) }}</span>
+                            <div class="min-w-0"><small>{{ $s['label'] ?? '' }}</small><b>{{ $s['valeur'] ?? '' }}</b></div>
                         </div>
-                        <div class="min-w-0">
-                            <p class="text-slate-500 text-xs mb-0.5">{{ $symbole['label'] ?? '' }}</p>
-                            <p class="text-white text-sm font-medium">{{ $symbole['valeur'] ?? '' }}</p>
-                        </div>
-                    </div>
                     @endforeach
                 </div>
-                @endif
-            </div>
+            </section>
+        @endif
 
-            {{-- ONGLET : Histoire --}}
-            <div id="tab-histoire" class="tab-section">
-                <h2 class="text-white font-serif text-xl font-bold mb-6">Histoire du peuple {{ $people->name }}</h2>
-                @if($people->histoire)
-                <div class="text-slate-300 leading-8 text-base whitespace-pre-line space-y-4">
-                    {{ $people->histoire }}
-                </div>
-                @endif
-            </div>
-
-        </div>
-
-        {{-- ── PANNEAU STICKY DROITE ──────────────────────────────────────── --}}
-        <div class="lg:sticky lg:top-16">
-            <div class="bg-[#ffffff] border border-slate-800 rounded-2xl overflow-hidden">
-
-                {{-- En-tête panneau --}}
-                <div class="relative h-48 overflow-hidden">
-                    @if($people->cover_image)
-                    <img src="{{ $people->cover_image }}" alt="" class="w-full h-full object-cover" style="object-position: center top;">
-                    @elseif($people->thumbnail)
-                    <img src="{{ $people->thumbnail }}" alt="" class="w-full h-full object-cover">
+        {{-- ══ HISTOIRE & SOURCES ══ --}}
+        <section class="ox-sec cp-sec" id="histoire">
+            <div class="cp-head"><div><p class="cp-label">{{ __('Histoire') }}</p><h2 class="cp-h2">{{ __('L\'histoire du peuple :p', ['p' => $people->name]) }}</h2></div></div>
+            <div class="cp-story">
+                <div class="cp-story__text"><p>{{ $people->histoire ?: __('L\'histoire de ce peuple sera bientôt documentée.') }}</p></div>
+                <aside class="cp-sources" aria-label="{{ __('Sources') }}">
+                    <h3><x-icon name="book" />{{ __('Sources') }}</h3>
+                    @if(! empty($sources))
+                        <ol>
+                            @foreach($sources as $src)
+                                <li><span>@if(! empty($src['url']))<a href="{{ $src['url'] }}" target="_blank" rel="noopener noreferrer">{{ $src['label'] ?? $src['url'] }}</a>@else{{ $src['label'] ?? '' }}@endif</span></li>
+                            @endforeach
+                        </ol>
                     @else
-                    <div class="w-full h-full" style="background: #e9e5d9;"></div>
+                        <p>{{ __('Sources en cours de documentation.') }}</p>
                     @endif
-                    <div class="absolute inset-0" style="background: linear-gradient(to top, #e9e5d9, transparent);"></div>
-                    <div class="absolute bottom-3 left-4">
-                        <p class="text-slate-400 text-xs">{{ $people->zone_geographique ?? '' }}</p>
-                    </div>
-                </div>
-
-                <div class="p-5 space-y-4">
-
-                    {{-- Infos clés --}}
-                    <div class="space-y-2.5">
-                        @if($people->langue_principale)
-                        <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-800/50 border border-slate-800">
-                            <i class="fas fa-comment-dots text-orange-400/70 text-sm w-4 text-center shrink-0"></i>
-                            <div>
-                                <p class="text-slate-600 text-[10px] uppercase tracking-wide">Langue</p>
-                                <p class="text-white text-sm font-medium">{{ $people->langue_principale }}</p>
-                            </div>
-                        </div>
-                        @endif
-
-                        @if($people->capitale_culturelle)
-                        <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-800/50 border border-slate-800">
-                            <i class="fas fa-landmark text-orange-400/70 text-sm w-4 text-center shrink-0"></i>
-                            <div>
-                                <p class="text-slate-600 text-[10px] uppercase tracking-wide">Capitale culturelle</p>
-                                <p class="text-white text-sm font-medium">{{ $people->capitale_culturelle }}</p>
-                            </div>
-                        </div>
-                        @endif
-
-                        @if($people->famille_linguistique)
-                        <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-800/50 border border-slate-800">
-                            <i class="fas fa-language text-orange-400/70 text-sm w-4 text-center shrink-0"></i>
-                            <div>
-                                <p class="text-slate-600 text-[10px] uppercase tracking-wide">Famille linguistique</p>
-                                <p class="text-white text-sm font-medium">{{ $people->famille_linguistique }}</p>
-                            </div>
-                        </div>
-                        @endif
-
-                        @if($people->population_estimee)
-                        <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-orange-500/10 border border-orange-500/25">
-                            <i class="fas fa-people-group text-orange-400 text-sm w-4 text-center shrink-0"></i>
-                            <div>
-                                <p class="text-orange-400/70 text-[10px] uppercase tracking-wide">Population estimée</p>
-                                <p class="text-orange-300 text-sm font-bold">~{{ number_format($people->population_estimee) }}</p>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-
-                    {{-- Retour à la liste --}}
-                    <a href="{{ route('cultural.peoples') }}"
-                        class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-slate-800 hover:bg-orange-500/15 border border-slate-700 hover:border-orange-500/30 text-slate-300 hover:text-white text-sm font-medium transition">
-                        <i class="fas fa-arrow-left text-xs"></i>
-                        Tous les peuples
-                    </a>
-                </div>
+                </aside>
             </div>
-        </div>
+        </section>
 
+        {{-- ══ AUTRES PEUPLES ══ --}}
+        @if($others->isNotEmpty())
+            <section class="ox-sec cp-sec" id="autres">
+                <div class="cp-head">
+                    <div><p class="cp-label">{{ __('Continuer') }}</p><h2 class="cp-h2">{{ __('D\'autres peuples à découvrir') }}</h2></div>
+                    <a href="{{ route('cultural.peoples') }}" class="cp-btn is-line">{{ __('Tous les peuples') }} →</a>
+                </div>
+                <div class="cp-others">
+                    @foreach($others as $o)
+                        @php $oImg = ($o->cover_images[0] ?? null) ?: $o->thumbnail; @endphp
+                        <a href="{{ route('cultural.people', $o->slug) }}" class="cp-other lc c{{ ($loop->index % 7) + 1 }}">
+                            <span class="cp-other__img"><x-icon name="users-group-rounded" />@if($oImg)<img src="{{ $oImg }}" alt="{{ $o->name }}" loading="lazy" decoding="async" onerror="this.remove()">@endif</span>
+                            <span class="cp-other__body"><b>{{ $o->name }}</b><span>{{ collect([$o->zone_geographique, $o->famille_linguistique])->filter()->implode(' · ') }}</span></span>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endif
     </div>
-</div>
+</main>
 
 @include('partials.homepage-footer')
 
 <script>
-function showTab(name, btn) {
-    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    const section = document.getElementById('tab-' + name);
-    if (section) section.classList.add('active');
-    btn.classList.add('active');
-    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 10, behavior: 'smooth' });
-}
+// ── Filtre du patrimoine par domaine ──
+(function () {
+    const chips = document.querySelectorAll('[data-cp-filter]');
+    const cards = document.querySelectorAll('[data-cp-domain]');
+    function apply(key) {
+        chips.forEach(c => { const on = c.dataset.cpFilter === String(key); c.classList.toggle('is-on', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+        cards.forEach(card => { card.hidden = key !== 'all' && card.dataset.cpDomain !== String(key); });
+    }
+    chips.forEach(c => c.addEventListener('click', () => apply(c.dataset.cpFilter)));
+    // Les domaines de la présentation mènent au patrimoine filtré
+    document.querySelectorAll('[data-cp-goto]').forEach(b => b.addEventListener('click', () => {
+        if (chips.length) apply(b.dataset.cpGoto);
+        document.getElementById('patrimoine')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+})();
 
-// Carrousel de bannières (défilement automatique, transition en fondu, navigation
-// manuelle flèches/indicateurs, pause à l'interaction) — même mécanique que le
-// carrousel hero de la page d'accueil, adaptée ici à de simples images statiques.
+// ── Partage ──
+document.querySelector('[data-cp-share]')?.addEventListener('click', async e => {
+    const b = e.currentTarget, data = { title: document.title, url: location.href.split('#')[0] };
+    try {
+        if (navigator.share) { await navigator.share(data); return; }
+        await navigator.clipboard.writeText(data.url);
+        b.title = b.dataset.done;
+    } catch (err) {}
+});
+
+// ── Carrousel des photos (fondu, flèches, points, pause à l'interaction) ──
 (function () {
     const layers = document.querySelectorAll('.people-hero-layer');
     if (layers.length < 2) return;
-
     const root = document.querySelector('.hero-wrap');
     const dots = document.querySelectorAll('.people-hero-dot');
     const prevBtn = document.getElementById('people-hero-prev');
     const nextBtn = document.getElementById('people-hero-next');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const DELAY = 3000;
-
-    let index = 0;
-    let timer = null;
-
-    function start() {
-        stop();
-        if (reduceMotion) return;
-        timer = setInterval(next, DELAY);
-    }
-    function stop() {
-        if (timer) { clearInterval(timer); timer = null; }
-    }
-
+    const DELAY = 4000;
+    let index = 0, timer = null;
+    function start() { stop(); if (!reduceMotion) timer = setInterval(next, DELAY); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
     function render() {
         layers.forEach((el, i) => {
             const active = i === index;
-            el.classList.toggle('opacity-100', active);
-            el.classList.toggle('z-10', active);
-            el.classList.toggle('opacity-0', !active);
-            el.classList.toggle('z-0', !active);
+            el.classList.toggle('opacity-100', active); el.classList.toggle('z-10', active);
+            el.classList.toggle('opacity-0', !active); el.classList.toggle('z-0', !active);
         });
-        dots.forEach((dot, i) => {
-            const active = i === index;
-            dot.classList.toggle('w-6', active);
-            dot.classList.toggle('bg-orange-500', active);
-            dot.classList.toggle('w-2', !active);
-            dot.classList.toggle('bg-black/25', !active);
-            dot.setAttribute('aria-selected', active ? 'true' : 'false');
-        });
+        dots.forEach((dot, i) => dot.setAttribute('aria-selected', i === index ? 'true' : 'false'));
     }
-
-    function goTo(i) {
-        index = (i + layers.length) % layers.length;
-        render();
-        start();
-    }
+    function goTo(i) { index = (i + layers.length) % layers.length; render(); start(); }
     function next() { goTo(index + 1); }
-    function prev() { goTo(index - 1); }
-
     dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
-    if (prevBtn) prevBtn.addEventListener('click', prev);
-    if (nextBtn) nextBtn.addEventListener('click', next);
-
+    prevBtn?.addEventListener('click', () => goTo(index - 1));
+    nextBtn?.addEventListener('click', next);
     if (root) {
-        root.addEventListener('mouseenter', stop);
-        root.addEventListener('mouseleave', start);
-        root.addEventListener('focusin', stop);
-        root.addEventListener('focusout', start);
+        root.addEventListener('mouseenter', stop); root.addEventListener('mouseleave', start);
+        root.addEventListener('focusin', stop); root.addEventListener('focusout', start);
         root.addEventListener('touchstart', stop, { passive: true });
     }
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) stop(); else start();
-    });
-
-    render();
-    start();
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+    render(); start();
 })();
 </script>
 </body>

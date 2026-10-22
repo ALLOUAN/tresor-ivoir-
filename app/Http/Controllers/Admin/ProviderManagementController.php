@@ -422,10 +422,15 @@ class ProviderManagementController extends Controller
 
             $provider->forceDelete();
 
-            if ($provider->user) {
-                $provider->user->update([
-                    'is_active' => false,
-                ]);
+            // Le compte de connexion est supprimé aussi (corbeille) : sinon l'adresse e-mail restait
+            // « déjà utilisée » et la personne ne pouvait plus se réinscrire. Un administrateur ou un
+            // compte qui gère encore une autre fiche est seulement désactivé.
+            $user = $provider->user;
+            if ($user) {
+                $user->update(['is_active' => false]);
+                if ($user->role !== 'admin' && ! Provider::where('user_id', $user->id)->exists()) {
+                    $user->delete();
+                }
             }
         });
 

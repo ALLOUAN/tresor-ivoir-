@@ -70,6 +70,8 @@
         if (!rows().length) return;
 
         async function refreshConversations() {
+            // Onglet en arrière-plan : pas de requête (économise les quotas de l'hébergement).
+            if (document.hidden) return;
             try {
                 const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
                 if (!res.ok) return;
@@ -101,6 +103,7 @@
         }
 
         setInterval(refreshConversations, 15000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshConversations(); });
     })();
 </script>
 @endpush

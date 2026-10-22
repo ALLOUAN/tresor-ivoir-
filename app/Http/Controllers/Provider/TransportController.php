@@ -16,13 +16,15 @@ use Illuminate\View\View;
 
 class TransportController extends Controller
 {
+    use \App\Http\Controllers\Concerns\ValidatesTransportMarketFields;
+
     public function __construct(
         private readonly ImageUploadSecurityService $imageUpload,
     ) {}
 
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -139,7 +141,7 @@ class TransportController extends Controller
             'description' => ['nullable', 'string', 'max:5000'],
             'price_xof' => ['required', 'integer', 'min:0'],
             'max_passengers' => ['nullable', 'integer', 'min:1', 'max:999'],
-        ]);
+        ]) + $this->transportMarketData($request);
     }
 
     /**

@@ -142,7 +142,12 @@
                     </button>
                 </form>
             </div>
+            @elseif($req->status === \App\Models\PayoutRequest::STATUS_APPROVED && $req->transfer_status === 'sent')
+            <p class="mt-3 text-xs text-sky-300"><i class="fas fa-paper-plane"></i> Virement automatique envoyé ({{ $req->transfer_reference }}) — en attente de confirmation de l'opérateur.</p>
             @elseif($req->status === \App\Models\PayoutRequest::STATUS_APPROVED)
+            @if($req->transfer_error)
+            <p class="mt-3 text-xs text-rose-300"><i class="fas fa-triangle-exclamation"></i> Virement automatique en échec : {{ $req->transfer_error }} — à payer manuellement.</p>
+            @endif
             <div class="flex flex-wrap items-center gap-2 mt-3">
                 <form method="POST" action="{{ route('admin.wallet.payouts.mark-paid', $req) }}" class="flex items-center gap-2">
                     @csrf

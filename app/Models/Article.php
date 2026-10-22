@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class Article extends Model
 {
-    use SoftDeletes;
+    use \App\Models\Concerns\HasLocalizedFields, SoftDeletes;
 
     protected $fillable = [
         'uuid', 'category_id', 'author_id',
@@ -76,7 +76,7 @@ class Article extends Model
             $fallback->push($this->author);
         }
 
-        if (! Schema::hasTable('article_uploader')) {
+        if (! \App\Support\SchemaCache::hasTable('article_uploader')) {
             return $fallback;
         }
 

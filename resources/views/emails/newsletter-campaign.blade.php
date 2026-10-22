@@ -12,7 +12,7 @@
                 <tr>
                     <td style="padding:24px 28px;">
                         <div style="font-size:15px;color:#cbd5e1;">
-                            {!! $bodyHtml !!}
+                            {!! \App\Support\HtmlSanitizer::articleBody($bodyHtml) !!}
                         </div>
                     </td>
                 </tr>

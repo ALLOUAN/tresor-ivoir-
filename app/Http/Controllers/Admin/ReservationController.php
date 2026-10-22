@@ -74,7 +74,12 @@ class ReservationController extends Controller
             'status' => ['required', 'string', 'in:'.implode(',', array_keys(Reservation::statusOptions()))],
         ]);
 
-        $reservation->update(['status' => $validated['status']]);
+        $cancelling = $reservation->status !== Reservation::STATUS_CANCELLED && $validated['status'] === Reservation::STATUS_CANCELLED;
+        $reservation->update(['status' => $validated['status']] + ($cancelling ? [
+            'cancelled_by' => Reservation::CANCELLED_BY_ADMIN,
+            'cancelled_at' => now(),
+            'refund_due_xof' => $reservation->payment_status === Reservation::PAYMENT_DEPOSIT_PAID ? (int) $reservation->deposit_amount_xof : null,
+        ] : []));
 
         return redirect()
             ->route('admin.reservations.show', $reservation)

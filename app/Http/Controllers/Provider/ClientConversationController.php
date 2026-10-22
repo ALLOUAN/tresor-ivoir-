@@ -30,7 +30,7 @@ class ClientConversationController extends Controller
 
     public function index(Request $request): View
     {
-        $provider = Auth::user()->providers()->firstOrFail();
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
         $search = trim((string) $request->query('q', ''));
 
         $conversations = Conversation::query()
@@ -56,7 +56,7 @@ class ClientConversationController extends Controller
 
     public function poll(): JsonResponse
     {
-        $provider = Auth::user()->providers()->firstOrFail();
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
 
         $items = Conversation::query()
             ->where('provider_id', $provider->id)
@@ -81,7 +81,7 @@ class ClientConversationController extends Controller
 
     public function show(Conversation $conversation): View
     {
-        $provider = Auth::user()->providers()->firstOrFail();
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
         abort_unless((int) $conversation->provider_id === (int) $provider->id, 403);
 
         $conversation->load(['client']);
@@ -95,12 +95,14 @@ class ClientConversationController extends Controller
             ->where('sender_id', '!=', Auth::id())
             ->update(['read_at' => now()]);
 
-        return view('provider.client-conversations.show', compact('conversation', 'messages'));
+        $quickReplies = $provider->quickReplies();
+
+        return view('provider.client-conversations.show', compact('conversation', 'messages', 'provider', 'quickReplies'));
     }
 
     public function reply(Request $request, Conversation $conversation): RedirectResponse
     {
-        $provider = Auth::user()->providers()->firstOrFail();
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
         abort_unless((int) $conversation->provider_id === (int) $provider->id, 403);
         abort_if($conversation->isBlocked(), 422, 'Cette conversation est bloquée.');
 
@@ -152,9 +154,21 @@ class ClientConversationController extends Controller
             ->with('chat_warning', $this->contentGuard->warningMessageFor($scan['reasons']));
     }
 
+    /** Réponses rapides de l'établissement (une par ligne ; vide = suggestions par défaut). */
+    public function updateQuickReplies(Request $request): RedirectResponse
+    {
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
+        $data = $request->validate(['quick_replies' => ['nullable', 'string', 'max:5000']]);
+        $lines = collect(preg_split('/\R/', (string) ($data['quick_replies'] ?? '')))
+            ->map(fn ($l) => mb_substr(trim($l), 0, 500))->filter()->unique()->take(12)->values()->all();
+        $provider->update(['quick_replies' => $lines ?: null]);
+
+        return back()->with('success', 'Réponses rapides enregistrées.');
+    }
+
     public function report(Request $request, Conversation $conversation): RedirectResponse
     {
-        $provider = Auth::user()->providers()->firstOrFail();
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
         abort_unless((int) $conversation->provider_id === (int) $provider->id, 403);
 
         $data = $request->validate([
@@ -185,7 +199,7 @@ class ClientConversationController extends Controller
 
     public function block(Conversation $conversation): RedirectResponse
     {
-        $provider = Auth::user()->providers()->firstOrFail();
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
         abort_unless((int) $conversation->provider_id === (int) $provider->id, 403);
 
         if (! $conversation->provider_blocked_at) {
@@ -197,7 +211,7 @@ class ClientConversationController extends Controller
 
     public function downloadAttachment(Conversation $conversation, ConversationAttachment $attachment)
     {
-        $provider = Auth::user()->providers()->firstOrFail();
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
         abort_unless((int) $conversation->provider_id === (int) $provider->id, 403);
         abort_unless((int) $attachment->message?->conversation_id === (int) $conversation->id, 404);
         abort_unless(Storage::disk('local')->exists($attachment->file_path), 404);
@@ -207,7 +221,7 @@ class ClientConversationController extends Controller
 
     public function previewAttachment(Request $request, Conversation $conversation, ConversationAttachment $attachment)
     {
-        $provider = Auth::user()->providers()->firstOrFail();
+        $provider = \App\Models\Provider::forUserQuery(Auth::id())->firstOrFail();
         abort_unless((int) $conversation->provider_id === (int) $provider->id, 403);
         abort_unless((int) $attachment->message?->conversation_id === (int) $conversation->id, 404);
         abort_unless(str_starts_with((string) $attachment->mime_type, 'image/') || $attachment->mime_type === 'application/pdf', 404);

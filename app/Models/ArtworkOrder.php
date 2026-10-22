@@ -12,6 +12,9 @@ class ArtworkOrder extends Model
 
     public const STATUS_PAID = 'paid';
 
+    /** Paiement en plusieurs fois en cours : acompte versé, œuvre bloquée, remise une fois soldée. */
+    public const STATUS_RESERVED = 'reserved';
+
     public const STATUS_SHIPPED = 'shipped';
 
     public const STATUS_DELIVERED = 'delivered';
@@ -32,6 +35,7 @@ class ArtworkOrder extends Model
     public const STATUS_LABELS = [
         self::STATUS_PENDING_PAYMENT => 'Paiement en attente',
         self::STATUS_PAID => 'Payée',
+        self::STATUS_RESERVED => 'Réservée — paiement en plusieurs fois',
         self::STATUS_SHIPPED => 'Expédiée',
         self::STATUS_DELIVERED => 'Livrée',
         self::STATUS_CANCELLED => 'Annulée',
@@ -47,7 +51,16 @@ class ArtworkOrder extends Model
         'paid_at', 'shipped_at', 'delivered_at',
         'buyer_name', 'buyer_email', 'buyer_phone',
         'ip_address', 'metadata',
+        'artwork_edition_id', 'edition_label', 'edition_number', 'edition_size', 'artwork_offer_id',
+        'delivery_mode', 'delivery_address', 'delivery_city', 'delivery_fee_xof', 'insurance_xof', 'carrier', 'tracking_number',
+        'payment_plan', 'amount_paid_xof', 'installments', 'pending_installment', 'received_at',
+        'return_status', 'return_reason', 'return_requested_at',
     ];
+
+    public const DELIVERY_MODES = ['pickup' => 'Retrait à l\'atelier', 'abidjan' => 'Livraison à Abidjan', 'country' => 'Livraison en Côte d\'Ivoire (hors Abidjan)'];
+
+    /** Délai de retour après réception confirmée (garantie « satisfait ou remboursé »). */
+    public const RETURN_DAYS = 7;
 
     protected function casts(): array
     {
@@ -61,12 +74,80 @@ class ArtworkOrder extends Model
             'shipped_at' => 'datetime',
             'delivered_at' => 'datetime',
             'metadata' => 'array',
+            'delivery_fee_xof' => 'integer',
+            'insurance_xof' => 'integer',
+            'amount_paid_xof' => 'integer',
+            'installments' => 'array',
+            'received_at' => 'datetime',
+            'return_requested_at' => 'datetime',
         ];
+    }
+
+    public function edition(): BelongsTo
+    {
+        return $this->belongsTo(ArtworkEdition::class, 'artwork_edition_id');
+    }
+
+    public function offer(): BelongsTo
+    {
+        return $this->belongsTo(ArtworkOffer::class, 'artwork_offer_id');
+    }
+
+    public function deliveryLabel(): ?string
+    {
+        return $this->delivery_mode ? __(self::DELIVERY_MODES[$this->delivery_mode] ?? $this->delivery_mode) : null;
+    }
+
+    /** Prochaine échéance non réglée d'un paiement en plusieurs fois. */
+    public function nextInstallment(): ?array
+    {
+        return collect($this->installments ?? [])->first(fn ($i) => empty($i['paid_at']));
+    }
+
+    /** L'acheteur peut demander un retour : reçue depuis moins de 7 jours, artiste qui accepte les retours. */
+    public function canRequestReturn(): bool
+    {
+        return in_array($this->status, [self::STATUS_DELIVERED], true) && $this->received_at && ! $this->return_status
+            && $this->received_at->copy()->addDays(self::RETURN_DAYS)->isFuture()
+            && (ArtistProfile::where('provider_id', $this->provider_id)->value('returns_accepted') ?? true);
+    }
+
+    /** Fin du délai de retour : la part de l'artiste peut être libérée. */
+    public function returnWindowEndsAt(): ?\Carbon\Carbon
+    {
+        return $this->received_at?->copy()->addDays(self::RETURN_DAYS);
     }
 
     protected static function booted(): void
     {
         static::creating(fn (ArtworkOrder $order) => $order->uuid ??= (string) Str::uuid());
+    }
+
+    /** Œuvre réellement vendue : un certificat d'authenticité peut être délivré. */
+    public function hasCertificate(): bool
+    {
+        return in_array($this->status, [self::STATUS_PAID, self::STATUS_SHIPPED, self::STATUS_DELIVERED], true);
+    }
+
+    /** Code de vérification du certificat (non devinable, stable pour la commande). */
+    public function certificateCode(): string
+    {
+        return strtoupper(substr(hash_hmac('sha256', 'art-cert|'.$this->id, (string) config('app.key')), 0, 12));
+    }
+
+    public function certificateNumber(): string
+    {
+        return 'TI-ART-'.str_pad((string) $this->id, 6, '0', STR_PAD_LEFT);
+    }
+
+    public function certificatePdfUrl(): string
+    {
+        return route('art.certificate.pdf', [$this->id, $this->certificateCode()]);
+    }
+
+    public function certificateVerifyUrl(): string
+    {
+        return route('art.certificate.verify', [$this->id, $this->certificateCode()]);
     }
 
     public function artwork(): BelongsTo
@@ -92,6 +173,6 @@ class ArtworkOrder extends Model
 
     public function labelForStatus(): string
     {
-        return self::STATUS_LABELS[$this->status] ?? $this->status;
+        return __(self::STATUS_LABELS[$this->status] ?? $this->status);
     }
 }

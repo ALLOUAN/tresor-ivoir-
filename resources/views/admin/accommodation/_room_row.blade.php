@@ -1,6 +1,7 @@
 {{-- Partial: une ligne de type de chambre (données existantes) --}}
 <div class="room-row bg-slate-800/60 border border-slate-700 rounded-xl p-4 space-y-3">
     <div class="flex gap-2 items-center">
+        <input type="hidden" name="room_id[]" value="{{ $r['id'] ?? '' }}">
         <input type="text" name="room_name[]"
                value="{{ $r['name'] ?? '' }}"
                placeholder="Chambre Standard"
@@ -11,6 +12,12 @@
         </button>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div>
+            <span class="text-[11px] text-slate-500 mb-1 block">Nombre de chambres</span>
+            <input type="number" name="room_units[]" min="1" max="500"
+                   value="{{ $r['units'] ?? '' }}" placeholder="1" title="Combien de chambres identiques de ce type"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
+        </div>
         <div>
             <span class="text-[11px] text-slate-500 mb-1 block">Adultes max</span>
             <input type="number" name="room_max_adults[]" min="1" max="10"

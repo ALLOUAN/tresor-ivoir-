@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SubscriptionPlan;
 use App\Models\User;
+use App\Services\ClientAccountService;
 use App\Notifications\EmailVerificationCodeNotification;
 use App\Support\ProviderProfileBootstrap;
 use Illuminate\Auth\Events\PasswordReset;
@@ -74,12 +75,16 @@ class AuthController extends Controller
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:80'],
             'last_name' => ['required', 'string', 'max:80'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')],
+            'email' => ClientAccountService::uniqueEmailRule(),
             'phone' => ['nullable', 'string', 'max:20'],
-            'password' => ['required', 'confirmed', PasswordRule::min(8)],
+            'password' => ['required', 'confirmed', ClientAccountService::passwordRule()],
             'role' => ['required', 'in:visitor,provider'],
             'terms' => ['accepted'],
+            'newsletter_opt_in' => ['nullable', 'boolean'],
+            ...ClientAccountService::honeypotRules(),
         ], [
+            'website.max' => 'Envoi refusé.',
+            'password.uncompromised' => 'Ce mot de passe figure dans une fuite de données connue : choisissez-en un autre.',
             'first_name.required' => 'Le prénom est obligatoire.',
             'last_name.required' => 'Le nom est obligatoire.',
             'email.required' => 'L\'adresse e-mail est obligatoire.',
@@ -93,10 +98,7 @@ class AuthController extends Controller
         ]);
 
         // Libérer l'email si un compte soft-deleted l'occupe encore (évite la contrainte unique MySQL)
-        User::withTrashed()
-            ->where('email', $data['email'])
-            ->whereNotNull('deleted_at')
-            ->update(['email' => 'deleted_' . time() . '_' . $data['email']]);
+        ClientAccountService::freeTrashedEmail($data['email']);
 
         $user = User::create([
             'first_name' => $data['first_name'],
@@ -124,28 +126,37 @@ class AuthController extends Controller
             ProviderProfileBootstrap::ensure($user, $categorySlug);
         }
 
+        if ($user->role === 'visitor' && $request->boolean('newsletter_opt_in')) {
+            app(ClientAccountService::class)->subscribeNewsletter($user, 'register');
+        }
+
         Auth::login($user);
         $request->session()->regenerate();
 
-        $this->sendEmailVerificationCode($user);
+        // Une panne du serveur d'e-mails ne doit pas faire échouer l'inscription : le compte est créé, le code se renvoie ensuite.
+        if (! $this->sendEmailVerificationCode($user)) {
+            session()->flash('mail_warning', __('L\'e-mail de vérification n\'a pas pu être envoyé pour le moment. Réessayez dans quelques minutes avec « Renvoyer le code ».'));
+        }
 
         if ($plan && $user->role === 'provider') {
             session(['post_email_verification_subscription_plan_id' => $plan->id]);
 
             return redirect()
                 ->route('subscriptions.checkout', $plan)
-                ->with('status', 'Bienvenue ! Finalisez votre abonnement ci-dessous.');
+                ->with('status', __('Bienvenue ! Finalisez votre abonnement ci-dessous.'));
         }
 
         if ($user->role === 'visitor') {
             return redirect()
                 ->route('home')
-                ->with('status', 'Bienvenue ! Un e-mail de vérification a été envoyé à votre adresse.');
+                ->with('status', session()->has('mail_warning')
+                    ? __('Bienvenue ! Votre compte est créé. Vous pourrez renvoyer l\'e-mail de vérification depuis votre espace.')
+                    : __('Bienvenue ! Un e-mail de vérification a été envoyé à votre adresse.'));
         }
 
         return redirect()
             ->route('plans.public')
-            ->with('status', 'Bienvenue ! Choisissez un forfait pour activer votre espace prestataire.');
+            ->with('status', __('Bienvenue ! Choisissez un forfait pour activer votre espace prestataire.'));
     }
 
     public function login(Request $request)
@@ -161,10 +172,23 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
-        $request->session()->regenerate();
-
         /** @var \App\Models\User $user */
         $user = Auth::user();
+
+        // Compte désactivé (par l'administration, ou membre retiré d'une équipe prestataire).
+        if (! $user->is_active) {
+            Auth::logout();
+
+            return back()->withErrors(['email' => __('Ce compte est désactivé. Contactez-nous si vous pensez qu\'il s\'agit d\'une erreur.')])->onlyInput('email');
+        }
+
+        // Administrateurs : second facteur (code par e-mail) sauf appareil déjà reconnu.
+        if ($user->role === 'admin' && AdminTwoFactorController::enabled() && ! AdminTwoFactorController::deviceTrusted($request, $user)) {
+            return AdminTwoFactorController::begin($request, $user, $request->boolean('remember'));
+        }
+
+        $request->session()->regenerate();
+
         $user->update(['last_login_at' => now()]);
         \App\Services\AccountSecurityEventLogger::log($user, \App\Models\AccountSecurityEvent::TYPE_LOGIN, $request);
 
@@ -202,8 +226,8 @@ class AuthController extends Controller
         $status = Password::sendResetLink($request->only('email'));
 
         return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', 'Un lien de réinitialisation a été envoyé à votre adresse e-mail.')
-            : back()->withErrors(['email' => 'Aucun compte trouvé avec cette adresse e-mail.']);
+            ? back()->with('status', __('Un lien de réinitialisation a été envoyé à votre adresse e-mail.'))
+            : back()->withErrors(['email' => __('Aucun compte trouvé avec cette adresse e-mail.')]);
     }
 
     public function showResetPassword(string $token)
@@ -231,8 +255,8 @@ class AuthController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', 'Votre mot de passe a été réinitialisé avec succès.')
-            : back()->withErrors(['email' => 'Le lien est invalide ou a expiré. Veuillez en demander un nouveau.']);
+            ? redirect()->route('login')->with('status', __('Votre mot de passe a été réinitialisé avec succès.'))
+            : back()->withErrors(['email' => __('Le lien est invalide ou a expiré. Veuillez en demander un nouveau.')]);
     }
 
     // ── VÉRIFICATION E-MAIL ───────────────────────────────────────────────
@@ -243,8 +267,8 @@ class AuthController extends Controller
             return $this->redirectAfterEmailVerification($request->user());
         }
 
-        if (! $this->hasActiveVerificationCode($request->user())) {
-            $this->sendEmailVerificationCode($request->user());
+        if (! $this->hasActiveVerificationCode($request->user()) && ! $this->sendEmailVerificationCode($request->user())) {
+            session()->now('mail_warning', __('L\'e-mail de vérification n\'a pas pu être envoyé pour le moment. Réessayez dans quelques minutes avec « Renvoyer le code ».'));
         }
 
         return view('auth.verify-email');
@@ -270,9 +294,11 @@ class AuthController extends Controller
             return $this->redirectAfterEmailVerification($request->user());
         }
 
-        $this->sendEmailVerificationCode($request->user());
+        if (! $this->sendEmailVerificationCode($request->user())) {
+            return back()->with('mail_warning', __('L\'e-mail de vérification n\'a pas pu être envoyé pour le moment. Réessayez dans quelques minutes avec « Renvoyer le code ».'));
+        }
 
-        return back()->with('status', 'Un nouveau code de vérification a été envoyé à votre adresse e-mail.');
+        return back()->with('status', __('Un nouveau code de vérification a été envoyé à votre adresse e-mail.'));
     }
 
     public function verifyEmailCode(Request $request)
@@ -283,6 +309,9 @@ class AuthController extends Controller
         if ($user->hasVerifiedEmail()) {
             return $this->redirectAfterEmailVerification($user);
         }
+
+        // Code copié depuis l'e-mail (« 860 431 ») : on ne garde que les chiffres.
+        $request->merge(['verification_code' => preg_replace('/\D/', '', (string) $request->input('verification_code'))]);
 
         $validated = $request->validate([
             'verification_code' => ['required', 'digits:6'],
@@ -358,7 +387,8 @@ class AuthController extends Controller
         };
     }
 
-    private function sendEmailVerificationCode(User $user): void
+    /** Envoie un nouveau code ; renvoie false (erreur journalisée) si le serveur d'e-mails ne répond pas. */
+    private function sendEmailVerificationCode(User $user): bool
     {
         $code = (string) random_int(100000, 999999);
         $ttlMinutes = 10;
@@ -369,7 +399,17 @@ class AuthController extends Controller
             'expires_at' => $expiresAtTs,
         ], now()->addMinutes($ttlMinutes));
 
-        $user->notify(new EmailVerificationCodeNotification($code, $ttlMinutes));
+        try {
+            $user->notify(new EmailVerificationCodeNotification($code, $ttlMinutes));
+        } catch (\Throwable $e) {
+            report($e);
+            // Pas de code « actif » non reçu : la page de vérification retentera l'envoi.
+            Cache::forget($this->verificationCodeCacheKey($user));
+
+            return false;
+        }
+
+        return true;
     }
 
     private function hasActiveVerificationCode(User $user): bool

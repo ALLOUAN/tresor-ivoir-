@@ -17,7 +17,7 @@ class ArticleController extends Controller
         $search = request('q');
         $tag_slug = request('tag');
         $articleWith = ['category', 'author', 'tags'];
-        if (Schema::hasTable('article_uploader')) {
+        if (\App\Support\SchemaCache::hasTable('article_uploader')) {
             $articleWith[] = 'uploaders';
         }
 
@@ -71,7 +71,7 @@ class ArticleController extends Controller
     public function show(string $slug)
     {
         $articleWith = ['category', 'author', 'tags', 'media', 'sponsor'];
-        if (Schema::hasTable('article_uploader')) {
+        if (\App\Support\SchemaCache::hasTable('article_uploader')) {
             $articleWith[] = 'uploaders';
         }
 

@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class TouristExperience extends Model
 {
-    use SoftDeletes;
+    use \App\Models\Concerns\HasLocalizedFields, SoftDeletes;
 
     protected $fillable = [
         'city_id',
@@ -32,6 +32,7 @@ class TouristExperience extends Model
         'is_featured', 'is_active', 'views_count', 'sort_order',
         'visit_individual_enabled', 'visit_guided_enabled', 'visit_group_enabled',
         'visit_individual_price_xof', 'visit_guide_supplement_xof',
+        'visit_child_price_xof', 'visit_resident_price_xof',
     ];
 
     protected function casts(): array
@@ -47,6 +48,8 @@ class TouristExperience extends Model
             'visit_group_enabled' => 'boolean',
             'visit_individual_price_xof' => 'integer',
             'visit_guide_supplement_xof' => 'integer',
+            'visit_child_price_xof' => 'integer',
+            'visit_resident_price_xof' => 'integer',
         ];
     }
 
@@ -75,6 +78,12 @@ class TouristExperience extends Model
     public function visitSessions(): HasMany
     {
         return $this->hasMany(TouristVisitSession::class);
+    }
+
+    /** Types de visite personnalisés (« Visite nocturne », « Visite VIP »…). */
+    public function visitTypes(): HasMany
+    {
+        return $this->hasMany(TouristVisitType::class)->ordered();
     }
 
     /* ── Scopes ──────────────────────────────────────────────────── */
@@ -122,6 +131,7 @@ class TouristExperience extends Model
 
     public function hasAnyVisitModeEnabled(): bool
     {
-        return $this->visit_individual_enabled || $this->visit_guided_enabled || $this->visit_group_enabled;
+        return $this->visit_individual_enabled || $this->visit_guided_enabled || $this->visit_group_enabled
+            || $this->visitTypes()->active()->exists();
     }
 }

@@ -436,7 +436,7 @@ class AdministrationController extends Controller
 
         $imageInfo = @getimagesize($path);
         if (! is_array($imageInfo) || ! isset($imageInfo[0], $imageInfo[1])) {
-            return;
+            throw ValidationException::withMessages([$field => 'Le fichier n\'est pas une image valide (jpeg, png ou webp).']);
         }
 
         [$width, $height] = [$imageInfo[0], $imageInfo[1]];

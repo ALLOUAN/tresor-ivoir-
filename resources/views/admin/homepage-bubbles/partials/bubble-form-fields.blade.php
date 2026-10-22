@@ -33,7 +33,7 @@
     <label class="block text-xs text-slate-400 mb-2">Position à l'écran</label>
     <div class="hp-position-picker relative w-full rounded-lg border border-slate-700 bg-slate-800 overflow-hidden cursor-crosshair select-none"
          style="aspect-ratio: 3 / 4;" id="{{ $prefix }}position_picker">
-        <div class="absolute inset-0 opacity-40" style="background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px); background-size: 10% 10%;"></div>
+        <div class="absolute inset-0 opacity-40" style="background-image: linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)), linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)); background-size: 10% 10%;"></div>
         <div class="absolute inset-0 flex items-center justify-center text-slate-600 text-[11px] pointer-events-none px-4 text-center leading-relaxed">
             Cliquez pour placer la bulle<br>(représente l'écran visible, du haut vers le bas)
         </div>

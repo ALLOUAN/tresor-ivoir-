@@ -81,6 +81,12 @@
     <a href="{{ route('admin.administration.plans-image') }}" class="{{ $appearanceTabClass }} {{ ($active ?? '') === 'plans-image' ? $appearanceTabActive : $appearanceTabIdle }}">
         <i class="fas fa-gem {{ ($active ?? '') === 'plans-image' ? 'text-green-400' : '' }}"></i> Page Abonnements (fond)
     </a>
+    <a href="{{ route('admin.administration.reco-image') }}" class="{{ $appearanceTabClass }} {{ ($active ?? '') === 'reco-image' ? $appearanceTabActive : $appearanceTabIdle }}">
+        <i class="fas fa-wand-magic-sparkles {{ ($active ?? '') === 'reco-image' ? 'text-green-400' : '' }}"></i> Recommandations (fond)
+    </a>
+    <a href="{{ route('admin.administration.art-image') }}" class="{{ $appearanceTabClass }} {{ ($active ?? '') === 'art-image' ? $appearanceTabActive : $appearanceTabIdle }}">
+        <i class="fas fa-palette {{ ($active ?? '') === 'art-image' ? 'text-green-400' : '' }}"></i> Art & Créations (fond)
+    </a>
     <a href="{{ route('admin.administration.search-image') }}" class="{{ $appearanceTabClass }} {{ ($active ?? '') === 'search-image' ? $appearanceTabActive : $appearanceTabIdle }}">
         <i class="fas fa-magnifying-glass {{ ($active ?? '') === 'search-image' ? 'text-green-400' : '' }}"></i> Page Recherche (fond)
     </a>

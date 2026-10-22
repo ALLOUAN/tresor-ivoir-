@@ -35,7 +35,7 @@
             <div class="px-5 py-4">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <p class="text-white font-medium">{{ $review->author_name ?: ($review->user->full_name ?? 'Anonyme') }} · <span class="text-orange-400">{{ $review->rating }}★</span></p>
+                        <p class="text-white font-medium">{{ $review->author_name ?: ($review->user->full_name ?? 'Anonyme') }}@if($review->is_verified) <span class="text-emerald-300 text-xs"><i class="fas fa-circle-check"></i> Séjour vérifié</span>@endif · <span class="text-orange-400">{{ $review->rating }}★</span></p>
                         <p class="text-slate-400 text-xs mt-0.5">Prestataire: {{ $review->provider->name ?? '—' }}</p>
                         @if($review->title)<p class="text-slate-200 text-sm mt-2 font-medium">{{ $review->title }}</p>@endif
                         <p class="text-slate-300 text-sm mt-1">{{ $review->comment }}</p>

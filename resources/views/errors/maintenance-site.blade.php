@@ -1,41 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="h-full antialiased">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="h-full antialiased">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maintenance — {{ $siteBrand['site_name'] ?? config('app.name') }}</title>
+    <title>{{ __('Maintenance') }} — {{ $siteBrand['site_name'] ?? config('app.name') }}</title>
     @include('partials.theme-init')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    animation: {
-                        'blob': 'blob 18s ease-in-out infinite',
-                        'blob-slow': 'blob 24s ease-in-out infinite reverse',
-                        'float': 'float 6s ease-in-out infinite',
-                        'shimmer': 'shimmer 3s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        blob: {
-                            '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.05)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.95)' },
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-8px)' },
-                        },
-                        shimmer: {
-                            '0%, 100%': { opacity: '0.4' },
-                            '50%': { opacity: '1' },
-                        },
-                    },
-                },
-            },
-        };
-    </script>
-    <style>
+            <style>
         .grain {
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
         }
@@ -43,6 +13,7 @@
         html:not(.dark) [class*="bg-white/"] { background-color:rgba(0,0,0,.04) !important; }
     </style>
     @include('partials.theme-light-bridge')
+    <link rel="stylesheet" href="{{ asset('css/tw-239a3642.css') }}?v={{ @filemtime(public_path('css/tw-239a3642.css')) }}">
 </head>
 <body class="h-full min-h-screen bg-[#050508] text-zinc-100 font-sans selection:bg-orange-500/30 selection:text-orange-100">
     {{-- Fond : blobs + grille + grain --}}
@@ -50,7 +21,7 @@
         <div class="absolute -top-1/4 -left-1/4 h-[70vmin] w-[70vmin] rounded-full bg-green-600/25 blur-[100px] animate-blob motion-reduce:animate-none"></div>
         <div class="absolute top-1/3 -right-1/4 h-[60vmin] w-[60vmin] rounded-full bg-orange-500/20 blur-[90px] animate-blob-slow motion-reduce:animate-none"></div>
         <div class="absolute bottom-0 left-1/3 h-[50vmin] w-[50vmin] rounded-full bg-green-500/15 blur-[80px] animate-blob motion-reduce:animate-none"></div>
-        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_40%,black,transparent)]"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02))] bg-[size:64px_64px] [mask-image:linear-gradient(transparent, transparent)]"></div>
         <div class="absolute inset-0 grain opacity-60"></div>
     </div>
 
@@ -78,18 +49,18 @@
                     </div>
 
                     <h1 class="font-display text-[2.125rem] leading-[1.15] text-white sm:text-4xl sm:leading-tight">
-                        Site en maintenance
+                        {{ __('Site en maintenance') }}
                     </h1>
 
                     <p class="mt-5 max-w-md text-[15px] leading-relaxed text-zinc-400 sm:text-base">
-                        {{ $maintenanceMessage ?? 'Nous effectuons une mise à jour. Merci de revenir un peu plus tard.' }}
+                        {{ $maintenanceMessage ?? __('Nous effectuons une mise à jour. Merci de revenir un peu plus tard.') }}
                     </p>
 
                     {{-- Barre d’état décorative --}}
                     <div class="mt-10 flex w-full max-w-xs flex-col gap-2">
                         <div class="flex items-center justify-between text-[11px] font-medium uppercase tracking-wider text-zinc-500">
-                            <span>État</span>
-                            <span class="text-orange-400/80">Mise à jour</span>
+                            <span>{{ __('État') }}</span>
+                            <span class="text-orange-400/80">{{ __('Mise à jour') }}</span>
                         </div>
                         <div class="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
                             <div class="h-full w-2/5 rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 animate-shimmer motion-reduce:animate-none"></div>
@@ -99,7 +70,7 @@
             </div>
 
             <p class="mt-8 text-center text-[12px] text-zinc-600">
-                Merci de votre patience — nous revenons très bientôt.
+                {{ __('Merci de votre patience — nous revenons très bientôt.') }}
             </p>
         </div>
     </main>

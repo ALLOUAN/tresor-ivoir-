@@ -18,7 +18,7 @@
         width: 38%;
         height: 360%;
         transform: rotate(22deg) translateX(-180%);
-        background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 35%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.04) 65%, transparent 100%);
+        background: rgba(255, 255, 255, 0.05);
         pointer-events: none;
         transition: transform .85s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -61,7 +61,7 @@
             <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                     <div class="flex flex-wrap items-center gap-2">
-                        <p class="text-white font-semibold truncate">{{ $review->author_name ?: ($review->user->full_name ?? 'Anonyme') }}</p>
+                        <p class="text-white font-semibold truncate">{{ $review->author_name ?: ($review->user->full_name ?? 'Anonyme') }}@if($review->is_verified) <span class="text-emerald-300 text-xs font-normal"><i class="fas fa-circle-check"></i> Séjour vérifié</span>@endif</p>
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-orange-500/15 border border-orange-400/30 text-orange-300">
                             <i class="fas fa-star text-[10px]"></i>{{ $review->rating }}/5
                         </span>

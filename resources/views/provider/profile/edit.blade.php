@@ -31,6 +31,11 @@
             </div>
 
             <div class="md:col-span-2">
+                @include('partials.ai-writing-tools', ['aiWriting' => ['actions' => [
+                    ['id' => 'sum', 'label' => 'Proposer une description courte', 'icon' => 'fa-align-left', 'action' => 'summary', 'lang' => 'fr', 'payload' => ['title' => 'name', 'content' => 'description_fr'], 'apply' => ['text' => ['short_desc_fr', 'Description courte']]],
+                ]]])
+            </div>
+            <div class="md:col-span-2">
                 <label class="block text-xs text-slate-400 mb-1">Description courte</label>
                 <textarea name="short_desc_fr" rows="2"
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ old('short_desc_fr', $provider->short_desc_fr) }}</textarea>

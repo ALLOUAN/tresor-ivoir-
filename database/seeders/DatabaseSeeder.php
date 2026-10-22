@@ -27,6 +27,9 @@ class DatabaseSeeder extends Seeder
             CulturalDomainSeeder::class,
             CulturalElementSeeder::class,
 
+            // Référentiel ivoirien complet (régions, sites, peuples, éléments) avec sources
+            IvorianReferenceSeeder::class,
+
             // Utilisateurs
             UserSeeder::class,
             PartnerSeeder::class,

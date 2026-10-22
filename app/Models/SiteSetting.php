@@ -81,7 +81,7 @@ class SiteSetting extends Model
      */
     public static function branding(): array
     {
-        if (! Schema::hasTable('site_settings')) {
+        if (! \App\Support\SchemaCache::hasTable('site_settings')) {
             return static::defaultBranding();
         }
 
@@ -132,10 +132,10 @@ class SiteSetting extends Model
      */
     private static function contactAndSocialPayload(): array
     {
-        $c = Schema::hasTable('site_contact_settings')
+        $c = \App\Support\SchemaCache::hasTable('site_contact_settings')
             ? SiteContactSetting::query()->find(1)
             : null;
-        $o = Schema::hasTable('site_social_settings')
+        $o = \App\Support\SchemaCache::hasTable('site_social_settings')
             ? SiteSocialSetting::query()->find(1)
             : null;
 

@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 class Event extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     protected $fillable = [
         'uuid', 'category_id', 'created_by', 'provider_id',
         'title_fr', 'title_en', 'subtitle_fr', 'subtitle_en', 'slug', 'description_fr', 'description_en',

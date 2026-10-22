@@ -1,26 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="scroll-smooth overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Articles — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ __('Articles') }} — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
-                        dark: { 500:'#e9e5d9', 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif   { font-family: 'Playfair Display', Georgia, serif; }
         .font-elegant { font-family: 'Cormorant Garamond', Georgia, serif; }
@@ -32,8 +19,8 @@
             position: relative;
             border: 1px solid rgba(255,255,255,0.08);
             background:
-                linear-gradient(140deg, rgba(255, 255, 255,0.94), rgba(12,12,10,0.97)),
-                radial-gradient(100% 70% at 0% 0%, rgba(242, 121, 15,0.12), transparent 55%);
+                linear-gradient(rgba(134, 134, 133, 0.96), rgba(134, 134, 133, 0.96)),
+                linear-gradient(transparent, transparent);
             box-shadow: 0 24px 52px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
             overflow: hidden;
         }
@@ -41,13 +28,13 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(120deg, rgba(242, 121, 15,0.08), transparent 35%, rgba(255,255,255,0.02));
+            background: rgba(249, 188, 135, 0.03);
             pointer-events: none;
         }
         .agenda-card {
             position: relative;
             border: 1px solid rgba(255,255,255,0.08);
-            background: linear-gradient(180deg, rgba(26,26,21,0.95), rgba(14,14,11,0.96));
+            background: rgba(20, 20, 16, 0.96);
             box-shadow: 0 12px 30px rgba(0,0,0,0.28);
             transition: transform .26s cubic-bezier(0.2, 0.8, 0.2, 1), border-color .25s ease, box-shadow .26s ease;
             overflow: hidden;
@@ -66,7 +53,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.1) 45%, rgba(0,0,0,0.2));
+            background: rgba(0, 0, 0, 0.32);
             pointer-events: none;
         }
         .agenda-card:hover .agenda-card-cover img { transform: scale(1.07); }
@@ -75,9 +62,9 @@
             position: relative;
             border-bottom: 1px solid rgba(255,255,255,0.08);
             background-image:
-                linear-gradient(130deg, rgba(255, 255, 255,0.92), rgba(255, 255, 255,0.97)),
-                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.14), transparent 55%),
-                radial-gradient(90% 80% at 100% 10%, rgba(120,90,40,0.08), transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
+                linear-gradient(transparent, transparent),
+                linear-gradient(transparent, transparent),
                 var(--articles-hero-bg-image, none);
             background-size: auto, auto, auto, cover;
             background-position: 0 0, 0 0, 0 0, center;
@@ -99,14 +86,14 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(120deg, rgba(255,255,255,0.03), transparent 35%, rgba(255,255,255,0.015)),
-                repeating-linear-gradient(90deg, transparent 0, transparent 62px, rgba(242, 121, 15,0.02) 62px, rgba(242, 121, 15,0.02) 63px);
+                linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+                linear-gradient(rgba(242, 121, 15, 0.01), rgba(242, 121, 15, 0.01));
             pointer-events: none;
             opacity: .8;
         }
         .articles-search-shell {
             border: 1px solid rgba(255,255,255,0.1);
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px) saturate(125%);
             box-shadow: 0 10px 26px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
         }
@@ -133,7 +120,7 @@
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.1);
-            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            background: rgba(255, 255, 255, 0.04);
             color: rgba(203, 213, 225, 0.9);
             transition: transform .2s ease, border-color .2s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease;
         }
@@ -141,7 +128,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.16), transparent);
+            background: rgba(255, 255, 255, 0.05);
             transform: translateX(-130%);
             transition: transform .45s ease;
             pointer-events: none;
@@ -155,7 +142,7 @@
             width: 0;
             height: 2px;
             border-radius: 2px;
-            background: linear-gradient(90deg, #d4630a, #fa9a3c, #f2790f);
+            background: #eb7d1c;
             transition: width .24s ease;
             box-shadow: 0 0 10px rgba(242, 121, 15,0.45);
         }
@@ -163,7 +150,7 @@
             transform: translateY(-1px);
             color: #ffffff;
             border-color: rgba(242, 121, 15,0.3);
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+            background: rgba(255, 255, 255, 0.07);
             box-shadow: 0 0 14px rgba(242, 121, 15,0.14);
         }
         .category-chip:hover::before {
@@ -197,8 +184,8 @@
             display: none;
         }
         .categories-strip {
-            -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
-                    mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+            -webkit-mask-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65));
+                    mask-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65));
         }
         .categories-nav-arrow {
             position: absolute;
@@ -224,8 +211,8 @@
             position: relative;
             background-color:#e9e5d9;
             background-image:
-                radial-gradient(ellipse 90% 50% at 50% -20%, rgba(242, 121, 15, 0.09), transparent 55%),
-                radial-gradient(ellipse 50% 40% at 100% 100%, rgba(99, 102, 241, 0.05), transparent 45%);
+                linear-gradient(transparent, transparent),
+                linear-gradient(transparent, transparent);
         }
         .footer-ultra::before {
             content: '';
@@ -263,7 +250,7 @@
             position: absolute;
             inset: -1px;
             border-radius: inherit;
-            background: conic-gradient(from 180deg, rgba(242, 121, 15,0.0), rgba(242, 121, 15,0.45), rgba(255,255,255,0.16), rgba(242, 121, 15,0.0));
+            background: rgba(245, 155, 75, 0.15);
             opacity: 0;
             transform: rotate(0deg);
             transition: opacity .28s ease;
@@ -275,7 +262,7 @@
             position: absolute;
             inset: 1px;
             border-radius: calc(0.62rem - 1px);
-            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
+            background: rgba(255, 255, 255, 0.05);
             opacity: 0;
             transition: opacity .25s ease;
             z-index: 0;
@@ -303,7 +290,7 @@
             box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 0 18px rgba(16,185,129,0.28);
         }
         .social-icon-ultra.social-icon-wa::before {
-            background: conic-gradient(from 180deg, rgba(16,185,129,0), rgba(16,185,129,0.6), rgba(236,253,245,0.25), rgba(16,185,129,0));
+            background: rgba(71, 202, 158, 0.21);
         }
         .footer-logo-link {
             display: inline-flex;
@@ -314,7 +301,7 @@
             position: relative;
             border-radius: 0.7rem;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(242, 121, 15,0.55), rgba(255,255,255,0.14), rgba(242, 121, 15,0.25));
+            background: rgba(246, 166, 95, 0.31);
             box-shadow: 0 8px 26px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
             transition: transform .32s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .32s ease;
             animation: footerLogoFloat 5.4s ease-in-out infinite;
@@ -324,7 +311,7 @@
             position: absolute;
             inset: -3px;
             border-radius: inherit;
-            background: conic-gradient(from 180deg, rgba(242, 121, 15,0), rgba(242, 121, 15,0.45), rgba(255,255,255,0.1), rgba(242, 121, 15,0));
+            background: rgba(245, 155, 75, 0.14);
             opacity: 0.4;
             filter: blur(5px);
             animation: footerLogoSpin 8s linear infinite;
@@ -362,8 +349,8 @@
         html:not(.dark) .articles-hero {
             border-bottom-color: rgba(0,0,0,0.08);
             background-image:
-                linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.98)),
-                radial-gradient(110% 90% at 0% 0%, rgba(242, 121, 15,0.10), transparent 55%),
+                linear-gradient(rgba(252, 250, 246, 0.97), rgba(252, 250, 246, 0.97)),
+                linear-gradient(transparent, transparent),
                 var(--articles-hero-bg-image, none);
             background-size: auto, auto, cover;
             background-position: 0 0, 0 0, center;
@@ -420,16 +407,17 @@
         html:not(.dark) .agenda-panel {
             border-color: rgba(0,0,0,0.1);
             background:
-                linear-gradient(140deg, rgba(255,255,255,0.98), rgba(247,243,235,0.98)),
-                radial-gradient(100% 70% at 0% 0%, rgba(242, 121, 15,0.08), transparent 55%);
+                linear-gradient(rgba(251, 249, 245, 0.98), rgba(251, 249, 245, 0.98)),
+                linear-gradient(transparent, transparent);
             box-shadow: 0 16px 30px rgba(0,0,0,0.07);
         }
         html:not(.dark) .agenda-card {
             border-color: rgba(0,0,0,0.1);
-            background: linear-gradient(180deg, #e9e5d9, #f8f4ec);
+            background: #f1ede3;
             box-shadow: 0 12px 24px rgba(0,0,0,0.06);
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-354c0e2d.css') }}?v={{ @filemtime(public_path('css/tw-354c0e2d.css')) }}">
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
     @include('partials.page-background')
@@ -439,241 +427,265 @@
     $articlesHeroImage = \Illuminate\Support\Facades\Schema::hasTable('articles_hero_images')
         ? \App\Models\ArticlesHeroImage::query()->find(1)
         : null;
+    $authorName = fn ($a) => strcasecmp(trim((string) ($a->author->full_name ?? '')), 'Super Admin') === 0 ? __('Rédaction') : ($a->author->full_name ?? __('Rédaction'));
+    // Couleur du logo par rubrique, stable sur toute la page
+    $catTone = $categories->values()->mapWithKeys(fn ($c, $i) => [$c->id => 'c'.(($i % 7) + 1)]);
 @endphp
+<style>
+    /* Page Magazine : charte du site et couleurs du logo. Images entières, légendes sur cartes blanches,
+       aplats, ombre au survol seulement. Classes conservées : .categories-nav / .categories-strip / .categories-nav-arrow. */
+    .mg { max-width: 1180px; margin: 0 auto; padding: 26px 20px 64px; color: #1d1a16; }
+    .lc { --c: 217,101,15; }
+    .lc.c2 { --c: 74,138,42; } .lc.c3 { --c: 31,128,121; } .lc.c4 { --c: 201,138,12; } .lc.c5 { --c: 44,110,143; } .lc.c6 { --c: 176,134,28; } .lc.c7 { --c: 122,74,42; }
+    .mg-bar { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
+    .mg-bar .categories-nav { flex: 1; min-width: 0; margin: 0 !important; }
+    .mg-bar .categories-strip { scrollbar-width: none; padding: 0 !important; }
+    .mg-bar .categories-strip::-webkit-scrollbar { display: none; }
+    .mg-chip { flex: none; display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px; background: #f6f3ed; color: #3a2f22; font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background .15s ease, color .15s ease; }
+    .mg-chip:hover { background: #efe7d8; color: #1d1a16; }
+    .mg-chip.is-active { background: #1b6b3a; color: #fff; }
+    .mg-search { flex: none; display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 6px 0 14px; border-radius: 999px; background: #f6f3ed; }
+    .mg-search input { width: 200px; border: 0; background: transparent; outline: none; font-size: 14px; color: #1d1a16; }
+    .mg-search button { width: 34px; height: 34px; border-radius: 999px; border: 0; background: #b9500a; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .mg-search button:hover { background: #9a4308; }
+    .mg-search:focus-within { outline: 2px solid #ef7c2b; }
+    .categories-nav-arrow { width: 34px; height: 34px; border-radius: 999px; border: 1px solid #ece5d6; background: #fff; color: #9a4308; }
 
-{{-- ── Page header ──────────────────────────────────────────────── --}}
-<section class="articles-hero relative py-20 overflow-hidden"
+    .mg-label { margin: 0 0 6px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #b9500a; }
+    .mg-h2 { margin: 0 0 18px; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.2vw + 18px, 32px); font-weight: 700; color: #1d1a16; }
+    .mg-sec { margin-top: 40px; }
+
+    /* À la une */
+    .mg-feat { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; }
+    .mg-lead { position: relative; display: block; border-radius: 28px; overflow: hidden; background: #e9e1d2; color: inherit; text-decoration: none; min-height: 440px; }
+    .mg-lead img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .mg-lead:hover img { transform: scale(1.03); }
+    .mg-lead__cap { position: absolute; left: 16px; right: 16px; bottom: 16px; padding: 18px 20px; border-radius: 20px; background: #fff; }
+    .mg-lead__cap b { display: block; margin-top: 6px; font-family: 'Playfair Display', serif; font-size: clamp(20px, 1vw + 16px, 28px); line-height: 1.2; color: #1d1a16; }
+    .mg-lead__cap p { margin: 8px 0 0; font-size: 14.5px; line-height: 1.55; color: #4a443a; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .mg-side { display: flex; flex-direction: column; gap: 16px; }
+    .mg-mini { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 14px; padding: 10px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; flex: 1; }
+    .mg-mini:hover { border-color: #d8cdb8; box-shadow: 0 16px 30px -26px rgba(29,26,22,.5); }
+    .mg-mini__img { position: relative; border-radius: 15px; overflow: hidden; background: #f3eee4; min-height: 120px; }
+    .mg-mini__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .mg-mini__body { display: flex; flex-direction: column; gap: 6px; padding: 4px 4px 4px 0; min-width: 0; }
+    .mg-mini__body b { font-family: 'Playfair Display', serif; font-size: 17px; line-height: 1.25; color: #1d1a16; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .mg-kick { display: inline-flex; align-self: flex-start; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; background: rgba(var(--c), .12); color: rgb(var(--c)); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .mg-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 12.5px; color: #6b6458; }
+    .mg-meta span { display: inline-flex; align-items: center; gap: 5px; }
+    .mg-star { position: absolute; top: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; background: #fff; color: #9a4308; font-size: 11.5px; font-weight: 800; }
+
+    /* Grille */
+    .mg-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .mg-card { display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; }
+    .mg-card:hover { border-color: #d8cdb8; box-shadow: 0 20px 36px -28px rgba(29,26,22,.55); }
+    .mg-card__img { position: relative; aspect-ratio: 16 / 10; background: #f3eee4; overflow: hidden; display: flex; align-items: center; justify-content: center; color: #c9b896; font-size: 30px; }
+    .mg-card__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .mg-card:hover .mg-card__img img { transform: scale(1.04); }
+    .mg-card__sp { position: absolute; top: 12px; right: 12px; height: 26px; padding: 0 10px; border-radius: 999px; background: #fff; color: #6b6458; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; }
+    .mg-card__body { flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 16px 18px 18px; }
+    .mg-card__body b { font-family: 'Playfair Display', serif; font-size: 19px; line-height: 1.25; color: #1d1a16; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .mg-card__body p { margin: 0; font-size: 14px; line-height: 1.55; color: #4a443a; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .mg-card__foot { margin-top: auto; padding-top: 12px; border-top: 1px solid #f0eadf; }
+    .mg-contrib { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .mg-contrib span { height: 22px; padding: 0 9px; border-radius: 999px; background: #fdf4ec; color: #9a4308; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; }
+    .mg-empty { grid-column: 1 / -1; padding: 50px 20px; border-radius: 24px; background: #fff; border: 1px dashed #d8cdb8; text-align: center; color: #6b6458; }
+    .mg-empty b { display: block; font-family: 'Playfair Display', serif; font-size: 22px; color: #1d1a16; }
+
+    /* Agenda */
+    .mg-agenda { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .mg-ev { display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; }
+    .mg-ev:hover { border-color: #d8cdb8; }
+    .mg-ev__img { aspect-ratio: 16 / 9; background: #f3eee4; overflow: hidden; }
+    .mg-ev__img img { width: 100%; height: 100%; object-fit: cover; }
+    .mg-ev__body { padding: 14px 16px 16px; }
+    .mg-ev__body b { display: block; margin-top: 4px; font-family: 'Playfair Display', serif; font-size: 17px; color: #1d1a16; }
+
+    /* Pagination */
+    .mg-pages { display: flex; justify-content: center; gap: 6px; margin-top: 36px; }
+    .mg-pages a, .mg-pages span { min-width: 42px; height: 42px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #ece5d6; color: #3a2f22; font-size: 14px; font-weight: 700; text-decoration: none; }
+    .mg-pages a:hover { border-color: #b9500a; color: #9a4308; }
+    .mg-pages .is-on { background: #1b6b3a; border-color: #1b6b3a; color: #fff; }
+    .mg-pages .is-off { color: #c2b89e; }
+
+    .mg a:focus-visible, .mg button:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+
+    @media (max-width: 1023px) {
+        .mg-feat { grid-template-columns: minmax(0, 1fr); }
+        .mg-lead { min-height: 380px; }
+        .mg-side { flex-direction: row; }
+        .mg-mini { grid-template-columns: minmax(0, 1fr); }
+        .mg-mini__img { min-height: 150px; }
+        .mg-grid, .mg-agenda { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+        .mg { padding: 18px 16px 48px; }
+        .mg-bar { flex-direction: column; align-items: stretch; border-radius: 20px; }
+        .mg-search input { width: 100%; }
+        .mg-lead { min-height: 330px; border-radius: 22px; }
+        .mg-lead__cap { left: 10px; right: 10px; bottom: 10px; padding: 14px 16px; }
+        .mg-side { flex-direction: column; }
+        .mg-mini { grid-template-columns: 110px minmax(0, 1fr); }
+        .mg-mini__img { min-height: 100px; }
+        .mg-grid, .mg-agenda { grid-template-columns: minmax(0, 1fr); }
+        .mg-pages a, .mg-pages span { min-width: 38px; height: 38px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .mg-lead img, .mg-card__img img { transition: none; } }
+</style>
+
+{{-- ── En-tête ── --}}
+<section class="articles-hero hero-magazine relative py-20 overflow-hidden {{ ($articlesHeroImage && $articlesHeroImage->isVisible()) ? 'has-admin-bg' : '' }}"
     @if($articlesHeroImage && $articlesHeroImage->isVisible())
         style="--articles-hero-bg-image: url('{{ $articlesHeroImage->image_url }}');"
     @endif
 >
-    <div class="absolute inset-0 bg-gradient-to-b from-orange-900/20 to-transparent pointer-events-none"></div>
+    @include('partials.ivorian-motifs', ['culture' => 'magazine', 'band' => ! ($articlesHeroImage && $articlesHeroImage->isVisible())])
     <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-        <div class="inline-block rounded-2xl bg-green-950/70 backdrop-blur-md px-6 py-8 sm:px-12 sm:py-10">
-            <p class="text-orange-300 text-sm font-medium uppercase tracking-widest mb-3">Magazine</p>
+        <div class="ti-hero-card inline-block rounded-2xl px-6 py-8 sm:px-12 sm:py-10">
+            <p class="text-orange-300 text-sm font-medium uppercase tracking-widest mb-3">{{ __('Magazine') }}</p>
             <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
                 @if($active_category)
                     {{ $active_category->name_fr }}
                 @elseif($search)
-                    Résultats pour "{{ $search }}"
+                    {{ __('Résultats pour "') }}{{ $search }}"
                 @else
-                    Tous les articles
+                    {{ __('Tous les articles') }}
                 @endif
             </h1>
-            <p class="text-gray-200 text-xl max-w-2xl mx-auto">{{ $articles->total() }} article{{ $articles->total() > 1 ? 's' : '' }}</p>
+            <p class="text-gray-200 text-xl max-w-2xl mx-auto">{{ $articles->total() }} {{ __('article') }}{{ $articles->total() > 1 ? 's' : '' }}</p>
         </div>
     </div>
 </section>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-6">
-        {{-- Search --}}
-        <form method="GET" action="{{ route('articles.index') }}" class="articles-search-shell p-2 rounded-2xl flex gap-2 w-full sm:w-auto">
-            <input name="q" value="{{ $search }}" placeholder="Rechercher…"
-                class="articles-search-input flex-1 sm:w-64 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none">
-            <button class="articles-search-btn px-4 py-2.5 text-black rounded-xl">
-                <i class="fas fa-search text-sm"></i>
-            </button>
+<main class="mg">
+    {{-- Barre : rubriques + recherche --}}
+    <div class="mg-bar">
+        <div class="categories-nav relative">
+            <button type="button" class="categories-nav-arrow categories-nav-arrow--left" data-dir="-1" aria-label="{{ __('Catégories précédentes') }}" hidden><i class="fas fa-chevron-left"></i></button>
+            <div class="categories-strip flex items-center gap-2 overflow-x-auto">
+                <a href="{{ route('articles.index') }}" class="mg-chip {{ ! $active_category && ! $search ? 'is-active' : '' }}">{{ __('Tous') }}</a>
+                @foreach($categories as $cat)
+                    <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}" class="mg-chip {{ $active_category?->id === $cat->id ? 'is-active' : '' }}">{{ $cat->localized('name') }}</a>
+                @endforeach
+            </div>
+            <button type="button" class="categories-nav-arrow categories-nav-arrow--right" data-dir="1" aria-label="{{ __('Catégories suivantes') }}"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <form method="GET" action="{{ route('articles.index') }}" class="mg-search" role="search">
+            <x-icon name="magnifier" class="text-[#9a8f7c]" />
+            <input name="q" value="{{ $search }}" placeholder="{{ __('Rechercher un article…') }}" aria-label="{{ __('Rechercher un article') }}">
+            <button type="submit" aria-label="{{ __('Rechercher') }}"><x-icon name="alt-arrow-right" /></button>
         </form>
     </div>
 
-    {{-- Category tabs --}}
-    <div class="categories-nav relative mb-10">
-        <button type="button" class="categories-nav-arrow categories-nav-arrow--left" data-dir="-1" aria-label="Catégories précédentes" hidden>
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <div class="categories-strip flex items-center gap-2.5 overflow-x-auto pb-1">
-            <a href="{{ route('articles.index') }}"
-               class="category-chip {{ !$active_category && !$search ? 'is-active' : '' }} shrink-0 px-5 py-2 rounded-full text-sm font-semibold">
-                Tous
-            </a>
-            @foreach($categories as $cat)
-            <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}"
-               class="category-chip {{ $active_category?->id === $cat->id ? 'is-active' : '' }} shrink-0 px-5 py-2 rounded-full text-sm font-semibold">
-                {{ $cat->name_fr }}
-            </a>
-            @endforeach
-        </div>
-        <button type="button" class="categories-nav-arrow categories-nav-arrow--right" data-dir="1" aria-label="Catégories suivantes">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </div>
-
-    {{-- ── Featured (if no filter) ──────────────────────────────── --}}
-    @if(!$active_category && !$search && $featured->isNotEmpty())
-    <div class="mb-12">
-        <h2 class="font-serif text-xl font-bold mb-6 flex items-center gap-2">
-            <i class="fas fa-star text-orange-400 text-base"></i> À la une
-        </h2>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            @foreach($featured as $i => $art)
-            @php $contributors = $art->display_uploaders; @endphp
-            <a href="{{ route('articles.show', $art->slug_fr) }}"
-               class="article-card group {{ $i === 0 ? 'lg:col-span-2 lg:row-span-2' : '' }} block relative overflow-hidden rounded-2xl bg-[#ffffff]">
-                <div class="overflow-hidden {{ $i === 0 ? 'h-72 lg:h-full min-h-[280px]' : 'h-44' }}">
-                    @if($art->cover_url)
-                    <img src="{{ $art->cover_url }}" alt="{{ $art->cover_alt }}"
-                         class="card-img w-full h-full object-cover">
-                    @else
-                    <div class="card-img w-full h-full bg-[#ffffff] flex items-center justify-center">
-                        <i class="fas fa-image text-[#333] text-3xl"></i>
-                    </div>
-                    @endif
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                    <span class="text-orange-400 text-[11px] uppercase tracking-widest">{{ $art->category->name_fr ?? '—' }}</span>
-                    <h3 class="font-serif font-bold mt-1 group-hover:text-orange-300 transition leading-snug {{ $i === 0 ? 'text-lg sm:text-xl' : 'text-sm' }}">
-                        {{ $art->title_fr }}
-                    </h3>
-                    <div class="flex items-center gap-2 text-xs text-gray-400 mt-2">
-                        <span>{{ $art->author->first_name ?? 'Rédaction' }}</span>
-                        <span>·</span>
-                        <span>{{ $art->published_at?->diffForHumans() }}</span>
-                        @if($art->reading_time)
-                        <span>· {{ $art->reading_time }} min</span>
-                        @endif
-                    </div>
-                    @if($contributors->isNotEmpty())
-                    <div class="mt-2 flex flex-wrap gap-1.5">
-                        @foreach($contributors->take(3) as $contributor)
-                        <span class="inline-flex items-center rounded-full border border-orange-500/25 bg-orange-500/10 px-2 py-0.5 text-[10px] font-medium text-orange-200">
-                            {{ $contributor->full_name }}
+    {{-- À la une (sans filtre) --}}
+    @if(! $active_category && ! $search && $featured->isNotEmpty())
+        @php $lead = $featured->first(); $rest = $featured->slice(1); @endphp
+        <section class="mg-sec" aria-labelledby="mg-une">
+            <p class="mg-label">{{ __('Sélection de la rédaction') }}</p>
+            <h2 class="mg-h2" id="mg-une">{{ __('À la une') }}</h2>
+            <div class="mg-feat">
+                <a href="{{ route('articles.show', $lead->slug_fr) }}" class="mg-lead lc {{ $catTone[$lead->category_id] ?? 'c1' }}">
+                    @if($lead->cover_url)<img src="{{ $lead->cover_url }}" alt="{{ $lead->cover_alt ?: $lead->localized('title') }}" decoding="async" fetchpriority="high">@endif
+                    <span class="mg-star"><x-icon name="star" />{{ __('À la une') }}</span>
+                    <span class="mg-lead__cap">
+                        <span class="mg-kick">{{ $lead->category?->localized('name') ?? __('Magazine') }}</span>
+                        <b>{{ $lead->localized('title') }}</b>
+                        @if($lead->localized('excerpt'))<p>{{ $lead->localized('excerpt') }}</p>@endif
+                        <span class="mg-meta" style="margin-top:10px">
+                            <span><x-icon name="user-rounded" />{{ $authorName($lead) }}</span>
+                            <span><x-icon name="calendar" />{{ $lead->published_at?->locale(app()->getLocale())->isoFormat('D MMM YYYY') }}</span>
+                            @if($lead->reading_time)<span><x-icon name="clock-circle" />{{ $lead->reading_time }} {{ __('min') }}</span>@endif
                         </span>
+                    </span>
+                </a>
+                @if($rest->isNotEmpty())
+                    <div class="mg-side">
+                        @foreach($rest as $art)
+                            <a href="{{ route('articles.show', $art->slug_fr) }}" class="mg-mini lc {{ $catTone[$art->category_id] ?? 'c1' }}">
+                                <span class="mg-mini__img" style="display:flex;align-items:center;justify-content:center;color:#c9b896;font-size:26px"><x-icon name="notes" />@if($art->cover_url)<img src="{{ $art->cover_url }}" alt="{{ $art->cover_alt ?: $art->localized('title') }}" loading="lazy" decoding="async">@endif</span>
+                                <span class="mg-mini__body">
+                                    <span class="mg-kick">{{ $art->category?->localized('name') ?? __('Magazine') }}</span>
+                                    <b>{{ $art->localized('title') }}</b>
+                                    <span class="mg-meta"><span>{{ $art->published_at?->locale(app()->getLocale())->isoFormat('D MMM YYYY') }}</span>@if($art->reading_time)<span>· {{ $art->reading_time }} {{ __('min') }}</span>@endif</span>
+                                </span>
+                            </a>
                         @endforeach
                     </div>
-                    @endif
-                </div>
-                @if($art->is_featured)
-                <span class="absolute top-3 left-3 bg-orange-500 text-black text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">
-                    <i class="fas fa-star mr-0.5 text-[9px]"></i>À la une
-                </span>
                 @endif
-            </a>
-            @endforeach
-        </div>
-    </div>
+            </div>
+        </section>
     @endif
 
-    {{-- ── Article grid ──────────────────────────────────────────── --}}
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        @forelse($articles as $article)
-        @php $contributors = $article->display_uploaders; @endphp
-        <a href="{{ route('articles.show', $article->slug_fr) }}"
-           class="article-card group bg-dark-700/40 hover:bg-dark-700 border border-white/5 hover:border-gold-500/20 rounded-xl overflow-hidden transition-all duration-300 reveal">
-            <div class="h-32 bg-dark-600 relative overflow-hidden">
-                @if($article->cover_url)
-                    <img src="{{ $article->cover_url }}" alt="{{ $article->cover_alt ?? $article->title_fr }}"
-                         class="card-img absolute inset-0 w-full h-full object-cover">
-                @else
-                    <div class="card-img absolute inset-0 bg-dark-700 flex items-center justify-center">
-                        <i class="fas fa-image text-dark-400 text-lg"></i>
-                    </div>
-                @endif
-                @if($article->is_featured)
-                <span class="absolute top-2 left-2 bg-gold-500 text-dark-900 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">À la une</span>
-                @endif
-                @if($article->is_sponsored)
-                <span class="absolute top-2 right-2 bg-white/10 backdrop-blur-sm text-white text-[9px] px-2 py-0.5 rounded-full">Sponsorisé</span>
-                @endif
-            </div>
-            <div class="p-3">
-                <span class="text-gold-400/70 text-sm uppercase tracking-wider font-elegant">{{ $article->category?->name_fr ?? '—' }}</span>
-                <h3 class="font-serif text-sm font-semibold mt-1 line-clamp-2 group-hover:text-gold-300 transition leading-snug">
-                    {{ $article->title_fr }}
-                </h3>
-                @if($contributors->isNotEmpty())
-                <div class="mt-2 flex flex-wrap gap-1">
-                    @foreach($contributors->take(2) as $contributor)
-                    <span class="inline-flex items-center rounded-full border border-orange-500/25 bg-orange-500/10 px-1.5 py-0.5 text-[9px] font-medium text-orange-200">
-                        {{ $contributor->first_name }}
+    {{-- Tous les articles --}}
+    <section class="mg-sec" aria-labelledby="mg-all">
+        <p class="mg-label">{{ $active_category ? __('Rubrique') : ($search ? __('Recherche') : __('Derniers articles')) }}</p>
+        <h2 class="mg-h2" id="mg-all">{{ $active_category ? $active_category->localized('name') : ($search ? __('Résultats') : __('À lire en ce moment')) }}</h2>
+        <div class="mg-grid">
+            @forelse($articles as $article)
+                @php $contributors = $article->display_uploaders->reject(fn ($c) => strcasecmp(trim((string) $c->full_name), 'Super Admin') === 0); @endphp
+                <a href="{{ route('articles.show', $article->slug_fr) }}" class="mg-card lc {{ $catTone[$article->category_id] ?? 'c1' }} reveal">
+                    <span class="mg-card__img">
+                        <x-icon name="notes" />
+                        @if($article->cover_url)<img src="{{ $article->cover_url }}" alt="{{ $article->cover_alt ?? $article->localized('title') }}" loading="lazy" decoding="async">@endif
+                        @if($article->is_featured)<span class="mg-star"><x-icon name="star" />{{ __('À la une') }}</span>@endif
+                        @if($article->is_sponsored)<span class="mg-card__sp">{{ __('Sponsorisé') }}</span>@endif
                     </span>
-                    @endforeach
-                </div>
-                @endif
-            </div>
-        </a>
-        @empty
-        @if(!($active_category?->slug === 'agenda' && ($agendaEvents ?? collect())->isNotEmpty()))
-            <div class="col-span-full py-20 text-center text-gray-600">
-                <i class="fas fa-newspaper text-4xl mb-3 block opacity-20"></i>
-                <p class="text-lg font-serif">Aucun article trouvé</p>
-                <p class="text-sm mt-1">Essayez une autre recherche ou catégorie.</p>
-            </div>
-        @endif
-        @endforelse
-    </div>
-
-    @if($active_category?->slug === 'agenda')
-    <section class="agenda-panel mt-10 rounded-2xl p-4 sm:p-6">
-        <div class="relative z-[1]">
-            <h2 class="font-serif text-xl sm:text-2xl font-bold mb-5 flex items-center gap-2.5">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-orange-500/30 bg-orange-500/10 text-orange-300">
-                    <i class="fas fa-calendar-days text-sm"></i>
-                </span>
-                Tous les événements
-            </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @forelse(($agendaEvents ?? collect()) as $event)
-                <a href="{{ route('events.show', $event->slug) }}" class="agenda-card rounded-xl">
-                    <div class="agenda-card-cover h-36">
-                        @if($event->cover_url)
-                            <img src="{{ $event->cover_url }}" alt="{{ $event->cover_alt ?: $event->title_fr }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-gray-600">
-                                <i class="fas fa-calendar-days text-2xl"></i>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="p-4">
-                        <p class="text-orange-300 text-[11px] uppercase tracking-[0.14em]">{{ $event->category->name_fr ?? 'Événement' }}</p>
-                        <h3 class="text-white font-semibold mt-1.5 leading-snug">{{ $event->title_fr }}</h3>
-                        <p class="text-gray-400 text-sm mt-2">{{ $event->starts_at?->format('d/m/Y H:i') }} · {{ $event->city ?: 'Côte d\'Ivoire' }}</p>
-                    </div>
+                    <span class="mg-card__body">
+                        <span class="mg-kick">{{ $article->category?->localized('name') ?? __('Magazine') }}</span>
+                        <b>{{ $article->localized('title') }}</b>
+                        @if($article->localized('excerpt'))<p>{{ $article->localized('excerpt') }}</p>@endif
+                        <span class="mg-card__foot">
+                            <span class="mg-meta">
+                                <span><x-icon name="user-rounded" />{{ $authorName($article) }}</span>
+                                <span>{{ $article->published_at?->locale(app()->getLocale())->isoFormat('D MMM YYYY') }}</span>
+                                @if($article->reading_time)<span><x-icon name="clock-circle" />{{ $article->reading_time }} {{ __('min') }}</span>@endif
+                            </span>
+                            @if($contributors->isNotEmpty())
+                                <span class="mg-contrib">@foreach($contributors->take(3) as $contributor)<span>{{ $contributor->full_name }}</span>@endforeach</span>
+                            @endif
+                        </span>
+                    </span>
                 </a>
             @empty
-                <div class="col-span-full rounded-xl border border-white/8 bg-[#ffffff] p-6 text-center text-gray-500">
-                    Aucun événement publié pour le moment.
-                </div>
+                @if(! ($active_category?->slug === 'agenda' && ($agendaEvents ?? collect())->isNotEmpty()))
+                    <div class="mg-empty"><b>{{ __('Aucun article trouvé') }}</b>{{ __('Essayez une autre recherche ou catégorie.') }}</div>
+                @endif
             @endforelse
         </div>
-        </div>
     </section>
+
+    @if($active_category?->slug === 'agenda')
+        <section class="mg-sec" aria-labelledby="mg-agenda">
+            <p class="mg-label">{{ __('Agenda') }}</p>
+            <h2 class="mg-h2" id="mg-agenda">{{ __('Tous les événements') }}</h2>
+            <div class="mg-agenda">
+                @forelse(($agendaEvents ?? collect()) as $event)
+                    <a href="{{ route('events.show', $event->slug) }}" class="mg-ev lc c{{ ($loop->index % 7) + 1 }}">
+                        <span class="mg-ev__img">@if($event->cover_url)<img src="{{ $event->cover_url }}" alt="{{ $event->cover_alt ?: $event->localized('title') }}" loading="lazy">@endif</span>
+                        <span class="mg-ev__body">
+                            <span class="mg-kick">{{ $event->category?->localized('name') ?? __('Événement') }}</span>
+                            <b>{{ $event->localized('title') }}</b>
+                            <span class="mg-meta" style="margin-top:6px"><span><x-icon name="calendar" />{{ $event->starts_at?->format('d/m/Y H:i') }}</span><span><x-icon name="map-point" />{{ $event->city ?: 'Côte d\'Ivoire' }}</span></span>
+                        </span>
+                    </a>
+                @empty
+                    <div class="mg-empty">{{ __('Aucun événement publié pour le moment.') }}</div>
+                @endforelse
+            </div>
+        </section>
     @endif
 
     {{-- Pagination --}}
     @if($articles->hasPages())
-    <div class="flex justify-center mt-10">
-        <div class="flex items-center gap-1">
-            @if($articles->onFirstPage())
-            <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#ffffff] text-gray-600 text-sm cursor-not-allowed">
-                <i class="fas fa-chevron-left text-xs"></i>
-            </span>
-            @else
-            <a href="{{ $articles->previousPageUrl() }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#ffffff] hover:bg-[#ffffff] text-gray-300 text-sm transition">
-                <i class="fas fa-chevron-left text-xs"></i>
-            </a>
-            @endif
-
-            @foreach($articles->getUrlRange(max(1, $articles->currentPage()-2), min($articles->lastPage(), $articles->currentPage()+2)) as $page => $url)
-            <a href="{{ $url }}" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm transition {{ $page === $articles->currentPage() ? 'bg-orange-500 text-black font-bold' : 'bg-[#ffffff] hover:bg-[#ffffff] text-gray-300' }}">
-                {{ $page }}
-            </a>
+        <nav class="mg-pages" aria-label="{{ __('Pagination') }}">
+            @if($articles->onFirstPage())<span class="is-off" aria-hidden="true">‹</span>@else<a href="{{ $articles->previousPageUrl() }}" aria-label="{{ __('Page précédente') }}">‹</a>@endif
+            @foreach($articles->getUrlRange(max(1, $articles->currentPage() - 2), min($articles->lastPage(), $articles->currentPage() + 2)) as $page => $url)
+                <a href="{{ $url }}" class="{{ $page === $articles->currentPage() ? 'is-on' : '' }}" @if($page === $articles->currentPage()) aria-current="page" @endif>{{ $page }}</a>
             @endforeach
-
-            @if($articles->hasMorePages())
-            <a href="{{ $articles->nextPageUrl() }}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#ffffff] hover:bg-[#ffffff] text-gray-300 text-sm transition">
-                <i class="fas fa-chevron-right text-xs"></i>
-            </a>
-            @else
-            <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#ffffff] text-gray-600 text-sm cursor-not-allowed">
-                <i class="fas fa-chevron-right text-xs"></i>
-            </span>
-            @endif
-        </div>
-    </div>
+            @if($articles->hasMorePages())<a href="{{ $articles->nextPageUrl() }}" aria-label="{{ __('Page suivante') }}">›</a>@else<span class="is-off" aria-hidden="true">›</span>@endif
+        </nav>
     @endif
-</div>
+</main>
 
 @include('partials.homepage-footer')
 

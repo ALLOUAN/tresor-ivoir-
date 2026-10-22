@@ -66,7 +66,7 @@ class PublicSubscriptionController extends Controller
                     'role' => 'provider',
                     'categorie' => $request->query('categorie'),
                 ]))
-                ->with('info', 'Créez un compte prestataire pour finaliser votre abonnement.');
+                ->with('info', __('Créez un compte prestataire pour finaliser votre abonnement.'));
         }
 
         /** @var \App\Models\User $user */
@@ -74,7 +74,7 @@ class PublicSubscriptionController extends Controller
         if ($user->role !== 'provider') {
             return redirect()
                 ->route('plans.public')
-                ->with('error', 'Les abonnements prestataire sont réservés aux comptes « Prestataire ».');
+                ->with('error', __('Les abonnements prestataire sont réservés aux comptes « Prestataire ».'));
         }
 
         if (! $user->hasVerifiedEmail()) {
@@ -85,7 +85,7 @@ class PublicSubscriptionController extends Controller
 
             return redirect()
                 ->route('verification.notice')
-                ->with('status', 'Validez votre e-mail pour finaliser l\'abonnement.');
+                ->with('status', __('Validez votre e-mail pour finaliser l\'abonnement.'));
         }
 
         $categorySlug = $plan->providerCategory?->slug ?? $request->query('categorie');
@@ -93,7 +93,7 @@ class PublicSubscriptionController extends Controller
         if (! $provider) {
             return redirect()
                 ->route('plans.public')
-                ->with('error', 'Impossible de créer la fiche prestataire (aucune catégorie active). Contactez le support.');
+                ->with('error', __('Impossible de créer la fiche prestataire (aucune catégorie active). Contactez le support.'));
         }
 
         $cinetPayConfigured = $cinetPay->isConfigured();
@@ -117,7 +117,7 @@ class PublicSubscriptionController extends Controller
         if ($cinetPay->isConfigured()) {
             return redirect()
                 ->route('subscriptions.checkout', $plan)
-                ->with('info', 'Utilisez le paiement en ligne depuis cette page.');
+                ->with('info', __('Utilisez le paiement en ligne depuis cette page.'));
         }
 
         /** @var \App\Models\User|null $user */
@@ -131,7 +131,7 @@ class PublicSubscriptionController extends Controller
         if (! $provider) {
             return redirect()
                 ->route('plans.public')
-                ->with('error', 'Impossible de créer la fiche prestataire (aucune catégorie active). Contactez le support.');
+                ->with('error', __('Impossible de créer la fiche prestataire (aucune catégorie active). Contactez le support.'));
         }
 
         $data = $request->validate([
@@ -223,6 +223,6 @@ class PublicSubscriptionController extends Controller
 
         return redirect()
             ->route('home')
-            ->with('success', 'Votre abonnement est enregistré. Bienvenue sur Trésors d\'Ivoire !');
+            ->with('success', __('Votre abonnement est enregistré. Bienvenue sur Trésors d\'Ivoire !'));
     }
 }

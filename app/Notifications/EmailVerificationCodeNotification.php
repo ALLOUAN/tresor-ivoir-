@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\SiteSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -23,13 +24,18 @@ class EmailVerificationCodeNotification extends Notification
 
     public function toMail(mixed $notifiable): MailMessage
     {
+        // Nom du site pris dans les réglages (et non APP_NAME, qui peut valoir « Laravel »).
+        $branding = SiteSetting::branding();
+        $site = $branding['site_name'] ?? config('app.name');
+
         return (new MailMessage)
-            ->subject('Votre code de vérification — '.config('app.name'))
-            ->greeting('Bonjour !')
-            ->line('Voici votre code de vérification e-mail :')
-            ->line($this->code)
-            ->line('Ce code est valable pendant '.$this->ttlMinutes.' minutes.')
-            ->line('Saisissez ce code dans l\'écran de vérification pour finaliser votre compte.')
-            ->salutation('Cordialement, l\'équipe '.config('app.name'));
+            ->subject(__(':code est votre code de vérification — :site', ['code' => $this->code, 'site' => $site]))
+            ->view('emails.verification-code', [
+                'code' => $this->code,
+                'minutes' => $this->ttlMinutes,
+                'name' => $notifiable->first_name ?? null,
+                'branding' => $branding,
+                'verifyUrl' => route('verification.notice'),
+            ]);
     }
 }

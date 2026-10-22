@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TourCategory extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     public $timestamps = false;
 
     protected $fillable = [

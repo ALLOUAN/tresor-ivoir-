@@ -57,6 +57,16 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-400 mb-1">Prestataire (compte qui gère la carte et les réservations)</label>
+                        <select name="provider_id" class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                            <option value="">Aucun — fiche vitrine sans carte ni réservation</option>
+                            @foreach($providers as $p)
+                                <option value="{{ $p->id }}" {{ (string) old('provider_id', $restaurant->provider_id ?? '') === (string) $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+                            @endforeach
+                        </select>
+                        <p class="text-[11px] text-slate-500 mt-1">Seuls les prestataires « Restaurants & Gastronomie » sans autre restaurant sont proposés. La carte affichée est celle de ce prestataire.</p>
+                    </div>
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Ordre d'affichage</label>
                         <input type="number" name="sort_order" min="0" value="{{ old('sort_order', $restaurant->sort_order ?? 0) }}"

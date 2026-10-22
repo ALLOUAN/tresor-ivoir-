@@ -18,7 +18,7 @@
         width: 38%;
         height: 360%;
         transform: rotate(22deg) translateX(-180%);
-        background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 35%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.04) 65%, transparent 100%);
+        background: rgba(255, 255, 255, 0.05);
         pointer-events: none;
         transition: transform .85s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -39,6 +39,10 @@
     $phoneGrowth   = $growth($totals['clicks_phone'], $prevTotals['clicks_phone']);
     $websiteGrowth = $growth($totals['clicks_website'], $prevTotals['clicks_website']);
 @endphp
+
+@if(config('ai.enabled', true))
+<p class="mb-4 text-sm"><a href="{{ route('provider.insights') }}" class="text-orange-400 hover:underline"><i class="fas fa-chart-area mr-1"></i>Prévision de fréquentation, comparaison à votre catégorie et conseils : analyse avancée</a></p>
+@endif
 
 {{-- Period selector --}}
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
@@ -251,9 +255,7 @@ function buildAnalyticsCharts() {
     const defaults = chartDefaults(p);
 
     const viewsCtx = viewsCanvas.getContext('2d');
-    const viewsGradient = viewsCtx.createLinearGradient(0, 0, 0, 220);
-    viewsGradient.addColorStop(0, 'rgba(59,130,246,0.45)');
-    viewsGradient.addColorStop(1, 'rgba(59,130,246,0.03)');
+    const viewsGradient = 'rgba(49,98,28,0.14)';   // aplat (pas de dégradé)
 
     viewsChart?.destroy();
     viewsChart = new Chart(viewsCanvas, {
@@ -262,12 +264,12 @@ function buildAnalyticsCharts() {
             labels,
             datasets: [{
                 data: viewsData,
-                borderColor: '#60a5fa',
+                borderColor: '#31621c',
                 backgroundColor: viewsGradient,
                 borderWidth: 2.5,
                 pointRadius: 0,
                 pointHoverRadius: 4,
-                pointBackgroundColor: '#93c5fd',
+                pointBackgroundColor: '#31621c',
                 pointHoverBorderWidth: 2,
                 pointHoverBorderColor: p.surface,
                 fill: true,
@@ -278,9 +280,7 @@ function buildAnalyticsCharts() {
     });
 
     const clicksCtx = clicksCanvas.getContext('2d');
-    const barGradient = clicksCtx.createLinearGradient(0, 0, 0, 220);
-    barGradient.addColorStop(0, 'rgba(250, 154, 60,0.95)');
-    barGradient.addColorStop(1, 'rgba(242, 121, 15,0.55)');
+    const barGradient = '#ef7c2b';   // aplat (pas de dégradé)
 
     clicksChart?.destroy();
     clicksChart = new Chart(clicksCanvas, {
@@ -293,7 +293,7 @@ function buildAnalyticsCharts() {
                 borderRadius: 8,
                 borderSkipped: false,
                 maxBarThickness: 28,
-                hoverBackgroundColor: 'rgba(250, 154, 60,0.9)',
+                hoverBackgroundColor: '#f48e30',
             }]
         },
         options: {
@@ -314,9 +314,9 @@ function buildAnalyticsCharts() {
                 datasets: [{
                     data: doughnutData,
                     backgroundColor: [
-                        'rgba(16,185,129,0.92)',
-                        'rgba(168,85,247,0.92)',
-                        'rgba(242, 121, 15,0.92)',
+                        '#31621c',
+                        '#327661',
+                        '#ef7c2b',
                     ],
                     borderColor: p.ring,
                     borderWidth: 3,

@@ -172,6 +172,6 @@ class CulturalPeopleImageManagementTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee('fa-people-group', false);
+        $response->assertSee('ti-people-card__initial', false);
     }
 }

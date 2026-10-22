@@ -59,9 +59,9 @@ class ArtworkPurchaseController extends Controller
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:80'],
             'last_name' => ['required', 'string', 'max:80'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email' => \App\Services\ClientAccountService::uniqueEmailRule(),
             'phone' => ['required', 'string', 'max:20'],
-            'password' => ['required', PasswordRule::min(8)],
+            'password' => ['required', \App\Services\ClientAccountService::passwordRule()],
         ], [
             'first_name.required' => 'Le prénom est obligatoire.',
             'last_name.required' => 'Le nom est obligatoire.',
@@ -71,6 +71,8 @@ class ArtworkPurchaseController extends Controller
             'password.required' => 'Le mot de passe est obligatoire.',
             'password.min' => 'Le mot de passe doit contenir au moins 8 caractères.',
         ]);
+
+        \App\Services\ClientAccountService::freeTrashedEmail($data['email']);
 
         $user = User::create([
             'first_name' => $data['first_name'],
@@ -119,14 +121,23 @@ class ArtworkPurchaseController extends Controller
 
         if (! $order) {
             return redirect()->route('art.index')
-                ->with('error', 'Achat introuvable. Contactez le support si vous avez été débité.');
+                ->with('error', __('Achat introuvable. Contactez le support si vous avez été débité.'));
+        }
+
+        if ($order->payment_plan === 'layaway' && $order->pending_installment) {
+            session()->forget('pending_artwork_order_id');
+            if ($cinetPay->checkPaymentStatus($order->gateway_txn_id)['success'] ?? false) {
+                $this->settleInstallment($order);
+            }
+
+            return redirect()->route('visitor.art-orders.index')->with('success', __('Paiement enregistré.'));
         }
 
         if ($order->status === ArtworkOrder::STATUS_PAID) {
             session()->forget('pending_artwork_order_id');
 
             return redirect()->route('art.show', $order->artwork->slug)
-                ->with('success', 'Paiement confirmé ! Merci pour votre achat.');
+                ->with('success', __('Paiement confirmé ! Merci pour votre achat.'));
         }
 
         $statusResult = $cinetPay->checkPaymentStatus($order->gateway_txn_id);
@@ -136,11 +147,11 @@ class ArtworkPurchaseController extends Controller
             session()->forget('pending_artwork_order_id');
 
             return redirect()->route('art.show', $order->artwork->slug)
-                ->with('success', 'Paiement confirmé ! Merci pour votre achat.');
+                ->with('success', __('Paiement confirmé ! Merci pour votre achat.'));
         }
 
         return redirect()->route('art.show', $order->artwork->slug)
-            ->with('error', 'Le paiement n\'a pas abouti. Vous pouvez réessayer.');
+            ->with('error', __('Le paiement n\'a pas abouti. Vous pouvez réessayer.'));
     }
 
     // ── Webhook CinetPay ──────────────────────────────────────────────────────
@@ -162,6 +173,16 @@ class ArtworkPurchaseController extends Controller
             return response()->json(['ok' => false, 'message' => 'Commande introuvable'], 404);
         }
 
+        if ($order->payment_plan === 'layaway' && $order->pending_installment) {
+            if ($cinetPay->checkPaymentStatus($token)['success'] ?? false) {
+                $this->settleInstallment($order);
+
+                return response()->json(['ok' => true]);
+            }
+
+            return response()->json(['ok' => false]);
+        }
+
         if ($order->status === ArtworkOrder::STATUS_PAID) {
             return response()->json(['ok' => true]);
         }
@@ -177,6 +198,90 @@ class ArtworkPurchaseController extends Controller
         $order->update(['status' => ArtworkOrder::STATUS_CANCELLED]);
 
         return response()->json(['ok' => false]);
+    }
+
+    // ── Achat « marché » : édition, offre acceptée, livraison, assurance, paiement en 3 fois ──
+
+    public function checkout(Request $request, Artwork $artwork, \App\Services\ArtSalesService $sales, CinetPayService $cinetPay): RedirectResponse
+    {
+        abort_unless(Auth::user()->role === 'visitor', 403, __('Les achats se font avec un compte visiteur.'));
+        $data = $request->validate([
+            'edition_id' => ['nullable', 'integer'], 'offer_id' => ['nullable', 'integer'],
+            'delivery_mode' => ['required', 'in:pickup,abidjan,country'],
+            'delivery_address' => ['required_unless:delivery_mode,pickup', 'nullable', 'string', 'max:255'],
+            'delivery_city' => ['nullable', 'string', 'max:120'], 'insurance' => ['nullable', 'boolean'],
+            'plan' => ['nullable', 'in:full,layaway'], 'payment_method' => ['required', 'in:cinetpay,wallet'],
+            'phone' => ['required', 'string', 'max:30'],
+        ], ['delivery_address.required_unless' => __('Indiquez l\'adresse de livraison.')]);
+        $user = Auth::user();
+        try {
+            $order = DB::transaction(function () use ($artwork, $sales, $user, $data, $request) {
+                Artwork::whereKey($artwork->id)->lockForUpdate()->first();
+
+                return $sales->createOrder($artwork->fresh(), $user, $data + ['insurance' => $request->boolean('insurance'), 'ip' => $request->ip()]);
+            });
+        } catch (\InvalidArgumentException $e) {
+            return back()->withInput()->withErrors(['checkout' => $e->getMessage()], 'art');
+        }
+
+        return $this->payDue($order, $data['payment_method'], $sales, $cinetPay);
+    }
+
+    /** Échéance suivante d'un paiement en plusieurs fois. */
+    public function payInstallment(Request $request, ArtworkOrder $artworkOrder, \App\Services\ArtSalesService $sales, CinetPayService $cinetPay): RedirectResponse
+    {
+        abort_unless((int) $artworkOrder->buyer_user_id === (int) Auth::id(), 404);
+        abort_unless($artworkOrder->status === ArtworkOrder::STATUS_RESERVED, 422);
+        $method = $request->validate(['payment_method' => ['required', 'in:cinetpay,wallet']])['payment_method'];
+
+        return $this->payDue($artworkOrder, $method, $sales, $cinetPay);
+    }
+
+    private function payDue(ArtworkOrder $order, string $method, \App\Services\ArtSalesService $sales, CinetPayService $cinetPay): RedirectResponse
+    {
+        $user = Auth::user();
+        if ($method === 'wallet') {
+            try {
+                $result = $sales->payFromWallet($order, $user);
+            } catch (\RuntimeException $e) {
+                return back()->withInput()->withErrors(['checkout' => $e->getMessage()], 'art');
+            }
+            if ($order->payment_plan === 'layaway') {
+                if ($result === 'paid') {
+                    $sales->completeLayaway($order);
+                }
+
+                return redirect()->route('visitor.art-orders.index')->with('success', $result === 'paid' ? __('Œuvre entièrement réglée. Merci !') : __('Paiement enregistré : l\'œuvre vous est réservée.'));
+            }
+            $this->completePurchase($order, 'WALLET-'.$order->id);
+
+            return redirect()->route('visitor.art-orders.index')->with('success', __('Paiement confirmé ! Merci pour votre achat.'));
+        }
+        if (! $cinetPay->isConfigured()) {
+            return back()->withInput()->withErrors(['checkout' => __('Le paiement en ligne n\'est pas encore disponible : payez avec votre solde.')], 'art');
+        }
+        $amount = $sales->dueNow($order);
+        $result = $cinetPay->initPayment([
+            'amount' => $amount, 'designation' => 'Œuvre — '.$order->artwork?->title,
+            'client_first_name' => $user->first_name, 'client_last_name' => $user->last_name, 'client_email' => $user->email,
+            'success_url' => route('art.purchase.return'), 'failed_url' => route('art.purchase.return'), 'notify_url' => route('art.purchase.webhook'),
+        ]);
+        if (! $result['success']) {
+            return back()->withInput()->withErrors(['checkout' => $result['message'] ?? __('Erreur lors de l\'initialisation du paiement.')], 'art');
+        }
+        $order->update(['gateway' => 'cinetpay', 'gateway_txn_id' => $result['merchant_transaction_id'],
+            'pending_installment' => $order->payment_plan === 'layaway' ? $order->nextInstallment()['n'] : null]);
+        session(['pending_artwork_order_id' => $order->id]);
+
+        return redirect()->away($result['payment_url']);
+    }
+
+    private function settleInstallment(ArtworkOrder $order): void
+    {
+        $sales = app(\App\Services\ArtSalesService::class);
+        if ($sales->settleInstallment($order, (int) $order->pending_installment)) {
+            $sales->completeLayaway($order);
+        }
     }
 
     // ── Helpers privés ────────────────────────────────────────────────────────
@@ -275,12 +380,17 @@ class ArtworkPurchaseController extends Controller
             }
 
             $artwork = Artwork::whereKey($order->artwork_id)->lockForUpdate()->first();
-            $oversold = ! $artwork || $artwork->stock_quantity <= 0;
-
-            if (! $oversold) {
-                $artwork->decrement('stock_quantity');
-                if ($artwork->fresh()->stock_quantity <= 0) {
-                    $artwork->update(['status' => Artwork::STATUS_SOLD]);
+            if ($order->artwork_edition_id) {
+                // Édition limitée : le tirage a son propre stock, l'original n'est pas touché.
+                $edition = \App\Models\ArtworkEdition::whereKey($order->artwork_edition_id)->lockForUpdate()->first();
+                $oversold = ! $edition || $edition->remaining() < 1;
+            } else {
+                $oversold = ! $artwork || $artwork->stock_quantity <= 0;
+                if (! $oversold) {
+                    $artwork->decrement('stock_quantity');
+                    if ($artwork->fresh()->stock_quantity <= 0) {
+                        $artwork->update(['status' => Artwork::STATUS_SOLD]);
+                    }
                 }
             }
 
@@ -291,6 +401,9 @@ class ArtworkPurchaseController extends Controller
             ]);
 
             app(WalletService::class)->creditSaleForArtworkOrder($order);
+            if (! $oversold) {
+                app(\App\Services\ArtSalesService::class)->onPaid($order);
+            }
 
             if ($order->buyer_user_id && ($buyer = User::find($order->buyer_user_id))) {
                 $buyer->notify($oversold

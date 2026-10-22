@@ -83,9 +83,9 @@ class VisitorWalletController extends Controller
         ]);
 
         return match ($payout->status) {
-            PayoutRequest::STATUS_PENDING_VERIFICATION => back()->with('success', 'Un code de vérification vous a été envoyé par email pour confirmer ce retrait.'),
-            PayoutRequest::STATUS_SUSPENDED => back()->with('error', 'Cette demande a été suspendue pour vérification par notre équipe de sécurité.'),
-            default => back()->with('success', 'Demande de retrait envoyée — elle sera examinée par notre équipe.'),
+            PayoutRequest::STATUS_PENDING_VERIFICATION => back()->with('success', __('Un code de vérification vous a été envoyé par email pour confirmer ce retrait.')),
+            PayoutRequest::STATUS_SUSPENDED => back()->with('error', __('Cette demande a été suspendue pour vérification par notre équipe de sécurité.')),
+            default => back()->with('success', __('Demande de retrait envoyée — elle sera examinée par notre équipe.')),
         };
     }
 
@@ -101,7 +101,7 @@ class VisitorWalletController extends Controller
             return back()->with('error', $result);
         }
 
-        return back()->with('success', 'Retrait confirmé — il sera traité par notre équipe.');
+        return back()->with('success', __('Retrait confirmé — il sera traité par notre équipe.'));
     }
 
     public function resendPayoutOtp(PayoutRequest $payoutRequest, PayoutOtpService $otpService): RedirectResponse
@@ -111,7 +111,7 @@ class VisitorWalletController extends Controller
 
         $otpService->send($payoutRequest);
 
-        return back()->with('success', 'Un nouveau code vous a été envoyé.');
+        return back()->with('success', __('Un nouveau code vous a été envoyé.'));
     }
 
     public function initiateTopup(Request $request, CinetPayService $cinetPay): JsonResponse
@@ -182,13 +182,13 @@ class VisitorWalletController extends Controller
 
         if (! $topup) {
             return redirect()->route('visitor.wallet.index')
-                ->with('error', 'Recharge introuvable. Contactez le support si vous avez été débité.');
+                ->with('error', __('Recharge introuvable. Contactez le support si vous avez été débité.'));
         }
 
         if ($topup->status === WalletTopup::STATUS_COMPLETED) {
             session()->forget('pending_wallet_topup_id');
 
-            return redirect()->route('visitor.wallet.index')->with('success', 'Votre solde a été rechargé !');
+            return redirect()->route('visitor.wallet.index')->with('success', __('Votre solde a été rechargé !'));
         }
 
         $statusResult = $cinetPay->checkPaymentStatus($topup->gateway_txn_id);
@@ -197,17 +197,17 @@ class VisitorWalletController extends Controller
             $this->markCompleted($topup);
             session()->forget('pending_wallet_topup_id');
 
-            return redirect()->route('visitor.wallet.index')->with('success', 'Votre solde a été rechargé !');
+            return redirect()->route('visitor.wallet.index')->with('success', __('Votre solde a été rechargé !'));
         }
 
         if (($statusResult['status'] ?? '') === 'PENDING') {
             return redirect()->route('visitor.wallet.index')
-                ->with('info', 'Votre paiement est en cours de traitement. Votre solde sera mis à jour dès confirmation.');
+                ->with('info', __('Votre paiement est en cours de traitement. Votre solde sera mis à jour dès confirmation.'));
         }
 
         $this->markFailed($topup, 'Retour CinetPay : statut '.($statusResult['status'] ?? '?'));
 
-        return redirect()->route('visitor.wallet.index')->with('error', 'Le paiement n\'a pas abouti. Vous pouvez réessayer.');
+        return redirect()->route('visitor.wallet.index')->with('error', __('Le paiement n\'a pas abouti. Vous pouvez réessayer.'));
     }
 
     public function webhook(Request $request, CinetPayService $cinetPay): JsonResponse

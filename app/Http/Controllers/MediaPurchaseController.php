@@ -54,9 +54,9 @@ class MediaPurchaseController extends Controller
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:80'],
             'last_name'  => ['required', 'string', 'max:80'],
-            'email'      => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email'      => \App\Services\ClientAccountService::uniqueEmailRule(),
             'phone'      => ['required', 'string', 'max:20'],
-            'password'   => ['required', PasswordRule::min(8)],
+            'password'   => ['required', \App\Services\ClientAccountService::passwordRule()],
         ], [
             'first_name.required' => 'Le prénom est obligatoire.',
             'last_name.required'  => 'Le nom est obligatoire.',
@@ -66,6 +66,8 @@ class MediaPurchaseController extends Controller
             'password.required' => 'Le mot de passe est obligatoire.',
             'password.min'      => 'Le mot de passe doit contenir au moins 8 caractères.',
         ]);
+
+        \App\Services\ClientAccountService::freeTrashedEmail($data['email']);
 
         $user = User::create([
             'first_name'        => $data['first_name'],
@@ -113,13 +115,13 @@ class MediaPurchaseController extends Controller
 
         if (! $purchase) {
             return redirect()->route('gallery.public')
-                ->with('error', 'Achat introuvable. Contactez le support si vous avez été débité.');
+                ->with('error', __('Achat introuvable. Contactez le support si vous avez été débité.'));
         }
 
         if ($purchase->status === 'completed') {
             session()->forget('pending_media_purchase_id');
             return redirect()->route('gallery.public.show', $purchase->media->uuid)
-                ->with('success', 'Paiement confirmé ! Votre achat est disponible.');
+                ->with('success', __('Paiement confirmé ! Votre achat est disponible.'));
         }
 
         $statusResult = $cinetPay->checkPaymentStatus($purchase->gateway_txn_id);
@@ -128,11 +130,11 @@ class MediaPurchaseController extends Controller
             $this->completePurchase($purchase, $purchase->gateway_txn_id);
             session()->forget('pending_media_purchase_id');
             return redirect()->route('gallery.public.show', $purchase->media->uuid)
-                ->with('success', 'Paiement confirmé ! Votre achat est disponible.');
+                ->with('success', __('Paiement confirmé ! Votre achat est disponible.'));
         }
 
         return redirect()->route('gallery.public.show', $purchase->media->uuid)
-            ->with('error', 'Le paiement n\'a pas abouti. Vous pouvez réessayer.');
+            ->with('error', __('Le paiement n\'a pas abouti. Vous pouvez réessayer.'));
     }
 
     // ── Webhook CinetPay ──────────────────────────────────────────────────────

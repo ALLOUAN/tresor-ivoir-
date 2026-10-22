@@ -213,7 +213,7 @@
     }
     html:not(.dark) .article-card .bg-linear-to-t.from-green-950\/95.via-green-950\/30.to-transparent,
     html:not(.dark) .article-card [class*="bg-linear-to-t from-green-950/95"] {
-        background: linear-gradient(to top, rgba(255,255,255,0.97), rgba(255,255,255,0.82), rgba(255,255,255,0.02)) !important;
+        background: rgba(255, 255, 255, 0.72) !important;
     }
     html:not(.dark) .article-card h2,
     html:not(.dark) .article-card h3,
@@ -252,13 +252,7 @@
     /* Inline gold grid overlays used on some hero sections */
     html:not(.dark) [style*="repeating-linear-gradient(45deg,#f2790f"] {
         opacity: 0.14 !important;
-        background-image: repeating-linear-gradient(
-            45deg,
-            rgba(194, 94, 10,0.45) 0,
-            rgba(194, 94, 10,0.45) 1px,
-            transparent 0,
-            transparent 50%
-        ) !important;
+        background-color: rgba(194, 94, 10, 0.23) !important;
     }
     /* Ensure gradient text remains readable in light mode */
     html:not(.dark) .text-transparent.bg-clip-text,

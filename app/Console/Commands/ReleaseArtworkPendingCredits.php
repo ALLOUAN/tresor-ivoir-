@@ -14,6 +14,9 @@ class ReleaseArtworkPendingCredits extends Command
     public function handle(WalletService $wallet): int
     {
         $wallet->releaseStaleArtworkCredits();
+        // Part libérée après le délai de retour, échéances relancées / annulées, offres expirées.
+        $stats = app(\App\Services\ArtSalesService::class)->processDaily();
+        $this->line(json_encode($stats));
 
         $this->info('Crédits œuvres en attente traités.');
 

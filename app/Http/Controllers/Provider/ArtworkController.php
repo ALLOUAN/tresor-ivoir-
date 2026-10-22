@@ -25,7 +25,7 @@ class ArtworkController extends Controller
 
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -96,13 +96,14 @@ class ArtworkController extends Controller
             return back()->withErrors(['images' => 'Ajoutez au moins une photo de l\'œuvre.'])->withInput();
         }
 
-        Artwork::create([
+        $artwork = Artwork::create([
             ...$validated,
             'provider_id' => $provider->id,
             'slug' => $this->uniqueSlug($validated['title']),
             'images' => $images,
             'status' => Artwork::STATUS_PENDING_REVIEW,
         ]);
+        $this->syncEditions($request, $artwork);
 
         return redirect()->route('provider.artworks.index')->with('success', 'Œuvre soumise pour validation. Elle sera visible publiquement après approbation par l\'administration.');
     }
@@ -137,6 +138,7 @@ class ArtworkController extends Controller
             ...$validated,
             'images' => $images,
         ]);
+        $this->syncEditions($request, $artwork);
 
         return redirect()->route('provider.artworks.index')->with('success', 'Œuvre mise à jour.');
     }
@@ -163,7 +165,46 @@ class ArtworkController extends Controller
             'year_created' => ['nullable', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
             'price_xof' => ['required', 'integer', 'min:1000'],
             'stock_quantity' => ['required', 'integer', 'min:0', 'max:9999'],
-        ]);
+            'width_cm' => ['nullable', 'numeric', 'min:1', 'max:2000'],
+            'height_cm' => ['nullable', 'numeric', 'min:1', 'max:2000'],
+            'depth_cm' => ['nullable', 'numeric', 'min:0', 'max:2000'],
+            'min_offer_xof' => ['nullable', 'integer', 'min:0'],
+        ]) + [
+            'accepts_offers' => $request->boolean('accepts_offers'),
+            'layaway_allowed' => $request->boolean('layaway_allowed'),
+        ];
+    }
+
+    /** Éditions limitées : lignes du formulaire (format, dimensions, prix, tirage). */
+    private function syncEditions(Request $request, Artwork $artwork): void
+    {
+        $rows = collect($request->validate([
+            'editions' => ['nullable', 'array', 'max:8'],
+            'editions.*.id' => ['nullable', 'integer'],
+            'editions.*.label' => ['nullable', 'string', 'max:120'],
+            'editions.*.width_cm' => ['nullable', 'numeric', 'min:1', 'max:2000'],
+            'editions.*.height_cm' => ['nullable', 'numeric', 'min:1', 'max:2000'],
+            'editions.*.price_xof' => ['nullable', 'integer', 'min:1000'],
+            'editions.*.edition_size' => ['nullable', 'integer', 'min:1', 'max:1000'],
+        ])['editions'] ?? [])->filter(fn ($r) => trim((string) ($r['label'] ?? '')) !== '');
+        if ($rows->contains(fn ($r) => empty($r['price_xof']) || empty($r['edition_size']))) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['editions' => 'Indiquez le prix et le tirage de chaque édition.']);
+        }
+        $keep = [];
+        foreach ($rows as $r) {
+            $data = ['label' => trim($r['label']), 'width_cm' => $r['width_cm'] ?? null, 'height_cm' => $r['height_cm'] ?? null, 'price_xof' => (int) $r['price_xof'], 'is_active' => true];
+            $edition = ! empty($r['id']) ? $artwork->editions()->find($r['id']) : null;
+            if ($edition) {
+                $edition->update($data + ['edition_size' => max((int) $r['edition_size'], $edition->sold_count)]);
+            } else {
+                $edition = $artwork->editions()->create($data + ['edition_size' => (int) $r['edition_size']]);
+            }
+            $keep[] = $edition->id;
+        }
+        // Édition retirée : supprimée si rien n'a été vendu, sinon simplement fermée (numéros déjà attribués).
+        foreach ($artwork->editions()->whereNotIn('id', $keep)->get() as $old) {
+            $old->sold_count > 0 ? $old->update(['is_active' => false]) : $old->delete();
+        }
     }
 
     /**

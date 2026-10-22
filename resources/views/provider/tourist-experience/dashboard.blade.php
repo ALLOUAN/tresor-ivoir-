@@ -50,6 +50,11 @@
         <p class="text-white font-semibold mt-2">Galerie photos</p>
         <p class="text-slate-500 text-xs mt-1">Ajouter ou retirer des photos de l'établissement.</p>
     </a>
+    <a href="{{ route('provider.tourist-experience.visit-types.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-5 hover:border-orange-500/40 transition">
+        <i class="fas fa-ticket-simple text-orange-400 text-lg"></i>
+        <p class="text-white font-semibold mt-2">{{ __('Types de visite') }}</p>
+        <p class="text-slate-500 text-xs mt-1">{{ __('Créer vos formules : individuelle, guidée, nocturne, VIP…') }}</p>
+    </a>
     <a href="{{ route('provider.tourist-experience.sessions.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-5 hover:border-orange-500/40 transition">
         <i class="fas fa-calendar-days text-orange-400 text-lg"></i>
         <p class="text-white font-semibold mt-2">Sessions de visite groupée</p>

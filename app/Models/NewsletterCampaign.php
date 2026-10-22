@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class NewsletterCampaign extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     protected $fillable = [
         'title', 'subject_fr', 'subject_en', 'content_fr', 'content_en',
         'type', 'status', 'scheduled_at', 'sent_at',

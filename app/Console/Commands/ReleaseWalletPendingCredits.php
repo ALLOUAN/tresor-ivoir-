@@ -14,6 +14,8 @@ class ReleaseWalletPendingCredits extends Command
     public function handle(WalletService $wallet): int
     {
         $wallet->releasePendingCredits();
+        app(\App\Services\BookingPaymentService::class)->releaseDueCredits();
+        app(\App\Services\GiftCardService::class)->expireOverdue();
 
         $this->info('Crédits en attente traités.');
 

@@ -15,7 +15,7 @@ class TouristVisitSessionController extends Controller
 {
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }

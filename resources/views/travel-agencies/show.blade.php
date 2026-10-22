@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $agency->name }} — Agences de Voyages &amp; Tours — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ $agency->name }} — {{ __('Agences de Voyages & Tours') }} — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
@@ -21,111 +20,48 @@
         .gallery-tile { position: relative; overflow: hidden; cursor: pointer; border-radius: .85rem; }
         .gallery-tile img { transition: transform .4s ease; }
         .gallery-tile:hover img { transform: scale(1.08); }
-        .bento-card { border: 1px solid rgba(0,0,0,0.07); background: linear-gradient(180deg, #ffffff, #fbf8f2); box-shadow: 0 10px 28px rgba(20,18,12,0.06); }
-        .bento-icon { width: 2.2rem; height: 2.2rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(41,128,185,0.18), rgba(41,128,185,0.06)); color: #2980B9; }
+        .bento-card { border: 1px solid rgba(0,0,0,0.07); background: #fdfcf9; box-shadow: 0 10px 28px rgba(20,18,12,0.06); }
+        .bento-icon { width: 2.2rem; height: 2.2rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; background: rgba(41, 128, 185, 0.12); color: #2980B9; }
         .section-kicker { letter-spacing: .22em; }
         .review-card { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(20,18,12,0.05); }
         .related-tile { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 10px 26px rgba(20,18,12,0.06); transition: transform .25s ease, box-shadow .25s ease; }
         .related-tile:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(41,128,185,0.16); }
-        .contact-card { border: 1px solid rgba(0,0,0,0.08); background: linear-gradient(180deg, #ffffff, #fbf7ee); box-shadow: 0 20px 50px rgba(20,18,12,0.1); }
+        .contact-card { border: 1px solid rgba(0,0,0,0.08); background: #fdfbf7; box-shadow: 0 20px 50px rgba(20,18,12,0.1); }
     </style>
+    @include('partials.detail-theme')
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="text-[#1c1915]">
+<body class="dx text-[#1c1915]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <a href="{{ route('travel-agency.index') }}" class="inline-flex items-center gap-2 text-[#2980B9] hover:text-[#1f618d] transition text-sm font-semibold">
-            <i class="fas fa-arrow-left text-[11px]"></i> Agences de Voyages &amp; Tours
-        </a>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
 
         @php
             $photos = $agency->media;
             $mainPhoto = $photos->first()?->url ?: $agency->cover_image;
         @endphp
 
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start mt-4">
-            <div class="lg:col-span-3 space-y-14">
+        @include('partials.detail-hero', ['model' => $agency, 'sectorName' => __('Agences de Voyages & Tours'), 'sectorIcon' => 'fa-plane-departure', 'backUrl' => route('travel-agency.index'), 'shareUrl' => route('travel-agency.show', $agency->slug), 'bookAnchor' => '#reserver', 'items' => ($toursByCategory ?? collect())->flatten(1)])
 
-                {{-- ── GALERIE ────────────────────────────────────────────── --}}
-                <div class="space-y-3 reveal is-visible">
-                    <div class="hero-cover rounded-3xl {{ $mainPhoto ? 'cursor-zoom-in' : '' }}" style="height:clamp(320px,55vh,520px)" id="hero-cover-img-wrap"
-                         @if($mainPhoto) onclick="openLightbox(document.getElementById('hero-cover-img').src)" @endif>
-                        @if($mainPhoto)
-                            <img id="hero-cover-img" src="{{ $mainPhoto }}" alt="{{ $agency->name }}" class="w-full h-full object-cover" loading="lazy">
-                            <span class="zoom-hint absolute bottom-4 right-4 w-10 h-10 rounded-full bg-black/55 border border-white/20 backdrop-blur flex items-center justify-center text-white">
-                                <i class="fas fa-magnifying-glass-plus text-sm"></i>
-                            </span>
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-white/30"><i class="fas fa-plane text-4xl"></i></div>
-                        @endif
-                        <div class="absolute top-5 left-5 flex flex-wrap gap-2">
-                            <span class="inline-flex items-center rounded-full bg-black/55 border border-white/20 px-3.5 py-1.5 text-[10px] uppercase tracking-wide text-orange-100 font-bold backdrop-blur">
-                                Agences de Voyages &amp; Tours
-                            </span>
-                        </div>
-                    </div>
-
-                    @if($photos->count() > 1)
-                    <div class="grid grid-cols-4 gap-2">
-                        @foreach($photos->skip(1)->take(4) as $p)
-                        <div class="gallery-tile aspect-square" onclick="document.getElementById('hero-cover-img').src='{{ $p->url }}'">
-                            <img src="{{ $p->url }}" alt="" class="w-full h-full object-cover" loading="lazy">
-                        </div>
-                        @endforeach
-                    </div>
-                    @endif
-                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-start mt-8">
+            <div class="lg:col-span-3 space-y-12 dx-main">
+                @include('partials.detail-tabs', ['offerLabel' => __('Circuits')])
 
                 {{-- ── EN-TÊTE + DESCRIPTION ──────────────────────────────── --}}
-                <section class="reveal">
-                    <p class="section-kicker text-[#2980B9] text-xs font-bold uppercase mb-2">Agences de Voyages &amp; Tours</p>
-                    <h1 class="font-serif text-3xl sm:text-4xl font-bold mb-2">{{ $agency->name }}</h1>
-                    <p class="text-[#8a7f6b] text-sm mb-6">
-                        <i class="fas fa-location-dot text-[#2980B9]/70 mr-1"></i>
-                        {{ $agency->city?->name }}{{ $agency->city?->region_administrative ? ' · '.$agency->city->region_administrative : '' }}
-                        @if($agency->provider && $agency->provider->rating_avg)
-                        <span class="ml-2 inline-flex items-center gap-1 text-[#2980B9] font-bold"><i class="fas fa-star text-[10px]"></i> {{ number_format((float) $agency->provider->rating_avg, 1) }}</span>
-                        @endif
-                    </p>
-
-                    @if($agency->short_description)
-                    <p class="text-[#3d372c] text-base font-medium mb-3">{{ $agency->short_description }}</p>
-                    @endif
-                    <p class="text-[#3d372c] leading-relaxed text-[15px] whitespace-pre-line">{{ $agency->description ?: 'Description non disponible.' }}</p>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
-                        <div class="bento-card rounded-xl p-3.5">
-                            <div class="bento-icon mb-2"><i class="fas fa-city text-[11px]"></i></div>
-                            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">Ville</p>
-                            <p class="text-sm font-bold mt-0.5">{{ $agency->city?->name ?: 'N/A' }}</p>
-                        </div>
-                        @if($agency->phone)
-                        <div class="bento-card rounded-xl p-3.5">
-                            <div class="bento-icon mb-2"><i class="fas fa-phone text-[11px]"></i></div>
-                            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">Contact</p>
-                            <p class="text-sm font-bold mt-0.5 truncate">{{ $agency->phone }}</p>
-                        </div>
-                        @endif
-                        @if($agency->adresse)
-                        <div class="bento-card rounded-xl p-3.5 sm:col-span-2">
-                            <div class="bento-icon mb-2"><i class="fas fa-location-dot text-[11px]"></i></div>
-                            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">Adresse</p>
-                            <p class="text-sm font-bold mt-0.5">{{ $agency->adresse }}</p>
-                        </div>
-                        @endif
-                    </div>
+                <section class="reveal" id="apercu">
+                    @include('partials.detail-overview', ['model' => $agency])
                 </section>
 
                 {{-- ── ÉQUIPEMENTS ────────────────────────────────────────── --}}
                 @if(!empty($agency->amenities))
-                <section class="reveal">
-                    <p class="section-kicker text-[#2980B9] text-xs font-bold uppercase mb-2">Services</p>
-                    <h2 class="font-serif text-2xl font-bold mb-5">Équipements &amp; services</h2>
+                <section class="reveal" id="equipements">
+                    <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('Services') }}</p>
+                    <h2 class="font-serif text-2xl font-bold mb-5">{{ __('Équipements & services') }}</h2>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         @foreach($agency->amenities as $am)
                         <div class="flex items-center gap-2.5 bento-card rounded-xl p-3">
-                            <i class="{{ $am['icon'] ?? 'fas fa-check' }} text-[#2980B9] text-sm shrink-0"></i>
+                            <span class="hx-amen__icon"><i class="{{ $am['icon'] ?? 'fas fa-check' }}" aria-hidden="true"></i></span>
                             <span class="text-sm font-medium truncate">{{ $am['label'] ?? '' }}</span>
                         </div>
                         @endforeach
@@ -135,84 +71,37 @@
 
                 {{-- ── NOS CIRCUITS ─────────────────────────────────────────── --}}
                 @if($toursByCategory->isNotEmpty())
-                <section class="reveal">
-                    <p class="section-kicker text-[#2980B9] text-xs font-bold uppercase mb-2">Circuits &amp; tarifs</p>
-                    <h2 class="font-serif text-2xl font-bold mb-5">Nos circuits</h2>
-                    <div class="space-y-6">
-                        @foreach($toursByCategory as $categoryName => $tourGroup)
-                        <div>
-                            <h3 class="text-[#2980B9] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                @foreach($tourGroup as $tour)
-                                <div class="bento-card rounded-xl p-3.5 flex items-center gap-3">
-                                    @if(!empty($tour->images[0]))
-                                    <div class="w-14 h-14 shrink-0 rounded-lg overflow-hidden bg-black/5">
-                                        <img src="{{ $tour->images[0] }}" alt="" class="w-full h-full object-cover">
-                                    </div>
-                                    @endif
-                                    <div class="min-w-0 flex-1">
-                                        <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $tour->name }}</p>
-                                        <p class="text-[#8a7f6b] text-xs mt-0.5">
-                                            @if($tour->duration_days) {{ $tour->duration_days }} jour(s) @endif
-                                            @if($tour->duration_days && $tour->max_participants) · @endif
-                                            @if($tour->max_participants) {{ $tour->max_participants }} pers. max @endif
-                                        </p>
-                                        <p class="text-[#2980B9] text-sm font-bold mt-1">{{ number_format((int) $tour->price_xof, 0, ',', ' ') }} XOF</p>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    <a href="{{ route('travel-agency.tours', $agency->slug) }}"
-                       class="inline-flex items-center gap-1.5 mt-4 text-[#2980B9] text-xs font-bold hover:text-[#1f618d] transition">
-                        Voir sur une page dédiée <i class="fas fa-arrow-right text-[10px]"></i>
-                    </a>
+                <section class="reveal" id="offre">
+                    @include('partials.detail-offers', ['groups' => $toursByCategory, 'kicker' => __('Circuits & tarifs'), 'title' => __('Nos circuits'), 'pageUrl' => route('travel-agency.tours', $agency->slug), 'askUrl' => route('travel-agency.show', $agency->slug), 'itemUrl' => fn ($i) => $i->slug ? route('travel-agency.tour', [$agency->slug, $i->slug]) : null, 'itemIcon' => 'fa-route', 'meta' => fn ($i) => array_values(array_filter([$i->duration_days ? ['fa-calendar-days', trans_choice(':count jour|:count jours', $i->duration_days)] : null, $i->max_participants ? ['fa-user', $i->max_participants.' '.__('pers. max')] : null]))])
                 </section>
                 @endif
 
                 {{-- ── LOCALISATION ─────────────────────────────────────────── --}}
-                <section class="reveal">
-                    <p class="section-kicker text-[#2980B9] text-xs font-bold uppercase mb-2">Où se trouve l'agence</p>
-                    <h2 class="font-serif text-2xl font-bold mb-4">Localisation</h2>
+                <section class="reveal" id="localisation">
+                    <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('Où se trouve l\'agence') }}</p>
+                    <h2 class="font-serif text-2xl font-bold mb-4">{{ __('Localisation') }}</h2>
                     @if($agency->latitude && $agency->longitude)
-                        <div class="bento-card rounded-2xl overflow-hidden mb-3">
-                            <iframe src="https://www.google.com/maps?q={{ $agency->latitude }},{{ $agency->longitude }}&output=embed"
-                                    class="w-full" style="height:260px; border:0;" loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        </div>
-                        <a href="{{ $agency->google_maps_url }}" target="_blank" rel="noopener noreferrer"
-                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 hover:border-blue-400/50 hover:bg-blue-50 text-[#2980B9] text-xs font-bold transition">
-                            <i class="fas fa-diamond-turn-right text-[10px]"></i> Itinéraire
+                        @include('partials.route-map', ['type' => 'agence', 'slug' => $agency->slug, 'lat' => $agency->latitude, 'lng' => $agency->longitude, 'name' => $agency->name, 'accent' => '#b9500a'])
+                        <a href="{{ route('directions.go', ['agence', $agency->slug]) }}" data-in-page-route target="_blank" rel="noopener noreferrer"
+                           class="dx-route mt-3"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i> {{ __('Itinéraire') }}
                         </a>
                     @elseif($agency->city)
-                        <div class="bento-card rounded-2xl overflow-hidden mb-3">
-                            <iframe src="https://www.google.com/maps?q={{ urlencode($agency->city->name) }}&z=12&output=embed"
-                                    class="w-full" style="height:220px; border:0;" loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <div class="hx-map">
+                            <iframe src="https://www.google.com/maps?q={{ urlencode($agency->city->name) }}&z=12&output=embed" title="{{ __('Carte : :name', ['name' => $agency->city->name]) }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <div class="dx-map-card">
+                                <p><span class="hx-facts__icon"><i class="fas fa-location-dot" aria-hidden="true"></i></span><span><small>{{ __('Adresse') }}</small>{{ $agency->adresse ?: $agency->city->name }}</span></p>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(trim($agency->name.' '.($agency->adresse ?: $agency->city->name).' Côte d\'Ivoire')) }}" target="_blank" rel="noopener noreferrer" class="dx-route"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i>{{ __('Itinéraire') }}</a>
+                            </div>
                         </div>
                     @else
-                        <p class="text-[#8a7f6b] text-sm">Coordonnées non renseignées pour cette agence.</p>
+                        <p class="text-[#8a7f6b] text-sm">{{ __('Coordonnées non renseignées pour cette agence.') }}</p>
                     @endif
                 </section>
 
                 {{-- ── AVIS CLIENTS ──────────────────────────────────────────── --}}
                 @if($reviews->isNotEmpty())
-                <section class="reveal">
-                    <p class="section-kicker text-[#2980B9] text-xs font-bold uppercase mb-2">Retours d'expérience</p>
-                    <h2 class="font-serif text-2xl font-bold mb-6">Avis clients</h2>
-                    <div class="space-y-4">
-                        @foreach($reviews as $review)
-                        <div class="review-card rounded-xl p-4">
-                            <div class="flex items-center justify-between mb-2">
-                                <p class="font-semibold text-sm">{{ $review->user->first_name ?? 'Visiteur' }}</p>
-                                <span class="text-[#2980B9] text-sm font-bold">{{ $review->rating_quality ?? '—' }} ★</span>
-                            </div>
-                            <p class="text-[#5c5548] text-sm mt-1">{{ $review->comment }}</p>
-                        </div>
-                        @endforeach
-                    </div>
+                <section class="reveal" id="avis">
+                    @include('partials.detail-reviews', ['reviews' => $reviews, 'model' => $agency])
                 </section>
                 @endif
             </div>{{-- fin col principale --}}
@@ -220,9 +109,19 @@
             {{-- ═══════════════ COLONNE LATÉRALE ═══════════════ --}}
             <div class="lg:col-span-2">
                 <div class="lg:sticky lg:top-24 space-y-3 reveal">
+                    @include('partials.booking-request-form', ['type' => 'tour', 'target' => $agency, 'tours' => collect($toursByCategory)->flatten(1)])
+                    @include('partials.trust-badges', ['provider' => $agency->provider])
+                    @include('partials.gift-card-cta', ['provider' => $agency->provider])
                     <div class="contact-card rounded-3xl p-5" id="contact-card">
-                        <h2 class="font-serif text-xl font-bold mb-1">Contacter cette agence</h2>
-                        <p class="text-[#8a7f6b] text-xs mb-4">Posez vos questions directement, en toute sécurité, sans quitter la plateforme.</p>
+                        <h2 class="font-serif text-xl font-bold mb-1">{{ __('Contacter cette agence') }}</h2>
+                        <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Posez vos questions directement, en toute sécurité, sans quitter la plateforme.') }}</p>
+                        {{-- Arrivée depuis « Contacter à ce sujet » (?item=…) : rappel de l'élément choisi. --}}
+                        @if(is_string(request('item')) && request('item') !== '')
+                        <div class="ti-contact-item">
+                            <i class="fas fa-tag"></i>
+                            <span>{{ __('Votre demande concerne') }} <strong>{{ str(request('item'))->limit(80) }}</strong></span>
+                        </div>
+                        @endif
 
                         @if($agency->provider)
                             @auth
@@ -232,21 +131,23 @@
                                         <input type="hidden" name="provider_id" value="{{ $agency->provider->id }}">
                                         <textarea name="message" id="contact-message" rows="3" required maxlength="4000"
                                                   class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm placeholder:text-[#a89f8f]"
-                                                  placeholder="Votre message..."></textarea>
+                                                  placeholder="{{ __('Votre message...') }}"></textarea>
                                         <button type="submit" class="btn-primary btn-shine flex items-center justify-center gap-2.5 w-full px-5 py-3.5 rounded-2xl font-extrabold text-[14px]">
-                                            <i class="fas fa-paper-plane text-sm"></i> Envoyer le message
+                                            <i class="fas fa-paper-plane text-sm"></i> {{ __('Envoyer le message') }}
                                         </button>
                                     </form>
+                                @else
+                                    <p class="dx-note"><i class="fas fa-circle-info mr-1" aria-hidden="true"></i>{{ __('La messagerie avec les établissements est réservée aux comptes visiteurs.') }}</p>
                                 @endif
                             @else
                                 <div class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-5 text-center">
-                                    <p class="text-[#1c1915] font-bold text-sm mb-1">Connectez-vous pour contacter cette agence</p>
+                                    <p class="text-[#1c1915] font-bold text-sm mb-1">{{ __('Connectez-vous pour contacter cette agence') }}</p>
                                     <div class="flex items-center justify-center gap-2 mt-3">
-                                        <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs">
-                                            <i class="fas fa-right-to-bracket text-xs"></i> Se connecter
+                                        <a href="{{ route('login', ['redirect' => request()->getRequestUri()]) }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs">
+                                            <i class="fas fa-right-to-bracket text-xs"></i> {{ __('Se connecter') }}
                                         </a>
-                                        <a href="{{ route('register', ['role' => 'visitor', 'redirect' => url()->current()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-blue-400/50 text-[#1c1915] transition">
-                                            Créer un compte
+                                        <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#1c1915] transition">
+                                            {{ __('Créer un compte') }}
                                         </a>
                                     </div>
                                 </div>
@@ -257,7 +158,7 @@
                                 <i class="fas fa-phone text-sm"></i> {{ $agency->phone }}
                             </a>
                             @else
-                            <p class="text-[#8a7f6b] text-sm">Aucun moyen de contact renseigné.</p>
+                            <p class="text-[#8a7f6b] text-sm">{{ __('Aucun moyen de contact renseigné.') }}</p>
                             @endif
                         @endif
                     </div>
@@ -267,15 +168,11 @@
 
         @if($related->isNotEmpty())
         <section class="mt-16 reveal">
-            <p class="section-kicker text-[#2980B9] text-xs font-bold uppercase mb-2">À découvrir aussi</p>
-            <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-6">Agences similaires</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('À découvrir aussi') }}</p>
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-6">{{ __('Agences similaires') }}</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach($related as $r)
-                <a href="{{ route('travel-agency.show', $r->slug) }}" class="related-tile rounded-2xl p-4">
-                    <p class="text-[#2980B9] text-[11px] uppercase tracking-[0.16em] font-bold">Agences de Voyages</p>
-                    <p class="font-semibold mt-1.5 leading-snug">{{ $r->name }}</p>
-                    <p class="text-[#8a7f6b] text-sm mt-1.5"><i class="fas fa-location-dot text-[#2980B9]/60 mr-1"></i>{{ $r->city?->name ?: 'N/A' }}</p>
-                </a>
+                    @include('partials.home-sector-card', ['it' => \App\Support\HomeSectorShowcase::card($r, 'agences-voyages')])
                 @endforeach
             </div>
         </section>
@@ -292,6 +189,7 @@
     <div class="pb-4">
 @include('partials.homepage-footer')
     </div>
+@include('partials.place-card-script')
 @include('partials.image-protection')
 <script>
 function openLightbox(url) {
@@ -312,7 +210,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
     const item = new URLSearchParams(window.location.search).get('item');
     if (!item) return;
     const ta = document.getElementById('contact-message');
-    if (ta) ta.value = 'Je suis intéressé par : ' + item;
+    if (ta) ta.value = {{ \Illuminate\Support\Js::from(__('Je suis intéressé par : ')) }} + item;
 })();
 
 // ── Révélation au défilement ─────────────────────────────────────────────

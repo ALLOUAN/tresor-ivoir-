@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     public $timestamps = false;
 
     protected $fillable = ['slug', 'name_fr', 'name_en', 'type'];

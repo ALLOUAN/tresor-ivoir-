@@ -1,50 +1,106 @@
-<a href="{{ $it['url'] }}" class="group relative rounded-2xl border border-white/10 overflow-hidden p-4 sm:p-5 hover:border-gold-500/35 hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-green-950/20">
-    @if($it['image'])
-        <img src="{{ $it['image'] }}" alt="" class="home-provider-card-bg absolute inset-0 w-full h-full object-cover" loading="lazy">
-        <div class="absolute inset-0 bg-gradient-to-br from-[rgba(20,18,14,0.92)] via-[rgba(20,18,14,0.78)] to-[rgba(20,18,14,0.55)]"></div>
-    @else
-        <div class="absolute inset-0 bg-dark-700/75"></div>
-    @endif
+{{--
+    Carte établissement d'un secteur (accueil « Les meilleures adresses » et /nos-etablissements).
+    Paramètres : $it (tableau préparé par App\Support\HomeSectorShowcase), $showSector (bool).
+    Toute la carte est cliquable (lien étendu du titre) ; favori, itinéraire et partage restent de vrais boutons.
+    Styles : .ti-place-card dans partials.ui-kit ; comportements : partials.place-card-script.
+--}}
+@php
+    $pcRating = $it['rating'] ?? null;
+    $pcAmenities = collect($it['amenities'] ?? []);
+    // Accueil (sections mélangées) : le secteur en tête ; dans une section : le lieu (le type est déjà sur la photo).
+    $pcShowSector = !empty($showSector) && !empty($it['sector']);
+@endphp
+<article class="ti-place-card group">
+    <div class="ti-place-card__media">
+        @if($it['image'])
+            <img src="{{ $it['image'] }}" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+            @if(!empty($it['hover_image']))
+                <img src="{{ $it['hover_image'] }}" alt="" class="ti-place-card__hover" loading="lazy" decoding="async" onerror="this.remove()">
+            @endif
+        @endif
+        <span class="ti-place-card__icon" aria-hidden="true"><i class="fas {{ $it['icon'] }}"></i></span>
 
-    <div class="relative z-10">
-        <div class="flex items-start justify-between mb-3">
-            <div class="w-11 h-11 rounded-xl border border-white/10 bg-[rgba(20,18,14,0.55)] backdrop-blur-sm flex items-center justify-center group-hover:border-gold-500/35 group-hover:bg-gold-500/10 transition">
-                <i class="fas {{ $it['icon'] }} text-gold-400/70 group-hover:text-gold-300 transition"></i>
-            </div>
-            <div class="flex flex-col items-end gap-1">
+        <div class="ti-place-card__top">
+            <div class="ti-place-card__pills">
+                @if($it['badge'] || !empty($it['stars']))
+                    <span class="ti-place-card__pill">
+                        <i class="fas {{ $it['icon'] }}" aria-hidden="true"></i>{{ $it['badge'] ?? $it['sector'] }}@if(!empty($it['stars'])) {{ $it['stars'] }}★@endif
+                    </span>
+                @endif
                 @if($it['verified'])
-                <span class="inline-flex items-center bg-emerald-500/15 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-400/35 backdrop-blur-sm">
-                    <i class="fas fa-badge-check mr-1 text-[9px]"></i>Vérifié
-                </span>
+                    <span class="ti-place-card__pill is-ok"><i class="fas fa-circle-check" aria-hidden="true"></i>{{ __('Vérifié') }}</span>
                 @endif
-                @if($it['badge'])
-                <span class="inline-flex items-center rounded-full bg-black/55 border border-white/20 px-2.5 py-0.5 text-[10px] uppercase tracking-wide text-orange-100 font-bold backdrop-blur-sm">{{ $it['badge'] }}</span>
+                @if(!empty($it['available']))
+                    <span class="ti-place-card__pill is-ok"><i class="fas fa-calendar-check" aria-hidden="true"></i>{{ __('Disponible') }}</span>
                 @endif
             </div>
+            @include('partials.place-card-fav', ['providerId' => $it['provider_id'] ?? null, 'name' => $it['name']])
         </div>
-        @if(!empty($showSector) && !empty($it['sector']))
-        <p class="text-gold-400 text-[10px] uppercase tracking-wider font-semibold mb-1">{{ $it['sector'] }}</p>
+
+        @if(($it['photo_count'] ?? 0) > 1)
+            <div class="ti-place-card__bottom">
+                <span class="ti-place-card__dots" aria-hidden="true">
+                    @for($d = 0; $d < min(5, $it['photo_count']); $d++)<span @class(['is-on' => $d === 0])></span>@endfor
+                </span>
+                <span class="ti-place-card__count"><i class="fas fa-images" aria-hidden="true"></i>{{ $it['photo_count'] }}<span class="sr-only"> {{ __('photos') }}</span></span>
+            </div>
         @endif
-        <p class="text-[#ffffff] text-sm sm:text-[15px] font-semibold font-serif leading-snug line-clamp-2">{{ $it['name'] }}</p>
-        @if($it['location'] !== '')
-        <p class="text-[rgba(255,255,255,0.72)] text-xs mt-1"><i class="fas fa-location-dot mr-1 opacity-70"></i>{{ $it['location'] }}</p>
-        @endif
-        @if($it['description'])
-        <p class="text-[rgba(255,255,255,0.72)] text-xs mt-2 line-clamp-2">{{ $it['description'] }}</p>
-        @endif
-        <div class="mt-3 flex items-center justify-between gap-2">
-            @if($it['price'])
-            <p class="text-[rgba(255,255,255,0.8)] text-xs leading-tight">à partir de<br>
-                <span class="text-[#ffffff] font-extrabold text-sm">{{ number_format($it['price'], 0, ',', ' ') }} XOF</span>/nuit
-            </p>
-            @else
-            <span class="text-gold-400 text-xs font-semibold inline-flex items-center gap-1.5">Découvrir <i class="fas fa-arrow-right text-[10px]"></i></span>
-            @endif
-            @if($it['rating'])
-            <span class="inline-flex items-center gap-1 text-xs font-bold text-gold-400">
-                <i class="fas fa-star text-[10px]"></i> {{ number_format($it['rating'], 1) }}
-            </span>
-            @endif
+
+        <div class="ti-place-card__quick">
+            <a href="{{ $it['map_url'] }}" target="_blank" rel="noopener" class="ti-place-card__qbtn" aria-label="{{ __('Itinéraire vers :name', ['name' => $it['name']]) }}" title="{{ __('Itinéraire') }}"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i></a>
+            <button type="button" class="ti-place-card__qbtn" data-place-share="{{ $it['url'] }}" data-place-title="{{ $it['name'] }}" aria-label="{{ __('Partager :name', ['name' => $it['name']]) }}" title="{{ __('Partager') }}"><i class="fas fa-share-nodes" aria-hidden="true"></i></button>
         </div>
     </div>
-</a>
+
+    <div class="ti-place-card__body">
+        <div class="ti-place-card__row">
+            @if($pcShowSector)
+                <p class="ti-place-card__sector"><i class="fas {{ $it['icon'] }}" aria-hidden="true"></i>{{ $it['sector'] }}</p>
+            @elseif($it['location'] !== '')
+                <p class="ti-place-card__location"><i class="fas fa-location-dot" aria-hidden="true"></i>{{ $it['location'] }}</p>
+            @else
+                <span></span>
+            @endif
+            @if($pcRating)
+                <span class="ti-place-card__rate"><i class="fas fa-star" aria-hidden="true"></i>{{ number_format($pcRating, 1, ',', ' ') }}@if(($it['reviews'] ?? 0) > 0)<small>({{ $it['reviews'] }})</small>@endif</span>
+            @else
+                <span class="ti-place-card__rate is-new"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>{{ __('Nouveau') }}</span>
+            @endif
+        </div>
+        <h3 class="ti-place-card__name"><a href="{{ $it['url'] }}" class="ti-place-card__link">{{ $it['name'] }}</a></h3>
+        @if($pcShowSector && $it['location'] !== '')
+            <p class="ti-place-card__location"><i class="fas fa-location-dot" aria-hidden="true"></i>{{ $it['location'] }}</p>
+        @endif
+        @if($pcAmenities->isNotEmpty())
+            <ul class="ti-place-card__amenities" aria-label="{{ __('Équipements') }}">
+                @foreach($pcAmenities->take(3) as $am)
+                    <li><i class="{{ $am['icon'] ?? 'fas fa-check' }}" aria-hidden="true"></i>{{ \Illuminate\Support\Str::limit($am['label'], 18) }}</li>
+                @endforeach
+                @if($pcAmenities->count() > 3)
+                    <li class="is-more">+{{ $pcAmenities->count() - 3 }}</li>
+                @endif
+            </ul>
+        @elseif($it['description'])
+            <p class="ti-place-card__text">{{ $it['description'] }}</p>
+        @endif
+        @if(!empty($it['free_cancellation']) || !empty($it['response_badge']))
+            <p class="ti-place-card__trust">
+                @if(!empty($it['free_cancellation']))<span><i class="fas fa-rotate-left" aria-hidden="true"></i>{{ __('Annulation gratuite') }}</span>@endif
+                @if(!empty($it['response_badge']))<span><i class="fas fa-bolt" aria-hidden="true"></i>{{ $it['response_badge'] }}</span>@endif
+            </p>
+        @endif
+    </div>
+
+    <div class="ti-place-card__footer">
+        @if($it['price'])
+            <span class="ti-place-card__price">
+                <small>{{ __('À partir de') }}</small>
+                <strong>{{ number_format($it['price'], 0, ',', ' ') }} {{ __('FCFA') }}</strong><em> {{ __('/ nuit') }}</em>
+            </span>
+        @else
+            <span></span>
+        @endif
+        <span class="ti-place-card__more" aria-hidden="true">{{ $it['cta'] ?? __('Découvrir') }}<i class="fas fa-arrow-right"></i></span>
+    </div>
+</article>
+@include('partials.place-card-script')

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProviderCategory extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     public $timestamps = false;
 
     protected $fillable = [

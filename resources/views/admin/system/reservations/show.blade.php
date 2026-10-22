@@ -116,6 +116,17 @@
         @if($reservation->payment_status === \App\Models\Reservation::PAYMENT_DEPOSIT_PAID)
         <div class="border-t border-slate-800 pt-4">
             <p class="text-slate-500 text-xs uppercase tracking-wide mb-2">Remboursement</p>
+            @if($reservation->status === \App\Models\Reservation::STATUS_CANCELLED && $reservation->refund_due_xof !== null)
+                @php $byLabels = ['client' => 'le client', 'provider' => 'l\'établissement', 'admin' => 'l\'administration', 'system' => 'le système']; @endphp
+                <div class="mb-3 px-3 py-2.5 rounded-lg text-sm {{ $reservation->refund_due_xof > 0 ? 'bg-amber-500/10 text-amber-200' : 'bg-slate-800 text-slate-300' }}">
+                    Annulée par {{ $byLabels[$reservation->cancelled_by] ?? '—' }} le {{ $reservation->cancelled_at?->format('d/m/Y H:i') }} —
+                    @if($reservation->refund_due_xof > 0)
+                        <strong>{{ number_format($reservation->refund_due_xof, 0, ',', ' ') }} XOF dus au client</strong> selon la politique d'annulation.
+                    @else
+                        annulation hors délai : rien n'est dû au client, l'acompte revient au prestataire.
+                    @endif
+                </div>
+            @endif
             <form method="POST" action="{{ route('admin.reservations.refund', $reservation) }}"
                   onsubmit="return confirm('Enregistrer ce remboursement ? Cette action ajuste le portefeuille du prestataire.');"
                   class="flex flex-wrap items-end gap-3">
@@ -123,7 +134,7 @@
                 <div>
                     <label class="block text-slate-400 text-xs mb-1">Montant à rembourser (XOF)</label>
                     <input type="number" name="amount_xof" min="1" max="{{ (int) $reservation->deposit_amount_xof }}"
-                           value="{{ (int) $reservation->deposit_amount_xof }}"
+                           value="{{ (int) ($reservation->refund_due_xof ?: $reservation->deposit_amount_xof) }}"
                            class="w-40 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                 </div>
                 <div class="flex-1 min-w-[200px]">
@@ -153,6 +164,11 @@
                 <div>
                     <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Document</p>
                     <p class="text-white text-sm font-medium">{{ $reg->labelForDocumentType() }} — {{ $reg->document_number }}</p>
+                    @if($reg->document_expiry_date)<p class="text-slate-500 text-xs mt-0.5">Valide jusqu'au {{ $reg->document_expiry_date->format('d/m/Y') }}</p>@endif
+                </div>
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Nationalité</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->nationality ?: '—' }}</p>
                 </div>
                 <div>
                     <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Envoyée le</p>
@@ -160,10 +176,12 @@
                 </div>
             </div>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ $reg->document_scan_front_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-id-card mr-1"></i>Pièce recto</a>
-                <a href="{{ $reg->document_scan_back_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-id-card mr-1"></i>Pièce verso</a>
-                <a href="{{ $reg->selfie_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-camera-retro mr-1"></i>Selfie</a>
-                <a href="{{ $reg->signature_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-signature mr-1"></i>Signature</a>
+                {{-- Pièces sur disque privé : liens signés valables 30 minutes --}}
+                @foreach(['recto' => ['fa-id-card', 'Pièce recto'], 'verso' => ['fa-id-card', 'Pièce verso'], 'selfie' => ['fa-camera-retro', 'Selfie'], 'signature' => ['fa-signature', 'Signature']] as $kind => [$icon, $label])
+                    @if($url = $reg->fileUrl($kind))
+                        <a href="{{ $url }}" target="_blank" rel="noopener" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas {{ $icon }} mr-1"></i>{{ $label }}</a>
+                    @endif
+                @endforeach
             </div>
         @else
             <p class="text-slate-500 text-sm"><i class="fas fa-circle-info mr-1"></i>Le client n'a pas encore complété sa fiche d'enregistrement.</p>

@@ -13,7 +13,7 @@ class SiteMaintenanceMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Schema::hasTable('site_settings')) {
+        if (! \App\Support\SchemaCache::hasTable('site_settings')) {
             return $next($request);
         }
 

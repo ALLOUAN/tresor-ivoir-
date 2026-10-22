@@ -10,6 +10,19 @@
 @if(session('error'))
     <div class="mb-5 px-4 py-3 bg-rose-900/30 border border-rose-700/40 text-rose-200 text-sm rounded-xl">{{ session('error') }}</div>
 @endif
+@if(isset($provider) && ! $provider->is_verified)
+    <div class="mb-5 px-4 py-3 bg-amber-900/30 border border-amber-700/40 text-amber-100 text-sm rounded-xl flex flex-wrap items-center gap-3">
+        <i class="fas fa-id-card"></i>
+        <span class="flex-1 min-w-[200px]">Votre compte n'est pas encore vérifié : les retraits seront possibles une fois vos justificatifs validés.</span>
+        <a href="{{ route('provider.verification.index') }}" class="font-semibold text-orange-300 hover:text-orange-200">Envoyer mes justificatifs →</a>
+    </div>
+@endif
+
+<div class="flex justify-end mb-3">
+    <a href="{{ route('provider.wallet.export') }}" class="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white border border-slate-700 rounded-lg px-3 py-2">
+        <i class="fas fa-file-csv text-xs"></i> Télécharger le relevé (CSV, année en cours)
+    </a>
+</div>
 
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
     <div class="bg-green-900 border border-slate-800 rounded-xl p-4">

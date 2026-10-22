@@ -1,7 +1,7 @@
 @extends('layouts.visitor-public')
 
-@section('title', 'Mes réservations')
-@section('page-title', 'Mes réservations')
+@section('title', __('Mes réservations'))
+@section('page-title', __('Mes réservations'))
 
 @section('content')
 <div class="max-w-5xl mx-auto">
@@ -11,11 +11,11 @@
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
         @php
             $statCards = [
-                ['key' => null, 'label' => 'Total', 'value' => $stats['total'], 'icon' => 'fa-layer-group', 'bg' => 'bg-slate-700', 'color' => 'text-slate-300'],
-                ['key' => 'upcoming', 'label' => 'À venir', 'value' => $stats['upcoming'], 'icon' => 'fa-clock', 'bg' => 'bg-blue-500/20', 'color' => 'text-blue-300'],
-                ['key' => 'ongoing', 'label' => 'En cours', 'value' => $stats['ongoing'], 'icon' => 'fa-hourglass-half', 'bg' => 'bg-emerald-500/20', 'color' => 'text-emerald-300'],
-                ['key' => 'completed', 'label' => 'Terminées', 'value' => $stats['completed'], 'icon' => 'fa-circle-check', 'bg' => 'bg-orange-500/20', 'color' => 'text-orange-300'],
-                ['key' => 'cancelled', 'label' => 'Annulées', 'value' => $stats['cancelled'], 'icon' => 'fa-circle-xmark', 'bg' => 'bg-rose-500/20', 'color' => 'text-rose-300'],
+                ['key' => null, 'label' => __('Total'), 'value' => $stats['total'], 'icon' => 'fa-layer-group', 'bg' => 'bg-slate-700', 'color' => 'text-slate-300'],
+                ['key' => 'upcoming', 'label' => __('À venir'), 'value' => $stats['upcoming'], 'icon' => 'fa-clock', 'bg' => 'bg-blue-500/20', 'color' => 'text-blue-300'],
+                ['key' => 'ongoing', 'label' => __('En cours'), 'value' => $stats['ongoing'], 'icon' => 'fa-hourglass-half', 'bg' => 'bg-emerald-500/20', 'color' => 'text-emerald-300'],
+                ['key' => 'completed', 'label' => __('Terminées'), 'value' => $stats['completed'], 'icon' => 'fa-circle-check', 'bg' => 'bg-orange-500/20', 'color' => 'text-orange-300'],
+                ['key' => 'cancelled', 'label' => __('Annulées'), 'value' => $stats['cancelled'], 'icon' => 'fa-circle-xmark', 'bg' => 'bg-rose-500/20', 'color' => 'text-rose-300'],
             ];
         @endphp
         @foreach($statCards as $card)
@@ -60,30 +60,24 @@
                     </p>
                     <p class="text-slate-500 text-xs mt-1">
                         {{ $reservation->check_in->format('d/m/Y') }} → {{ $reservation->check_out->format('d/m/Y') }}
-                        · {{ $reservation->nights }} nuit{{ $reservation->nights > 1 ? 's' : '' }}
-                        · {{ $reservation->guests_count }} pers.
+                        · {{ $reservation->nights }} {{ __('nuit') }}{{ $reservation->nights > 1 ? 's' : '' }}
+                        · {{ $reservation->guests_count }} {{ __('pers.') }}
                         · <span class="text-orange-400/80">{{ $reservation->reference }}</span>
                     </p>
                 </div>
                 <div class="shrink-0 flex items-center gap-3">
                     <div class="text-right">
-                        <p class="text-white text-sm font-semibold">{{ number_format((int) $reservation->total_xof, 0, ',', ' ') }} XOF</p>
+                        <p class="text-white text-sm font-semibold">{{ number_format((int) $reservation->total_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                         <p class="text-slate-500 text-[11px] mt-0.5">{{ $reservation->labelForPaymentStatus() }}</p>
                     </div>
                     <a href="{{ route('visitor.reservations.show', $reservation) }}"
                        class="shrink-0 text-xs px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition whitespace-nowrap">
-                        Voir les détails
+                        {{ __('Voir les détails') }}
                     </a>
                 </div>
             </div>
         @empty
-            <div class="px-5 py-14 text-center text-slate-500 text-sm">
-                <i class="fas fa-bed text-slate-700 text-3xl mb-3 block"></i>
-                <p class="mb-3">{{ $statusFilter ? 'Aucune réservation dans cette catégorie.' : "Vous n'avez pas encore de réservation." }}</p>
-                <a href="{{ route('accommodations.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded-lg transition">
-                    <i class="fas fa-magnifying-glass"></i> Trouver un hôtel ou une résidence
-                </a>
-            </div>
+            @include('partials.visitor-empty', ['icon' => 'bed', 'title' => $statusFilter ? __('Aucune réservation dans cette catégorie.') : __("Vous n'avez pas encore de réservation."), 'text' => __('Hôtels et résidences dans tout le pays, à réserver en quelques clics.'), 'cta' => ['url' => route('accommodations.index'), 'label' => __('Trouver un hôtel ou une résidence'), 'icon' => 'magnifier']])
         @endforelse
     </div>
 </div>

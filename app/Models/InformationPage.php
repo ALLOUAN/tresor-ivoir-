@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class InformationPage extends Model
 {
+    use \App\Models\Concerns\HasLocalizedFields;
+
     protected $fillable = [
         'slug',
         'title_fr',

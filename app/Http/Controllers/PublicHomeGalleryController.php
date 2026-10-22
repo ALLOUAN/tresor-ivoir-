@@ -27,10 +27,15 @@ class PublicHomeGalleryController extends Controller
             ]);
         }
 
+        // Tri choisi par le visiteur : récentes (ordre éditorial), les plus aimées, les plus téléchargées.
+        $sort = in_array($request->query('tri'), ['populaires', 'telecharges'], true) ? $request->query('tri') : 'recentes';
         $galleryImages = SiteMediaItem::query()
             ->forPublicHomeGallery()
+            ->when($sort === 'populaires', fn ($q) => $q->orderByDesc('likes_count'))
+            ->when($sort === 'telecharges', fn ($q) => $q->orderByDesc('downloads_count'))
             ->orderedForPublicGallery()
-            ->paginate(self::PER_PAGE);
+            ->paginate(self::PER_PAGE)
+            ->withQueryString();
 
         $likerKey = $this->likes->resolveLikerKey($request);
         $likedMediaIds = $this->likes->likedMediaIds($likerKey, $galleryImages->pluck('id'));
@@ -47,7 +52,13 @@ class PublicHomeGalleryController extends Controller
             ]);
         }
 
-        return view('gallery.public', compact('galleryImages', 'likedMediaIds'));
+        // Mosaïque d'en-tête : images mises en avant d'abord, puis l'ordre éditorial.
+        $highlights = SiteMediaItem::query()->forPublicHomeGallery()
+            ->orderByDesc('is_featured')->orderedForPublicGallery()->limit(3)->get();
+        $totals = SiteMediaItem::query()->forPublicHomeGallery()
+            ->selectRaw('COALESCE(SUM(likes_count), 0) as likes, COALESCE(SUM(downloads_count), 0) as downloads')->first();
+
+        return view('gallery.public', compact('galleryImages', 'likedMediaIds', 'sort', 'highlights', 'totals'));
     }
 
     public function show(string $uuid): View

@@ -64,6 +64,6 @@ class ProviderDebt extends Model
 
     public function labelForStatus(): string
     {
-        return self::STATUS_LABELS[$this->status] ?? $this->status;
+        return __(self::STATUS_LABELS[$this->status] ?? $this->status);
     }
 }

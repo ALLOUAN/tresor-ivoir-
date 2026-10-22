@@ -103,7 +103,7 @@ class AccommodationManagementController extends Controller
         $data['category_ids']  = $request->input('category_ids')
             ? array_map('intval', $request->input('category_ids')) : null;
         $data['amenities']     = $this->content->parseKeyLabel($request, 'amenity_icons', 'amenity_labels');
-        $data['room_types']    = $this->content->parseRoomTypes($request);
+        $data['room_types']    = $this->content->parseRoomTypes($request, $accommodation->room_types);
         $data['booking_links'] = $this->content->parseBookingLinks($request);
 
         unset($data['cover_image_file'], $data['thumbnail_file'], $data['media_files']);
@@ -177,6 +177,7 @@ class AccommodationManagementController extends Controller
             'short_description' => 'nullable|string|max:300',
             'description'       => 'nullable|string',
             'cancellation_policy' => 'nullable|string',
+            'free_cancellation_days' => 'nullable|integer|min:0|max:365',
             'adresse'           => 'nullable|string|max:255',
             'quartier'          => 'nullable|string|max:100',
             'latitude'          => 'nullable|numeric|between:-90,90',

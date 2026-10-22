@@ -21,7 +21,7 @@ class AccommodationController extends Controller
 
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -191,7 +191,9 @@ class AccommodationController extends Controller
 
         $this->validateRoomType($request);
 
-        $updated = $this->content->parseSingleRoomType($request, $room);
+        // Les dates importées par la synchronisation iCal ne viennent pas du formulaire : on les garde.
+        $updated = $this->content->parseSingleRoomType($request, $room)
+            + array_intersect_key((array) $rooms[$index], array_flip(['external_blocks', 'ical_synced_at']));
         $updated = $this->content->uploadSingleRoomPhotos($request, $updated);
 
         $rooms[$index] = $updated;
@@ -308,6 +310,7 @@ class AccommodationController extends Controller
             'short_description' => 'nullable|string|max:300',
             'description' => 'nullable|string',
             'cancellation_policy' => 'nullable|string',
+            'free_cancellation_days' => 'nullable|integer|min:0|max:365',
             'adresse' => 'nullable|string|max:255',
             'quartier' => 'nullable|string|max:100',
             'latitude' => 'nullable|numeric|between:-90,90',
@@ -328,6 +331,22 @@ class AccommodationController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:150',
+            'units' => 'nullable|integer|min:1|max:500',
+            'weekend_price_xof' => 'nullable|integer|min:0',
+            'rate_from' => 'nullable|array|max:20',
+            'rate_from.*' => 'nullable|date',
+            'rate_to.*' => 'nullable|date',
+            'rate_price.*' => 'nullable|integer|min:0',
+            'rate_label.*' => 'nullable|string|max:60',
+            'long_stay_min_nights' => 'nullable|integer|min:2|max:365',
+            'long_stay_percent' => 'nullable|numeric|min:0|max:90',
+            'last_minute_days' => 'nullable|integer|min:1|max:60',
+            'last_minute_percent' => 'nullable|numeric|min:0|max:90',
+            'ical_url' => 'nullable|url|max:500',
+            'closed_from' => 'nullable|array|max:30',
+            'closed_from.*' => 'nullable|date',
+            'closed_to' => 'nullable|array|max:30',
+            'closed_to.*' => 'nullable|date',
             'max_adults' => 'nullable|integer|min:1|max:10',
             'max_children' => 'nullable|integer|min:0|max:10',
             'area_m2' => 'nullable|numeric|min:0',

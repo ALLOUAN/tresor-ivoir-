@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +7,7 @@
     <title>{{ $category->name }} à {{ $city->name }} — {{ $siteBrand['site_name'] ?? 'Trésors d\'Ivoire' }}</title>
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -18,6 +17,8 @@
         html:not(.dark) .site-card { background:#f0ece1 !important; border-color: rgba(0,0,0,.12) !important; box-shadow: 0 8px 20px rgba(0,0,0,.05); }
         /* Image de fond configurable (back-office, par catégorie) du bandeau —
            même modèle que .cultural-hero / .tourist-hero. */
+        /* Hébergements : la carte .ti-place-card porte le cadre ; l'enveloppe .accom-card (module séjour) reste invisible. */
+        html:not(.dark) .accom-card.is-wrap, html:not(.dark) .accom-card.is-wrap:hover { border: 0 !important; background: transparent !important; box-shadow: none !important; }
         .category-hero { position: relative; }
         .category-hero::before {
             content: '';
@@ -43,6 +44,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
     @include('partials.page-background')
@@ -50,96 +52,173 @@
 @include('partials.public-top-nav')
 
 {{-- Hero --}}
-<section class="relative py-20 overflow-hidden {{ $category->hero_image_url ? 'category-hero' : '' }}"
+{{-- Bandeau culturel : trame des toiles de Korhogo + lisière kita + « Le saviez-vous ? » (patrimoine ivoirien, UNESCO) --}}
+@php
+    $heritageFacts = [
+        ['t' => __('Le Zaouli, danse masquée des Gouro du centre-ouest, est inscrit au patrimoine culturel immatériel de l\'UNESCO depuis 2017.'), 'u' => 'https://ich.unesco.org/fr/etat/cote-d-ivoire-CI', 'a' => ['gouro']],
+        ['t' => __('Le Gbofe d\'Afounkaha, musique des trompes traversières des Tagbana, est inscrit au patrimoine immatériel de l\'UNESCO (2008).'), 'u' => 'https://ich.unesco.org/fr/etat/cote-d-ivoire-CI', 'a' => ['senoufo']],
+        ['t' => __('Les pratiques liées au balafon des communautés sénoufo de Côte d\'Ivoire, du Mali et du Burkina Faso sont reconnues par l\'UNESCO (2012).'), 'u' => 'https://ich.unesco.org/fr/etat/cote-d-ivoire-CI', 'a' => ['senoufo']],
+        ['t' => __('La ville historique de Grand-Bassam, première capitale coloniale, est inscrite au patrimoine mondial de l\'UNESCO depuis 2012.'), 'u' => 'https://whc.unesco.org/fr/etatsparties/ci', 'a' => ['lagunaire', 'krou-cote']],
+        ['t' => __('Les mosquées de style soudanais du nord ivoirien (Kong, Kouto, Kaouara…) sont inscrites au patrimoine mondial depuis 2021.'), 'u' => 'https://whc.unesco.org/fr/etatsparties/ci', 'a' => ['mande']],
+        ['t' => __('Le parc national de Taï, l\'une des dernières grandes forêts primaires d\'Afrique de l\'Ouest, est classé au patrimoine mondial depuis 1982.'), 'u' => 'https://whc.unesco.org/fr/etatsparties/ci', 'nature' => true, 'a' => ['krou', 'krou-cote']],
+        ['t' => __('Le parc national de la Comoé, plus grande aire protégée du pays, est inscrit au patrimoine mondial depuis 1983.'), 'u' => 'https://whc.unesco.org/fr/etatsparties/ci', 'nature' => true, 'a' => ['lobi', 'akan']],
+        ['t' => __('La réserve naturelle intégrale du mont Nimba, partagée avec la Guinée, est inscrite au patrimoine mondial depuis 1981.'), 'u' => 'https://whc.unesco.org/fr/etatsparties/ci', 'nature' => true, 'a' => ['dan']],
+    ];
+    // Famille du thème : libellé du bandeau et faits mis en avant en premier.
+    $slug = (string) $category->slug;
+    $family = match (true) {
+        (bool) preg_match('/plage|lagune|parc|reserve|cascade|montagne|lac|cours-eau|nature|foret/', $slug) && ! str_contains($slug, 'loisir') => 'nature',
+        (bool) preg_match('/gastronomie|maquis|cuisine/', $slug) => 'taste',
+        (bool) preg_match('/sport|aventure|nocturne|divertissement|loisir|zoo/', $slug) => 'leisure',
+        default => 'culture',
+    };
+    $cityCulture = \App\Support\IvorianCulture::forCity($city);
+    $familyLabel = ['nature' => __('Nature & paysages'), 'taste' => __('Saveurs & traditions'), 'leisure' => __('Loisirs & découvertes'), 'culture' => __('Culture & traditions')][$family];
+    $heritageFacts = collect($heritageFacts)->sortBy(fn ($f) => in_array($cityCulture['key'], $f['a'] ?? [], true) ? 0 : ($family === 'nature' ? (empty($f['nature']) ? 2 : 1) : (empty($f['nature']) ? 1 : 2)))->values()->all();
+@endphp
+<section class="cg-hero" aria-labelledby="cg-title">
+    @include('partials.ivorian-motifs', ['culture' => $cityCulture['key']])
     @if($category->hero_image_url)
-        style="--category-hero-bg-image: url('{{ $category->hero_image_url }}');"
+        <figure class="cg-banner"><img src="{{ $category->hero_image_url }}" alt="{{ $category->name }}" decoding="async" fetchpriority="high"></figure>
     @endif
->
-    <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-        <div class="inline-block rounded-xl sm:rounded-2xl bg-[#0f2a18] backdrop-blur-md px-4 py-4 sm:px-12 sm:py-10">
-            <nav class="text-[10px] sm:text-xs text-[#94a3b8] mb-2 sm:mb-4">
-                <a href="{{ route('tourist.cities') }}" class="hover:text-[#fb923c] transition">Régions</a>
-                <span class="mx-2 text-[#475569]">/</span>
-                <a href="{{ route('tourist.city', $city->slug) }}" class="hover:text-[#fb923c] transition">{{ $city->name }}</a>
-                <span class="mx-2 text-[#475569]">/</span>
-                <span class="text-[#ffffff]">{{ $category->name }}</span>
-            </nav>
-            <p class="text-[#fb923c] text-[11px] sm:text-sm font-medium uppercase tracking-widest mb-1.5 sm:mb-3">{{ $city->name }}</p>
-            <h1 class="font-serif text-xl sm:text-4xl md:text-5xl font-bold text-[#ffffff] mb-2 sm:mb-4">
-                {{ $category->name }}
-            </h1>
-            <p class="text-[#e5e7eb] text-xs sm:text-xl max-w-2xl mx-auto">
-                @if($category->description)
-                    {{ $category->description }}
-                @else
-                    {{ $sites->count() }} site(s) touristique(s)
-                    @if(isset($accommodations) && $accommodations->count() > 0)
-                        · {{ $accommodations->count() }} hébergement(s)
-                    @endif
+    <div class="cg-hero__in">
+        <nav class="cg-crumb" aria-label="{{ __('Fil d\'Ariane') }}">
+            <a href="{{ route('tourist.cities') }}">{{ __('Régions') }}</a><span aria-hidden="true">/</span>
+            <a href="{{ route('tourist.city', $city->slug) }}">{{ $city->name }}</a><span aria-hidden="true">/</span>
+            <span aria-current="page">{{ $category->name }}</span>
+        </nav>
+        <p class="cg-kicker">{{ $city->name }} · {{ $familyLabel }}</p>
+        <h1 class="cg-title" id="cg-title">{{ $category->name }}</h1>
+        <p class="cg-lead">
+            @if($category->description)
+                {{ $category->description }}
+            @else
+                {{ $sites->count() }} {{ $sites->count() > 1 ? __('sites touristiques') : __('site touristique') }}
+                @if(isset($accommodations) && $accommodations->count() > 0)
+                    · {{ $accommodations->count() }} {{ $accommodations->count() > 1 ? __('hébergements') : __('hébergement') }}
                 @endif
-            </p>
+            @endif
+        </p>
+        <div class="cg-fact" data-cg-facts aria-live="polite">
+            <span class="cg-fact__tag">{{ __('Le saviez-vous ?') }}</span>
+            @foreach($heritageFacts as $f)
+                <p class="cg-fact__item" @if(! $loop->first) hidden @endif>
+                    <span>{{ $f['t'] }}</span>
+                    <a href="{{ $f['u'] }}" target="_blank" rel="noopener noreferrer">{{ __('Source : UNESCO') }}</a>
+                </p>
+            @endforeach
+            <span class="cg-fact__nav">
+                <button type="button" data-cg-prev aria-label="{{ __('Fait précédent') }}">‹</button>
+                <button type="button" data-cg-next aria-label="{{ __('Fait suivant') }}">›</button>
+            </span>
         </div>
+        <p class="cg-credit"><b>{{ $cityCulture['label'] }}</b> · {{ $cityCulture['credit'] }}</p>
     </div>
 </section>
+<style>
+    .cg-hero { position: relative; overflow: hidden; background: #f3ead8; padding: 64px 20px 72px; border-bottom: 1px solid #e3d5bb; }
+    .cg-banner { position: relative; z-index: 1; max-width: 1140px; margin: 0 auto 22px; border-radius: 28px; overflow: hidden; border: 1px solid #e3d5bb; background: #e9e1d2; }
+    .cg-banner img { display: block; width: 100%; height: clamp(150px, 19vw, 270px); object-fit: cover; }
+    @media (max-width: 640px) { .cg-banner { border-radius: 20px; margin-bottom: 14px; } .cg-banner img { height: auto; aspect-ratio: 16 / 9; } }
+    .cg-hero__in { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 30px 40px 26px; border-radius: 32px; background: #f6efe1; border: 1px solid #e3d5bb; text-align: center; }
+    .cg-crumb { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 10px; padding: 8px 16px; border-radius: 999px; background: #fffaf0; border: 1px solid #e3d5bb; font-size: 12.5px; color: #8a7f6b; }
+    .cg-crumb a { color: #9a4308; font-weight: 600; text-decoration: none; }
+    .cg-crumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .cg-crumb [aria-current] { font-weight: 700; color: #1d1a16; }
+    .cg-kicker { margin: 20px 0 0; font-size: 12.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #b9500a; }
+    .cg-title { margin: 10px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(34px, 3.4vw + 18px, 64px); font-weight: 700; line-height: 1.03; letter-spacing: -.015em; color: #1d1a16; }
+    .cg-lead { margin: 14px auto 0; max-width: 660px; font-size: 17px; line-height: 1.65; font-weight: 500; color: #2f261b; }
+    .cg-fact { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; margin: 24px auto 0; max-width: 760px; padding: 12px 12px 12px 14px; border-radius: 20px; background: #fff; border: 1px solid #e3d5bb; text-align: left; }
+    .cg-fact__tag { padding: 6px 11px; border-radius: 999px; background: #1b6b3a; color: #fff; font-size: 11.5px; font-weight: 800; letter-spacing: .04em; white-space: nowrap; }
+    .cg-fact__item { margin: 0; display: flex; flex-direction: column; gap: 3px; font-size: 14px; line-height: 1.5; color: #3a2f22; }
+    .cg-fact__item[hidden] { display: none; }
+    .cg-fact__item a { align-self: flex-start; font-size: 12px; font-weight: 700; color: #9a4308; text-decoration: underline; text-underline-offset: 3px; }
+    .cg-fact__nav { display: flex; gap: 6px; }
+    .cg-fact__nav button { width: 34px; height: 34px; border-radius: 999px; border: 1px solid #e3d5bb; background: #fff; color: #9a4308; font-size: 18px; font-weight: 700; line-height: 1; cursor: pointer; }
+    .cg-fact__nav button:hover { border-color: #b9500a; }
+    .cg-fact__nav button:focus-visible, .cg-crumb a:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+    .cg-credit b { font-style: normal; font-weight: 800; color: #9a4308; }
+    .cg-credit { margin: 14px 0 0; font-size: 11.5px; font-style: italic; color: #6b5f4c; }
+    @media (max-width: 640px) {
+        /* Mobile : une vraie bande de motifs visible au-dessus et au-dessous du panneau de lecture */
+        .cg-hero { padding: 64px 16px 48px; }
+        .cg-hero__in { padding: 12px 12px 10px; border-radius: 18px; }
+        .cg-crumb { font-size: 11px; padding: 5px 10px; gap: 4px 6px; }
+        .cg-kicker { margin-top: 10px; font-size: 10px; letter-spacing: .1em; }
+        .cg-title { margin-top: 4px; font-size: clamp(24px, 6.6vw, 28px); }
+        .cg-lead { margin-top: 6px; font-size: 13px; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .cg-fact { margin-top: 10px; padding: 9px 10px; gap: 6px 8px; border-radius: 14px; }
+        .cg-fact__tag { padding: 4px 9px; font-size: 10.5px; }
+        .cg-credit { margin-top: 8px; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cg-fact { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+        .cg-fact__tag { grid-column: 1; grid-row: 1; justify-self: start; }
+        .cg-fact__nav { grid-column: 2; grid-row: 1; }
+        .cg-fact__item { grid-column: 1 / -1; grid-row: 2; }
+        .cg-fact__nav button { width: 28px; height: 28px; font-size: 15px; }
+        .cg-fact__item { font-size: 12.5px; line-height: 1.4; }
+        .cg-fact__item a { font-size: 11px; }
+    }
+</style>
+<script>
+(function () {
+    const box = document.querySelector('[data-cg-facts]');
+    if (!box) return;
+    const items = [...box.querySelectorAll('.cg-fact__item')];
+    let i = 0, timer = null;
+    const show = n => { i = (n + items.length) % items.length; items.forEach((el, k) => el.hidden = k !== i); };
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const start = () => { if (!reduce) timer = setInterval(() => show(i + 1), 7000); };
+    const stop = () => clearInterval(timer);
+    box.querySelector('[data-cg-prev]').addEventListener('click', () => { stop(); show(i - 1); });
+    box.querySelector('[data-cg-next]').addEventListener('click', () => { stop(); show(i + 1); });
+    box.addEventListener('mouseenter', stop); box.addEventListener('focusin', stop);
+    start();
+})();
+</script>
+
+@include('partials.hero-separator', ['class' => 'mb-8'])
 
 {{-- Sites list --}}
 <section class="max-w-6xl mx-auto px-6 pb-20">
     @if($sites->isEmpty())
     <div class="text-center py-16 text-slate-500 border border-slate-800 rounded-2xl">
         <i class="fas fa-map-pin text-4xl mb-3 block text-slate-700"></i>
-        Aucun site disponible dans cette catégorie pour le moment.
+        {{ __('Aucun site disponible dans cette catégorie pour le moment.') }}
     </div>
     @else
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         @foreach($sites as $site)
-        @php $firstPhoto = $site->media->first(); @endphp
-        <a href="{{ route('tourist.site', $site->slug) }}"
-            class="site-card block bg-[#ffffff] border border-slate-800 rounded-2xl overflow-hidden group">
-            <div class="relative h-44 bg-slate-800">
-                @if($firstPhoto)
-                <img src="{{ $firstPhoto->url }}" alt="{{ $firstPhoto->alt_text ?: $site->name }}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                @elseif($site->thumbnail)
-                <img src="{{ $site->thumbnail }}" alt="{{ $site->name }}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                @else
-                <div class="w-full h-full flex items-center justify-center">
-                    <i class="fas fa-image text-4xl text-slate-700"></i>
-                </div>
-                @endif
-                <div class="absolute inset-0 bg-gradient-to-t from-green-950/50 to-transparent"></div>
-                @if($site->is_featured)
-                <span class="absolute top-3 left-3 px-2 py-0.5 bg-orange-500 text-black text-[10px] font-bold rounded-full">
-                    <i class="fas fa-star mr-0.5"></i>Vedette
-                </span>
-                @endif
-                @if($site->entrance_fee)
-                <span class="absolute top-3 right-3 px-2 py-0.5 bg-green-950/60 text-white text-[10px] rounded-full">
-                    {{ $site->entrance_fee }}
-                </span>
-                @endif
-            </div>
-            <div class="p-4">
-                <h3 class="text-white font-semibold group-hover:text-orange-400 transition line-clamp-1 mb-1">
-                    {{ $site->name }}
-                </h3>
-                @if($site->localite || $site->departement)
-                <p class="text-orange-400/70 text-xs mb-2">
-                    <i class="fas fa-map-marker-alt mr-1"></i>
-                    {{ $site->localite ?? $site->departement }}
-                </p>
-                @endif
-                @if($site->short_description)
-                <p class="text-slate-500 text-xs line-clamp-2 mb-3">{{ $site->short_description }}</p>
-                @endif
-                <div class="flex items-center justify-between text-xs text-slate-600">
-                    <span><i class="fas fa-eye mr-1"></i>{{ number_format($site->views_count) }} vues</span>
-                    @if($site->distance_centre_km)
-                    <span><i class="fas fa-route mr-1"></i>{{ $site->distance_centre_km }} km</span>
-                    @endif
-                </div>
-            </div>
-        </a>
+        @php
+            $sitePhotos = $site->media->pluck('url')->push($site->thumbnail)->filter()->unique()->values();
+            $siteIcon = \Illuminate\Support\Str::after((string) ($category->icon ?: 'fas fa-landmark'), 'fas ');
+            $siteIt = [
+                'name' => $site->name,
+                'url' => route('tourist.site', $site->slug),
+                'image' => $sitePhotos[0] ?? null,
+                'hover_image' => $sitePhotos[1] ?? null,
+                'photo_count' => $sitePhotos->count(),
+                'stars' => null,
+                'amenities' => collect(),
+                'cta' => __('Découvrir'),
+                'provider_id' => null,
+                'reviews' => 0,
+                'response_badge' => null,
+                'free_cancellation' => false,
+                'map_url' => $site->latitude && $site->longitude
+                    ? 'https://www.google.com/maps/dir/?api=1&destination='.$site->latitude.','.$site->longitude
+                    : 'https://www.google.com/maps/search/?api=1&query='.rawurlencode(trim($site->name.' '.$city->name.' Côte d\'Ivoire')),
+                'location' => trim(collect([$site->localite ?? $site->departement, $city->name])->filter()->unique()->implode(' · ')),
+                'badge' => $category->name,
+                'description' => $site->localized('short_description'),
+                'price' => null,
+                'rating' => null,
+                'verified' => false,
+                'icon' => $siteIcon,
+                'sector' => null,
+                'available' => false,
+            ];
+        @endphp
+        @include('partials.home-sector-card', ['it' => $siteIt])
         @endforeach
     </div>
     @endif
@@ -152,12 +231,12 @@
     {{-- Titre section --}}
     <div class="flex items-center gap-3 mb-6">
         <div class="w-1 h-6 rounded-full bg-orange-500 shrink-0"></div>
-        <h2 class="font-serif text-2xl font-bold text-white">Hébergements</h2>
-        <span class="text-slate-500 text-sm">{{ $accommodations->count() }} disponible(s)</span>
+        <h2 class="font-serif text-2xl font-bold text-white">{{ __('Hébergements') }}</h2>
+        <span class="text-slate-500 text-sm">{{ $accommodations->count() }} {{ $accommodations->count() > 1 ? 'disponibles' : 'disponible' }}</span>
         <span id="bk-avail-hint"
               class="hidden ml-auto text-xs text-emerald-400 items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
-            Chambres disponibles affichées
+            {{ __('Chambres disponibles affichées') }}
         </span>
     </div>
 
@@ -166,11 +245,6 @@
     ════════════════════════════════════════════════════════ --}}
     <div class="relative bg-[#ffffff] border border-orange-500/20 rounded-2xl p-5 mb-8 shadow-2xl overflow-hidden">
 
-        {{-- Lueur décorative --}}
-        <div class="absolute inset-0 pointer-events-none">
-            <div class="absolute -top-16 -left-16 w-56 h-56 bg-orange-500/5 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-10 right-0 w-48 h-48 bg-orange-500/4 rounded-full blur-3xl"></div>
-        </div>
 
         <div class="relative">
             {{-- En-tête widget --}}
@@ -179,7 +253,7 @@
                     <div class="w-7 h-7 rounded-lg bg-orange-500/15 flex items-center justify-center">
                         <i class="fas fa-calendar-check text-orange-400 text-xs"></i>
                     </div>
-                    <span class="text-white font-semibold text-sm">Votre séjour</span>
+                    <span class="text-white font-semibold text-sm">{{ __('Votre séjour') }}</span>
                 </div>
                 <div id="bk-summary" class="hidden items-center gap-2">
                     <span id="bk-nights-label"
@@ -197,7 +271,7 @@
                 {{-- Arrivée --}}
                 <div>
                     <label class="block text-[11px] text-slate-500 mb-1.5 flex items-center gap-1">
-                        <i class="fas fa-plane-arrival text-orange-400/60"></i> Arrivée
+                        <i class="fas fa-plane-arrival text-orange-400/60"></i> {{ __('Arrivée') }}
                     </label>
                     <div class="relative">
                         <input type="date" id="bk-checkin"
@@ -210,7 +284,7 @@
                 {{-- Départ --}}
                 <div>
                     <label class="block text-[11px] text-slate-500 mb-1.5 flex items-center gap-1">
-                        <i class="fas fa-plane-departure text-orange-400/60"></i> Départ
+                        <i class="fas fa-plane-departure text-orange-400/60"></i> {{ __('Départ') }}
                     </label>
                     <div class="relative">
                         <input type="date" id="bk-checkout"
@@ -223,7 +297,7 @@
                 {{-- Chambres --}}
                 <div>
                     <label class="block text-[11px] text-slate-500 mb-1.5 flex items-center gap-1">
-                        <i class="fas fa-door-open text-orange-400/60"></i> Chambres
+                        <i class="fas fa-door-open text-orange-400/60"></i> {{ __('Chambres') }}
                     </label>
                     <div class="flex items-center gap-0 bg-green-900 border border-slate-700 rounded-xl overflow-hidden">
                         <button type="button" onclick="bkStep('rooms',-1)"
@@ -242,7 +316,7 @@
                 {{-- Personnes --}}
                 <div>
                     <label class="block text-[11px] text-slate-500 mb-1.5 flex items-center gap-1">
-                        <i class="fas fa-user-group text-orange-400/60"></i> Personnes
+                        <i class="fas fa-user-group text-orange-400/60"></i> {{ __('Personnes') }}
                     </label>
                     <div class="flex items-center gap-0 bg-green-900 border border-slate-700 rounded-xl overflow-hidden">
                         <button type="button" onclick="bkStep('guests',-1)"
@@ -264,7 +338,7 @@
             @if($firstCheckIn)
             <div class="mt-3 flex items-center gap-3 text-[11px] text-slate-600">
                 <i class="fas fa-clock text-[9px]"></i>
-                Check-in généralement à partir de {{ $firstCheckIn }}
+                {{ __('Check-in généralement à partir de') }} {{ $firstCheckIn }}
             </div>
             @endif
         </div>
@@ -273,142 +347,41 @@
     {{-- ════════════════════════════════════════════════════════
          Grille des cartes hébergements
     ════════════════════════════════════════════════════════ --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         @foreach($accommodations as $acc)
         @php
             $photo  = $acc->media->first();
             $imgSrc = $photo?->url ?? $acc->cover_image ?? $acc->thumbnail;
             $links  = $acc->booking_links ?? [];
         @endphp
-        <div class="accom-card flex flex-col bg-[#ffffff] border border-slate-800 hover:border-orange-500/30 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-950/50 group"
+        <div class="accom-card is-wrap flex flex-col gap-2"
              data-acc-id="{{ $acc->id }}"
              data-acc-name="{{ $acc->name }}"
              data-acc-rooms='@json($acc->room_types ?? [])'
              data-acc-links='@json($acc->booking_links ?? [])'
              data-acc-cover="{{ $imgSrc ?? '' }}">
-
-            {{-- Photo --}}
-            <div class="relative h-44 bg-slate-800 shrink-0 overflow-hidden">
-                @if($imgSrc)
-                <img src="{{ $imgSrc }}" alt="{{ $acc->name }}" loading="lazy"
-                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                @else
-                <div class="w-full h-full flex items-center justify-center">
-                    <i class="fas fa-hotel text-3xl text-slate-700"></i>
-                </div>
-                @endif
-                <div class="absolute inset-0 bg-linear-to-t from-green-950/70 via-green-950/10 to-transparent"></div>
-
-                {{-- Badges type + étoiles --}}
-                <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-950/60 backdrop-blur-sm border border-white/10 text-white">
-                        {{ $acc->type_label }}
-                    </span>
-                    @if($acc->stars > 0)
-                    <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/90 text-black">
-                        @for($s=0;$s<$acc->stars;$s++)<i class="fas fa-star text-[7px]"></i>@endfor
-                    </span>
+            @include('partials.home-sector-card', ['it' => \App\Support\HomeSectorShowcase::card($acc, 'hotels')])
+            <div class="acc-stay-summary hidden px-3 py-2 rounded-xl text-xs" style="background:#fdf4ec;color:#9a4308"></div>
+            <div class="acc-rooms-panel hidden"></div>
+            @if(count($links) > 0)
+            <div class="acc-booking-links flex flex-wrap gap-2 px-1">
+                @foreach(array_slice($links, 0, 3) as $bl)
+                <a href="{{ $bl['affiliate_url'] ?? '#' }}"
+                   data-base-url="{{ $bl['affiliate_url'] ?? '#' }}"
+                   data-provider="{{ strtolower($bl['provider_name'] ?? '') }}"
+                   target="_blank" rel="noopener nofollow"
+                   class="bk-link inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition border"
+                   style="{{ ! empty($bl['is_official']) ? 'background:#b9500a;border-color:#b9500a;color:#fff' : 'background:#fff;border-color:#e6dccb;color:#4a443a' }}">
+                    @if(!empty($bl['logo_url']))
+                        <img src="{{ $bl['logo_url'] }}" alt="{{ $bl['provider_name'] }}" class="h-3.5 w-auto object-contain">
+                    @else
+                        <span>{{ $bl['provider_name'] }}</span>
                     @endif
-                </div>
-
-                @if($acc->is_featured)
-                <span class="absolute top-3 right-3 px-2 py-0.5 bg-orange-500 text-black text-[10px] font-bold rounded-full">
-                    <i class="fas fa-star text-[8px] mr-0.5"></i>Vedette
-                </span>
-                @endif
-
-                {{-- Prix dynamique --}}
-                <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-                    @if($acc->starting_price_xof)
-                    <span class="acc-price-display text-[11px] font-semibold text-white bg-green-950/60 backdrop-blur-sm px-2.5 py-1 rounded-full border border-white/10"
-                          data-price-xof="{{ $acc->starting_price_xof }}"
-                          data-price-eur="{{ $acc->starting_price_eur ?? '' }}">
-                        À partir de {{ number_format($acc->starting_price_xof, 0, ',', ' ') }} XOF<span class="opacity-60">/nuit</span>
-                    </span>
-                    @endif
-                    @if($acc->check_in_time)
-                    <span class="text-[10px] text-slate-400/80 bg-green-950/50 px-2 py-0.5 rounded-full border border-white/10">
-                        <i class="fas fa-clock text-[8px] mr-0.5"></i>{{ $acc->check_in_time }}
-                    </span>
-                    @endif
-                </div>
+                    @if(!empty($bl['badge_text']))<span class="opacity-70">· {{ $bl['badge_text'] }}</span>@endif
+                </a>
+                @endforeach
             </div>
-
-            {{-- Contenu --}}
-            <div class="p-4 flex flex-col flex-1">
-
-                {{-- Localisation --}}
-                <div class="flex items-center gap-1 text-slate-500 text-[11px] mb-1.5">
-                    <i class="fas fa-location-dot text-orange-400/50 text-[9px]"></i>
-                    <span>{{ $acc->city?->name }}</span>
-                    @if($acc->quartier)
-                        <span class="text-slate-700 mx-0.5">·</span>
-                        <span>{{ $acc->quartier }}</span>
-                    @endif
-                </div>
-
-                <h3 class="text-white font-semibold group-hover:text-orange-400 transition line-clamp-1 mb-1 leading-tight">
-                    {{ $acc->name }}
-                </h3>
-
-                @if($acc->short_description)
-                <p class="text-slate-500 text-xs line-clamp-2 leading-relaxed mb-3">{{ $acc->short_description }}</p>
-                @endif
-
-                {{-- Commodités --}}
-                @if($acc->amenities)
-                <div class="flex flex-wrap gap-1.5 mb-3">
-                    @foreach(array_slice($acc->amenities, 0, 4) as $am)
-                    <span class="inline-flex items-center gap-1 text-[10px] text-slate-500 bg-slate-800/70 border border-slate-700/50 rounded-md px-1.5 py-0.5">
-                        <i class="{{ $am['icon'] ?? 'fas fa-check' }} text-[7px] text-orange-400/50"></i>
-                        {{ $am['label'] }}
-                    </span>
-                    @endforeach
-                    @if(count($acc->amenities) > 4)
-                    <span class="text-[10px] text-slate-600 self-center">+{{ count($acc->amenities)-4 }}</span>
-                    @endif
-                </div>
-                @endif
-
-                {{-- Espaceur --}}
-                <div class="flex-1"></div>
-
-                {{-- Résumé séjour dynamique --}}
-                <div class="acc-stay-summary hidden mb-3 px-3 py-2 bg-orange-500/10 border border-orange-500/20 rounded-xl text-xs text-orange-300/90">
-                </div>
-
-                {{-- Panneau chambres disponibles (rempli dynamiquement par JS) --}}
-                <div class="acc-rooms-panel hidden"></div>
-
-                {{-- Boutons réservation (masqués quand le panneau chambres est actif) --}}
-                @if(count($links) > 0)
-                <div class="acc-booking-links pt-3 border-t border-slate-800/80 flex flex-wrap gap-2">
-                    @foreach(array_slice($links, 0, 3) as $bl)
-                    <a href="{{ $bl['affiliate_url'] ?? '#' }}"
-                       data-base-url="{{ $bl['affiliate_url'] ?? '#' }}"
-                       data-provider="{{ strtolower($bl['provider_name'] ?? '') }}"
-                       target="_blank" rel="noopener nofollow"
-                       class="bk-link inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition
-                              {{ !empty($bl['is_official'])
-                                 ? 'bg-orange-500/20 border border-orange-500/35 text-orange-300 hover:bg-orange-500/30'
-                                 : 'bg-slate-800 border border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-300' }}">
-                        @if(!empty($bl['logo_url']))
-                            <img src="{{ $bl['logo_url'] }}" alt="{{ $bl['provider_name'] }}" class="h-3.5 w-auto object-contain">
-                        @else
-                            <i class="fas fa-bookmark text-[9px]"></i>
-                            <span>{{ $bl['provider_name'] }}</span>
-                        @endif
-                        @if(!empty($bl['badge_text']))
-                            <span class="opacity-60">· {{ $bl['badge_text'] }}</span>
-                        @endif
-                        @if(!empty($bl['is_official']))
-                            <i class="fas fa-certificate text-[9px] text-orange-400" title="Site officiel"></i>
-                        @endif
-                    </a>
-                    @endforeach
-                </div>
-                @endif
-            </div>
+            @endif
         </div>
         @endforeach
     </div>
@@ -440,7 +413,7 @@
             <div class="absolute inset-0 bg-linear-to-t from-green-950/80 via-green-950/20 to-transparent"></div>
             <div class="absolute bottom-4 left-5 right-14">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold rounded-full mb-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>Disponible
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>{{ __('Disponible') }}
                 </span>
                 <h3 id="rm-name" class="font-serif text-2xl font-bold text-white leading-tight"></h3>
             </div>
@@ -464,7 +437,7 @@
 
                     {{-- Équipements --}}
                     <div id="rm-amenities-section">
-                        <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-2.5">Équipements</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-2.5">{{ __('Équipements') }}</p>
                         <div id="rm-amenities" class="flex flex-wrap gap-2"></div>
                     </div>
                 </div>
@@ -479,7 +452,7 @@
                         </div>
                         <a id="rm-book-btn" href="#" target="_blank" rel="noopener nofollow"
                            class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 hover:bg-orange-400 text-black font-bold rounded-xl transition text-sm">
-                            <i class="fas fa-calendar-check"></i>Réserver cette chambre
+                            <i class="fas fa-calendar-check"></i>{{ __('Réserver cette chambre') }}
                         </a>
                     </div>
                 </div>
@@ -504,7 +477,7 @@
         {{-- En-tête --}}
         <div class="flex items-center justify-between gap-3 px-6 py-5 border-b border-slate-800 shrink-0">
             <div class="min-w-0">
-                <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">Chambres disponibles</p>
+                <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">{{ __('Chambres disponibles') }}</p>
                 <h3 id="rlm-acc-name" class="text-white font-semibold text-lg truncate"></h3>
             </div>
             <button onclick="closeRoomsListModal()"
@@ -534,7 +507,7 @@
         {{-- En-tête --}}
         <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-800 shrink-0">
             <div class="min-w-0">
-                <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Demande de réservation</p>
+                <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">{{ __('Demande de réservation') }}</p>
                 <h3 id="rsv-title" class="text-white font-semibold text-sm truncate"></h3>
             </div>
             <button onclick="closeReservationModal()"
@@ -552,34 +525,34 @@
             {{-- Formulaire --}}
             <form id="rsv-form" class="space-y-3">
                 <div>
-                    <label class="block text-[11px] text-slate-500 mb-1">Nom complet</label>
+                    <label class="block text-[11px] text-slate-500 mb-1">{{ __('Nom complet') }}</label>
                     <input type="text" name="full_name" required maxlength="255"
                            class="w-full bg-green-900 border border-slate-700 focus:border-orange-500/50 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none transition">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[11px] text-slate-500 mb-1">E-mail</label>
+                        <label class="block text-[11px] text-slate-500 mb-1">{{ __('E-mail') }}</label>
                         <input type="email" name="email" required maxlength="255"
                                class="w-full bg-green-900 border border-slate-700 focus:border-orange-500/50 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-[11px] text-slate-500 mb-1">Téléphone</label>
+                        <label class="block text-[11px] text-slate-500 mb-1">{{ __('Téléphone') }}</label>
                         <input type="tel" name="phone" maxlength="50"
                                class="w-full bg-green-900 border border-slate-700 focus:border-orange-500/50 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none transition">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] text-slate-500 mb-1">Message (optionnel)</label>
+                    <label class="block text-[11px] text-slate-500 mb-1">{{ __('Message (optionnel)') }}</label>
                     <textarea name="message" rows="3" maxlength="2000"
                               class="w-full bg-green-900 border border-slate-700 focus:border-orange-500/50 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none transition resize-none"
-                              placeholder="Précisions sur votre demande..."></textarea>
+                              placeholder="{{ __('Précisions sur votre demande...') }}"></textarea>
                 </div>
 
                 <div id="rsv-error" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/25 rounded-lg px-3 py-2"></div>
 
                 <button type="submit" id="rsv-submit-btn"
                         class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 hover:bg-orange-400 text-black font-bold rounded-xl transition text-sm">
-                    <i class="fas fa-paper-plane"></i>Envoyer la demande
+                    <i class="fas fa-paper-plane"></i>{{ __('Envoyer la demande') }}
                 </button>
             </form>
 
@@ -588,7 +561,7 @@
                 <div class="w-14 h-14 mx-auto rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mb-3">
                     <i class="fas fa-check text-emerald-400 text-xl"></i>
                 </div>
-                <p class="text-white font-semibold text-sm mb-1">Demande envoyée</p>
+                <p class="text-white font-semibold text-sm mb-1">{{ __('Demande envoyée') }}</p>
                 <p id="rsv-success-msg" class="text-slate-400 text-xs"></p>
             </div>
         </div>
@@ -715,8 +688,8 @@
         const stayEl   = document.getElementById('rm-stay-info');
 
         if (ppn) {
-            ppnEl.innerHTML    = fmt(ppn) + ' <span class="text-sm font-normal text-slate-500">XOF / nuit</span>';
-            totEl.textContent  = totalXof ? 'Total : ' + fmt(totalXof) + ' XOF' : '';
+            ppnEl.innerHTML    = fmt(ppn) + ' <span class="text-sm font-normal text-slate-500">FCFA / nuit</span>';
+            totEl.textContent  = totalXof ? 'Total : ' + fmt(totalXof) + ' FCFA' : '';
             stayEl.textContent = nights > 0
                 ? nights + ' nuit' + (nights > 1 ? 's' : '') + '  ·  '
                   + bkRooms + ' chambre' + (bkRooms > 1 ? 's' : '') + '  ·  '
@@ -777,7 +750,7 @@
             '<i class="fas fa-calendar-check mr-1.5"></i>' + fmtDate(ci) + ' → ' + fmtDate(co)
             + '&nbsp;&nbsp;·&nbsp;&nbsp;' + nights + ' nuit' + (nights > 1 ? 's' : '')
             + '&nbsp;&nbsp;·&nbsp;&nbsp;' + rooms + ' ch. · ' + guests + ' pers.'
-            + (total ? '<br><span class="text-white font-semibold">' + fmt(total) + ' XOF</span> estimé' : '');
+            + (total ? '<br><span class="text-white font-semibold">' + fmt(total) + ' FCFA</span> estimé' : '');
 
         const form = document.getElementById('rsv-form');
         form.reset();
@@ -841,15 +814,15 @@
                 if (!result.ok) {
                     const msg = result.data && result.data.errors
                         ? Object.values(result.data.errors).flat().join(' ')
-                        : (result.data && result.data.message) || 'Une erreur est survenue. Veuillez réessayer.';
+                        : (result.data && result.data.message) || {{ \Illuminate\Support\Js::from(__('Une erreur est survenue. Veuillez réessayer.')) }};
                     throw new Error(msg);
                 }
                 form.classList.add('hidden');
-                document.getElementById('rsv-success-msg').textContent = result.data.message || 'Votre demande a bien été envoyée.';
+                document.getElementById('rsv-success-msg').textContent = result.data.message || {{ \Illuminate\Support\Js::from(__('Votre demande a bien été envoyée.')) }};
                 document.getElementById('rsv-success').classList.remove('hidden');
             })
             .catch(function (err) {
-                errorEl.textContent = err.message || 'Une erreur est survenue. Veuillez réessayer.';
+                errorEl.textContent = err.message || {{ \Illuminate\Support\Js::from(__('Une erreur est survenue. Veuillez réessayer.')) }};
                 errorEl.classList.remove('hidden');
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i>Envoyer la demande';
@@ -905,12 +878,12 @@
             panel.innerHTML =
                 '<div class="mt-3 pt-3 border-t border-slate-800/80 text-center text-xs py-3">'
                 + '<span class="text-orange-600/70"><i class="fas fa-exclamation-circle mr-1"></i>'
-                + 'Aucune chambre pour ' + gPR + ' adulte' + (gPR > 1 ? 's' : '') + '/chambre.</span><br>'
+                + {{ \Illuminate\Support\Js::from(__('Aucune chambre pour ')) }} + gPR + ' adulte' + (gPR > 1 ? 's' : '') + '/chambre.</span><br>'
                 + '<span class="text-slate-600 text-[10px]">Ajustez le nombre de personnes ou de chambres.</span></div>';
             return;
         }
 
-        // Lien officiel ou premier lien disponible pour le bouton "Réserver"
+        // Lien officiel ou premier lien disponible pour le bouton {{ \Illuminate\Support\Js::from(__('Réserver')) }}
         const bkLink = links.find(l => l.is_official) || links[0] || null;
         const accId   = card.dataset.accId || '';
         const accName = card.dataset.accName || '';
@@ -963,8 +936,8 @@
                         : '')
                 +     (ppn
                           ? '<div class="mb-3">'
-                            + '<div class="text-white text-lg font-bold leading-tight">' + fmt(ppn) + '<span class="text-xs font-normal text-slate-500"> XOF/nuit</span></div>'
-                            + (totalXof ? '<div class="text-orange-400/80 text-xs leading-tight">' + fmt(totalXof) + ' XOF total</div>' : '')
+                            + '<div class="text-white text-lg font-bold leading-tight">' + fmt(ppn) + '<span class="text-xs font-normal text-slate-500"> FCFA/nuit</span></div>'
+                            + (totalXof ? '<div class="text-orange-400/80 text-xs leading-tight">' + fmt(totalXof) + ' FCFA total</div>' : '')
                             + '</div>'
                           : '')
                 +     '<div class="mt-auto space-y-2">'
@@ -1036,10 +1009,10 @@
                 const ppn = parseInt(priceSpan.dataset.priceXof || 0);
                 if (nights > 0 && ppn) {
                     const total = ppn * nights * bkRooms;
-                    priceSpan.innerHTML = fmt(total) + ' XOF'
+                    priceSpan.innerHTML = fmt(total) + ' FCFA'
                         + '<span class="opacity-60"> · ' + nights + ' nuit' + (nights > 1 ? 's' : '') + '</span>';
                 } else if (ppn) {
-                    priceSpan.innerHTML = 'À partir de ' + fmt(ppn) + ' XOF'
+                    priceSpan.innerHTML = 'À partir de ' + fmt(ppn) + ' FCFA'
                         + '<span class="opacity-60">/nuit</span>';
                 }
             }

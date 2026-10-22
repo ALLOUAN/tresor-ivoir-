@@ -115,7 +115,7 @@
             data-link-url="{{ $bubble->link_url }}"
             data-link-label="{{ $bubble->link_label }}"
             data-images='{{ $imagesJson }}'
-            aria-label="{{ $bubble->title ?: 'Découvrir' }}">
+            aria-label="{{ $bubble->title ?: __('Découvrir') }}">
             @if($images->count() > 1)
                 <span class="hp-bubble-count">{{ $images->count() }}</span>
             @endif
@@ -132,15 +132,15 @@
 <div id="hp-bubble-modal" role="dialog" aria-modal="true">
     <div class="hp-modal-backdrop" data-hp-close></div>
     <div class="hp-modal-panel">
-        <button type="button" class="hp-modal-close" data-hp-close aria-label="Fermer">
+        <button type="button" class="hp-modal-close" data-hp-close aria-label="{{ __('Fermer') }}">
             <i class="fas fa-xmark"></i>
         </button>
         <div class="hp-modal-image-wrap">
             <img id="hp-modal-img" src="" alt="">
-            <button type="button" class="hp-modal-nav prev" id="hp-modal-prev" aria-label="Précédent">
+            <button type="button" class="hp-modal-nav prev" id="hp-modal-prev" aria-label="{{ __('Précédent') }}">
                 <i class="fas fa-chevron-left"></i>
             </button>
-            <button type="button" class="hp-modal-nav next" id="hp-modal-next" aria-label="Suivant">
+            <button type="button" class="hp-modal-nav next" id="hp-modal-next" aria-label="{{ __('Suivant') }}">
                 <i class="fas fa-chevron-right"></i>
             </button>
             <div class="hp-modal-dots" id="hp-modal-dots"></div>
@@ -149,7 +149,7 @@
             <h3 class="hp-modal-title" id="hp-modal-title"></h3>
             <p class="hp-modal-desc" id="hp-modal-desc"></p>
             <a href="#" id="hp-modal-link" class="hp-modal-link" target="_blank" rel="noopener">
-                <span id="hp-modal-link-label">En savoir plus</span>
+                <span id="hp-modal-link-label">{{ __('En savoir plus') }}</span>
                 <i class="fas fa-arrow-up-right-from-square text-xs"></i>
             </a>
         </div>

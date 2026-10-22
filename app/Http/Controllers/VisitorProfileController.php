@@ -74,7 +74,7 @@ class VisitorProfileController extends Controller
             \App\Services\AccountSecurityEventLogger::log($user, \App\Models\AccountSecurityEvent::TYPE_PHONE_CHANGED, $request);
         }
 
-        return back()->with('success', 'Profil mis à jour avec succès.');
+        return back()->with('success', __('Profil mis à jour avec succès.'));
     }
 
     // ── HELPERS UPLOAD (mêmes garde-fous que LoginBackgroundImageController) ──
@@ -124,6 +124,7 @@ class VisitorProfileController extends Controller
         if ($size <= 0 || $size > ($maxKb * 1024)) {
             abort(422, "Le fichier {$field} dépasse la taille autorisée.");
         }
+        \App\Support\ImageUploadGuard::assert($file, $field);
     }
 
     /**

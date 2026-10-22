@@ -16,7 +16,7 @@ class ProviderAnalyticsController extends Controller
         $period = $request->integer('period', 30);
         $period = in_array($period, [7, 30, 90]) ? $period : 30;
 
-        $provider = Provider::where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
 
         $totals      = $this->emptyTotals();
         $prevTotals  = $this->emptyTotals();

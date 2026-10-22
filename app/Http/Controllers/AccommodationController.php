@@ -73,11 +73,14 @@ class AccommodationController extends Controller
                 if ($rooms->isEmpty()) {
                     return true;
                 }
-                return $rooms->contains(fn ($room) => ! Reservation::hasConflict(
+                return $rooms->contains(fn ($room) => ! Reservation::roomClosedDuring($room, $checkIn, $checkOut) && ! Reservation::hasConflict(
                     $a->id,
                     $room['name'] ?? '',
                     $checkIn,
-                    $checkOut
+                    $checkOut,
+                    null,
+                    $room['id'] ?? null,
+                    Reservation::roomUnits($room)
                 ));
             })->values();
         }

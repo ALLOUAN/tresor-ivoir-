@@ -81,6 +81,35 @@ class TouristVisitBookingFlowTest extends TestCase
         );
     }
 
+    public function test_child_and_resident_rates_are_applied_by_the_server(): void
+    {
+        $experience = $this->makeExperience(['visit_child_price_xof' => 2000, 'visit_resident_price_xof' => 3000]);
+        $user = User::factory()->create();
+        $this->actingAs($user)->get(route('tourist-experience.show', $experience->slug))->assertSee('dont enfants (−12 ans)');
+        Wallet::forUser($user)->update(['balance_available_xof' => 50000]);
+        $book = fn (array $o) => $this->actingAs($user)->postJson(route('tourist-visit.pay', $experience->slug), $o + [
+            'visit_type' => 'individual', 'participants_count' => 4, 'full_name' => 'Famille Koné', 'email' => 'k@example.ci', 'payment_method' => 'wallet',
+        ]);
+
+        $book(['children_count' => 3, 'residents_count' => 2])->assertStatus(422);
+        $book(['children_count' => 2, 'residents_count' => 1])->assertOk();
+
+        // 1 adulte 5 000 + 2 enfants × 2 000 + 1 résident 3 000.
+        $visit = TouristVisit::firstOrFail();
+        $this->assertSame([12000, 2, 1], [$visit->amount_total_xof, $visit->children_count, $visit->residents_count]);
+    }
+
+    public function test_children_pay_full_price_when_the_site_has_no_child_rate(): void
+    {
+        $experience = $this->makeExperience();
+        $user = User::factory()->create();
+        Wallet::forUser($user)->update(['balance_available_xof' => 50000]);
+        $this->actingAs($user)->postJson(route('tourist-visit.pay', $experience->slug), [
+            'visit_type' => 'individual', 'participants_count' => 2, 'children_count' => 2, 'full_name' => 'X', 'email' => 'x@example.ci', 'payment_method' => 'wallet',
+        ])->assertOk();
+        $this->assertSame([10000, 0], [TouristVisit::firstOrFail()->amount_total_xof, TouristVisit::firstOrFail()->children_count]);
+    }
+
     public function test_free_visit_is_confirmed_without_any_wallet_transaction(): void
     {
         $experience = $this->makeExperience(['visit_individual_price_xof' => null]);

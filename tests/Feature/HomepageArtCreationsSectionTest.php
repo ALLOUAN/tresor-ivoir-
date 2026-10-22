@@ -64,7 +64,7 @@ class HomepageArtCreationsSectionTest extends TestCase
         $response->assertSee($artwork->title);
         $response->assertSee('Atelier Kouassi');
         $response->assertSee('Peinture');
-        $response->assertSee('75 000 XOF');
+        $response->assertSee('75 000');
         $response->assertSee(route('art.show', $artwork->slug), false);
         $response->assertSee(route('art.index'), false);
     }

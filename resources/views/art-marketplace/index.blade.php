@@ -1,24 +1,23 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Art &amp; Créations — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ __('Art & Créations') }} — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
         .font-serif { font-family: 'Playfair Display', serif; }
         .hero-art {
             background:
-                radial-gradient(120% 100% at 15% 0%, rgba(242,121,15,0.16), transparent 55%),
-                linear-gradient(150deg, #241e14 0%, #14130f 65%);
+                linear-gradient(transparent, transparent),
+                linear-gradient(#1c1912, #1c1912);
         }
         .art-card {
             border: 1px solid rgba(0,0,0,0.07);
-            background: linear-gradient(180deg, #ffffff, #fbf8f2);
+            background: #fdfcf9;
             box-shadow: 0 10px 28px rgba(20,18,12,0.06);
             transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
         }
@@ -34,19 +33,22 @@
         }
         .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="text-[#1c1915]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
     <section class="hero-art relative py-20 overflow-hidden">
+        @include('partials.ivorian-motifs', ['culture' => 'art'])
         <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-            <div class="inline-block rounded-2xl bg-green-950/70 backdrop-blur-md px-6 py-8 sm:px-12 sm:py-10">
-                <p class="text-orange-300 text-sm font-medium uppercase tracking-widest mb-3">Art &amp; Créations</p>
-                <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">Découvrez et achetez des œuvres uniques</h1>
-                <p class="text-gray-200 text-xl max-w-2xl mx-auto">Peintures, sculptures, photographies et artisanat d'exception, directement auprès des artistes ivoiriens.</p>
+            <div class="ti-hero-card inline-block rounded-2xl px-6 py-8 sm:px-12 sm:py-10">
+                <p class="text-orange-300 text-sm font-medium uppercase tracking-widest mb-3">{{ __('Art & Créations') }}</p>
+                <h1 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">{{ __('Découvrez et achetez des œuvres uniques') }}</h1>
+                <p class="text-gray-200 text-xl max-w-2xl mx-auto">{{ __('Peintures, sculptures, photographies et artisanat d\'exception, directement auprès des artistes ivoiriens.') }}</p>
             </div>
         </div>
+        @include('partials.hero-separator', ['class' => 'relative z-10 mt-10'])
     </section>
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 -mt-8 relative z-10 pb-16">
@@ -54,74 +56,54 @@
         <form method="GET" action="{{ route('art.index') }}" class="filter-card rounded-2xl p-5 mb-8" style="border:1px solid rgba(0,0,0,.08); background:#fff; box-shadow:0 14px 34px rgba(20,18,12,.08);">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 <div class="lg:col-span-2">
-                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">Recherche</label>
-                    <input type="text" name="q" value="{{ $search }}" placeholder="Titre de l'œuvre..." class="w-full bg-[#f6f3ed] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
+                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">{{ __('Recherche') }}</label>
+                    <input type="text" name="q" value="{{ $search }}" placeholder="{{ __('Titre de l\'œuvre...') }}" class="w-full bg-[#f6f3ed] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">Catégorie</label>
+                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">{{ __('Catégorie') }}</label>
                     <select name="categorie" class="w-full bg-[#f6f3ed] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
-                        <option value="">Toutes catégories</option>
+                        <option value="">{{ __('Toutes catégories') }}</option>
                         @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}" @selected((string) $categoryId === (string) $cat->id)>{{ $cat->name_fr }}</option>
+                            <option value="{{ $cat->id }}" @selected((string) $categoryId === (string) $cat->id)>{{ $cat->localized('name') }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">Budget</label>
+                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">{{ __('Budget') }}</label>
                     <select name="budget" class="w-full bg-[#f6f3ed] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
-                        <option value="">Tous budgets</option>
-                        <option value="low" @selected($budget==='low')>Moins de 50 000 XOF</option>
-                        <option value="mid" @selected($budget==='mid')>50 000 – 200 000 XOF</option>
-                        <option value="high" @selected($budget==='high')>200 000 – 500 000 XOF</option>
-                        <option value="luxury" @selected($budget==='luxury')>Plus de 500 000 XOF</option>
+                        <option value="">{{ __('Tous budgets') }}</option>
+                        <option value="low" @selected($budget==='low')>{{ __('Moins de 50 000 FCFA') }}</option>
+                        <option value="mid" @selected($budget==='mid')>{{ __('50 000 – 200 000 FCFA') }}</option>
+                        <option value="high" @selected($budget==='high')>{{ __('200 000 – 500 000 FCFA') }}</option>
+                        <option value="luxury" @selected($budget==='luxury')>{{ __('Plus de 500 000 FCFA') }}</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">Trier par</label>
+                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">{{ __('Trier par') }}</label>
                     <select name="tri" class="w-full bg-[#f6f3ed] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
-                        <option value="pertinence" @selected($sort==='pertinence')>Nouveautés</option>
-                        <option value="prix_asc" @selected($sort==='prix_asc')>Prix croissant</option>
-                        <option value="prix_desc" @selected($sort==='prix_desc')>Prix décroissant</option>
-                        <option value="populaire" @selected($sort==='populaire')>Popularité</option>
+                        <option value="pertinence" @selected($sort==='pertinence')>{{ __('Nouveautés') }}</option>
+                        <option value="prix_asc" @selected($sort==='prix_asc')>{{ __('Prix croissant') }}</option>
+                        <option value="prix_desc" @selected($sort==='prix_desc')>{{ __('Prix décroissant') }}</option>
+                        <option value="populaire" @selected($sort==='populaire')>{{ __('Popularité') }}</option>
                     </select>
                 </div>
             </div>
             <div class="flex items-center gap-2 mt-3">
                 <button type="submit" class="btn-primary btn-shine px-5 py-2.5 rounded-lg font-bold text-sm">
-                    <i class="fas fa-magnifying-glass mr-1.5"></i> Filtrer
+                    <i class="fas fa-magnifying-glass mr-1.5"></i> {{ __('Filtrer') }}
                 </button>
-                <a href="{{ route('art.index') }}" class="px-4 py-2.5 rounded-lg border border-black/10 text-sm font-semibold hover:bg-black/5 transition">Réinitialiser</a>
+                <a href="{{ route('art.index') }}" class="px-4 py-2.5 rounded-lg border border-black/10 text-sm font-semibold hover:bg-black/5 transition">{{ __('Réinitialiser') }}</a>
             </div>
         </form>
 
-        <p class="text-[#8a7f6b] text-sm mb-4">{{ $artworks->total() }} œuvre(s) trouvée(s)</p>
+        <p class="text-[#8a7f6b] text-sm mb-4">{{ $artworks->total() }} {{ $artworks->total() > 1 ? __('œuvres trouvées') : __('œuvre trouvée') }}</p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($artworks as $artwork)
-                <a href="{{ route('art.show', $artwork->slug) }}" class="art-card rounded-2xl overflow-hidden block">
-                    <div class="art-cover">
-                        @if(!empty($artwork->images[0]))
-                            <img src="{{ $artwork->images[0] }}" class="w-full h-full object-cover" alt="{{ $artwork->title }}">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-white/30"><i class="fas fa-image text-3xl"></i></div>
-                        @endif
-                        @if($artwork->status === \App\Models\Artwork::STATUS_SOLD)
-                            <span class="absolute top-3 right-3 bg-slate-900/80 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">Vendue</span>
-                        @endif
-                    </div>
-                    <div class="p-4">
-                        <p class="text-[11px] uppercase tracking-wide text-orange-600 font-semibold mb-1">{{ $artwork->category?->name_fr }}</p>
-                        <h3 class="font-serif text-lg font-bold truncate">{{ $artwork->title }}</h3>
-                        @if($artwork->provider)
-                        <a href="{{ route('providers.show', $artwork->provider->slug) }}" onclick="event.stopPropagation()"
-                           class="text-[#8a7f6b] text-sm truncate hover:text-orange-600 hover:underline transition block">{{ $artwork->provider->name }}</a>
-                        @endif
-                        <p class="text-[#1c1915] font-bold mt-2">{{ number_format((int) $artwork->price_xof, 0, ',', ' ') }} XOF</p>
-                    </div>
-                </a>
+                @include('partials.artwork-card', ['artwork' => $artwork, 'headingTag' => 'h2'])
             @empty
                 <div class="col-span-full text-center py-16 text-[#8a7f6b]">
-                    Aucune œuvre disponible pour le moment.
+                    {{ __('Aucune œuvre disponible pour le moment.') }}
                 </div>
             @endforelse
         </div>

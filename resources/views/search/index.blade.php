@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="scroll-smooth overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recherche{{ $q ? ' : ' . $q : '' }} — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ __('Recherche') }}{{ $q ? ' : ' . $q : '' }} — {{ $siteBrand['site_name'] }}</title>
     <meta name="robots" content="noindex">
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -44,7 +43,6 @@
         }
         /* Image de fond configurable (back-office) de la page de recherche. */
         .search-bg {
-            background-image: linear-gradient(rgba(233,229,217,.55), rgba(233,229,217,.55));
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -53,6 +51,7 @@
             background-image: var(--search-bg-image, none);
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="bg-[#ffffff] text-white min-h-screen">
     @include('partials.page-background')
@@ -74,13 +73,13 @@
         <form action="{{ route('search') }}" method="GET" class="search-form-shell flex gap-2">
             <div class="relative flex-1">
                 <i class="fas fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
-                <input type="text" name="q" value="{{ $q }}" placeholder="Rechercher articles, événements, prestataires…"
+                <input type="text" name="q" value="{{ $q }}" placeholder="{{ __('Rechercher articles, événements, prestataires…') }}"
                        autofocus
                        class="search-input w-full bg-[#ffffff] border border-white/10 focus:border-orange-500/50 rounded-xl pl-10 pr-4 py-3.5 text-sm text-white placeholder-gray-500 outline-none transition">
             </div>
             <button type="submit"
                     class="bg-orange-500 hover:bg-orange-600 text-black font-bold px-6 py-3.5 rounded-xl text-sm transition">
-                Rechercher
+                {{ __('Rechercher') }}
             </button>
         </form>
     </div>
@@ -90,20 +89,27 @@
         {{-- Results header --}}
         <p class="text-gray-500 text-sm mb-8">
             @if($total > 0)
-                <span class="text-white font-semibold">{{ $total }}</span> résultat{{ $total > 1 ? 's' : '' }} pour
+                <span class="text-white font-semibold">{{ $total }}</span> {{ __('résultat') }}{{ $total > 1 ? 's' : '' }} {{ __('pour') }}
                 <span class="text-orange-400 font-semibold">« {{ $q }} »</span>
             @else
-                Aucun résultat pour <span class="text-orange-400 font-semibold">« {{ $q }} »</span>.
+                {{ __('Aucun résultat pour') }} <span class="text-orange-400 font-semibold">« {{ $q }} »</span>.
             @endif
         </p>
 
-        @if($total === 0)
+        {{-- Recherche intelligente (module IA 3) : s'ajoute à la recherche classique --}}
+        @include('partials.ai-smart-results', ['q' => $q, 'keywordTotal' => $total])
+
+        @php
+            $__smartHas = \App\Services\Ai\Recommendations::enabled()
+                && rescue(fn () => ! empty(app(\App\Services\Ai\SmartSearch::class)->search($q, 8)['results']), false, false);
+        @endphp
+        @if($total === 0 && ! $__smartHas)
         <div class="text-center py-16">
             <i class="fas fa-search text-4xl text-gray-700 mb-4"></i>
-            <p class="text-gray-500">Essayez un autre mot-clé ou vérifiez l'orthographe.</p>
+            <p class="text-gray-500">{{ __('Essayez un autre mot-clé ou vérifiez l\'orthographe.') }}</p>
             <div class="flex flex-wrap justify-center gap-2 mt-6 text-xs text-gray-600">
-                <span>Suggestions :</span>
-                @foreach(['Abidjan', 'Culture', 'Tourisme', 'Festival', 'Restaurant'] as $s)
+                <span>{{ __('Suggestions :') }}</span>
+                @foreach(['Abidjan', __('Culture'), __('Tourisme'), __('Festival'), __('Restaurant')] as $s)
                 <a href="{{ route('search', ['q' => $s]) }}" class="text-orange-500/70 hover:text-orange-400 transition">{{ $s }}</a>
                 @endforeach
             </div>
@@ -115,7 +121,7 @@
         <section class="mb-12">
             <div class="flex items-center gap-3 mb-5">
                 <i class="fas fa-newspaper text-orange-400 text-sm"></i>
-                <h2 class="font-serif text-lg font-bold">Articles <span class="text-gray-600 font-normal text-sm ml-1">{{ $articles->count() }}</span></h2>
+                <h2 class="font-serif text-lg font-bold">{{ __('Articles') }} <span class="text-gray-600 font-normal text-sm ml-1">{{ $articles->count() }}</span></h2>
                 <div class="flex-1 h-px bg-white/5"></div>
             </div>
             <div class="space-y-3">
@@ -131,13 +137,13 @@
                     @endif
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-orange-400/70 text-[10px] uppercase tracking-wider">{{ $article->category->name_fr ?? '—' }}</span>
+                            <span class="text-orange-400/70 text-[10px] uppercase tracking-wider">{{ $article->category->localized('name') ?? '—' }}</span>
                             <span class="text-gray-700 text-[10px]">·</span>
                             <span class="text-gray-600 text-[10px]">{{ $article->published_at?->format('d M Y') }}</span>
                         </div>
-                        <h3 class="font-serif font-semibold text-sm leading-snug group-hover:text-orange-300 transition line-clamp-1">{{ $article->title_fr }}</h3>
+                        <h3 class="font-serif font-semibold text-sm leading-snug group-hover:text-orange-300 transition line-clamp-1">{{ $article->localized('title') }}</h3>
                         @if($article->excerpt_fr)
-                        <p class="text-gray-500 text-xs mt-1 line-clamp-1">{{ $article->excerpt_fr }}</p>
+                        <p class="text-gray-500 text-xs mt-1 line-clamp-1">{{ $article->localized('excerpt') }}</p>
                         @endif
                     </div>
                 </a>
@@ -146,7 +152,7 @@
             @if($articles->count() >= 8)
             <a href="{{ route('articles.index', ['q' => $q]) }}"
                class="inline-flex items-center gap-1.5 mt-4 text-orange-400 hover:text-orange-300 text-sm transition">
-                Voir tous les articles <i class="fas fa-arrow-right text-xs"></i>
+                {{ __('Voir tous les articles') }} <i class="fas fa-arrow-right text-xs"></i>
             </a>
             @endif
         </section>
@@ -157,7 +163,7 @@
         <section class="mb-12">
             <div class="flex items-center gap-3 mb-5">
                 <i class="fas fa-calendar-days text-orange-400 text-sm"></i>
-                <h2 class="font-serif text-lg font-bold">Événements <span class="text-gray-600 font-normal text-sm ml-1">{{ $events->count() }}</span></h2>
+                <h2 class="font-serif text-lg font-bold">{{ __('Événements') }} <span class="text-gray-600 font-normal text-sm ml-1">{{ $events->count() }}</span></h2>
                 <div class="flex-1 h-px bg-white/5"></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -169,8 +175,8 @@
                         <span class="text-orange-400/60 text-[10px] uppercase">{{ $event->starts_at?->format('M') }}</span>
                     </div>
                     <div class="min-w-0">
-                        <h3 class="font-semibold text-sm group-hover:text-orange-300 transition line-clamp-1">{{ $event->title_fr }}</h3>
-                        <p class="text-gray-500 text-xs mt-0.5">{{ $event->city ?? '—' }} · {{ $event->category->name_fr ?? '—' }}</p>
+                        <h3 class="font-semibold text-sm group-hover:text-orange-300 transition line-clamp-1">{{ $event->localized('title') }}</h3>
+                        <p class="text-gray-500 text-xs mt-0.5">{{ $event->city ?? '—' }} · {{ $event->category->localized('name') ?? '—' }}</p>
                     </div>
                 </a>
                 @endforeach
@@ -178,7 +184,7 @@
             @if($events->count() >= 6)
             <a href="{{ route('events.index', ['q' => $q]) }}"
                class="inline-flex items-center gap-1.5 mt-4 text-orange-400 hover:text-orange-300 text-sm transition">
-                Voir tous les événements <i class="fas fa-arrow-right text-xs"></i>
+                {{ __('Voir tous les événements') }} <i class="fas fa-arrow-right text-xs"></i>
             </a>
             @endif
         </section>
@@ -189,7 +195,7 @@
         <section class="mb-12">
             <div class="flex items-center gap-3 mb-5">
                 <i class="fas fa-store text-orange-400 text-sm"></i>
-                <h2 class="font-serif text-lg font-bold">Prestataires <span class="text-gray-600 font-normal text-sm ml-1">{{ $providers->count() }}</span></h2>
+                <h2 class="font-serif text-lg font-bold">{{ __('Prestataires') }} <span class="text-gray-600 font-normal text-sm ml-1">{{ $providers->count() }}</span></h2>
                 <div class="flex-1 h-px bg-white/5"></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -205,7 +211,7 @@
                     @endif
                     <div class="min-w-0">
                         <h3 class="font-semibold text-sm group-hover:text-orange-300 transition line-clamp-1">{{ $provider->name }}</h3>
-                        <p class="text-gray-500 text-xs mt-0.5">{{ $provider->city ?? '—' }} · {{ $provider->category->name_fr ?? '—' }}</p>
+                        <p class="text-gray-500 text-xs mt-0.5">{{ $provider->city ?? '—' }} · {{ $provider->category->localized('name') ?? '—' }}</p>
                     </div>
                 </a>
                 @endforeach
@@ -213,28 +219,23 @@
             @if($providers->count() >= 6)
             <a href="{{ route('providers.index', ['q' => $q]) }}"
                class="inline-flex items-center gap-1.5 mt-4 text-orange-400 hover:text-orange-300 text-sm transition">
-                Voir tous les prestataires <i class="fas fa-arrow-right text-xs"></i>
+                {{ __('Voir tous les prestataires') }} <i class="fas fa-arrow-right text-xs"></i>
             </a>
             @endif
         </section>
         @endif
 
     @elseif($q && mb_strlen($q) < 2)
-        <p class="text-gray-500 text-sm">Saisissez au moins 2 caractères pour lancer la recherche.</p>
+        <p class="text-gray-500 text-sm">{{ __('Saisissez au moins 2 caractères pour lancer la recherche.') }}</p>
     @else
         <div class="text-center py-16">
             <i class="fas fa-magnifying-glass text-4xl text-gray-700 mb-4"></i>
-            <p class="text-gray-500">Recherchez parmi les articles, événements et prestataires.</p>
+            <p class="text-gray-500">{{ __('Recherchez parmi les articles, événements et prestataires.') }}</p>
         </div>
     @endif
 
 </main>
 
-<footer class="border-t border-white/5 bg-[#ffffff] py-6 mt-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center text-xs text-gray-700">
-        &copy; {{ date('Y') }} {{ $siteBrand['site_name'] }}
-    </div>
-</footer>
 @include('partials.homepage-footer')
 @include('partials.image-protection')
 </body>

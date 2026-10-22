@@ -21,42 +21,15 @@
             font-weight: 700;
             letter-spacing: 0.02em;
         }
-        .conversation-type-urgent {
-            border-left-color: rgba(244, 63, 94, 0.9);
-            background: linear-gradient(90deg, rgba(190, 18, 60, 0.12), transparent 35%);
-        }
-        .conversation-type-urgent .conversation-type-pill {
-            background: rgba(244, 63, 94, 0.2);
-            color: rgb(251 113 133);
-            border: 1px solid rgba(244, 63, 94, 0.35);
-        }
-        .conversation-type-unread {
-            border-left-color: rgba(242, 121, 15, 0.95);
-            background: linear-gradient(90deg, rgba(242, 121, 15, 0.13), transparent 35%);
-        }
-        .conversation-type-unread .conversation-type-pill {
-            background: rgba(242, 121, 15, 0.2);
-            color: rgb(251 191 36);
-            border: 1px solid rgba(242, 121, 15, 0.4);
-        }
-        .conversation-type-closed {
-            border-left-color: rgba(100, 116, 139, 0.9);
-            background: linear-gradient(90deg, rgba(100, 116, 139, 0.12), transparent 35%);
-        }
-        .conversation-type-closed .conversation-type-pill {
-            background: rgba(100, 116, 139, 0.22);
-            color: rgb(203 213 225);
-            border: 1px solid rgba(148, 163, 184, 0.32);
-        }
-        .conversation-type-standard {
-            border-left-color: rgba(16, 185, 129, 0.9);
-            background: linear-gradient(90deg, rgba(16, 185, 129, 0.11), transparent 35%);
-        }
-        .conversation-type-standard .conversation-type-pill {
-            background: rgba(16, 185, 129, 0.2);
-            color: rgb(110 231 183);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-        }
+        /* États des conversations : aplats teintés (pas de dégradé), pastilles à texte foncé lisible */
+        .conversation-type-urgent { border-left-color: #c8324f; background: #fdebed; }
+        .conversation-type-urgent .conversation-type-pill { background: #fbd3da; color: #a4223a; border: 1px solid #f0b4c0; }
+        .conversation-type-unread { border-left-color: #ef7c2b; background: #fff1df; }
+        .conversation-type-unread .conversation-type-pill { background: #fde5c8; color: #8f3d06; border: 1px solid #f2b27a; }
+        .conversation-type-closed { border-left-color: #8d8654; background: #f2efe3; }
+        .conversation-type-closed .conversation-type-pill { background: #e6e1cc; color: #5d5733; border: 1px solid #d6cfaa; }
+        .conversation-type-standard { border-left-color: #497318; background: #e7f1dd; }
+        .conversation-type-standard .conversation-type-pill { background: #dcebd0; color: #264d15; border: 1px solid #b7d3a4; }
     </style>
     <div class="px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold">Conversations prestataires</h2>
@@ -207,6 +180,8 @@
         if (!rows().length) return;
 
         async function refreshConversations() {
+            // Onglet en arrière-plan : pas de requête (économise les quotas de l'hébergement).
+            if (document.hidden) return;
             try {
                 const res = await fetch(url + (params.toString() ? '?' + params.toString() : ''), {
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -262,6 +237,7 @@
         }
 
         setInterval(refreshConversations, 15000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshConversations(); });
     })();
 </script>
 @endpush

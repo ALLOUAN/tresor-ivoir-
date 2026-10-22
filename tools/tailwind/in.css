@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aucun dégradé sur le site : les classes bg-gradient-to-* deviennent un aplat, moyenne des couleurs « from » et « to »
+   (un voile sombre qui s'estompe devient un voile uniforme plus léger ; un bandeau de couleur garde sa teinte). */
+[class*="bg-gradient-to-"] {
+    background-image: none !important;
+    background-color: var(--tw-gradient-from);
+    background-color: color-mix(in srgb, var(--tw-gradient-from) 55%, var(--tw-gradient-to));
+}

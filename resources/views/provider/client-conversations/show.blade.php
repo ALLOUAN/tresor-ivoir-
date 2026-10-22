@@ -95,7 +95,16 @@
         @else
         <form method="POST" action="{{ route('provider.client-conversations.reply', $conversation) }}" enctype="multipart/form-data" class="space-y-3">
             @csrf
-            <textarea name="message" rows="3" required
+            <div class="flex flex-wrap items-center gap-1.5" id="quick-replies"
+                 data-client="{{ $conversation->client?->first_name ?: $conversation->client?->full_name }}" data-provider="{{ $provider->name }}">
+                <span class="text-[11px] text-slate-500 mr-1"><i class="fas fa-bolt text-orange-400"></i> Réponses rapides</span>
+                @foreach($quickReplies as $qr)
+                    <button type="button" data-text="{{ $qr }}" title="{{ $qr }}"
+                            class="quick-reply max-w-[16rem] truncate text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-full px-3 py-1">{{ \Illuminate\Support\Str::limit($qr, 40) }}</button>
+                @endforeach
+                <button type="button" onclick="document.getElementById('quick-replies-edit').classList.toggle('hidden')" class="text-[11px] text-orange-300 hover:text-orange-200 ml-1">Modifier</button>
+            </div>
+            <textarea name="message" id="reply-message" rows="3" required
                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
                       placeholder="Écrire un message au client..."></textarea>
             <div>
@@ -109,6 +118,25 @@
                 </button>
             </div>
         </form>
+        <form method="POST" action="{{ route('provider.client-conversations.quick-replies') }}" id="quick-replies-edit" class="hidden mt-4 pt-4 border-t border-slate-800 space-y-2">
+            @csrf
+            <label class="block text-xs text-slate-400">Une réponse par ligne. <code>{client}</code> et <code>{etablissement}</code> sont remplacés automatiquement. Laissez vide pour retrouver les suggestions.</label>
+            <textarea name="quick_replies" rows="6" maxlength="5000" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">{{ implode("\n", $provider->quick_replies ?? []) }}</textarea>
+            <div class="flex justify-end"><button class="bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Enregistrer</button></div>
+        </form>
+        <script>
+            (() => {
+                const box = document.getElementById('quick-replies');
+                const area = document.getElementById('reply-message');
+                box?.addEventListener('click', (e) => {
+                    const b = e.target.closest('.quick-reply');
+                    if (!b) return;
+                    const text = b.dataset.text.replaceAll('{client}', box.dataset.client || '').replaceAll('{etablissement}', box.dataset.provider || '').replace(/\s+,/g, ',');
+                    area.value = area.value.trim() ? area.value.trimEnd() + '\n' + text : text;
+                    area.focus();
+                });
+            })();
+        </script>
         @endif
     </div>
 </div>

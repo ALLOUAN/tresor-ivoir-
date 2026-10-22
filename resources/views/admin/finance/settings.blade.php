@@ -54,6 +54,32 @@
                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
                     <p class="text-slate-500 text-[11px] mt-1">0 = crédit prestataire disponible immédiatement au paiement de l'acompte.</p>
                 </div>
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Commission sur les tables, activités, circuits et offres groupées payés en ligne (%)</label>
+                    <input name="booking_commission_percent" type="number" step="0.01" min="0" max="100" value="{{ $settings['booking_commission_percent'] ?? '' }}" placeholder="{{ \App\Services\BookingPaymentService::DEFAULT_COMMISSION_PERCENT }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Base de calcul de la commission</label>
+                    <select name="reservation_commission_base" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                        <option value="deposit" @selected(($settings['reservation_commission_base'] ?? 'deposit') === 'deposit')>Sur l'acompte (actuel)</option>
+                        <option value="total" @selected(($settings['reservation_commission_base'] ?? 'deposit') === 'total')>Sur le total du séjour (plafonnée à l'acompte)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Annulation gratuite par défaut (jours avant l'arrivée)</label>
+                    <input name="free_cancellation_days" type="number" min="0" max="365" value="{{ $settings['free_cancellation_days'] ?? '' }}" placeholder="{{ \App\Models\Reservation::DEFAULT_FREE_CANCELLATION_DAYS }}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                    <p class="text-slate-500 text-[11px] mt-1">Appliqué aux hébergements qui n'ont pas fixé leur propre délai.</p>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-xs mb-1">Expiration d'une demande sans réponse (heures)</label>
+                    <input name="reservation_request_expiry_hours" type="number" min="1" max="720" value="{{ $settings['reservation_request_expiry_hours'] ?? '' }}" placeholder="48" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="flex items-start gap-2 text-slate-300 text-sm">
+                        <input type="checkbox" name="provider_free_access" value="1" class="mt-1" @checked(($settings['provider_free_access'] ?? '0') === '1')>
+                        <span>Inscription gratuite des prestataires : accès à l'espace prestataire sans abonnement (la plateforme se rémunère uniquement par la commission).</span>
+                    </label>
+                </div>
             </div>
         </div>
 

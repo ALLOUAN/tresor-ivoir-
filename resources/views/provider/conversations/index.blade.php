@@ -22,7 +22,7 @@
     }
     .conversation-type-urgent {
         border-left-color: rgba(244, 63, 94, 0.9);
-        background: linear-gradient(90deg, rgba(190, 18, 60, 0.12), transparent 35%);
+        background: rgba(190, 18, 60, 0.06);
     }
     .conversation-type-urgent .conversation-type-pill {
         background: rgba(244, 63, 94, 0.2);
@@ -31,7 +31,7 @@
     }
     .conversation-type-unread {
         border-left-color: rgba(242, 121, 15, 0.95);
-        background: linear-gradient(90deg, rgba(242, 121, 15, 0.13), transparent 35%);
+        background: rgba(242, 121, 15, 0.07);
     }
     .conversation-type-unread .conversation-type-pill {
         background: rgba(242, 121, 15, 0.2);
@@ -40,7 +40,7 @@
     }
     .conversation-type-closed {
         border-left-color: rgba(100, 116, 139, 0.9);
-        background: linear-gradient(90deg, rgba(100, 116, 139, 0.12), transparent 35%);
+        background: rgba(100, 116, 139, 0.06);
     }
     .conversation-type-closed .conversation-type-pill {
         background: rgba(100, 116, 139, 0.22);
@@ -49,7 +49,7 @@
     }
     .conversation-type-standard {
         border-left-color: rgba(16, 185, 129, 0.9);
-        background: linear-gradient(90deg, rgba(16, 185, 129, 0.11), transparent 35%);
+        background: rgba(16, 185, 129, 0.06);
     }
     .conversation-type-standard .conversation-type-pill {
         background: rgba(16, 185, 129, 0.2);
@@ -162,6 +162,8 @@
         if (!rows().length) return;
 
         async function refreshConversations() {
+            // Onglet en arrière-plan : pas de requête (économise les quotas de l'hébergement).
+            if (document.hidden) return;
             try {
                 const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
                 if (!res.ok) return;
@@ -216,6 +218,7 @@
         }
 
         setInterval(refreshConversations, 15000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshConversations(); });
     })();
 </script>
 @endpush

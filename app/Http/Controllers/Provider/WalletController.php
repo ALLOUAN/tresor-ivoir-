@@ -18,6 +18,38 @@ use Illuminate\View\View;
 
 class WalletController extends Controller
 {
+    /** Relevé CSV des mouvements du portefeuille (comptabilité de l'établissement). */
+    public function export(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $provider = $this->provider();
+        $wallet = Wallet::forProvider($provider);
+        $from = $request->date('du') ?? now()->startOfYear();
+        $to = $request->date('au') ?? now();
+
+        $rows = WalletTransaction::where('wallet_id', $wallet->id)
+            ->with('reservation')
+            ->whereBetween('created_at', [$from->copy()->startOfDay(), $to->copy()->endOfDay()])
+            ->orderBy('created_at')
+            ->get();
+
+        return response()->streamDownload(function () use ($rows) {
+            $out = fopen('php://output', 'w');
+            fwrite($out, "﻿"); // BOM : accents corrects dans Excel
+            fputcsv($out, ['Date', 'Type', 'Description', 'Réservation', 'Montant (XOF)', 'Statut'], ';');
+            foreach ($rows as $t) {
+                fputcsv($out, [
+                    $t->created_at?->format('d/m/Y H:i'),
+                    $t->labelForType(),
+                    $t->description,
+                    $t->reservation?->reference,
+                    (int) $t->amount_xof,
+                    $t->status,
+                ], ';');
+            }
+            fclose($out);
+        }, 'releve-portefeuille-'.$from->format('Y-m-d').'-'.$to->format('Y-m-d').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
     public function index(): View
     {
         $provider = $this->provider();
@@ -117,6 +149,6 @@ class WalletController extends Controller
 
     private function provider(): Provider
     {
-        return Provider::where('user_id', Auth::id())->firstOrFail();
+        return Provider::forUserQuery(Auth::id())->firstOrFail();
     }
 }

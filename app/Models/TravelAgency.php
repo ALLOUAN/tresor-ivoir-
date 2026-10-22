@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class TravelAgency extends Model
 {
-    use SoftDeletes;
+    use \App\Models\Concerns\HasLocalizedFields, SoftDeletes;
 
     protected $fillable = [
         'city_id',

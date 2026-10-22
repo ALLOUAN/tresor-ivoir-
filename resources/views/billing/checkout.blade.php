@@ -5,7 +5,7 @@
 @extends($checkoutLayout)
 
 @section('title', 'Paiement — ' . strtoupper($plan->code))
-@section('page-title', 'Finaliser le paiement')
+@section('page-title', __('Finaliser le paiement'))
 
 @section('content')
 @if($isPublicCheckout)
@@ -64,7 +64,7 @@
         }
         .checkout-badge-premium {
             border-color: rgba(217,178,76,0.35);
-            background: linear-gradient(135deg, rgba(217,178,76,0.14), rgba(240,138,36,0.09));
+            background: rgba(229, 158, 56, 0.12);
             color: #1c1915;
         }
         .checkout-total {
@@ -78,33 +78,33 @@
                 <div class="checkout-glass rounded-2xl p-5 sm:p-6 space-y-6">
                     <div class="flex items-center gap-2 text-white font-bold text-lg">
                         <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500/15 text-gold-400"><i class="fas fa-users"></i></span>
-                        Informations de facturation
+                        {{ __('Informations de facturation') }}
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">Cycle de facturation</label>
+                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Cycle de facturation') }}</label>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cycle-option cursor-pointer">
                                 <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
                                 <div class="cycle-card rounded-xl border-2 border-[#e8862a] bg-[#e8862a]/10 p-3 text-center transition">
-                                    <p class="text-sm font-bold text-white">Mensuel</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-[#a54a0b]">{{ number_format($monthlyPrice, 0, ',', ' ') }} FCFA</p>
-                                    <p class="text-xs text-gray-500">/ mois</p>
+                                    <p class="text-sm font-bold text-white">{{ __('Mensuel') }}</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-[#a54a0b]">{{ number_format($monthlyPrice, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-xs text-gray-500">{{ __('/ mois') }}</p>
                                 </div>
                             </label>
                             <label class="cycle-option cursor-pointer">
                                 <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
                                 <div class="cycle-card rounded-xl border border-white/10 bg-dark-900 p-3 text-center transition hover:border-[#f2790f]/40">
-                                    <p class="text-sm font-bold text-white">Annuel</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-[#a54a0b]">{{ number_format($yearlyPrice, 0, ',', ' ') }} FCFA</p>
-                                    <p class="text-xs text-gray-500">/ an</p>
+                                    <p class="text-sm font-bold text-white">{{ __('Annuel') }}</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-[#a54a0b]">{{ number_format($yearlyPrice, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-xs text-gray-500">{{ __('/ an') }}</p>
                                 </div>
                             </label>
                         </div>
                     </div>
 
                     <div>
-                        <label class="mb-2 block text-sm font-semibold text-gray-200">Canal de paiement</label>
+                        <label class="mb-2 block text-sm font-semibold text-gray-200">{{ __('Canal de paiement') }}</label>
                         <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
                             @foreach($channels as $ch)
                                 <label class="channel-option cursor-pointer">
@@ -126,46 +126,46 @@
                     <div class="space-y-3">
                         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <div>
-                                <label class="mb-1.5 block text-sm font-semibold text-gray-200">Prénom <span class="text-red-400">*</span></label>
-                                <input type="text" id="customer_name" value="{{ e($u->first_name) }}" placeholder="Prénom"
+                                <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Prénom') }} <span class="text-red-400">*</span></label>
+                                <input type="text" id="customer_name" value="{{ e($u->first_name) }}" placeholder="{{ __('Prénom') }}"
                                        class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#2c8da6]/60 focus:outline-none">
                             </div>
                             <div>
-                                <label class="mb-1.5 block text-sm font-semibold text-gray-200">Nom <span class="text-red-400">*</span></label>
-                                <input type="text" id="customer_surname" value="{{ e($u->last_name) }}" placeholder="Nom"
+                                <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Nom') }} <span class="text-red-400">*</span></label>
+                                <input type="text" id="customer_surname" value="{{ e($u->last_name) }}" placeholder="{{ __('Nom') }}"
                                        class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#2c8da6]/60 focus:outline-none">
                             </div>
                         </div>
                         <div>
-                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">Email <span class="text-red-400">*</span></label>
+                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Email') }} <span class="text-red-400">*</span></label>
                             <input type="email" id="customer_email" value="{{ e($u->email) }}" readonly
                                    class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-gray-300">
                         </div>
                         <div>
-                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">Téléphone Mobile Money</label>
+                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Téléphone Mobile Money') }}</label>
                             <div class="flex">
                                 <span class="inline-flex shrink-0 items-center gap-1.5 rounded-l-xl border border-r-0 border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-gray-300">🇨🇮 +225</span>
                                 <input type="tel" id="customer_phone" value="{{ old('billing_phone', $u->phone ? preg_replace('/^\+225/', '', $u->phone) : '') }}" placeholder="07 08 75 85 00"
                                        class="checkout-input min-w-0 flex-1 rounded-r-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#2c8da6]/60 focus:outline-none">
                             </div>
-                            <p class="mt-1 text-xs text-gray-500">Format : 0707267572 ou 07 07 26 75 72</p>
+                            <p class="mt-1 text-xs text-gray-500">{{ __('Format : 0707267572 ou 07 07 26 75 72') }}</p>
                         </div>
                     </div>
 
                     <div>
                         <label class="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-200">
                             <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#e8862a]/15 text-[#a54a0b]"><i class="fas fa-wallet"></i></span>
-                            Moyen de paiement
+                            {{ __('Moyen de paiement') }}
                         </label>
-                        <p class="mb-2 text-xs text-gray-500">Sélectionnez le canal utilisé pour le paiement en ligne.</p>
+                        <p class="mb-2 text-xs text-gray-500">{{ __('Sélectionnez le canal utilisé pour le paiement en ligne.') }}</p>
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">Code promo <span class="font-normal text-gray-500">(facultatif)</span></label>
+                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Code promo') }} <span class="font-normal text-gray-500">{{ __('(facultatif)') }}</span></label>
                         <div class="flex gap-2">
-                            <input type="text" id="promo-input" placeholder="EX : IVOIRE20"
+                            <input type="text" id="promo-input" placeholder="{{ __('EX : IVOIRE20') }}"
                                    class="checkout-input flex-1 rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm uppercase tracking-wider text-white placeholder:normal-case placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
-                            <button type="button" id="promo-btn" class="rounded-xl bg-[#2f7a3f]/20 px-4 py-2.5 text-sm font-medium text-emerald-200 transition hover:bg-[#2f7a3f]/30">Appliquer</button>
+                            <button type="button" id="promo-btn" class="rounded-xl bg-[#2f7a3f]/20 px-4 py-2.5 text-sm font-medium text-emerald-200 transition hover:bg-[#2f7a3f]/30">{{ __('Appliquer') }}</button>
                         </div>
                         <p id="promo-message" class="mt-1.5 hidden text-xs"></p>
                     </div>
@@ -173,8 +173,8 @@
                     <label class="flex cursor-pointer items-start gap-3 select-none">
                         <input type="checkbox" id="cgu-check" class="mt-1 h-4 w-4 shrink-0 rounded border-white/20 bg-dark-900 text-[#2f7a3f] focus:ring-[#2f7a3f]/50">
                         <span class="text-sm leading-relaxed text-gray-400">
-                            J'accepte les <a href="#" class="font-medium text-[#a54a0b] underline hover:text-[#a3450a]">conditions générales</a>
-                            et la <a href="#" class="font-medium text-[#a54a0b] underline hover:text-[#a3450a]">politique de confidentialité</a>.
+                            {{ __('J\'accepte les') }} <a href="#" class="font-medium text-[#a54a0b] underline hover:text-[#a3450a]">{{ __('conditions générales') }}</a>
+                            {{ __('et la') }} <a href="#" class="font-medium text-[#a54a0b] underline hover:text-[#a3450a]">{{ __('politique de confidentialité') }}</a>.
                         </span>
                     </label>
 
@@ -183,13 +183,13 @@
                     <button type="button" id="pay-btn"
                             class="checkout-submit flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50">
                         <i class="fas fa-lock text-xs"></i>
-                        <span id="pay-btn-label">Payer via CinetPay</span>
+                        <span id="pay-btn-label">{{ __('Payer via CinetPay') }}</span>
                     </button>
                 </div>
             @else
                 <div class="rounded-lg border border-orange-500/35 bg-orange-500/10 px-4 py-3 text-sm text-orange-100">
                     <i class="fas fa-triangle-exclamation mr-2"></i>
-                    La passerelle CinetPay n'est pas encore configurée. Utilisez le mode de simulation ci-dessous pour tester le flux de paiement.
+                    {{ __('La passerelle CinetPay n\'est pas encore configurée. Utilisez le mode de simulation ci-dessous pour tester le flux de paiement.') }}
                 </div>
 
                 <form method="POST" action="{{ route('subscriptions.process-offline', $plan) }}" class="checkout-glass space-y-6 rounded-2xl p-5 sm:p-6">
@@ -198,46 +198,46 @@
 
                     <div class="flex items-center gap-2 text-white font-bold text-lg">
                         <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500/15 text-gold-400"><i class="fas fa-users"></i></span>
-                        Informations de facturation
+                        {{ __('Informations de facturation') }}
                     </div>
 
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div>
-                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">Prénom <span class="text-red-400">*</span></label>
+                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Prénom') }} <span class="text-red-400">*</span></label>
                             <input type="text" name="first_name" required maxlength="100" value="{{ old('first_name', $u->first_name) }}"
                                    class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
                         </div>
                         <div>
-                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">Nom <span class="text-red-400">*</span></label>
+                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Nom') }} <span class="text-red-400">*</span></label>
                             <input type="text" name="last_name" required maxlength="100" value="{{ old('last_name', $u->last_name) }}"
                                    class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
                         </div>
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">Email</label>
+                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Email') }}</label>
                         <input type="email" readonly value="{{ e($u->email) }}"
                                class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-gray-300">
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">Téléphone Mobile Money</label>
+                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Téléphone Mobile Money') }}</label>
                         <div class="flex">
                             <span class="inline-flex shrink-0 items-center gap-1.5 rounded-l-xl border border-r-0 border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-gray-300">🇨🇮 +225</span>
                             <input type="tel" name="billing_phone" value="{{ old('billing_phone', $u->phone ? preg_replace('/^\+225/', '', $u->phone) : '') }}" placeholder="07 08 75 85 00"
                                    class="checkout-input min-w-0 flex-1 rounded-r-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
                         </div>
-                        <p class="mt-1 text-xs text-gray-500">Format : 0707267572 ou 07 07 26 75 72</p>
+                        <p class="mt-1 text-xs text-gray-500">{{ __('Format : 0707267572 ou 07 07 26 75 72') }}</p>
                     </div>
 
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div>
-                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">Adresse</label>
+                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Adresse') }}</label>
                             <input type="text" name="billing_address" maxlength="200" value="{{ old('billing_address', $provider->address) }}"
                                    class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
                         </div>
                         <div>
-                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">Ville</label>
+                            <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Ville') }}</label>
                             <input type="text" name="billing_city" maxlength="100" value="{{ old('billing_city', $provider->city) }}"
                                    class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
                         </div>
@@ -245,58 +245,58 @@
 
                     <div class="flex items-center gap-2 border-t border-white/10 pt-5 text-white font-bold text-lg">
                         <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500/15 text-gold-400"><i class="fas fa-wallet"></i></span>
-                        Moyen de paiement
+                        {{ __('Moyen de paiement') }}
                     </div>
 
                     <div class="rounded-xl border border-gold-500/35 bg-gold-500/10 p-4">
-                        <p class="mb-2 text-sm font-bold text-white">Mobile Money</p>
-                        <p class="mb-3 text-xs text-gray-400">Orange Money CI, MTN MoMo, Moov, Wave</p>
-                        <label class="sr-only" for="public-method-select">Opérateur / moyen</label>
+                        <p class="mb-2 text-sm font-bold text-white">{{ __('Mobile Money') }}</p>
+                        <p class="mb-3 text-xs text-gray-400">{{ __('Orange Money CI, MTN MoMo, Moov, Wave') }}</p>
+                        <label class="sr-only" for="public-method-select">{{ __('Opérateur / moyen') }}</label>
                         <select id="public-method-select" name="method" class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white focus:border-gold-500/50 focus:outline-none">
-                            <option value="orange_money">Orange Money</option>
-                            <option value="mtn_momo">MTN MoMo</option>
-                            <option value="wave">Wave</option>
-                            <option value="moov_money">Moov Money</option>
-                            <option value="card">Carte bancaire</option>
+                            <option value="orange_money">{{ __('Orange Money') }}</option>
+                            <option value="mtn_momo">{{ __('MTN MoMo') }}</option>
+                            <option value="wave">{{ __('Wave') }}</option>
+                            <option value="moov_money">{{ __('Moov Money') }}</option>
+                            <option value="card">{{ __('Carte bancaire') }}</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">Référence / numéro de paiement <span class="text-red-400">*</span></label>
+                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Référence / numéro de paiement') }} <span class="text-red-400">*</span></label>
                         <input type="text" name="payment_reference" required maxlength="120" value="{{ old('payment_reference') }}"
-                               placeholder="Ex. : ID transaction Orange Money, Wave…"
+                               placeholder="{{ __('Ex. : ID transaction Orange Money, Wave…') }}"
                                class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
                         @error('payment_reference')<p class="mt-1 text-xs text-red-400">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
-                        <label class="mb-2 block text-sm font-semibold text-gray-200">Cycle de facturation</label>
+                        <label class="mb-2 block text-sm font-semibold text-gray-200">{{ __('Cycle de facturation') }}</label>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cycle-option cursor-pointer">
                                 <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
                                 <div class="cycle-card rounded-xl border-2 border-gold-500 bg-gold-500/10 p-3 text-center">
-                                    <p class="text-sm font-bold text-white">Mensuel</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-gold-300">{{ number_format($monthlyPrice, 0, ',', ' ') }} FCFA</p>
-                                    <p class="text-xs text-gray-500">/ mois</p>
+                                    <p class="text-sm font-bold text-white">{{ __('Mensuel') }}</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-gold-300">{{ number_format($monthlyPrice, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-xs text-gray-500">{{ __('/ mois') }}</p>
                                 </div>
                             </label>
                             <label class="cycle-option cursor-pointer">
                                 <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
                                 <div class="cycle-card rounded-xl border border-white/10 bg-dark-900 p-3 text-center hover:border-gold-500/40">
-                                    <p class="text-sm font-bold text-white">Annuel</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-gold-300">{{ number_format($yearlyPrice, 0, ',', ' ') }} FCFA</p>
-                                    <p class="text-xs text-gray-500">/ an</p>
+                                    <p class="text-sm font-bold text-white">{{ __('Annuel') }}</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-gold-300">{{ number_format($yearlyPrice, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-xs text-gray-500">{{ __('/ an') }}</p>
                                 </div>
                             </label>
                         </div>
                     </div>
 
                     <div>
-                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">Code promo <span class="font-normal text-gray-500">(facultatif)</span></label>
+                        <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Code promo') }} <span class="font-normal text-gray-500">{{ __('(facultatif)') }}</span></label>
                         <div class="flex gap-2">
-                            <input type="text" id="promo-input" name="promo_code" value="{{ old('promo_code') }}" placeholder="EX : IVOIRE20"
+                            <input type="text" id="promo-input" name="promo_code" value="{{ old('promo_code') }}" placeholder="{{ __('EX : IVOIRE20') }}"
                                    class="checkout-input flex-1 rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm uppercase tracking-wider text-white placeholder:normal-case placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
-                            <button type="button" id="promo-btn" class="rounded-xl bg-gold-500/15 px-4 py-2.5 text-sm font-medium text-gold-200 transition hover:bg-gold-500/25">Appliquer</button>
+                            <button type="button" id="promo-btn" class="rounded-xl bg-gold-500/15 px-4 py-2.5 text-sm font-medium text-gold-200 transition hover:bg-gold-500/25">{{ __('Appliquer') }}</button>
                         </div>
                         <p id="promo-message" class="mt-1.5 hidden text-xs"></p>
                     </div>
@@ -304,8 +304,8 @@
                     <label class="flex cursor-pointer items-start gap-3 select-none">
                         <input type="checkbox" name="accept_cgu" value="1" class="mt-1 h-4 w-4 shrink-0 rounded border-white/20 bg-dark-900 text-gold-500 focus:ring-gold-500/50" {{ old('accept_cgu') ? 'checked' : '' }} required>
                         <span class="text-sm leading-relaxed text-gray-400">
-                            J'accepte les <a href="#" class="font-medium text-gold-300 underline hover:text-gold-200">conditions générales</a>
-                            et la <a href="#" class="font-medium text-gold-300 underline hover:text-gold-200">politique de confidentialité</a>.
+                            {{ __('J\'accepte les') }} <a href="#" class="font-medium text-gold-300 underline hover:text-gold-200">{{ __('conditions générales') }}</a>
+                            {{ __('et la') }} <a href="#" class="font-medium text-gold-300 underline hover:text-gold-200">{{ __('politique de confidentialité') }}</a>.
                         </span>
                     </label>
                     @error('accept_cgu')<p class="text-xs text-red-400">{{ $message }}</p>@enderror
@@ -313,7 +313,7 @@
                     <button type="submit" id="public-pay-submit"
                             class="checkout-submit flex w-full items-center justify-center gap-2 rounded-xl bg-gold-500 py-3.5 text-sm font-bold text-dark-900 transition hover:bg-gold-400">
                         <i class="fas fa-lock text-xs"></i>
-                        <span id="public-pay-btn-label">Payer {{ number_format($monthlyPrice, 0, ',', ' ') }} FCFA →</span>
+                        <span id="public-pay-btn-label">{{ __('Payer') }} {{ number_format($monthlyPrice, 0, ',', ' ') }} {{ __('FCFA →') }}</span>
                     </button>
                 </form>
             @endif
@@ -324,46 +324,46 @@
             <div class="checkout-glass sticky top-6 rounded-2xl p-5">
                 <div class="mb-4 flex items-center gap-2 font-bold text-white">
                     <span class="checkout-title-icon inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gold-500/15 text-gold-400"><i class="fas fa-list-ul text-sm"></i></span>
-                    Récapitulatif
+                    {{ __('Récapitulatif') }}
                 </div>
 
                 <div class="checkout-badge-premium mb-4 rounded-2xl border p-4 text-white">
                     <div class="flex items-center gap-3">
                         <span class="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white/15 text-lg"><i class="fas fa-box"></i></span>
                         <div>
-                            <p class="text-sm font-semibold text-[#a54a0b]">Forfait</p>
-                            <p class="text-lg font-bold leading-tight">{{ $plan->name_fr }}</p>
+                            <p class="text-sm font-semibold text-[#a54a0b]">{{ __('Forfait') }}</p>
+                            <p class="text-lg font-bold leading-tight">{{ $plan->localized('name') }}</p>
                         </div>
                     </div>
                 </div>
 
                 <dl class="space-y-2 text-sm">
                     <div class="flex justify-between gap-4 text-gray-400">
-                        <dt>Abonnement</dt>
-                        <dd class="font-medium text-white">{{ $plan->name_fr }}</dd>
+                        <dt>{{ __('Abonnement') }}</dt>
+                        <dd class="font-medium text-white">{{ $plan->localized('name') }}</dd>
                     </div>
                     <div class="flex justify-between gap-4 text-gray-400">
-                        <dt>Durée</dt>
-                        <dd id="recap-duration" class="font-medium text-white">30 jours</dd>
+                        <dt>{{ __('Durée') }}</dt>
+                        <dd id="recap-duration" class="font-medium text-white">{{ __('30 jours') }}</dd>
                     </div>
                     <div class="mt-3 flex justify-between border-t border-white/10 pt-3 text-gray-400">
-                        <dt>Sous-total</dt>
+                        <dt>{{ __('Sous-total') }}</dt>
                         <dd id="recap-line-base" class="font-medium text-white">—</dd>
                     </div>
                     <div id="recap-discount-row" class="hidden flex justify-between text-emerald-300">
-                        <dt>Réduction</dt>
+                        <dt>{{ __('Réduction') }}</dt>
                         <dd id="recap-discount">—</dd>
                     </div>
                     <div class="checkout-total flex justify-between text-base font-bold">
-                        <dt>Total</dt>
+                        <dt>{{ __('Total') }}</dt>
                         <dd id="recap-line-total">—</dd>
                     </div>
                 </dl>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#2f7a3f]/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-[#2f7a3f]/35"><i class="fas fa-shield-halved"></i> SSL</span>
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#2c8da6]/15 px-2.5 py-1 text-[11px] font-semibold text-green-200 ring-1 ring-[#2c8da6]/35"><i class="fas fa-lock"></i> Chiffré</span>
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#f2790f]/12 px-2.5 py-1 text-[11px] font-semibold text-[#a54a0b] ring-1 ring-[#e8862a]/40"><i class="fas fa-circle-check"></i> CynetPay</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#2f7a3f]/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-[#2f7a3f]/35"><i class="fas fa-shield-halved"></i> {{ __('SSL') }}</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#2c8da6]/15 px-2.5 py-1 text-[11px] font-semibold text-green-200 ring-1 ring-[#2c8da6]/35"><i class="fas fa-lock"></i> {{ __('Chiffré') }}</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#f2790f]/12 px-2.5 py-1 text-[11px] font-semibold text-[#a54a0b] ring-1 ring-[#e8862a]/40"><i class="fas fa-circle-check"></i> {{ __('CynetPay') }}</span>
                 </div>
             </div>
         </aside>
@@ -376,7 +376,7 @@
                     <i class="fas fa-gem text-sm text-orange-400"></i>
                 </div>
                 <div>
-                    <p class="font-bold text-white">{{ strtoupper($plan->code) }} — {{ $plan->name_fr }}</p>
+                    <p class="font-bold text-white">{{ strtoupper($plan->code) }} — {{ $plan->localized('name') }}</p>
                     <p class="text-xs text-slate-400">{{ $provider->name }}</p>
                 </div>
             </div>
@@ -385,29 +385,29 @@
         @if($cinetPayConfigured)
             <div class="space-y-5 rounded-xl border border-slate-800 bg-green-900 p-5">
                 <div>
-                    <label class="mb-2 block text-xs font-medium text-slate-300">Cycle de facturation</label>
+                    <label class="mb-2 block text-xs font-medium text-slate-300">{{ __('Cycle de facturation') }}</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cycle-option cursor-pointer">
                             <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
                             <div class="cycle-card rounded-lg border border-orange-500 bg-orange-500/8 p-3 text-center transition hover:border-orange-500/70">
-                                <p class="text-sm font-bold text-white">Mensuel</p>
-                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA</p>
-                                <p class="text-xs text-slate-500">/ mois</p>
+                                <p class="text-sm font-bold text-white">{{ __('Mensuel') }}</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                <p class="text-xs text-slate-500">{{ __('/ mois') }}</p>
                             </div>
                         </label>
                         <label class="cycle-option cursor-pointer">
                             <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
                             <div class="cycle-card rounded-lg border border-slate-700 p-3 text-center transition hover:border-orange-500/50">
-                                <p class="text-sm font-bold text-white">Annuel</p>
-                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} FCFA</p>
-                                <p class="text-xs text-slate-500">/ an</p>
+                                <p class="text-sm font-bold text-white">{{ __('Annuel') }}</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                <p class="text-xs text-slate-500">{{ __('/ an') }}</p>
                             </div>
                         </label>
                     </div>
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-xs font-medium text-slate-300">Canal de paiement</label>
+                    <label class="mb-2 block text-xs font-medium text-slate-300">{{ __('Canal de paiement') }}</label>
                     <div class="grid grid-cols-2 gap-2">
                         @foreach($channels as $ch)
                             <label class="channel-option cursor-pointer">
@@ -427,44 +427,44 @@
                 </div>
 
                 <div class="space-y-3">
-                    <label class="block text-xs font-medium text-slate-300">Informations de facturation</label>
+                    <label class="block text-xs font-medium text-slate-300">{{ __('Informations de facturation') }}</label>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <input type="text" id="customer_name" placeholder="Prénom"
+                            <input type="text" id="customer_name" placeholder="{{ __('Prénom') }}"
                                    class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                         </div>
                         <div>
-                            <input type="text" id="customer_surname" placeholder="Nom"
+                            <input type="text" id="customer_surname" placeholder="{{ __('Nom') }}"
                                    class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                         </div>
                     </div>
-                    <input type="email" id="customer_email" value="{{ auth()->user()->email ?? '' }}" placeholder="Adresse e-mail"
+                    <input type="email" id="customer_email" value="{{ auth()->user()->email ?? '' }}" placeholder="{{ __('Adresse e-mail') }}"
                            class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
-                    <input type="tel" id="customer_phone" placeholder="Téléphone (ex : +225 07 00 00 00 00)"
+                    <input type="tel" id="customer_phone" placeholder="{{ __('Téléphone (ex : +225 07 00 00 00 00)') }}"
                            class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-xs font-medium text-slate-300">Code promo <span class="text-slate-500">(facultatif)</span></label>
+                    <label class="mb-2 block text-xs font-medium text-slate-300">{{ __('Code promo') }} <span class="text-slate-500">{{ __('(facultatif)') }}</span></label>
                     <div class="flex gap-2">
-                        <input type="text" id="promo-input" placeholder="EX : IVOIRE20"
+                        <input type="text" id="promo-input" placeholder="{{ __('EX : IVOIRE20') }}"
                                class="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm uppercase tracking-wider text-slate-100 placeholder:normal-case placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
-                        <button type="button" id="promo-btn" class="rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-slate-600">Appliquer</button>
+                        <button type="button" id="promo-btn" class="rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-slate-600">{{ __('Appliquer') }}</button>
                     </div>
                     <p id="promo-message" class="mt-1.5 hidden text-xs"></p>
                 </div>
 
                 <div class="space-y-2 rounded-lg border border-slate-700 bg-slate-800/60 p-4 text-sm">
                     <div class="flex justify-between text-slate-300">
-                        <span>Sous-total</span>
+                        <span>{{ __('Sous-total') }}</span>
                         <span id="summary-base">—</span>
                     </div>
                     <div id="summary-discount-row" class="hidden flex justify-between text-emerald-400">
-                        <span>Réduction (code promo)</span>
-                        <span id="summary-discount">— 0 FCFA</span>
+                        <span>{{ __('Réduction (code promo)') }}</span>
+                        <span id="summary-discount">{{ __('— 0 FCFA') }}</span>
                     </div>
                     <div class="mt-1 flex justify-between border-t border-slate-700 pt-2 font-bold text-white">
-                        <span>Total à payer</span>
+                        <span>{{ __('Total à payer') }}</span>
                         <span id="summary-total">—</span>
                     </div>
                 </div>
@@ -472,9 +472,9 @@
                 <label class="flex cursor-pointer select-none items-start gap-2.5">
                     <input type="checkbox" id="cgu-check" class="mt-0.5 h-4 w-4 shrink-0 accent-orange-500">
                     <span class="text-xs leading-relaxed text-slate-400">
-                        J'accepte les
-                        <a href="#" class="text-orange-400 underline underline-offset-2 hover:text-orange-300">conditions générales d'utilisation</a>
-                        et confirme que les informations saisies sont exactes.
+                        {{ __('J\'accepte les') }}
+                        <a href="#" class="text-orange-400 underline underline-offset-2 hover:text-orange-300">{{ __('conditions générales d\'utilisation') }}</a>
+                        {{ __('et confirme que les informations saisies sont exactes.') }}
                     </span>
                 </label>
 
@@ -483,105 +483,105 @@
                 <button type="button" id="pay-btn"
                         class="flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 text-sm font-bold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50">
                     <i class="fas fa-lock text-xs"></i>
-                    <span id="pay-btn-label">Payer via CinetPay</span>
+                    <span id="pay-btn-label">{{ __('Payer via CinetPay') }}</span>
                 </button>
 
                 <p class="text-center text-[11px] text-slate-500">
                     <i class="fas fa-shield-halved mr-1 text-orange-400/60"></i>
-                    Paiement sécurisé par CinetPay — vos données bancaires ne sont jamais transmises à notre serveur.
+                    {{ __('Paiement sécurisé par CinetPay — vos données bancaires ne sont jamais transmises à notre serveur.') }}
                 </p>
             </div>
         @else
             <div class="flex items-start gap-2.5 rounded-xl border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-300">
                 <i class="fas fa-triangle-exclamation mt-0.5 shrink-0"></i>
-                <span>La passerelle CinetPay n'est pas encore configurée. Utilisez le mode de simulation ci-dessous pour tester le flux de paiement.</span>
+                <span>{{ __('La passerelle CinetPay n\'est pas encore configurée. Utilisez le mode de simulation ci-dessous pour tester le flux de paiement.') }}</span>
             </div>
 
             <form method="POST" action="{{ route('subscriptions.process-offline', $plan) }}" class="space-y-5 rounded-xl border border-slate-800 bg-green-900 p-5">
                 @csrf
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="mb-1.5 block text-xs font-medium text-slate-300">Prénom <span class="text-red-400">*</span></label>
+                        <label class="mb-1.5 block text-xs font-medium text-slate-300">{{ __('Prénom') }} <span class="text-red-400">*</span></label>
                         <input type="text" name="first_name" required maxlength="100" value="{{ old('first_name', auth()->user()->first_name) }}"
                                class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-orange-500/50 focus:outline-none">
                     </div>
                     <div>
-                        <label class="mb-1.5 block text-xs font-medium text-slate-300">Nom <span class="text-red-400">*</span></label>
+                        <label class="mb-1.5 block text-xs font-medium text-slate-300">{{ __('Nom') }} <span class="text-red-400">*</span></label>
                         <input type="text" name="last_name" required maxlength="100" value="{{ old('last_name', auth()->user()->last_name) }}"
                                class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-orange-500/50 focus:outline-none">
                     </div>
                 </div>
 
                 <div>
-                    <label class="mb-1.5 block text-xs font-medium text-slate-300">Référence / numéro de paiement <span class="text-red-400">*</span></label>
+                    <label class="mb-1.5 block text-xs font-medium text-slate-300">{{ __('Référence / numéro de paiement') }} <span class="text-red-400">*</span></label>
                     <input type="text" name="payment_reference" required maxlength="120" value="{{ old('payment_reference') }}"
-                           placeholder="Ex. : ID transaction Orange Money, Wave…"
+                           placeholder="{{ __('Ex. : ID transaction Orange Money, Wave…') }}"
                            class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
                     @error('payment_reference')<p class="mt-1 text-xs text-red-400">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-xs font-medium text-slate-300">Cycle de facturation</label>
+                    <label class="mb-2 block text-xs font-medium text-slate-300">{{ __('Cycle de facturation') }}</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cycle-option cursor-pointer">
                             <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
                             <div class="cycle-card rounded-lg border border-orange-500 bg-orange-500/8 p-3 text-center transition">
-                                <p class="text-sm font-bold text-white">Mensuel</p>
-                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA</p>
-                                <p class="text-xs text-slate-500">/ mois</p>
+                                <p class="text-sm font-bold text-white">{{ __('Mensuel') }}</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                <p class="text-xs text-slate-500">{{ __('/ mois') }}</p>
                             </div>
                         </label>
                         <label class="cycle-option cursor-pointer">
                             <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
                             <div class="cycle-card rounded-lg border border-slate-700 p-3 text-center transition hover:border-orange-500/50">
-                                <p class="text-sm font-bold text-white">Annuel</p>
-                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} FCFA</p>
-                                <p class="text-xs text-slate-500">/ an</p>
+                                <p class="text-sm font-bold text-white">{{ __('Annuel') }}</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                <p class="text-xs text-slate-500">{{ __('/ an') }}</p>
                             </div>
                         </label>
                     </div>
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-xs font-medium text-slate-300">Méthode de paiement (simulation)</label>
+                    <label class="mb-2 block text-xs font-medium text-slate-300">{{ __('Méthode de paiement (simulation)') }}</label>
                     <select name="method" class="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 focus:border-orange-500/50 focus:outline-none">
-                        <option value="orange_money">Orange Money</option>
-                        <option value="mtn_momo">MTN MoMo</option>
-                        <option value="wave">Wave</option>
-                        <option value="moov_money">Moov Money</option>
-                        <option value="card">Carte bancaire</option>
+                        <option value="orange_money">{{ __('Orange Money') }}</option>
+                        <option value="mtn_momo">{{ __('MTN MoMo') }}</option>
+                        <option value="wave">{{ __('Wave') }}</option>
+                        <option value="moov_money">{{ __('Moov Money') }}</option>
+                        <option value="card">{{ __('Carte bancaire') }}</option>
                     </select>
                     <input type="hidden" name="gateway" value="cinetpay">
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-xs font-medium text-slate-300">Code promo <span class="text-slate-500">(facultatif)</span></label>
+                    <label class="mb-2 block text-xs font-medium text-slate-300">{{ __('Code promo') }} <span class="text-slate-500">{{ __('(facultatif)') }}</span></label>
                     <div class="flex gap-2">
-                        <input type="text" id="promo-input" name="promo_code" placeholder="EX : IVOIRE20"
+                        <input type="text" id="promo-input" name="promo_code" placeholder="{{ __('EX : IVOIRE20') }}"
                                class="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm uppercase tracking-wider text-slate-100 placeholder:normal-case placeholder:text-slate-500 focus:border-orange-500/50 focus:outline-none">
-                        <button type="button" id="promo-btn" class="rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-slate-600">Appliquer</button>
+                        <button type="button" id="promo-btn" class="rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-slate-600">{{ __('Appliquer') }}</button>
                     </div>
                     <p id="promo-message" class="mt-1.5 hidden text-xs"></p>
                 </div>
 
                 <div class="space-y-2 rounded-lg border border-slate-700 bg-slate-800/60 p-4 text-sm">
                     <div class="flex justify-between text-slate-300">
-                        <span>Sous-total</span>
+                        <span>{{ __('Sous-total') }}</span>
                         <span id="summary-base">—</span>
                     </div>
                     <div id="summary-discount-row" class="hidden flex justify-between text-emerald-400">
-                        <span>Réduction (code promo)</span>
-                        <span id="summary-discount">— 0 FCFA</span>
+                        <span>{{ __('Réduction (code promo)') }}</span>
+                        <span id="summary-discount">{{ __('— 0 FCFA') }}</span>
                     </div>
                     <div class="mt-1 flex justify-between border-t border-slate-700 pt-2 font-bold text-white">
-                        <span>Total à payer</span>
+                        <span>{{ __('Total à payer') }}</span>
                         <span id="summary-total">—</span>
                     </div>
                 </div>
 
                 <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 text-sm font-bold text-white transition hover:bg-orange-600">
                     <i class="fas fa-vial text-xs"></i>
-                    Simuler le paiement (mode test)
+                    {{ __('Simuler le paiement (mode test)') }}
                 </button>
             </form>
         @endif
@@ -733,7 +733,7 @@
             if (!msg) return;
 
             if (! code) {
-                msg.textContent = 'Saisissez un code promo.';
+                msg.textContent = {{ \Illuminate\Support\Js::from(__('Saisissez un code promo.')) }};
                 msg.className   = 'mt-1.5 text-xs text-orange-600';
                 msg.classList.remove('hidden');
                 return;
@@ -767,7 +767,7 @@
                     msg.className   = 'mt-1.5 text-xs text-red-600';
                 }
             } catch {
-                msg.textContent = 'Erreur réseau. Réessayez.';
+                msg.textContent = {{ \Illuminate\Support\Js::from(__('Erreur réseau. Réessayez.')) }};
                 msg.className   = 'mt-1.5 text-xs text-red-600';
             }
 
@@ -808,18 +808,18 @@
                 const cgu     = cguEl && cguEl.checked;
 
                 if (! name || ! surname || ! email || ! phone) {
-                    payError.textContent = 'Veuillez remplir toutes les informations de facturation.';
+                    payError.textContent = {{ \Illuminate\Support\Js::from(__('Veuillez remplir toutes les informations de facturation.')) }};
                     payError.classList.remove('hidden');
                     return;
                 }
                 if (! cgu) {
-                    payError.textContent = 'Veuillez accepter les conditions générales d\'utilisation.';
+                    payError.textContent = {{ \Illuminate\Support\Js::from(__('Veuillez accepter les conditions générales d\'utilisation.')) }};
                     payError.classList.remove('hidden');
                     return;
                 }
 
                 payBtn.disabled = true;
-                payLabel.textContent = 'Redirection en cours…';
+                payLabel.textContent = {{ \Illuminate\Support\Js::from(__('Redirection en cours…')) }};
 
                 try {
                     const res  = await fetch(initiateUrl, {
@@ -845,13 +845,13 @@
                             window.location.href = data.payment_url;
                         }
                     } else {
-                        payError.textContent = data.message || 'Une erreur est survenue. Veuillez réessayer.';
+                        payError.textContent = data.message || {{ \Illuminate\Support\Js::from(__('Une erreur est survenue. Veuillez réessayer.')) }};
                         payError.classList.remove('hidden');
                         payBtn.disabled = false;
                         payLabel.textContent = 'Payer via CinetPay';
                     }
                 } catch {
-                    payError.textContent = 'Erreur réseau. Vérifiez votre connexion et réessayez.';
+                    payError.textContent = {{ \Illuminate\Support\Js::from(__('Erreur réseau. Vérifiez votre connexion et réessayez.')) }};
                     payError.classList.remove('hidden');
                     payBtn.disabled = false;
                     payLabel.textContent = 'Payer via CinetPay';

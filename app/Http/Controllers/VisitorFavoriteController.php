@@ -53,7 +53,37 @@ class VisitorFavoriteController extends Controller
             route('visitor.favorites.index'),
         ));
 
-        return back()->with('success', 'Ajouté à vos favoris.');
+        return back()->with('success', __('Ajouté à vos favoris.'));
+    }
+
+    /** Cœur / signet des cartes : ajoute ou retire un établissement, un article ou un événement des favoris, sans recharger la page. */
+    public function toggle(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->merge(['type' => $request->input('type', 'provider'), 'id' => $request->input('id', $request->input('provider_id'))]);
+        $data = $request->validate([
+            'type' => ['required', 'in:provider,article,event'],
+            'id' => ['required', 'integer'],
+        ]);
+        $modelClass = match ($data['type']) {
+            'provider' => Provider::class,
+            'article' => Article::class,
+            default => Event::class,
+        };
+        if (! $modelClass::whereKey($data['id'])->exists()) {
+            return response()->json(['message' => __('Contenu introuvable.'), 'errors' => ['id' => [__('Contenu introuvable.')]]], 422);
+        }
+        $favorite = VisitorFavorite::where('user_id', Auth::id())
+            ->where('favoritable_type', $modelClass)
+            ->where('favoritable_id', $data['id'])
+            ->first();
+        if ($favorite) {
+            $favorite->delete();
+
+            return response()->json(['favorited' => false, 'message' => __('Retiré de vos favoris.')]);
+        }
+        VisitorFavorite::create(['user_id' => Auth::id(), 'favoritable_type' => $modelClass, 'favoritable_id' => $data['id']]);
+
+        return response()->json(['favorited' => true, 'message' => __('Ajouté à vos favoris.')]);
     }
 
     public function destroy(VisitorFavorite $favorite): RedirectResponse
@@ -64,7 +94,7 @@ class VisitorFavoriteController extends Controller
 
         $favorite->delete();
 
-        return back()->with('success', 'Favori retiré.');
+        return back()->with('success', __('Favori retiré.'));
     }
 
     private function labelFor(mixed $model): string

@@ -79,6 +79,19 @@ class TouristManagementController extends Controller
 
     public function destroyCity(TouristCity $city)
     {
+        // Les sites seraient effacés en cascade sans prévenir, et les hébergements bloqueraient la
+        // suppression (erreur 500) : une ville encore utilisée n'est donc pas supprimée.
+        $sitesCount = TouristSite::where('city_id', $city->id)->count();
+        $accomsCount = \App\Models\Accommodation::where('city_id', $city->id)->count();
+        if ($sitesCount > 0 || $accomsCount > 0) {
+            $uses = collect([
+                $sitesCount > 0 ? $sitesCount.' '.($sitesCount > 1 ? 'sites touristiques' : 'site touristique') : null,
+                $accomsCount > 0 ? $accomsCount.' '.($accomsCount > 1 ? 'hébergements' : 'hébergement') : null,
+            ])->filter()->implode(' et ');
+
+            return back()->with('error', "Impossible de supprimer « {$city->name} » : {$uses} y sont encore rattachés. Déplacez-les d'abord vers une autre ville, ou désactivez plutôt cette ville.");
+        }
+
         $city->delete();
         return back()->with('success', 'Ville supprimée.');
     }
@@ -133,11 +146,18 @@ class TouristManagementController extends Controller
         if ($heroFile && $heroFile->isValid()) {
             $this->deleteCategoryImage($category->hero_image_url);
             $data['hero_image_url'] = $this->storeCategoryImage($heroFile, 'hero');
+        } elseif ($request->boolean('remove_hero_image') && $category->hero_image_url) {
+            // « Supprimer l'image » dans la fenêtre de modification
+            $this->deleteCategoryImage($category->hero_image_url);
+            $data['hero_image_url'] = null;
         }
         $iconFile = $request->file('icon_image_file');
         if ($iconFile && $iconFile->isValid()) {
             $this->deleteCategoryImage($category->icon_image_url);
             $data['icon_image_url'] = $this->storeCategoryImage($iconFile, 'icon');
+        } elseif ($request->boolean('remove_icon_image') && $category->icon_image_url) {
+            $this->deleteCategoryImage($category->icon_image_url);
+            $data['icon_image_url'] = null;
         }
 
         $category->update($data);
@@ -146,9 +166,26 @@ class TouristManagementController extends Controller
 
     public function destroyCategory(TouristCategory $category)
     {
-        $this->deleteCategoryImage($category->hero_image_url);
-        $this->deleteCategoryImage($category->icon_image_url);
+        // Une catégorie encore utilisée ne peut pas être supprimée (clé étrangère des sites,
+        // références des hébergements) : on l'explique au lieu de laisser une erreur 500.
+        $sitesCount = TouristSite::where('category_id', $category->id)->count();
+        $accomsCount = \App\Models\Accommodation::whereJsonContains('category_ids', $category->id)->count();
+        if ($sitesCount > 0 || $accomsCount > 0) {
+            $uses = collect([
+                $sitesCount > 0 ? $sitesCount.' '.($sitesCount > 1 ? 'sites touristiques' : 'site touristique') : null,
+                $accomsCount > 0 ? $accomsCount.' '.($accomsCount > 1 ? 'hébergements' : 'hébergement') : null,
+            ])->filter()->implode(' et ');
+
+            return back()->with('error', "Impossible de supprimer « {$category->name} » : {$uses} l'utilisent encore. Changez d'abord leur catégorie, ou désactivez plutôt cette catégorie.");
+        }
+
+        $hero = $category->hero_image_url;
+        $icon = $category->icon_image_url;
         $category->delete();
+        // Les images ne sont effacées qu'une fois la suppression réussie.
+        $this->deleteCategoryImage($hero);
+        $this->deleteCategoryImage($icon);
+
         return back()->with('success', 'Catégorie supprimée.');
     }
 

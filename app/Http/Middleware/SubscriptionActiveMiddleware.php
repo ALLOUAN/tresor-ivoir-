@@ -25,11 +25,11 @@ class SubscriptionActiveMiddleware
 
         $user = Auth::user();
 
-        if ($user->role !== 'provider') {
+        if ($user->role !== 'provider' || \App\Models\PaymentSetting::providerFreeAccess()) {
             return $next($request);
         }
 
-        $provider = Provider::where('user_id', $user->id)->first();
+        $provider = Provider::forUser($user->id);
 
         if (! $provider) {
             return redirect()->route('provider.billing.plans')

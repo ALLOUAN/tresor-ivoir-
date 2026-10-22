@@ -1,14 +1,14 @@
 @extends('layouts.visitor-public')
 
-@section('title', 'Mes notifications')
-@section('page-title', 'Notifications')
+@section('title', __('Mes notifications'))
+@section('page-title', __('Notifications'))
 
 @section('header-actions')
 <form method="POST" action="{{ route('visitor.notifications.read-all') }}">
     @csrf
     @method('PATCH')
     <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg transition">
-        <i class="fas fa-check-double"></i> Tout marquer lu
+        <i class="fas fa-check-double"></i> {{ __('Tout marquer lu') }}
     </button>
 </form>
 @endsection
@@ -27,19 +27,17 @@
             <div class="px-5 py-4 {{ $notification->read_at ? 'opacity-80' : 'bg-orange-900/10' }}">
                 <div class="flex items-start justify-between gap-3">
                     <div>
-                        <p class="text-white text-sm font-semibold">{{ $data['title'] ?? 'Notification' }}</p>
-                        <p class="text-slate-300 text-sm mt-1">{{ $data['message'] ?? 'Mise à jour de votre espace visiteur.' }}</p>
+                        <p class="text-white text-sm font-semibold">{{ $data['title'] ?? __('Notification') }}</p>
+                        <p class="text-slate-300 text-sm mt-1">{{ $data['message'] ?? __('Mise à jour de votre espace visiteur.') }}</p>
                         <p class="text-xs text-slate-500 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
                     </div>
                     @if(!empty($data['url']))
-                        <a href="{{ $data['url'] }}" class="shrink-0 text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">Voir</a>
+                        <a href="{{ $data['url'] }}" class="shrink-0 text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200">{{ __('Voir') }}</a>
                     @endif
                 </div>
             </div>
         @empty
-            <div class="px-5 py-10 text-center text-slate-500 text-sm">
-                Aucune notification pour le moment.
-            </div>
+            @include('partials.visitor-empty', ['icon' => 'alarm', 'title' => __('Aucune notification pour le moment.'), 'text' => __('Confirmations, rappels et réponses des établissements s\'afficheront ici.')])
         @endforelse
     </div>
 

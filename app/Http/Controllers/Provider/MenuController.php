@@ -22,7 +22,7 @@ class MenuController extends Controller
 
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -94,7 +94,8 @@ class MenuController extends Controller
         $provider = $this->getProvider();
         abort_unless((int) $menuItem->provider_id === (int) $provider->id, 403);
 
-        $categories = MenuCategory::where('is_active', true)->orderBy('sort_order')->get();
+        // La catégorie actuelle reste proposée même si elle a été désactivée depuis.
+        $categories = MenuCategory::where('is_active', true)->orWhere('id', $menuItem->category_id)->orderBy('sort_order')->get();
 
         return view('provider.menu.form', ['menuItem' => $menuItem, 'categories' => $categories]);
     }
@@ -104,7 +105,7 @@ class MenuController extends Controller
         $provider = $this->getProvider();
         abort_unless((int) $menuItem->provider_id === (int) $provider->id, 403);
 
-        $validated = $this->validated($request);
+        $validated = $this->validated($request, $menuItem);
 
         $images = $this->removeMarkedImages($request, $menuItem->images ?? []);
         foreach ($this->uploadedImages($request) as $file) {
@@ -130,14 +131,21 @@ class MenuController extends Controller
         return redirect()->route('provider.menu.index')->with('success', 'Plat retiré de la carte.');
     }
 
-    /** @return array<string, mixed> */
-    private function validated(Request $request): array
+    /**
+     * Catégorie active (ou catégorie actuelle du plat) ; photos : vraies images de 5 Mo au plus.
+     *
+     * @return array<string, mixed>
+     */
+    private function validated(Request $request, ?MenuItem $current = null): array
     {
         return $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'integer', 'exists:menu_categories,id'],
+            'category_id' => ['required', 'integer', \Illuminate\Validation\Rule::exists('menu_categories', 'id')->where(fn ($q) => $q->where(fn ($w) => $w->where('is_active', true)
+                ->when($current, fn ($w2) => $w2->orWhere('id', $current->category_id))))],
             'description' => ['nullable', 'string', 'max:2000'],
             'price_xof' => ['required', 'integer', 'min:0'],
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['file', 'image', 'max:5120'],
         ]);
     }
 

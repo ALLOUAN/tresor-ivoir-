@@ -147,6 +147,13 @@
                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('description', $accommodation->description ?? '') }}</textarea>
                     </div>
                     <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-400 mb-1">Annulation gratuite jusqu'à</label>
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            <input type="number" name="free_cancellation_days" min="0" max="365" placeholder="{{ \App\Models\Reservation::DEFAULT_FREE_CANCELLATION_DAYS }}"
+                                   value="{{ old('free_cancellation_days', $accommodation->free_cancellation_days ?? '') }}"
+                                   class="w-24 bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                            <span class="text-xs text-slate-400 flex-1 min-w-[200px]">jours avant l'arrivée. Dans ce délai, le client annule en ligne et récupère tout son acompte ; après, l'acompte reste acquis à l'établissement. Vide = {{ \App\Models\Reservation::DEFAULT_FREE_CANCELLATION_DAYS }} jours.</span>
+                        </div>
                         <label class="block text-xs text-slate-400 mb-1">Conditions de réservation / d'annulation</label>
                         <textarea name="cancellation_policy" rows="4" placeholder="Ex : Annulation gratuite jusqu'à 48h avant l'arrivée. Au-delà, la première nuit est facturée..."
                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none resize-y">{{ old('cancellation_policy', $accommodation->cancellation_policy ?? '') }}</textarea>
@@ -380,7 +387,7 @@
                         @endforeach
                     @elseif(old('room_name'))
                         @foreach(old('room_name') as $i => $rn)
-                            @php $r = ['name'=>$rn,'max_adults'=>old('room_max_adults.'.$i),'max_children'=>old('room_max_children.'.$i),'area_m2'=>old('room_area_m2.'.$i),'price_xof'=>old('room_price_xof.'.$i),'price_eur'=>old('room_price_eur.'.$i),'amenities'=>old('room_amenities.'.$i,''),'beds'=>old('room_beds.'.$i),'description'=>old('room_description.'.$i),'conditions'=>old('room_conditions.'.$i)]; @endphp
+                            @php $r = ['id'=>old('room_id.'.$i),'units'=>old('room_units.'.$i),'name'=>$rn,'max_adults'=>old('room_max_adults.'.$i),'max_children'=>old('room_max_children.'.$i),'area_m2'=>old('room_area_m2.'.$i),'price_xof'=>old('room_price_xof.'.$i),'price_eur'=>old('room_price_eur.'.$i),'amenities'=>old('room_amenities.'.$i,''),'beds'=>old('room_beds.'.$i),'description'=>old('room_description.'.$i),'conditions'=>old('room_conditions.'.$i)]; @endphp
                             @include('admin.accommodation._room_row', ['r'=>$r, 'i'=>$i])
                         @endforeach
                     @endif
@@ -646,7 +653,13 @@
                 <i class="fas fa-times text-xs"></i>
             </button>
         </div>
+        <input type="hidden" name="room_id[]" value="">
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+                <span class="text-[11px] text-slate-500 mb-1 block">Nombre de chambres</span>
+                <input type="number" name="room_units[]" min="1" max="500" placeholder="1"
+                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 outline-none">
+            </div>
             <div>
                 <span class="text-[11px] text-slate-500 mb-1 block">Adultes max</span>
                 <input type="number" name="room_max_adults[]" min="1" max="10" value="2"

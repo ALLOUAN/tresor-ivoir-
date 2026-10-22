@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,28 +9,6 @@
     @endif
     <title>@yield('title', 'Finaliser le paiement') — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
-    <script>
-        window.tailwind = window.tailwind || {};
-        window.tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        dark: {
-                            900: '#e9e5d9',
-                            800: '#e9e5d9',
-                        },
-                        gold: {
-                            500: '#f2790f',
-                            400: '#f3b84a',
-                            300: '#fbc98a',
-                            200: '#fde3a7',
-                        },
-                    },
-                },
-            },
-        };
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body { background-color:#e9e5d9; color:#fff; }
@@ -55,6 +33,7 @@
         html:not(.dark) .text-slate-400 { color:#544f47!important; }
         html:not(.dark) .text-slate-300 { color:#44413a!important; }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-83c8c6ca.css') }}?v={{ @filemtime(public_path('css/tw-83c8c6ca.css')) }}">
 </head>
 <body class="min-h-screen bg-dark-900 text-white">
     @include('partials.page-background')
@@ -66,16 +45,16 @@
                 <a href="{{ route('home') }}"
                    class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white">
                     <i class="fas fa-arrow-left text-xs"></i>
-                    <span class="hidden sm:inline">Accueil</span>
+                    <span class="hidden sm:inline">{{ __('Accueil') }}</span>
                 </a>
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-bold text-white">Finaliser votre abonnement</h1>
-                    <p class="text-gray-400 text-sm">Dernière étape avant d'accéder à tous les contenus premium</p>
+                    <h1 class="text-xl sm:text-2xl font-bold text-white">{{ __('Finaliser votre abonnement') }}</h1>
+                    <p class="text-gray-400 text-sm">{{ __('Dernière étape avant d\'accéder à tous les contenus premium') }}</p>
                 </div>
             </div>
             <span class="hidden sm:inline-flex items-center gap-2 rounded-full border border-gold-500/35 bg-gold-500/10 px-3 py-1 text-xs font-semibold text-gold-200">
                 <i class="fas fa-shield-halved text-[11px] text-gold-400"></i>
-                Paiement 100% sécurisé
+                {{ __('Paiement 100% sécurisé') }}
             </span>
         </div>
     </section>

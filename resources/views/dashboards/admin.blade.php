@@ -154,10 +154,10 @@
             <h2 class="text-white font-semibold text-sm mb-4">Prestataires par statut</h2>
             @php
                 $statusMeta = [
-                    'active'    => ['label' => 'Actifs',     'color' => '#059669'],
-                    'pending'   => ['label' => 'En attente', 'color' => '#9f4709'],
-                    'suspended' => ['label' => 'Suspendus',  'color' => '#ef4444'],
-                    'inactive'  => ['label' => 'Inactifs',   'color' => '#64748b'],
+                    'active'    => ['label' => 'Actifs',     'color' => '#31621c'],
+                    'pending'   => ['label' => 'En attente', 'color' => '#febf48'],
+                    'suspended' => ['label' => 'Suspendus',  'color' => '#ef7c2b'],
+                    'inactive'  => ['label' => 'Inactifs',   'color' => '#d9bd60'],
                 ];
                 $total_providers = $providers_by_status->sum() ?: 1;
             @endphp
@@ -167,7 +167,7 @@
             </div>
             <div class="grid grid-cols-2 gap-2 mt-4">
                 @foreach($providers_by_status as $status => $count)
-                @php $meta = $statusMeta[$status] ?? ['label' => ucfirst($status), 'color' => '#64748b']; @endphp
+                @php $meta = $statusMeta[$status] ?? ['label' => ucfirst($status), 'color' => '#d9bd60']; @endphp
                 <div class="flex items-center gap-2 text-xs">
                     <span class="w-2 h-2 rounded-full shrink-0" style="background:{{ $meta['color'] }}"></span>
                     <span class="text-slate-400 flex-1 truncate">{{ $meta['label'] }}</span>
@@ -369,16 +369,16 @@ const signupsLabels = @json($signups_by_day['labels']);
 const signupsValues = @json($signups_by_day['values']);
 const statusData = @json($providers_by_status);
 const statusMeta = {
-    active:    { label: 'Actifs',     color: '#059669' },
-    pending:   { label: 'En attente', color: '#9f4709' },
-    suspended: { label: 'Suspendus',  color: '#ef4444' },
-    inactive:  { label: 'Inactifs',   color: '#64748b' },
+    active:    { label: 'Actifs',     color: '#31621c' },
+    pending:   { label: 'En attente', color: '#febf48' },
+    suspended: { label: 'Suspendus',  color: '#ef7c2b' },
+    inactive:  { label: 'Inactifs',   color: '#d9bd60' },
 };
 const planData = @json($subscriptions_by_plan);
 const planMeta = {
-    bronze: { label: 'Bronze', color: '#a54a0b' },
-    silver: { label: 'Argent', color: '#0891b2' },
-    gold:   { label: 'Or',     color: '#a16207' },
+    bronze: { label: 'Bronze', color: '#ef7c2b' },
+    silver: { label: 'Argent', color: '#327661' },
+    gold:   { label: 'Or',     color: '#d9bd60' },
 };
 
 const dashboardCharts = {};
@@ -389,9 +389,7 @@ function buildRevenueChart() {
     dashboardCharts.revenue?.destroy();
     const p = chartPalette();
     const ctx = canvas.getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
-    gradient.addColorStop(0, 'rgba(242, 121, 15,0.4)');
-    gradient.addColorStop(1, 'rgba(242, 121, 15,0.02)');
+    const gradient = 'rgba(239,124,43,0.16)';   // aplat (pas de dégradé)
 
     dashboardCharts.revenue = new Chart(canvas, {
         type: 'line',
@@ -399,12 +397,12 @@ function buildRevenueChart() {
             labels: revenueLabels,
             datasets: [{
                 data: revenueValues,
-                borderColor: '#f2790f',
+                borderColor: '#ef7c2b',
                 backgroundColor: gradient,
                 borderWidth: 2,
                 pointRadius: 0,
                 pointHoverRadius: 5,
-                pointBackgroundColor: '#fa9a3c',
+                pointBackgroundColor: '#ef7c2b',
                 pointHoverBorderWidth: 2,
                 pointHoverBorderColor: p.surface,
                 fill: true,
@@ -442,9 +440,7 @@ function buildSignupsChart() {
     dashboardCharts.signups?.destroy();
     const p = chartPalette();
     const ctx = canvas.getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
-    gradient.addColorStop(0, 'rgba(59,130,246,0.95)');
-    gradient.addColorStop(1, 'rgba(59,130,246,0.45)');
+    const gradient = '#31621c';   // aplat (pas de dégradé)
 
     dashboardCharts.signups = new Chart(canvas, {
         type: 'bar',
@@ -456,7 +452,7 @@ function buildSignupsChart() {
                 borderRadius: 4,
                 borderSkipped: false,
                 maxBarThickness: 18,
-                hoverBackgroundColor: '#60a5fa',
+                hoverBackgroundColor: '#497318',
             }],
         },
         options: {
@@ -477,7 +473,7 @@ function buildProviderStatusChart() {
     const statusDatasets = Object.entries(statusData).map(([status, count]) => ({
         label: statusMeta[status]?.label ?? status,
         data: [count],
-        backgroundColor: statusMeta[status]?.color ?? '#64748b',
+        backgroundColor: statusMeta[status]?.color ?? '#d9bd60',
         borderRadius: 4,
         borderSkipped: false,
         borderWidth: 2,
@@ -517,7 +513,7 @@ function buildPlansChart() {
     dashboardCharts.plans?.destroy();
     const p = chartPalette();
     const planLabels = Object.keys(planData).map((k) => planMeta[k.toLowerCase()]?.label ?? k);
-    const planColors = Object.keys(planData).map((k) => planMeta[k.toLowerCase()]?.color ?? '#64748b');
+    const planColors = Object.keys(planData).map((k) => planMeta[k.toLowerCase()]?.color ?? '#d9bd60');
 
     dashboardCharts.plans = new Chart(canvas, {
         type: 'bar',

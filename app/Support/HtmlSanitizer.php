@@ -57,6 +57,22 @@ class HtmlSanitizer
     /**
      * Contenu riche éditeur prêt à être affiché (`{!! !!}`).
      */
+    /** Balises de mise en page supplémentaires acceptées pour les pages d'information (sections, FAQ dépliantes). */
+    private const PAGE_TAGS = ['section', 'article', 'aside', 'header', 'footer', 'details', 'summary'];
+
+    private static bool $pageMode = false;
+
+    /** Pages d'information : même nettoyage que les articles, en conservant leur structure (section, details…). */
+    public static function pageBody(?string $html): string
+    {
+        self::$pageMode = true;
+        try {
+            return self::articleBody($html);
+        } finally {
+            self::$pageMode = false;
+        }
+    }
+
     public static function articleBody(?string $html): string
     {
         if ($html === null || trim($html) === '') {
@@ -83,6 +99,7 @@ class HtmlSanitizer
         }
 
         self::cleanChildren($root, 0);
+        self::markHighlightParagraphs($root);
 
         $out = '';
         foreach ($root->childNodes as $child) {
@@ -90,6 +107,27 @@ class HtmlSanitizer
         }
 
         return trim($out);
+    }
+
+    /** Repère les paragraphes entièrement en gras (ex. un parcours « A → B → C ») pour les mettre en valeur à l'affichage. */
+    private static function markHighlightParagraphs(DOMElement $root): void
+    {
+        $paragraphs = [];
+        foreach ($root->getElementsByTagName('p') as $p) {
+            $paragraphs[] = $p;
+        }
+        foreach ($paragraphs as $p) {
+            $elements = [];
+            foreach ($p->childNodes as $child) {
+                if ($child instanceof DOMElement) {
+                    $elements[] = $child;
+                }
+            }
+            if (count($elements) === 1 && in_array($elements[0]->tagName, ['strong', 'b'], true)
+                && trim($p->textContent) !== '' && trim($p->textContent) === trim($elements[0]->textContent)) {
+                $p->setAttribute('class', trim($p->getAttribute('class').' pm-flow'));
+            }
+        }
     }
 
     /**
@@ -137,7 +175,7 @@ class HtmlSanitizer
 
                 self::cleanChildren($node, $depth + 1);
 
-                if (! in_array($tag, self::ALLOWED_TAGS, true)) {
+                if (! in_array($tag, self::ALLOWED_TAGS, true) && ! (self::$pageMode && in_array($tag, self::PAGE_TAGS, true))) {
                     while ($node->firstChild) {
                         $parent->insertBefore($node->firstChild, $node);
                     }

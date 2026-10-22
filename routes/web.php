@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\AiInsightsController as AdminAiInsightsController;
+use App\Http\Controllers\Admin\AiModerationController as AdminAiModerationController;
+use App\Http\Controllers\DirectionsController;
+use App\Http\Controllers\ChatAssistantController;
+use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\SmartSearchController;
+use App\Http\Controllers\TripPlannerController;
+use App\Http\Controllers\WritingAssistantController;
 use App\Http\Controllers\AccommodationController;
 use App\Http\Controllers\LeisureVenueController;
 use App\Http\Controllers\RestaurantController;
@@ -39,9 +47,13 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PermissionManagementController;
 use App\Http\Controllers\Admin\PlanManagementController;
 use App\Http\Controllers\Admin\ProviderManagementController;
+use App\Http\Controllers\Admin\ProviderVerificationController as AdminProviderVerificationController;
 use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Admin\WalletController as AdminWalletController;
 use App\Http\Controllers\Admin\ReviewManagementController;
+use App\Http\Controllers\Admin\BookingRequestController as AdminBookingRequestController;
+use App\Http\Controllers\BookingRequestController;
+use App\Http\Controllers\Provider\BookingRequestController as ProviderBookingRequestController;
 use App\Http\Controllers\Admin\UserRoleManagementController;
 use App\Http\Controllers\ArticleCommentController;
 use App\Http\Controllers\ArticleController;
@@ -62,6 +74,8 @@ use App\Http\Controllers\Provider\RestaurantController as ProviderRestaurantCont
 use App\Http\Controllers\Provider\TouristExperienceController as ProviderTouristExperienceController;
 use App\Http\Controllers\Provider\TouristVisitController as ProviderTouristVisitController;
 use App\Http\Controllers\Provider\TouristVisitSessionController as ProviderTouristVisitSessionController;
+use App\Http\Controllers\Provider\TouristVisitTypeController as ProviderTouristVisitTypeController;
+use App\Http\Controllers\Admin\TouristVisitTypeController as AdminTouristVisitTypeController;
 use App\Http\Controllers\Provider\TravelAgencyController as ProviderTravelAgencyController;
 use App\Http\Controllers\Provider\TransportCompanyController as ProviderTransportCompanyController;
 use App\Http\Controllers\Provider\BillingController;
@@ -73,6 +87,7 @@ use App\Http\Controllers\Provider\ProfileController as ProviderProfileController
 use App\Http\Controllers\Provider\ProviderAnalyticsController;
 use App\Http\Controllers\Provider\ReservationController as ProviderReservationController;
 use App\Http\Controllers\Provider\WalletController as ProviderWalletController;
+use App\Http\Controllers\Provider\VerificationController as ProviderVerificationController;
 use App\Http\Controllers\Provider\ReviewController as ProviderReviewController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\EstablishmentController;
@@ -123,6 +138,8 @@ use App\Http\Controllers\Admin\EventsHeroImageController;
 use App\Http\Controllers\Admin\GalleryHeroImageController;
 use App\Http\Controllers\Admin\LoginBackgroundImageController;
 use App\Http\Controllers\Admin\PlansSectionImageController;
+use App\Http\Controllers\Admin\RecoSectionImageController;
+use App\Http\Controllers\Admin\ArtSectionImageController;
 use App\Http\Controllers\Admin\SearchPageImageController;
 use App\Http\Controllers\PrestationController;
 use App\Http\Middleware\LogAdminActions;
@@ -367,6 +384,16 @@ Route::post('/galerie-tresors-ivoire/visuelle/{uuid}/telechargement', [GalleryDo
     ->middleware('throttle:30,1')
     ->name('gallery.download.track');
 Route::get('/galerie-tresors-ivoire', [PublicHomeGalleryController::class, 'index'])->name('gallery.public');
+// Médiathèque — vidéos (lecteur plein écran, vues, j'aime, partages, clics « Voir et réserver »).
+Route::get('/mediatheque/videos', [\App\Http\Controllers\VideoController::class, 'index'])->name('videos.index');
+Route::get('/mediatheque/videos/{video}', [\App\Http\Controllers\VideoController::class, 'show'])->name('videos.show');
+Route::post('/mediatheque/videos/{video}/vue', [\App\Http\Controllers\VideoController::class, 'view'])->middleware('throttle:60,1')->name('videos.view');
+Route::post('/mediatheque/videos/{video}/jaime', [\App\Http\Controllers\VideoController::class, 'like'])->middleware('throttle:30,1')->name('videos.like');
+Route::post('/mediatheque/videos/{video}/partage', [\App\Http\Controllers\VideoController::class, 'share'])->middleware('throttle:30,1')->name('videos.share');
+Route::post('/mediatheque/videos/{video}/clic', [\App\Http\Controllers\VideoController::class, 'click'])->middleware('throttle:60,1')->name('videos.click');
+// « Les Astuces de Mian » — bandes dessinées (planches en images).
+Route::get('/astuces-de-mian', [\App\Http\Controllers\ComicController::class, 'index'])->name('comics.index');
+Route::get('/astuces-de-mian/{comic}', [\App\Http\Controllers\ComicController::class, 'show'])->name('comics.show');
 
 // ── ACHAT MÉDIA ───────────────────────────────────────────────────────────────
 Route::get('/galerie/achat/retour', [MediaPurchaseController::class, 'handleReturn'])->name('gallery.purchase.return');
@@ -377,6 +404,16 @@ Route::post('/galerie/achat/{media:uuid}/payer', [MediaPurchaseController::class
 
 // ── ART & CRÉATIONS ────────────────────────────────────────────────────────────
 Route::get('/art-creations', [ArtworkPublicController::class, 'index'])->name('art.index');
+// Art & Créations : page artiste, devis d'achat, offres, sur mesure.
+Route::get('/artistes/{slug}', [\App\Http\Controllers\ArtMarketController::class, 'artist'])->name('artist.show');
+Route::post('/artistes/{slug}/suivre', [\App\Http\Controllers\ArtMarketController::class, 'follow'])->name('artist.follow')->middleware(['auth', 'throttle:20,1']);
+Route::get('/artistes/{slug}/sur-mesure', [\App\Http\Controllers\ArtMarketController::class, 'commissionForm'])->name('artist.commission');
+Route::post('/artistes/{slug}/sur-mesure', [\App\Http\Controllers\ArtMarketController::class, 'requestCommission'])->name('artist.commission.store')->middleware(['auth', 'throttle:5,1']);
+Route::get('/art-creations/devis/{artwork:uuid}', [\App\Http\Controllers\ArtMarketController::class, 'quote'])->name('art.quote')->middleware('throttle:60,1');
+Route::post('/art-creations/commander/{artwork:uuid}', [ArtworkPurchaseController::class, 'checkout'])->name('art.checkout')->middleware(['auth', 'throttle:10,1']);
+Route::post('/art-creations/offre/{artwork:uuid}', [\App\Http\Controllers\ArtMarketController::class, 'makeOffer'])->name('art.offer')->middleware(['auth', 'throttle:10,1']);
+Route::get('/sur-mesure/paiement/retour', [\App\Http\Controllers\ArtMarketController::class, 'commissionReturn'])->name('art-commission.payment.return');
+Route::post('/sur-mesure/paiement/webhook', [\App\Http\Controllers\ArtMarketController::class, 'commissionWebhook'])->name('art-commission.payment.webhook');
 Route::get('/art-creations/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('art.show');
 Route::get('/art-creations/achat/retour', [ArtworkPurchaseController::class, 'handleReturn'])->name('art.purchase.return');
 Route::post('/art-creations/achat/webhook', [ArtworkPurchaseController::class, 'webhook'])->name('art.purchase.webhook');
@@ -392,6 +429,7 @@ Route::get('/reservations/disponibilite', [ReservationController::class, 'availa
     ->name('reservations.availability')
     ->middleware('throttle:60,1');
 
+Route::get('/reservations/devis', [ReservationController::class, 'quote'])->name('reservations.quote')->middleware('throttle:60,1');
 Route::post('/reservations', [ReservationController::class, 'store'])
     ->name('reservations.store')
     ->middleware(['auth', 'verified', 'throttle:10,1']);
@@ -421,6 +459,10 @@ Route::get('/reservations/{reservation}/enregistrement', [GuestRegistrationContr
 Route::post('/reservations/{reservation}/enregistrement', [GuestRegistrationController::class, 'store'])
     ->name('reservations.guest-registration.store')
     ->middleware(['signed', 'throttle:10,1']);
+// Pièces de la fiche (disque privé) : uniquement par lien signé de courte durée.
+Route::get('/enregistrements/{registration}/piece/{kind}', [GuestRegistrationController::class, 'file'])
+    ->name('guest-registrations.file')
+    ->middleware(['signed', 'throttle:60,1']);
 
 Route::get('/wallet/recharge/retour', [VisitorWalletController::class, 'returnFromGateway'])
     ->name('visitor.wallet.topup.return');
@@ -453,9 +495,20 @@ Route::get('/sitemap.xml', function () {
         ->select('slug', 'updated_at')->limit(500)->get();
     $providers = \App\Models\Provider::where('status', 'active')
         ->select('slug', 'updated_at')->limit(500)->get();
-    $pages     = \App\Models\InformationPage::select('id', 'updated_at')->get();
+    $pages     = \App\Models\InformationPage::select('id', 'slug', 'updated_at')->get();
+    // Fiches détaillées du tourisme et de la culture : [nom de route, lignes actives].
+    $active = fn (string $model) => $model::where('is_active', true)->select('slug', 'updated_at')->limit(1000)->get();
+    $listings = [
+        ['accommodations.show', $active(\App\Models\Accommodation::class), 0.7],
+        ['restaurant.show', $active(\App\Models\Restaurant::class), 0.6],
+        ['leisure.show', $active(\App\Models\LeisureVenue::class), 0.6],
+        ['tourist-experience.show', $active(\App\Models\TouristExperience::class), 0.7],
+        ['tourist.city', $active(\App\Models\TouristCity::class), 0.7],
+        ['cultural.people', $active(\App\Models\CulturalPeople::class), 0.6],
+        ['bundles.show', $active(\App\Models\Bundle::class), 0.7],
+    ];
 
-    return response()->view('sitemap', compact('articles', 'events', 'providers', 'pages'))
+    return response()->view('sitemap', compact('articles', 'events', 'providers', 'pages', 'listings'))
         ->header('Content-Type', 'application/xml');
 })->name('sitemap');
 
@@ -473,6 +526,9 @@ Route::get('/rss.xml', function () {
 
 // ── ARTICLES PUBLICS ──────────────────────────────────────────────────────
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/articles/{slug}/photos.zip', [\App\Http\Controllers\ArticlePhotoController::class, 'zip'])->name('articles.photos.zip')->middleware('throttle:10,1');
+Route::get('/articles/{slug}/photos/couverture', [\App\Http\Controllers\ArticlePhotoController::class, 'cover'])->name('articles.photos.cover')->middleware('throttle:60,1');
+Route::get('/articles/{slug}/photos/{media}', [\App\Http\Controllers\ArticlePhotoController::class, 'download'])->name('articles.photos.download')->whereNumber('media')->middleware('throttle:60,1');
 Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 Route::post('/articles/{article}/commentaires', [ArticleCommentController::class, 'store'])
     ->name('articles.comments.store')
@@ -519,6 +575,64 @@ Route::post('/abonnements/{plan}/traiter', [PublicSubscriptionController::class,
 Route::get('/annuaire', [ProviderController::class, 'index'])->name('providers.index');
 Route::get('/annuaire/{slug}', [ProviderController::class, 'show'])->name('providers.show');
 
+// ── IMAGES REDIMENSIONNÉES (variantes WebP en cache, sans session ni cookie) ─
+Route::get('/img/{width}/{path}', [\App\Http\Controllers\ImageController::class, 'show'])
+    ->where('width', '[0-9]+')
+    ->where('path', '.+')
+    ->withoutMiddleware([
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
+        \App\Http\Middleware\SetLocaleMiddleware::class,
+        \App\Http\Middleware\SiteMaintenanceMiddleware::class,
+        \App\Http\Middleware\OptimizeImages::class,
+    ])
+    ->name('img');
+
+// Image de partage (aperçu des liens sur les réseaux sociaux) : JPEG 1200 × 630, mêmes exclusions que /img
+Route::get('/img/og/{path}', [\App\Http\Controllers\ImageController::class, 'share'])
+    ->where('path', '.+\.jpg')
+    ->withoutMiddleware([
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
+        \App\Http\Middleware\SetLocaleMiddleware::class,
+        \App\Http\Middleware\SiteMaintenanceMiddleware::class,
+        \App\Http\Middleware\OptimizeImages::class,
+    ])
+    ->name('img.og');
+
+// ── INTELLIGENCE ARTIFICIELLE : recommandation hybride + planificateur « Mon séjour » ──
+Route::get('/pour-vous', [RecommendationController::class, 'index'])->name('ai.for-you');
+Route::post('/pour-vous/profil', [RecommendationController::class, 'saveProfile'])->middleware('throttle:20,1')->name('ai.profile.save');
+Route::post('/pour-vous/effacer', [RecommendationController::class, 'clear'])->middleware('throttle:10,1')->name('ai.data.clear');
+Route::get('/ia/recommandations', [RecommendationController::class, 'json'])->middleware('throttle:60,1')->name('ai.recommendations.json');
+Route::get('/ia/recherche', [SmartSearchController::class, 'json'])->middleware('throttle:60,1')->name('ai.search.json');
+Route::post('/ia/assistant', [ChatAssistantController::class, 'ask'])->middleware('throttle:20,1')->name('ai.chat.ask');
+Route::post('/ia/assistant/avis', [ChatAssistantController::class, 'feedback'])->middleware('throttle:30,1')->name('ai.chat.feedback');
+Route::middleware(['auth', 'role:admin,editor,provider'])->group(function () {
+    Route::post('/ia/redaction', [WritingAssistantController::class, 'run'])->middleware('throttle:15,1')->name('ai.writing.run');
+    Route::post('/ia/redaction/{log}/appliquee', [WritingAssistantController::class, 'applied'])->whereNumber('log')->name('ai.writing.applied');
+});
+Route::get('/mon-sejour', [TripPlannerController::class, 'create'])->name('trip.create');
+Route::post('/mon-sejour', [TripPlannerController::class, 'store'])->middleware('throttle:10,1')->name('trip.store');
+Route::get('/mon-sejour/{uuid}', [TripPlannerController::class, 'show'])->whereUuid('uuid')->name('trip.show');
+Route::get('/mon-sejour/{uuid}/jour/{day}/trajet', [TripPlannerController::class, 'dayRoute'])->whereUuid('uuid')->whereNumber('day')->name('trip.day-route')->middleware('throttle:30,1');
+
+// ── ITINÉRAIRE GOOGLE MAPS (compte le clic puis redirige) ─────────────────
+Route::get('/itineraire/{type}/{slug}', [DirectionsController::class, 'go'])
+    ->middleware('throttle:60,1')
+    ->name('directions.go');
+Route::post('/itineraire/{type}/{slug}/trajet', [DirectionsController::class, 'route'])
+    ->middleware('throttle:20,1')
+    ->name('directions.route');
+
 // ── TOUS NOS ÉTABLISSEMENTS (regroupe les 6 pages de listing par secteur) ──
 Route::get('/nos-etablissements', [EstablishmentController::class, 'index'])->name('establishments.index');
 
@@ -534,6 +648,18 @@ Route::get('/residences-hotels/{accommodation:slug}/chambres', [AccommodationCon
 Route::get('/loisirs-culture', [LeisureVenueController::class, 'index'])->name('leisure.index');
 Route::get('/loisirs-culture/{slug}', [LeisureVenueController::class, 'show'])->name('leisure.show');
 Route::get('/loisirs-culture/{slug}/activites', [LeisureVenueController::class, 'activities'])->name('leisure.activities');
+// Activités : créneaux en temps réel, réservation immédiate, formules, cartes multi-séances, liste d'attente.
+Route::get('/activites/{slug}', [\App\Http\Controllers\LeisureBookingController::class, 'show'])->name('activity.show');
+Route::get('/activites/{slug}/creneaux', [\App\Http\Controllers\LeisureBookingController::class, 'slots'])->name('activity.slots')->middleware('throttle:60,1');
+Route::post('/activites/{slug}/reserver', [\App\Http\Controllers\LeisureBookingController::class, 'book'])->name('activity.book')->middleware(['auth', 'throttle:10,1']);
+Route::post('/activites/{slug}/liste-attente', [\App\Http\Controllers\LeisureBookingController::class, 'joinWaitlist'])->name('activity.waitlist')->middleware(['auth', 'throttle:10,1']);
+Route::get('/formules/{slug}', [\App\Http\Controllers\LeisureBookingController::class, 'package'])->name('leisure-package.show');
+Route::get('/formules/{slug}/creneaux', [\App\Http\Controllers\LeisureBookingController::class, 'packageSlots'])->name('leisure-package.slots')->middleware('throttle:60,1');
+Route::post('/formules/{slug}/reserver', [\App\Http\Controllers\LeisureBookingController::class, 'bookPackage'])->name('leisure-package.book')->middleware(['auth', 'throttle:10,1']);
+Route::post('/cartes/{leisurePass}/acheter', [\App\Http\Controllers\LeisureBookingController::class, 'buyPass'])->name('leisure-pass.buy')->middleware(['auth', 'throttle:10,1']);
+Route::get('/loisirs/paiement/retour', [\App\Http\Controllers\LeisureBookingController::class, 'handleReturn'])->name('leisure.payment.return');
+Route::post('/loisirs/paiement/webhook', [\App\Http\Controllers\LeisureBookingController::class, 'webhook'])->name('leisure.payment.webhook');
+Route::get('/loisirs/reservations/{activityBooking}/billet', [\App\Http\Controllers\LeisureBookingController::class, 'ticket'])->name('activity-booking.ticket')->middleware('signed');
 
 // ── RESTAURANTS & GASTRONOMIE PUBLIC ───────────────────────────────────────
 Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurant.index');
@@ -548,6 +674,7 @@ Route::get('/experiences-touristiques/{slug}/activites', [TouristExperienceContr
 // Réservation de visites (individuelle, guidée, groupée)
 Route::get('/experiences-touristiques/{slug}/visite/init', [TouristVisitController::class, 'init'])->name('tourist-visit.init');
 Route::get('/experiences-touristiques/{slug}/visite/sessions', [TouristVisitController::class, 'sessions'])->name('tourist-visit.sessions');
+Route::get('/experiences-touristiques/{slug}/visite/creneaux', [TouristVisitController::class, 'slots'])->name('tourist-visit.slots')->middleware('throttle:60,1');
 Route::post('/experiences-touristiques/{slug}/visite/creer-et-payer', [TouristVisitController::class, 'registerAndPay'])->name('tourist-visit.register')->middleware('throttle:10,1');
 Route::post('/experiences-touristiques/{slug}/visite/payer', [TouristVisitController::class, 'pay'])->name('tourist-visit.pay')->middleware(['auth', 'throttle:10,1']);
 Route::get('/visites/retour', [TouristVisitController::class, 'handleReturn'])->name('tourist-visit.payment.return');
@@ -557,9 +684,38 @@ Route::get('/visites/{touristVisit}/confirmation', [TouristVisitController::clas
 // ── AGENCES DE VOYAGES & TOURS PUBLIC ───────────────────────────────────────
 Route::get('/agences-voyages', [TravelAgencyController::class, 'index'])->name('travel-agency.index');
 Route::get('/agences-voyages/{slug}', [TravelAgencyController::class, 'show'])->name('travel-agency.show');
+Route::get('/ical/{accommodation}/{room}/{token}.ics', [\App\Http\Controllers\IcalController::class, 'export'])
+    ->whereNumber('accommodation')->where('token', '[a-f0-9]{32}')->name('ical.export')->middleware('throttle:60,1');
+Route::get('/restaurants/{restaurant}/creneaux', \App\Http\Controllers\TableSlotController::class)->whereNumber('restaurant')->name('restaurant.slots')->middleware('throttle:60,1');
+Route::get('/restaurants/{restaurant}/plan-de-salle', \App\Http\Controllers\TablePlanController::class)->whereNumber('restaurant')->name('restaurant.table-plan')->middleware('throttle:60,1');
+Route::get('/bons-cadeaux/paiement/retour', [\App\Http\Controllers\GiftCardController::class, 'handleReturn'])->name('gift-cards.payment.return');
+Route::post('/bons-cadeaux/paiement/webhook', [\App\Http\Controllers\GiftCardController::class, 'webhook'])->name('gift-cards.payment.webhook');
+Route::get('/bons-cadeaux/{slug}', [\App\Http\Controllers\GiftCardController::class, 'show'])->name('gift-cards.show');
+Route::post('/bons-cadeaux/{slug}', [\App\Http\Controllers\GiftCardController::class, 'store'])->name('gift-cards.store')->middleware(['auth', 'throttle:10,1']);
+Route::get('/certificats/{order}/{code}.pdf', [\App\Http\Controllers\ArtCertificateController::class, 'pdf'])->whereNumber('order')->where('code', '[A-F0-9]{12}')->name('art.certificate.pdf');
+Route::get('/certificats/verifier/{order}/{code}', [\App\Http\Controllers\ArtCertificateController::class, 'verify'])->whereNumber('order')->where('code', '[A-F0-9]{12}')->name('art.certificate.verify');
+Route::get('/autour-de-moi', [\App\Http\Controllers\NearbyController::class, 'index'])->name('nearby.index');
+Route::get('/autour-de-moi/lieux', [\App\Http\Controllers\NearbyController::class, 'places'])->name('nearby.places')->middleware('throttle:60,1');
+Route::get('/offres-groupees', [\App\Http\Controllers\BundleController::class, 'index'])->name('bundles.index');
+Route::get('/offres-groupees/{bundle}', [\App\Http\Controllers\BundleController::class, 'show'])->name('bundles.show');
 Route::get('/agences-voyages/{slug}/circuits', [TravelAgencyController::class, 'tours'])->name('travel-agency.tours');
+// Circuits : page détaillée, devis en direct, réservation immédiate d'un départ (acompte ou totalité).
+Route::get('/agences-voyages/{agency}/circuits/{tour}', [\App\Http\Controllers\TourBookingController::class, 'show'])->name('travel-agency.tour');
+Route::get('/agences-voyages/{agency}/circuits/{tour}/devis', [\App\Http\Controllers\TourBookingController::class, 'quote'])->name('travel-agency.tour.quote')->middleware('throttle:60,1');
+Route::post('/agences-voyages/{agency}/circuits/{tour}/reserver', [\App\Http\Controllers\TourBookingController::class, 'store'])->name('travel-agency.tour.book')->middleware(['auth', 'throttle:10,1']);
+Route::get('/circuits/paiement/retour', [\App\Http\Controllers\TourBookingController::class, 'handleReturn'])->name('tour-booking.payment.return');
+Route::post('/circuits/paiement/webhook', [\App\Http\Controllers\TourBookingController::class, 'webhook'])->name('tour-booking.payment.webhook');
+Route::get('/circuits/reservations/{tourBooking}/feuille-de-route', [\App\Http\Controllers\TourBookingController::class, 'confirmation'])->name('tour-booking.confirmation')->middleware('signed');
 
 // ── TRANSPORTS & MOBILITÉ PUBLIC ────────────────────────────────────────────
+// Transports : page d'offre, devis instantané, sièges d'une ligne, réservation immédiate, confirmation.
+Route::get('/transports/offre/{slug}', [\App\Http\Controllers\TransportBookingController::class, 'show'])->name('transport-offer.show');
+Route::get('/transports/offre/{slug}/devis', [\App\Http\Controllers\TransportBookingController::class, 'quote'])->name('transport-offer.quote')->middleware('throttle:60,1');
+Route::get('/transports/offre/{slug}/departs/{trip}/sieges', [\App\Http\Controllers\TransportBookingController::class, 'seats'])->name('transport-offer.seats')->middleware('throttle:60,1');
+Route::post('/transports/offre/{slug}/reserver', [\App\Http\Controllers\TransportBookingController::class, 'book'])->name('transport-offer.book')->middleware(['auth', 'throttle:10,1']);
+Route::get('/trajets/paiement/retour', [\App\Http\Controllers\TransportBookingController::class, 'handleReturn'])->name('transport-booking.payment.return');
+Route::post('/trajets/paiement/webhook', [\App\Http\Controllers\TransportBookingController::class, 'webhook'])->name('transport-booking.payment.webhook');
+Route::get('/trajets/{transportBooking}', [\App\Http\Controllers\TransportBookingController::class, 'confirmation'])->name('transport-booking.show')->middleware('signed');
 Route::get('/transports', [TransportCompanyController::class, 'index'])->name('transport-company.index');
 Route::get('/transports/{slug}', [TransportCompanyController::class, 'show'])->name('transport-company.show');
 Route::get('/transports/{slug}/offres', [TransportCompanyController::class, 'offers'])->name('transport-company.offers');
@@ -578,17 +734,27 @@ Route::get('/cultures', [CulturalController::class, 'peoples'])->name('cultural.
 Route::get('/cultures/{slug}', [CulturalController::class, 'people'])->name('cultural.people');
 Route::get('/elements-culturels/{slug}', [CulturalController::class, 'element'])->name('cultural.element');
 
+// ── DEMANDES DE RÉSERVATION (restaurants, loisirs, circuits) ──
+Route::get('/demandes-reservation/paiement/retour', [\App\Http\Controllers\BookingPaymentController::class, 'handleReturn'])->name('booking-requests.payment.return');
+Route::post('/demandes-reservation/paiement/webhook', [\App\Http\Controllers\BookingPaymentController::class, 'webhook'])->name('booking-requests.payment.webhook');
+Route::post('/demandes-reservation', [BookingRequestController::class, 'store'])
+    ->name('booking-requests.store')
+    ->middleware(['auth', 'throttle:6,60']);
+
 // ── AVIS (POST — auth optionnel) ──────────────────────────────────────────
 Route::post('/annuaire/{provider}/avis', [ReviewController::class, 'store'])
     ->name('reviews.store')
-    ->middleware('auth');
+    ->middleware(['auth', 'throttle:5,60']);
 
 // ── AUTH ──────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/connexion/verification', [\App\Http\Controllers\AdminTwoFactorController::class, 'show'])->name('admin.two-factor.show');
+    Route::post('/connexion/verification', [\App\Http\Controllers\AdminTwoFactorController::class, 'verify'])->name('admin.two-factor.verify')->middleware('throttle:10,1');
+    Route::post('/connexion/verification/renvoyer', [\App\Http\Controllers\AdminTwoFactorController::class, 'resend'])->name('admin.two-factor.resend')->middleware('throttle:3,10');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post')->middleware('throttle:5,1');
 
     // Mot de passe oublié / réinitialisation
     Route::get('/mot-de-passe-oublie', [AuthController::class, 'showForgotPassword'])->name('password.request');
@@ -596,6 +762,12 @@ Route::middleware('guest')->group(function () {
     Route::get('/reinitialiser/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
     Route::post('/reinitialiser', [AuthController::class, 'resetPassword'])->name('password.update');
 });
+
+// Compte express pendant une réservation : code envoyé par e-mail et saisi sur place (invité ou compte non vérifié).
+Route::post('/compte-express/code', [\App\Http\Controllers\ExpressAccountController::class, 'start'])
+    ->name('account.express.start')->middleware('throttle:6,1');
+Route::post('/compte-express/verifier', [\App\Http\Controllers\ExpressAccountController::class, 'verify'])
+    ->name('account.express.verify')->middleware('throttle:10,1');
 
 // Vérification e-mail (utilisateur connecté)
 Route::middleware('auth')->group(function () {
@@ -644,7 +816,7 @@ Route::get('/dashboard', function () {
     }
 
     if ($user->role === 'provider') {
-        $provider = Provider::query()->where('user_id', $user->id)->first();
+        $provider = Provider::forUser($user->id);
         $hasActiveSubscription = $provider
             ? $provider->subscriptions()
                 ->where('status', 'active')
@@ -652,7 +824,7 @@ Route::get('/dashboard', function () {
                 ->exists()
             : false;
 
-        if (! $hasActiveSubscription) {
+        if (! $hasActiveSubscription && ! \App\Models\PaymentSetting::providerFreeAccess()) {
             return redirect()->route('provider.billing.plans')
                 ->with('status', 'Finalisez votre abonnement pour accéder au tableau de bord.');
         }
@@ -672,7 +844,29 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        // « Les Astuces de Mian » — bandes dessinées
+        Route::get('/astuces-de-mian', [\App\Http\Controllers\Admin\ComicManagementController::class, 'index'])->name('comics.index');
+        Route::get('/astuces-de-mian/creer', [\App\Http\Controllers\Admin\ComicManagementController::class, 'create'])->name('comics.create');
+        Route::post('/astuces-de-mian', [\App\Http\Controllers\Admin\ComicManagementController::class, 'store'])->name('comics.store');
+        Route::get('/astuces-de-mian/{comic}/modifier', [\App\Http\Controllers\Admin\ComicManagementController::class, 'edit'])->name('comics.edit');
+        Route::put('/astuces-de-mian/{comic}', [\App\Http\Controllers\Admin\ComicManagementController::class, 'update'])->name('comics.update');
+        Route::delete('/astuces-de-mian/{comic}', [\App\Http\Controllers\Admin\ComicManagementController::class, 'destroy'])->name('comics.destroy');
+        // Médiathèque — vidéos
+        Route::get('/videos', [\App\Http\Controllers\Admin\VideoManagementController::class, 'index'])->name('videos.index');
+        Route::get('/videos/creer', [\App\Http\Controllers\Admin\VideoManagementController::class, 'create'])->name('videos.create');
+        Route::post('/videos', [\App\Http\Controllers\Admin\VideoManagementController::class, 'store'])->name('videos.store');
+        Route::get('/videos/fiches', [\App\Http\Controllers\Admin\VideoManagementController::class, 'searchListings'])->name('videos.listings');
+        Route::get('/videos/{video}/modifier', [\App\Http\Controllers\Admin\VideoManagementController::class, 'edit'])->name('videos.edit');
+        Route::put('/videos/{video}', [\App\Http\Controllers\Admin\VideoManagementController::class, 'update'])->name('videos.update');
+        Route::patch('/videos/{video}/publier', [\App\Http\Controllers\Admin\VideoManagementController::class, 'approve'])->name('videos.approve');
+        Route::patch('/videos/{video}/refuser', [\App\Http\Controllers\Admin\VideoManagementController::class, 'reject'])->name('videos.reject');
+        Route::delete('/videos/{video}', [\App\Http\Controllers\Admin\VideoManagementController::class, 'destroy'])->name('videos.destroy');
         Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/ia', [AdminAiInsightsController::class, 'index'])->name('ai.index');
+        Route::get('/ia/prestataires/{provider}', [AdminAiInsightsController::class, 'provider'])->whereNumber('provider')->name('ai.provider');
+        Route::get('/moderation-ia', [AdminAiModerationController::class, 'index'])->name('ai-moderation.index');
+        Route::post('/moderation-ia/analyser', [AdminAiModerationController::class, 'scan'])->name('ai-moderation.scan');
+        Route::patch('/moderation-ia/{report}', [AdminAiModerationController::class, 'decide'])->whereNumber('report')->name('ai-moderation.decide');
         Route::get('/audit', [AdminAuditLogController::class, 'index'])->name('audit.index');
         Route::get('/permissions', [PermissionManagementController::class, 'index'])->name('permissions');
         Route::get('/administration/maintenance', [AdministrationController::class, 'maintenance'])->name('administration.maintenance');
@@ -786,6 +980,14 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::put('/administration/plans-image', [PlansSectionImageController::class, 'update'])->name('administration.plans-image.update');
         Route::patch('/administration/plans-image/toggle', [PlansSectionImageController::class, 'toggle'])->name('administration.plans-image.toggle');
         Route::delete('/administration/plans-image', [PlansSectionImageController::class, 'destroy'])->name('administration.plans-image.destroy');
+        Route::get('/administration/reco-image', [RecoSectionImageController::class, 'edit'])->name('administration.reco-image');
+        Route::put('/administration/reco-image', [RecoSectionImageController::class, 'update'])->name('administration.reco-image.update');
+        Route::patch('/administration/reco-image/toggle', [RecoSectionImageController::class, 'toggle'])->name('administration.reco-image.toggle');
+        Route::delete('/administration/reco-image', [RecoSectionImageController::class, 'destroy'])->name('administration.reco-image.destroy');
+        Route::get('/administration/art-image', [ArtSectionImageController::class, 'edit'])->name('administration.art-image');
+        Route::put('/administration/art-image', [ArtSectionImageController::class, 'update'])->name('administration.art-image.update');
+        Route::patch('/administration/art-image/toggle', [ArtSectionImageController::class, 'toggle'])->name('administration.art-image.toggle');
+        Route::delete('/administration/art-image', [ArtSectionImageController::class, 'destroy'])->name('administration.art-image.destroy');
         Route::get('/administration/search-image', [SearchPageImageController::class, 'edit'])->name('administration.search-image');
         Route::put('/administration/search-image', [SearchPageImageController::class, 'update'])->name('administration.search-image.update');
         Route::patch('/administration/search-image/toggle', [SearchPageImageController::class, 'toggle'])->name('administration.search-image.toggle');
@@ -842,6 +1044,10 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::post('/prestataires/categories', [ProviderManagementController::class, 'storeCategory'])->name('providers.categories.store');
         Route::put('/prestataires/categories/{providerCategory}', [ProviderManagementController::class, 'updateCategory'])->name('providers.categories.update');
         Route::delete('/prestataires/categories/{providerCategory}', [ProviderManagementController::class, 'destroyCategory'])->name('providers.categories.destroy');
+        Route::get('/prestataires/verifications', [AdminProviderVerificationController::class, 'index'])->name('provider-verifications.index');
+        Route::get('/prestataires/verifications/{document}/fichier', [AdminProviderVerificationController::class, 'download'])->name('provider-verifications.download');
+        Route::post('/prestataires/verifications/{document}/valider', [AdminProviderVerificationController::class, 'approve'])->name('provider-verifications.approve');
+        Route::post('/prestataires/verifications/{document}/refuser', [AdminProviderVerificationController::class, 'reject'])->name('provider-verifications.reject');
         Route::get('/prestataires', [ProviderManagementController::class, 'index'])->name('providers.index');
         Route::post('/prestataires', [ProviderManagementController::class, 'store'])->name('providers.store');
         Route::patch('/prestataires/{provider}', [ProviderManagementController::class, 'update'])->name('providers.update');
@@ -1068,6 +1274,14 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/experiences-touristiques/{touristExperience}/toggle-actif', [TouristExperienceManagementController::class, 'toggleActive'])->name('tourist-experiences.toggle-active');
         Route::patch('/experiences-touristiques/{touristExperience}/toggle-vedette', [TouristExperienceManagementController::class, 'toggleFeatured'])->name('tourist-experiences.toggle-featured');
         Route::delete('/experiences-touristiques/medias/{media}', [TouristExperienceManagementController::class, 'destroyMedia'])->name('tourist-experiences.media.destroy');
+        // Types de visite d'un site
+        Route::get('/experiences-touristiques/{touristExperience}/types-de-visite', [AdminTouristVisitTypeController::class, 'index'])->name('tourist-experiences.visit-types.index');
+        Route::get('/experiences-touristiques/{touristExperience}/types-de-visite/creer', [AdminTouristVisitTypeController::class, 'create'])->name('tourist-experiences.visit-types.create');
+        Route::post('/experiences-touristiques/{touristExperience}/types-de-visite', [AdminTouristVisitTypeController::class, 'store'])->name('tourist-experiences.visit-types.store');
+        Route::get('/experiences-touristiques/{touristExperience}/types-de-visite/{visitType}/modifier', [AdminTouristVisitTypeController::class, 'edit'])->name('tourist-experiences.visit-types.edit');
+        Route::put('/experiences-touristiques/{touristExperience}/types-de-visite/{visitType}', [AdminTouristVisitTypeController::class, 'update'])->name('tourist-experiences.visit-types.update');
+        Route::patch('/experiences-touristiques/{touristExperience}/types-de-visite/{visitType}/basculer', [AdminTouristVisitTypeController::class, 'toggle'])->name('tourist-experiences.visit-types.toggle');
+        Route::delete('/experiences-touristiques/{touristExperience}/types-de-visite/{visitType}', [AdminTouristVisitTypeController::class, 'destroy'])->name('tourist-experiences.visit-types.destroy');
 
         // Agences de Voyages & Tours — établissements
         Route::get('/agences-voyages', [TravelAgencyManagementController::class, 'index'])->name('travel-agencies.index');
@@ -1114,6 +1328,17 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
 
         // Réservations
         Route::get('/reservations/export', [AdminReservationController::class, 'export'])->name('reservations.export');
+        Route::get('/demandes-reservation', [AdminBookingRequestController::class, 'index'])->name('booking-requests.index');
+        Route::get('/offres-groupees', [\App\Http\Controllers\Admin\BundleManagementController::class, 'index'])->name('bundles.index');
+        Route::get('/offres-groupees/creer', [\App\Http\Controllers\Admin\BundleManagementController::class, 'create'])->name('bundles.create');
+        Route::post('/offres-groupees', [\App\Http\Controllers\Admin\BundleManagementController::class, 'store'])->name('bundles.store');
+        Route::get('/offres-groupees/{bundle}/modifier', [\App\Http\Controllers\Admin\BundleManagementController::class, 'edit'])->name('bundles.edit');
+        Route::put('/offres-groupees/{bundle}', [\App\Http\Controllers\Admin\BundleManagementController::class, 'update'])->name('bundles.update');
+        Route::patch('/offres-groupees/{bundle}/visibilite', [\App\Http\Controllers\Admin\BundleManagementController::class, 'toggle'])->name('bundles.toggle');
+        Route::delete('/offres-groupees/{bundle}', [\App\Http\Controllers\Admin\BundleManagementController::class, 'destroy'])->name('bundles.destroy');
+        Route::post('/demandes-reservation/{bookingRequest}/rembourser', [\App\Http\Controllers\BookingPaymentController::class, 'adminRefund'])->name('booking-requests.refund');
+        Route::get('/litiges', [\App\Http\Controllers\DisputeController::class, 'adminIndex'])->name('disputes.index');
+        Route::post('/litiges/{dispute}/decision', [\App\Http\Controllers\DisputeController::class, 'adminResolve'])->name('disputes.resolve');
         Route::get('/reservations', [AdminReservationController::class, 'index'])->name('reservations.index');
         Route::get('/reservations/{reservation}', [AdminReservationController::class, 'show'])->name('reservations.show');
         Route::patch('/reservations/{reservation}', [AdminReservationController::class, 'update'])->name('reservations.update');
@@ -1168,11 +1393,16 @@ Route::middleware(['auth', 'role:admin,editor'])
     });
 
 // ── PRESTATAIRE ───────────────────────────────────────────────────────────
-Route::middleware(['auth', 'verified', 'role:provider'])
+Route::middleware(['auth', 'verified', 'role:provider', \App\Http\Middleware\ProviderStaffGate::class])
     ->prefix('provider')
     ->name('provider.')
     ->group(function () {
         Route::get('/dashboard', [ProviderDashboardController::class, 'index'])->name('dashboard');
+        // Mes vidéos (médiathèque, publiées après validation)
+        Route::get('/videos', [\App\Http\Controllers\Provider\VideoController::class, 'index'])->name('videos.index');
+        Route::get('/videos/creer', [\App\Http\Controllers\Provider\VideoController::class, 'create'])->name('videos.create');
+        Route::post('/videos', [\App\Http\Controllers\Provider\VideoController::class, 'store'])->name('videos.store');
+        Route::delete('/videos/{video}', [\App\Http\Controllers\Provider\VideoController::class, 'destroy'])->name('videos.destroy');
 
         // Profil
         Route::get('/profil', [ProviderProfileController::class, 'edit'])->name('profile.edit');
@@ -1205,6 +1435,12 @@ Route::middleware(['auth', 'verified', 'role:provider'])
         Route::get('/restaurants', [ProviderRestaurantController::class, 'dashboard'])->name('restaurant.dashboard');
         Route::get('/restaurants/fiche', [ProviderRestaurantController::class, 'editProfile'])->name('restaurant.profile.edit');
         Route::put('/restaurants/fiche', [ProviderRestaurantController::class, 'updateProfile'])->name('restaurant.profile.update');
+        Route::get('/restaurants/tables', [ProviderRestaurantController::class, 'editTables'])->name('restaurant.tables.edit');
+        Route::put('/restaurants/tables', [ProviderRestaurantController::class, 'updateTables'])->name('restaurant.tables.update');
+        Route::post('/restaurants/plan-de-salle', [ProviderRestaurantController::class, 'storeTable'])->name('restaurant.floor.store');
+        Route::patch('/restaurants/plan-de-salle/{table}', [ProviderRestaurantController::class, 'toggleTable'])->name('restaurant.floor.toggle');
+        Route::delete('/restaurants/plan-de-salle/{table}', [ProviderRestaurantController::class, 'destroyTable'])->name('restaurant.floor.destroy');
+        Route::get('/restaurants/menu-qr', [ProviderRestaurantController::class, 'menuQr'])->name('restaurant.menu-qr');
         Route::get('/restaurants/galerie', [ProviderRestaurantController::class, 'gallery'])->name('restaurant.gallery.index');
         Route::post('/restaurants/galerie', [ProviderRestaurantController::class, 'storeGalleryMedia'])->name('restaurant.gallery.store');
         Route::delete('/restaurants/galerie/{media}', [ProviderRestaurantController::class, 'destroyMedia'])->name('restaurant.gallery.destroy');
@@ -1224,6 +1460,15 @@ Route::middleware(['auth', 'verified', 'role:provider'])
         Route::get('/experiences-touristiques/sessions/{session}/modifier', [ProviderTouristVisitSessionController::class, 'edit'])->name('tourist-experience.sessions.edit');
         Route::put('/experiences-touristiques/sessions/{session}', [ProviderTouristVisitSessionController::class, 'update'])->name('tourist-experience.sessions.update');
         Route::delete('/experiences-touristiques/sessions/{session}', [ProviderTouristVisitSessionController::class, 'destroy'])->name('tourist-experience.sessions.destroy');
+
+        // Types de visite personnalisés — prestataires "Sites Touristiques"
+        Route::get('/experiences-touristiques/types-de-visite', [ProviderTouristVisitTypeController::class, 'index'])->name('tourist-experience.visit-types.index');
+        Route::get('/experiences-touristiques/types-de-visite/creer', [ProviderTouristVisitTypeController::class, 'create'])->name('tourist-experience.visit-types.create');
+        Route::post('/experiences-touristiques/types-de-visite', [ProviderTouristVisitTypeController::class, 'store'])->name('tourist-experience.visit-types.store');
+        Route::get('/experiences-touristiques/types-de-visite/{visitType}/modifier', [ProviderTouristVisitTypeController::class, 'edit'])->name('tourist-experience.visit-types.edit');
+        Route::put('/experiences-touristiques/types-de-visite/{visitType}', [ProviderTouristVisitTypeController::class, 'update'])->name('tourist-experience.visit-types.update');
+        Route::patch('/experiences-touristiques/types-de-visite/{visitType}/basculer', [ProviderTouristVisitTypeController::class, 'toggle'])->name('tourist-experience.visit-types.toggle');
+        Route::delete('/experiences-touristiques/types-de-visite/{visitType}', [ProviderTouristVisitTypeController::class, 'destroy'])->name('tourist-experience.visit-types.destroy');
 
         // Fiche établissement Agence de Voyages — prestataires "Agences de Voyages & Tours"
         Route::get('/agences-voyages', [ProviderTravelAgencyController::class, 'dashboard'])->name('travel-agency.dashboard');
@@ -1269,9 +1514,27 @@ Route::middleware(['auth', 'verified', 'role:provider'])
         Route::get('/circuits/{tour}/modifier', [ProviderTourController::class, 'edit'])->name('tours.edit');
         Route::put('/circuits/{tour}', [ProviderTourController::class, 'update'])->name('tours.update');
         Route::delete('/circuits/{tour}', [ProviderTourController::class, 'destroy'])->name('tours.destroy');
+        Route::get('/circuits/{tour}/departs', [ProviderTourController::class, 'departures'])->name('tours.departures');
+        Route::post('/circuits/{tour}/departs', [ProviderTourController::class, 'storeDeparture'])->name('tours.departures.store');
+        Route::delete('/circuits/{tour}/departs/{departure}', [ProviderTourController::class, 'destroyDeparture'])->name('tours.departures.destroy');
+        Route::patch('/circuits/{tour}/departs/{departure}', [ProviderTourController::class, 'updateDeparture'])->name('tours.departures.update');
+        Route::post('/circuits/{tour}/departs/{departure}/garantir', [ProviderTourController::class, 'guaranteeDeparture'])->name('tours.departures.guarantee');
+        Route::post('/circuits/{tour}/departs/{departure}/annuler', [ProviderTourController::class, 'cancelDeparture'])->name('tours.departures.cancel');
 
         // Activités (Loisirs & Culture)
         Route::get('/activites', [ProviderActivityController::class, 'dashboard'])->name('activities.dashboard');
+        Route::get('/loisirs/reservations', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'bookings'])->name('activity-bookings.index');
+        Route::get('/loisirs/ressources', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'resources'])->name('leisure-resources.index');
+        Route::post('/loisirs/ressources', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'storeResource'])->name('leisure-resources.store');
+        Route::put('/loisirs/ressources/{resource}', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'updateResource'])->name('leisure-resources.update');
+        Route::delete('/loisirs/ressources/{resource}', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'destroyResource'])->name('leisure-resources.destroy');
+        Route::get('/loisirs/formules', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'packages'])->name('leisure-packages.index');
+        Route::post('/loisirs/formules', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'storePackage'])->name('leisure-packages.store');
+        Route::put('/loisirs/formules/{package}', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'updatePackage'])->name('leisure-packages.update');
+        Route::delete('/loisirs/formules/{package}', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'destroyPackage'])->name('leisure-packages.destroy');
+        Route::get('/loisirs/cartes', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'passes'])->name('leisure-passes.index');
+        Route::post('/loisirs/cartes', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'storePass'])->name('leisure-passes.store');
+        Route::put('/loisirs/cartes/{pass}', [\App\Http\Controllers\Provider\LeisureOfferController::class, 'updatePass'])->name('leisure-passes.update');
         Route::get('/activites/liste', [ProviderActivityController::class, 'index'])->name('activities.index');
         Route::get('/activites/creer', [ProviderActivityController::class, 'create'])->name('activities.create');
         Route::post('/activites', [ProviderActivityController::class, 'store'])->name('activities.store');
@@ -1281,6 +1544,17 @@ Route::middleware(['auth', 'verified', 'role:provider'])
 
         // Offres de transport (Transports & Mobilité)
         Route::get('/transport', [ProviderTransportController::class, 'dashboard'])->name('transport.dashboard');
+        Route::get('/transport/planning', [\App\Http\Controllers\Provider\TransportOpsController::class, 'bookings'])->name('transport-bookings.index');
+        Route::post('/transport/planning/{booking}/affecter', [\App\Http\Controllers\Provider\TransportOpsController::class, 'assign'])->name('transport-bookings.assign');
+        Route::post('/transport/planning/{booking}/statut', [\App\Http\Controllers\Provider\TransportOpsController::class, 'tripStatus'])->name('transport-bookings.status');
+        Route::post('/transport/planning/{booking}/etat-des-lieux', [\App\Http\Controllers\Provider\TransportOpsController::class, 'inspection'])->name('transport-bookings.inspection');
+        Route::get('/transport/planning/{booking}/fichier/{kind}/{index?}', [\App\Http\Controllers\Provider\TransportOpsController::class, 'file'])->name('transport-bookings.file')->whereIn('kind', ['license', 'id_card', 'out', 'in'])->whereNumber('index');
+        Route::get('/transport/flotte', [\App\Http\Controllers\Provider\TransportOpsController::class, 'fleet'])->name('transport-fleet.index');
+        Route::post('/transport/flotte/vehicules/{vehicle?}', [\App\Http\Controllers\Provider\TransportOpsController::class, 'saveVehicle'])->name('transport-fleet.vehicle');
+        Route::post('/transport/flotte/chauffeurs/{driver?}', [\App\Http\Controllers\Provider\TransportOpsController::class, 'saveDriver'])->name('transport-fleet.driver');
+        Route::get('/transport/lignes', [\App\Http\Controllers\Provider\TransportOpsController::class, 'trips'])->name('transport-trips.index');
+        Route::post('/transport/lignes', [\App\Http\Controllers\Provider\TransportOpsController::class, 'storeTrips'])->name('transport-trips.store');
+        Route::patch('/transport/lignes/{trip}', [\App\Http\Controllers\Provider\TransportOpsController::class, 'toggleTrip'])->name('transport-trips.toggle');
         Route::get('/transport/liste', [ProviderTransportController::class, 'index'])->name('transport.index');
         Route::get('/transport/creer', [ProviderTransportController::class, 'create'])->name('transport.create');
         Route::post('/transport', [ProviderTransportController::class, 'store'])->name('transport.store');
@@ -1293,16 +1567,57 @@ Route::middleware(['auth', 'verified', 'role:provider'])
         Route::get('/commandes-art', [ProviderArtworkOrderController::class, 'index'])->name('art-orders.index');
         Route::get('/commandes-art/{artworkOrder}', [ProviderArtworkOrderController::class, 'show'])->name('art-orders.show');
         Route::patch('/commandes-art/{artworkOrder}/statut', [ProviderArtworkOrderController::class, 'updateStatus'])->name('art-orders.status');
+        Route::post('/commandes-art/{artworkOrder}/expedier', [\App\Http\Controllers\Provider\ArtStudioController::class, 'ship'])->name('art-orders.ship');
+        Route::post('/commandes-art/{artworkOrder}/retour', [\App\Http\Controllers\Provider\ArtStudioController::class, 'returnDecision'])->name('art-orders.return');
+        Route::get('/page-artiste', [\App\Http\Controllers\Provider\ArtStudioController::class, 'editProfile'])->name('artist-profile.edit');
+        Route::put('/page-artiste', [\App\Http\Controllers\Provider\ArtStudioController::class, 'updateProfile'])->name('artist-profile.update');
+        Route::get('/offres-oeuvres', [\App\Http\Controllers\Provider\ArtStudioController::class, 'offers'])->name('art-offers.index');
+        Route::post('/offres-oeuvres/{offer}', [\App\Http\Controllers\Provider\ArtStudioController::class, 'respondOffer'])->name('art-offers.respond');
+        Route::get('/sur-mesure', [\App\Http\Controllers\Provider\ArtStudioController::class, 'commissions'])->name('art-commissions.index');
+        Route::post('/sur-mesure/{artCommission}', [\App\Http\Controllers\Provider\ArtStudioController::class, 'commissionAction'])->name('art-commissions.action');
+
+        // Litiges sur les réservations
+        Route::get('/litiges', [\App\Http\Controllers\DisputeController::class, 'providerIndex'])->name('disputes.index');
+        Route::post('/litiges/{dispute}/repondre', [\App\Http\Controllers\DisputeController::class, 'providerRespond'])->name('disputes.respond');
+        Route::get('/portefeuille/export', [ProviderWalletController::class, 'export'])->name('wallet.export');
+
+        // Demandes de réservation (restaurant, loisir, circuit)
+        Route::get('/demandes-reservation', [ProviderBookingRequestController::class, 'index'])->name('booking-requests.index');
+        Route::post('/demandes-reservation/{bookingRequest}/repondre', [ProviderBookingRequestController::class, 'respond'])->name('booking-requests.respond');
 
         // Réservations reçues
         Route::get('/reservations', [ProviderReservationController::class, 'index'])->name('reservations.index');
         Route::get('/reservations/{reservation}', [ProviderReservationController::class, 'show'])->name('reservations.show');
         Route::patch('/reservations/{reservation}/status', [ProviderReservationController::class, 'updateStatus'])->name('reservations.status');
 
+        // Bons cadeaux
+        Route::get('/planning', [\App\Http\Controllers\Provider\AgendaController::class, 'index'])->name('agenda');
+        Route::get('/codes-promo', [\App\Http\Controllers\Provider\PromoCodeController::class, 'index'])->name('promo-codes.index');
+        Route::post('/codes-promo', [\App\Http\Controllers\Provider\PromoCodeController::class, 'store'])->name('promo-codes.store');
+        Route::post('/codes-promo/{promoCode}/activation', [\App\Http\Controllers\Provider\PromoCodeController::class, 'toggle'])->name('promo-codes.toggle');
+        Route::get('/bons-cadeaux', [\App\Http\Controllers\Provider\GiftCardController::class, 'index'])->name('gift-cards.index');
+        Route::post('/bons-cadeaux/activation', [\App\Http\Controllers\Provider\GiftCardController::class, 'toggle'])->name('gift-cards.toggle');
+        Route::post('/bons-cadeaux/{giftCard}/valider', [\App\Http\Controllers\Provider\GiftCardController::class, 'redeem'])->name('gift-cards.redeem')->middleware('throttle:30,1');
+
+        // Comptes équipe (réservé au propriétaire)
+        Route::get('/equipe', [\App\Http\Controllers\Provider\TeamController::class, 'index'])->name('team.index');
+        Route::post('/equipe', [\App\Http\Controllers\Provider\TeamController::class, 'store'])->name('team.store')->middleware('throttle:10,1');
+        Route::delete('/equipe/{member}', [\App\Http\Controllers\Provider\TeamController::class, 'destroy'])->name('team.destroy');
+
+        // Contrôle des billets à l'entrée des sites (QR)
+        Route::get('/billets', [\App\Http\Controllers\Provider\TicketController::class, 'index'])->name('tickets.index');
+        Route::get('/billets/{code}', [\App\Http\Controllers\Provider\TicketController::class, 'show'])->where('code', '[A-Za-z0-9]{6,16}')->name('tickets.show');
+        Route::post('/billets/{code}/entree', [\App\Http\Controllers\Provider\TicketController::class, 'checkIn'])->where('code', '[A-Za-z0-9]{6,16}')->name('tickets.check-in')->middleware('throttle:60,1');
+
         // Visites reçues (sites touristiques) — volontairement séparé des réservations hôtelières ci-dessus
         Route::get('/visites', [ProviderTouristVisitController::class, 'index'])->name('tourist-visits.index');
-        Route::get('/visites/{touristVisit}', [ProviderTouristVisitController::class, 'show'])->name('tourist-visits.show');
+        Route::get('/visites/{touristVisit}', [ProviderTouristVisitController::class, 'show'])->name('tourist-visits.show')
+            ->missing(fn () => redirect()->route('provider.tourist-visits.index')->with('error', "Cette visite n'existe pas ou a été supprimée."));
         Route::patch('/visites/{touristVisit}/statut', [ProviderTouristVisitController::class, 'updateStatus'])->name('tourist-visits.status');
+
+        // Vérification du compte (justificatifs exigés avant retrait)
+        Route::get('/verification', [ProviderVerificationController::class, 'index'])->name('verification.index');
+        Route::post('/verification', [ProviderVerificationController::class, 'store'])->name('verification.store')->middleware('throttle:10,1');
 
         // Portefeuille (solde acomptes, retraits)
         Route::get('/portefeuille', [ProviderWalletController::class, 'index'])->name('wallet.index');
@@ -1318,6 +1633,8 @@ Route::middleware(['auth', 'verified', 'role:provider'])
 
         // Analytics
         Route::get('/analytics', [ProviderAnalyticsController::class, 'index'])->name('analytics');
+        Route::get('/analyse-avancee', [\App\Http\Controllers\Provider\ProviderInsightsController::class, 'show'])->name('insights');
+        Route::get('/analyse-avancee/export', [\App\Http\Controllers\Provider\ProviderInsightsController::class, 'export'])->name('insights.export');
 
         // Médias
         Route::get('/medias', [ProviderMediaController::class, 'index'])->name('media.index');
@@ -1336,6 +1653,7 @@ Route::middleware(['auth', 'verified', 'role:provider'])
         // Messagerie avec les clients (distincte de la messagerie support admin ci-dessus)
         Route::get('/messages-clients', [ProviderClientConversationController::class, 'index'])->name('client-conversations.index');
         Route::get('/messages-clients/poll', [ProviderClientConversationController::class, 'poll'])->name('client-conversations.poll');
+        Route::post('/messages-clients/reponses-rapides', [ProviderClientConversationController::class, 'updateQuickReplies'])->name('client-conversations.quick-replies');
         Route::get('/messages-clients/{conversation}', [ProviderClientConversationController::class, 'show'])->name('client-conversations.show');
         Route::post('/messages-clients/{conversation}/reply', [ProviderClientConversationController::class, 'reply'])->name('client-conversations.reply')->middleware('throttle:20,1');
         Route::post('/messages-clients/{conversation}/signaler', [ProviderClientConversationController::class, 'report'])->name('client-conversations.report');
@@ -1378,6 +1696,25 @@ Route::middleware(['auth', 'verified', 'role:visitor'])
 
         Route::get('/reservations', [VisitorReservationController::class, 'index'])->name('reservations.index');
         Route::get('/reservations/{reservation}', [VisitorReservationController::class, 'show'])->name('reservations.show');
+        Route::post('/reservations/{reservation}/litige', [\App\Http\Controllers\DisputeController::class, 'store'])->name('reservations.dispute')->middleware('throttle:5,60');
+        Route::post('/reservations/{reservation}/annuler', [VisitorReservationController::class, 'cancel'])->name('reservations.cancel')->middleware('throttle:10,1');
+        Route::get('/demandes', [BookingRequestController::class, 'index'])->name('booking-requests.index');
+        Route::post('/demandes/{bookingRequest}/payer', [\App\Http\Controllers\BookingPaymentController::class, 'pay'])->name('booking-requests.pay')->middleware('throttle:10,1');
+        Route::post('/demandes/{bookingRequest}/annuler', [BookingRequestController::class, 'cancel'])->name('booking-requests.cancel')->middleware('throttle:10,1');
+        Route::get('/visites', [TouristVisitController::class, 'mine'])->name('tourist-visits.index');
+        Route::get('/voyages', [\App\Http\Controllers\TourBookingController::class, 'mine'])->name('tour-bookings.index');
+        Route::get('/trajets', [\App\Http\Controllers\TransportBookingController::class, 'mine'])->name('transport-bookings.index');
+        Route::post('/trajets/{transportBooking}/annuler', [\App\Http\Controllers\TransportBookingController::class, 'cancel'])->name('transport-bookings.cancel')->middleware('throttle:10,1');
+        Route::post('/trajets/{transportBooking}/modifier', [\App\Http\Controllers\TransportBookingController::class, 'modify'])->name('transport-bookings.modify')->middleware('throttle:10,1');
+        Route::post('/trajets/{transportBooking}/documents', [\App\Http\Controllers\TransportBookingController::class, 'documents'])->name('transport-bookings.documents')->middleware('throttle:10,1');
+        Route::get('/activites', [\App\Http\Controllers\LeisureBookingController::class, 'mine'])->name('activity-bookings.index');
+        Route::post('/activites/{activityBooking}/annuler', [\App\Http\Controllers\LeisureBookingController::class, 'cancel'])->name('activity-bookings.cancel')->middleware('throttle:10,1');
+        Route::post('/activites/{activityBooking}/reporter', [\App\Http\Controllers\LeisureBookingController::class, 'reschedule'])->name('activity-bookings.reschedule')->middleware('throttle:10,1');
+        Route::delete('/activites/liste-attente/{waitlist}', [\App\Http\Controllers\LeisureBookingController::class, 'leaveWaitlist'])->name('activity-waitlist.leave');
+        Route::post('/voyages/{tourBooking}/payer', [\App\Http\Controllers\TourBookingController::class, 'pay'])->name('tour-bookings.pay')->middleware('throttle:10,1');
+        Route::post('/voyages/{tourBooking}/annuler', [\App\Http\Controllers\TourBookingController::class, 'cancel'])->name('tour-bookings.cancel')->middleware('throttle:10,1');
+        Route::put('/voyages/{tourBooking}/voyageurs', [\App\Http\Controllers\TourBookingController::class, 'updateTravelers'])->name('tour-bookings.travelers')->middleware('throttle:20,1');
+        Route::post('/visites/{touristVisit}/annuler', [TouristVisitController::class, 'cancel'])->name('tourist-visits.cancel')->middleware('throttle:10,1');
         Route::get('/mes-recus', [VisitorReservationController::class, 'receipts'])->name('receipts.index');
 
         Route::get('/messages', [VisitorConversationController::class, 'index'])->name('conversations.index');
@@ -1400,6 +1737,7 @@ Route::middleware(['auth', 'verified', 'role:visitor'])
 
         Route::get('/favoris', [VisitorFavoriteController::class, 'index'])->name('favorites.index');
         Route::post('/favoris', [VisitorFavoriteController::class, 'store'])->name('favorites.store');
+        Route::post('/favoris/basculer', [VisitorFavoriteController::class, 'toggle'])->name('favorites.toggle')->middleware('throttle:60,1');
         Route::delete('/favoris/{favorite}', [VisitorFavoriteController::class, 'destroy'])->name('favorites.destroy');
 
         Route::get('/notifications', [VisitorNotificationController::class, 'index'])->name('notifications.index');
@@ -1409,4 +1747,13 @@ Route::middleware(['auth', 'verified', 'role:visitor'])
         Route::get('/mes-achats/{purchase:uuid}/telecharger', [VisitorPurchaseController::class, 'download'])->name('purchases.download');
 
         Route::get('/mes-commandes-art', [VisitorArtOrderController::class, 'index'])->name('art-orders.index');
+        Route::post('/mes-commandes-art/{artworkOrder}/echeance', [ArtworkPurchaseController::class, 'payInstallment'])->name('art-orders.installment')->middleware('throttle:10,1');
+        Route::post('/mes-commandes-art/{artworkOrder}/reception', [\App\Http\Controllers\ArtMarketController::class, 'confirmReceipt'])->name('art-orders.receipt');
+        Route::post('/mes-commandes-art/{artworkOrder}/retour', [\App\Http\Controllers\ArtMarketController::class, 'requestReturn'])->name('art-orders.return')->middleware('throttle:5,1');
+        Route::get('/sur-mesure', [\App\Http\Controllers\ArtMarketController::class, 'myCommissions'])->name('art-commissions.index');
+        Route::post('/sur-mesure/{artCommission}/payer', [\App\Http\Controllers\ArtMarketController::class, 'payCommission'])->name('art-commissions.pay')->middleware('throttle:10,1');
+        Route::post('/sur-mesure/{artCommission}/esquisse', [\App\Http\Controllers\ArtMarketController::class, 'sketchDecision'])->name('art-commissions.sketch');
+        Route::post('/sur-mesure/{artCommission}/annuler', [\App\Http\Controllers\ArtMarketController::class, 'cancelCommission'])->name('art-commissions.cancel');
+        Route::post('/offres/{offer}/accepter', [\App\Http\Controllers\ArtMarketController::class, 'acceptCounter'])->name('art-offers.accept');
+        Route::post('/offres/{offer}/retirer', [\App\Http\Controllers\ArtMarketController::class, 'withdrawOffer'])->name('art-offers.withdraw');
     });

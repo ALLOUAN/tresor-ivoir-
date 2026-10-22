@@ -115,9 +115,11 @@ class ArtworkManagementController extends Controller
 
     public function approve(Artwork $artwork): RedirectResponse
     {
+        $wasPublished = $artwork->status === Artwork::STATUS_PUBLISHED;
         $artwork->update(['status' => Artwork::STATUS_PUBLISHED]);
+        $n = $wasPublished ? 0 : app(\App\Services\ArtSalesService::class)->notifyFollowers($artwork);
 
-        return back()->with('success', 'Œuvre approuvée et publiée.');
+        return back()->with('success', 'Œuvre approuvée et publiée.'.($n ? ' '.$n.' abonné(s) prévenu(s).' : ''));
     }
 
     public function reject(Artwork $artwork): RedirectResponse

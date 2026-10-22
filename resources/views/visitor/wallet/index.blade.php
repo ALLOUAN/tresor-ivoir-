@@ -1,7 +1,7 @@
 @extends('layouts.visitor-public')
 
-@section('title', 'Mon portefeuille')
-@section('page-title', 'Mon portefeuille')
+@section('title', __('Mon portefeuille'))
+@section('page-title', __('Mon portefeuille'))
 
 @section('content')
 <div class="max-w-5xl mx-auto">
@@ -18,32 +18,32 @@
         <div class="bg-green-900 border border-slate-800 rounded-2xl p-6">
             <div class="flex items-start justify-between gap-3">
                 <div>
-                    <p class="text-slate-500 text-xs uppercase tracking-widest mb-1">Solde disponible</p>
-                    <p class="text-white text-3xl font-bold">{{ number_format($wallet->balance_available_xof, 0, ',', ' ') }} <span class="text-lg text-slate-400 font-normal">XOF</span></p>
+                    <p class="text-slate-500 text-xs uppercase tracking-widest mb-1">{{ __('Solde disponible') }}</p>
+                    <p class="text-white text-3xl font-bold">{{ number_format($wallet->balance_available_xof, 0, ',', ' ') }} <span class="text-lg text-slate-400 font-normal">{{ __('FCFA') }}</span></p>
                 </div>
                 @if($wallet->balance_available_xof > 0)
                 <a href="#retrait" class="shrink-0 inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition">
-                    <i class="fas fa-money-bill-transfer text-xs"></i> Retirer
+                    <i class="fas fa-money-bill-transfer text-xs"></i> {{ __('Retirer') }}
                 </a>
                 @endif
             </div>
-            <p class="text-slate-500 text-xs mt-2">Utilisable immédiatement pour payer l'acompte d'une réservation.</p>
+            <p class="text-slate-500 text-xs mt-2">{{ __('Utilisable immédiatement pour payer l\'acompte d\'une réservation.') }}</p>
         </div>
 
         <div class="bg-green-900 border border-slate-800 rounded-2xl p-6">
-            <p class="text-white font-semibold text-sm mb-3"><i class="fas fa-plus-circle text-orange-400 mr-1.5"></i>Recharger mon solde</p>
+            <p class="text-white font-semibold text-sm mb-3"><i class="fas fa-plus-circle text-orange-400 mr-1.5"></i>{{ __('Recharger mon solde') }}</p>
             <div id="topup-error" class="hidden mb-3 px-3 py-2 bg-red-900/30 border border-red-700/40 rounded-lg text-red-300 text-xs"></div>
             <div class="flex items-center gap-2">
                 <input type="number" id="topup-amount" min="{{ $minTopup }}" max="{{ $maxTopup }}" step="1"
-                       placeholder="Montant en XOF"
+                       placeholder="{{ __('Montant en FCFA') }}"
                        class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-100">
                 <button type="button" id="topup-submit"
                         class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition disabled:opacity-50">
                     <i class="fas fa-arrow-right" id="topup-icon"></i>
-                    <span id="topup-label">Recharger</span>
+                    <span id="topup-label">{{ __('Recharger') }}</span>
                 </button>
             </div>
-            <p class="text-slate-600 text-[11px] mt-2">Entre {{ number_format($minTopup, 0, ',', ' ') }} et {{ number_format($maxTopup, 0, ',', ' ') }} XOF · paiement sécurisé via CinetPay.</p>
+            <p class="text-slate-600 text-[11px] mt-2">{{ __('Entre') }} {{ number_format($minTopup, 0, ',', ' ') }} {{ __('et') }} {{ number_format($maxTopup, 0, ',', ' ') }} {{ __('FCFA · paiement sécurisé via CinetPay.') }}</p>
         </div>
     </div>
 
@@ -51,31 +51,31 @@
         <div class="lg:col-span-2">
             <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-slate-800">
-                    <h2 class="text-white font-semibold">Historique des mouvements</h2>
+                    <h2 class="text-white font-semibold">{{ __('Historique des mouvements') }}</h2>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b border-slate-800 text-slate-500 text-xs uppercase">
-                                <th class="text-left px-5 py-3">Date</th>
-                                <th class="text-left px-5 py-3">Type</th>
-                                <th class="text-left px-5 py-3">Réservation</th>
-                                <th class="text-right px-5 py-3">Montant</th>
+                                <th class="text-left px-5 py-3">{{ __('Date') }}</th>
+                                <th class="text-left px-5 py-3">{{ __('Type') }}</th>
+                                <th class="text-left px-5 py-3">{{ __('Réservation') }}</th>
+                                <th class="text-right px-5 py-3">{{ __('Montant') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800/80">
                             @forelse($transactions as $t)
-                                <tr class="hover:bg-slate-800/30">
+                                <tr class="hover:bg-[#f3eee4]">
                                     <td class="px-5 py-3 text-slate-300">{{ $t->created_at?->format('d/m/Y H:i') }}</td>
                                     <td class="px-5 py-3 text-slate-200">{{ $t->labelForType() }}</td>
                                     <td class="px-5 py-3 text-slate-400 text-xs">{{ $t->reservation?->reference ?? '—' }}</td>
                                     <td class="px-5 py-3 text-right font-semibold {{ $t->amount_xof >= 0 ? 'text-emerald-300' : 'text-rose-300' }}">
-                                        {{ $t->amount_xof >= 0 ? '+' : '' }}{{ number_format($t->amount_xof, 0, ',', ' ') }} XOF
+                                        {{ $t->amount_xof >= 0 ? '+' : '' }}{{ number_format($t->amount_xof, 0, ',', ' ') }} {{ __('FCFA') }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-5 py-10 text-center text-slate-500">Aucun mouvement pour le moment.</td>
+                                    <td colspan="4" class="px-5 py-10 text-center text-slate-500">{{ __('Aucun mouvement pour le moment.') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -91,37 +91,37 @@
             @php $pendingVerification = $payoutRequests->firstWhere('status', 'pending_verification'); @endphp
             @if($pendingVerification)
             <div class="bg-green-900 border border-orange-500/40 rounded-xl p-5">
-                <h2 class="text-white font-semibold text-sm mb-1"><i class="fas fa-shield-halved text-orange-400 mr-1.5"></i>Confirmez votre retrait</h2>
-                <p class="text-slate-500 text-xs mb-4">Un code à 6 chiffres a été envoyé par email pour confirmer le retrait de <span class="text-orange-300 font-semibold">{{ number_format($pendingVerification->amount_xof, 0, ',', ' ') }} XOF</span>.</p>
+                <h2 class="text-white font-semibold text-sm mb-1"><i class="fas fa-shield-halved text-orange-400 mr-1.5"></i>{{ __('Confirmez votre retrait') }}</h2>
+                <p class="text-slate-500 text-xs mb-4">{{ __('Un code à 6 chiffres a été envoyé par email pour confirmer le retrait de') }} <span class="text-orange-300 font-semibold">{{ number_format($pendingVerification->amount_xof, 0, ',', ' ') }} {{ __('FCFA') }}</span>.</p>
                 <form method="POST" action="{{ route('visitor.wallet.payout.verify', $pendingVerification) }}" class="flex items-center gap-2">
                     @csrf
-                    <input type="text" name="code" required maxlength="6" pattern="\d{6}" inputmode="numeric" placeholder="Code à 6 chiffres"
+                    <input type="text" name="code" required maxlength="6" pattern="\d{6}" inputmode="numeric" placeholder="{{ __('Code à 6 chiffres') }}"
                            class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 tracking-widest">
-                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">Confirmer</button>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">{{ __('Confirmer') }}</button>
                 </form>
                 <form method="POST" action="{{ route('visitor.wallet.payout.resend', $pendingVerification) }}" class="mt-2">
                     @csrf
-                    <button type="submit" class="text-orange-400 hover:text-orange-300 text-xs transition">Renvoyer le code</button>
+                    <button type="submit" class="text-orange-400 hover:text-orange-300 text-xs transition">{{ __('Renvoyer le code') }}</button>
                 </form>
             </div>
             @endif
 
             <div id="retrait" class="bg-green-900 border border-slate-800 rounded-xl p-5 scroll-mt-24">
-                <h2 class="text-white font-semibold text-sm mb-1">Demander un retrait</h2>
-                <p class="text-slate-500 text-xs mb-4">Solde disponible : <span class="text-emerald-300 font-semibold">{{ number_format($wallet->balance_available_xof, 0, ',', ' ') }} XOF</span></p>
+                <h2 class="text-white font-semibold text-sm mb-1">{{ __('Demander un retrait') }}</h2>
+                <p class="text-slate-500 text-xs mb-4">{{ __('Solde disponible :') }} <span class="text-emerald-300 font-semibold">{{ number_format($wallet->balance_available_xof, 0, ',', ' ') }} {{ __('FCFA') }}</span></p>
 
                 @if($wallet->balance_available_xof <= 0)
-                    <p class="text-slate-500 text-sm">Aucun solde disponible pour le moment.</p>
+                    <p class="text-slate-500 text-sm">{{ __('Aucun solde disponible pour le moment.') }}</p>
                 @else
                 <form method="POST" action="{{ route('visitor.wallet.request-payout') }}" class="space-y-3">
                     @csrf
                     <div>
-                        <label class="block text-slate-400 text-xs mb-1">Montant (XOF)</label>
+                        <label class="block text-slate-400 text-xs mb-1">{{ __('Montant (FCFA)') }}</label>
                         <input type="number" name="amount_xof" min="1" max="{{ $wallet->balance_available_xof }}" value="{{ old('amount_xof', $wallet->balance_available_xof) }}" required
                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     </div>
                     <div>
-                        <label class="block text-slate-400 text-xs mb-1">Réseau de transaction</label>
+                        <label class="block text-slate-400 text-xs mb-1">{{ __('Réseau de transaction') }}</label>
                         <select name="method" id="payout-method" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                             @foreach(\App\Models\PayoutRequest::METHOD_LABELS as $value => $label)
                                 <option value="{{ $value }}" data-mobile-money="{{ in_array($value, \App\Models\PayoutRequest::MOBILE_MONEY_METHODS) ? '1' : '0' }}" @selected(old('method', $user->payout_method) === $value)>{{ $label }}</option>
@@ -129,14 +129,14 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-slate-400 text-xs mb-1" id="payout-destination-label">Numéro de téléphone</label>
+                        <label class="block text-slate-400 text-xs mb-1" id="payout-destination-label">{{ __('Numéro de téléphone') }}</label>
                         <input type="tel" id="payout-destination" name="payout_destination" required maxlength="255"
                                value="{{ old('payout_destination', $user->payout_account_number) }}"
                                placeholder="+225 07 00 00 00 00"
                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     </div>
                     <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg">
-                        <i class="fas fa-paper-plane text-xs"></i> Envoyer la demande
+                        <i class="fas fa-paper-plane text-xs"></i> {{ __('Envoyer la demande') }}
                     </button>
                 </form>
                 @endif
@@ -145,13 +145,13 @@
             @if($payoutRequests->isNotEmpty())
             <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-slate-800">
-                    <h2 class="text-white font-semibold text-sm">Mes demandes de retrait</h2>
+                    <h2 class="text-white font-semibold text-sm">{{ __('Mes demandes de retrait') }}</h2>
                 </div>
                 <div class="divide-y divide-slate-800">
                     @foreach($payoutRequests as $req)
                     <div class="px-5 py-3 flex items-center justify-between text-sm">
                         <div>
-                            <p class="text-white font-medium">{{ number_format($req->amount_xof, 0, ',', ' ') }} XOF</p>
+                            <p class="text-white font-medium">{{ number_format($req->amount_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                             <p class="text-slate-500 text-xs">{{ $req->created_at?->format('d/m/Y') }}</p>
                         </div>
                         @php
@@ -184,7 +184,7 @@
         errorBox.classList.add('hidden');
         const amount = parseInt(input.value, 10);
         if (!amount || amount <= 0) {
-            errorBox.textContent = 'Merci de saisir un montant valide.';
+            errorBox.textContent = {{ \Illuminate\Support\Js::from(__('Merci de saisir un montant valide.')) }};
             errorBox.classList.remove('hidden');
             return;
         }
@@ -206,10 +206,10 @@
                 window.location.href = data.payment_url;
                 return;
             }
-            errorBox.textContent = data.message || 'Une erreur est survenue, merci de réessayer.';
+            errorBox.textContent = data.message || {{ \Illuminate\Support\Js::from(__('Une erreur est survenue, merci de réessayer.')) }};
             errorBox.classList.remove('hidden');
         } catch (e) {
-            errorBox.textContent = 'Erreur réseau, merci de réessayer.';
+            errorBox.textContent = {{ \Illuminate\Support\Js::from(__('Erreur réseau, merci de réessayer.')) }};
             errorBox.classList.remove('hidden');
         } finally {
             btn.disabled = false;
@@ -227,11 +227,11 @@
     function syncDestinationField() {
         const isMobileMoney = methodSelect.options[methodSelect.selectedIndex]?.dataset.mobileMoney === '1';
         if (isMobileMoney) {
-            destLabel.textContent = 'Numéro de téléphone';
+            destLabel.textContent = {{ \Illuminate\Support\Js::from(__('Numéro de téléphone')) }};
             destInput.type = 'tel';
             destInput.placeholder = '+225 07 00 00 00 00';
         } else {
-            destLabel.textContent = 'Numéro de compte bancaire / IBAN';
+            destLabel.textContent = {{ \Illuminate\Support\Js::from(__('Numéro de compte bancaire / IBAN')) }};
             destInput.type = 'text';
             destInput.placeholder = 'CI00 0000 0000 0000 0000 0000 000';
         }

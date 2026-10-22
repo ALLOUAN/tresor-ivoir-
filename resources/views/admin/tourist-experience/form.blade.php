@@ -8,6 +8,12 @@
    class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition">
     <i class="fas fa-arrow-left"></i> Retour à la liste
 </a>
+@isset($experience)
+<a href="{{ route('admin.tourist-experiences.visit-types.index', $experience) }}"
+   class="inline-flex items-center gap-1.5 px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition">
+    <i class="fas fa-ticket-simple"></i> {{ __('Types de visite') }}
+</a>
+@endisset
 @endsection
 
 @section('content')

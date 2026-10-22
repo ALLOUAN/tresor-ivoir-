@@ -53,6 +53,7 @@
                             </span>
                         </td>
                         <td class="px-5 py-3 align-top text-right whitespace-nowrap">
+                            <a href="{{ route('provider.tours.departures', $tour) }}" class="text-orange-300 hover:text-orange-200 text-xs mr-3"><i class="fas fa-calendar-days"></i> Départs</a>
                             <a href="{{ route('provider.tours.edit', $tour) }}" class="text-slate-400 hover:text-white text-xs mr-3">
                                 <i class="fas fa-pen"></i> Modifier
                             </a>

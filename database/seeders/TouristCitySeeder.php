@@ -30,7 +30,7 @@ class TouristCitySeeder extends Seeder
                 'name'                  => 'Yamoussoukro',
                 'slug'                  => 'yamoussoukro',
                 'district'              => 'District Autonome de Yamoussoukro',
-                'region_administrative' => 'Lacs',
+                'region_administrative' => 'District autonome de Yamoussoukro',
                 'description'           => 'Capitale politique de la Côte d\'Ivoire et ville natale du président Félix Houphouët-Boigny. Elle abrite la Basilique Notre-Dame de la Paix, plus grande église du monde, et ses célèbres lacs aux crocodiles sacrés.',
                 'thumbnail'             => 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Yamoussoukro_basilica.jpg/640px-Yamoussoukro_basilica.jpg',
                 'cover_image'           => 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Yamoussoukro_basilica.jpg/1280px-Yamoussoukro_basilica.jpg',

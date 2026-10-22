@@ -117,6 +117,11 @@ class WalletService
             Mail::to($providerEmail)->queue(new ReservationReceivedProviderMail($reservation));
         }
 
+        $sms = app(TextMessenger::class);
+        $dates = $reservation->check_in?->format('d/m').' au '.$reservation->check_out?->format('d/m');
+        $sms->sendLater($reservation->phone, 'Trésors d\'Ivoire : réservation '.$reservation->reference.' confirmée chez '.$reservation->accommodation_name.' du '.$dates.'. Acompte reçu, merci !');
+        $sms->sendLater($provider?->phone, 'Trésors d\'Ivoire : nouvelle réservation '.$reservation->reference.' ('.$reservation->room_name.', '.$dates.') de '.$reservation->full_name.'.');
+
         if ($providerUser) {
             $providerUser->notify(new VisitorSystemNotification(
                 'Nouvelle réservation',
@@ -156,7 +161,9 @@ class WalletService
             $platformWallet = $this->lockedWallet(Wallet::platform()->id);
 
             try {
-                $this->insertArtworkRow($platformWallet, 'balance_available_xof', WalletTransaction::TYPE_ART_SALE_COLLECTED, $amountXof, $order, "Vente encaissée — {$order->reference}");
+                // Paiement en plusieurs fois : les échéances déjà reçues par la plateforme ne sont pas encaissées une seconde fois.
+                $prepaid = (int) WalletTransaction::where('artwork_order_id', $order->id)->where('type', 'like', 'art_installment_%')->sum('amount_xof');
+                $this->insertArtworkRow($platformWallet, 'balance_available_xof', WalletTransaction::TYPE_ART_SALE_COLLECTED, $amountXof - $prepaid, $order, "Vente encaissée — {$order->reference}");
             } catch (QueryException $e) {
                 if ($this->isDuplicateKeyViolation($e)) {
                     return; // course concurrente (webhook + retour navigateur) : déjà traité
@@ -380,8 +387,34 @@ class WalletService
             ->whereNotIn('reservation_id', $alreadyReleased)
             ->with('reservation')
             ->get()
-            ->filter(fn (WalletTransaction $row) => $row->reservation?->check_in?->lte($cutoff))
+            ->filter(fn (WalletTransaction $row) => $row->reservation?->check_in?->lte($cutoff)
+                && $this->reservationAllowsRelease($row->reservation))
             ->each(fn (WalletTransaction $row) => $this->releaseSingleCredit($row));
+    }
+
+    /**
+     * Une réservation annulée ou remboursée ne libère jamais la part du prestataire : les fonds
+     * restent en attente (gelés) jusqu'au remboursement du client par l'administration.
+     */
+    private function reservationAllowsRelease(Reservation $reservation): bool
+    {
+        if ($reservation->payment_status === Reservation::PAYMENT_REFUNDED) {
+            return false;
+        }
+
+        // Litige en cours : la part du prestataire attend la décision de l'administration.
+        if (\App\Models\Dispute::where('reservation_id', $reservation->id)->where('status', \App\Models\Dispute::STATUS_OPEN)->exists()) {
+            return false;
+        }
+
+        // Annulation tardive par le client, hors délai d'annulation gratuite : rien n'est dû au
+        // client, l'acompte revient donc normalement au prestataire.
+        if ($reservation->status === Reservation::STATUS_CANCELLED) {
+            return $reservation->cancelled_by === Reservation::CANCELLED_BY_CLIENT
+                && $reservation->refund_due_xof === 0;
+        }
+
+        return true;
     }
 
     private function releaseSingleCredit(WalletTransaction $pendingRow): void
@@ -391,6 +424,12 @@ class WalletService
                 ->where('type', WalletTransaction::TYPE_PROVIDER_CREDIT_AVAILABLE)
                 ->exists();
             if ($alreadyReleased) {
+                return;
+            }
+
+            // Re-vérifié sous verrou : une annulation enregistrée entre le filtrage et ce point ne libère rien.
+            $reservation = Reservation::whereKey($pendingRow->reservation_id)->lockForUpdate()->first();
+            if (! $reservation || ! $this->reservationAllowsRelease($reservation)) {
                 return;
             }
 
@@ -498,12 +537,18 @@ class WalletService
             ->get()
             ->filter(fn (WalletTransaction $row) => $row->artworkOrder
                 && $row->artworkOrder->status === ArtworkOrder::STATUS_SHIPPED
+                && ! in_array($row->artworkOrder->return_status, ['requested', 'accepted'], true)
                 && $row->artworkOrder->shipped_at?->lte($cutoff))
             ->each(fn (WalletTransaction $row) => $this->releaseArtworkOrderCredit($row->artworkOrder));
     }
 
     public function requestPayout(Provider $provider, int $amountXof, string $method, string $destination, ?string $ipAddress = null, ?string $userAgent = null): PayoutRequest
     {
+        // Aucun argent ne sort vers un établissement dont l'identité n'a pas été vérifiée.
+        if (! $provider->is_verified) {
+            throw new \RuntimeException('Votre compte doit être vérifié avant tout retrait : envoyez vos justificatifs depuis « Vérification du compte ».');
+        }
+
         return DB::transaction(function () use ($provider, $amountXof, $method, $destination, $ipAddress, $userAgent) {
             $wallet = $this->lockedWallet(Wallet::forProvider($provider)->id);
             $outstandingDebt = (int) ProviderDebt::outstanding()->where('provider_id', $provider->id)->sum('amount_xof');
@@ -707,7 +752,7 @@ class WalletService
         PayoutAuditLogger::log($request, 'admin_rejected', PayoutAuditLog::ACTOR_ADMIN, $admin, ['note' => $note]);
     }
 
-    public function markPayoutPaid(PayoutRequest $request, User $admin, string $paymentReference): void
+    public function markPayoutPaid(PayoutRequest $request, ?User $admin, string $paymentReference): void
     {
         DB::transaction(function () use ($request, $admin, $paymentReference) {
             $request = PayoutRequest::whereKey($request->id)->lockForUpdate()->firstOrFail();
@@ -738,10 +783,11 @@ class WalletService
                 'status' => PayoutRequest::STATUS_PAID,
                 'paid_at' => now(),
                 'payment_reference' => $paymentReference,
-                'reviewed_by' => $request->reviewed_by ?? $admin->id,
+                'reviewed_by' => $request->reviewed_by ?? $admin?->id,
             ]);
 
-            PayoutAuditLogger::log($request, 'paid', PayoutAuditLog::ACTOR_ADMIN, $admin, ['payment_reference' => $paymentReference]);
+            // $admin null = versement automatique confirmé par l'opérateur (payouts:auto-transfer).
+            PayoutAuditLogger::log($request, 'paid', $admin ? PayoutAuditLog::ACTOR_ADMIN : PayoutAuditLog::ACTOR_SYSTEM, $admin, ['payment_reference' => $paymentReference]);
         });
     }
 
@@ -932,9 +978,9 @@ class WalletService
      * intégral), la part prestataire est toujours créditée disponible immédiatement
      * (jamais "pending"), donc pas de répartition available/pending à reverser non plus.
      */
-    public function recordManualRefundForVisit(TouristVisit $visit, User $admin, ?string $note = null): void
+    public function recordManualRefundForVisit(TouristVisit $visit, User $admin, ?string $note = null, bool $creditClientWallet = false): void
     {
-        DB::transaction(function () use ($visit, $admin, $note) {
+        DB::transaction(function () use ($visit, $admin, $note, $creditClientWallet) {
             $visit = TouristVisit::whereKey($visit->id)->lockForUpdate()->firstOrFail();
             if ($visit->status === TouristVisit::STATUS_REFUNDED) {
                 return;
@@ -989,8 +1035,9 @@ class WalletService
                 }
             }
 
+            // Annulation gratuite par le client : le montant revient toujours sur son solde, quel que soit le moyen de paiement.
             $wasPaidByWallet = $visit->gateway === 'wallet';
-            if ($wasPaidByWallet && $visit->user_id) {
+            if (($wasPaidByWallet || $creditClientWallet) && $visit->user_id) {
                 $clientWallet = $this->lockedWallet(Wallet::forUser($visit->user)->id);
 
                 try {

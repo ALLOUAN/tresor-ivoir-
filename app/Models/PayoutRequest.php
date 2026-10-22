@@ -88,6 +88,11 @@ class PayoutRequest extends Model
         'method',
         'payout_destination',
         'status',
+        'transfer_status',
+        'transfer_reference',
+        'transfer_attempts',
+        'transfer_attempted_at',
+        'transfer_error',
         'risk_score',
         'risk_level',
         'risk_flags',
@@ -144,7 +149,7 @@ class PayoutRequest extends Model
 
     public function labelForStatus(): string
     {
-        return self::STATUS_LABELS[$this->status] ?? $this->status;
+        return __(self::STATUS_LABELS[$this->status] ?? $this->status);
     }
 
     public function labelForDecision(): ?string
@@ -154,7 +159,7 @@ class PayoutRequest extends Model
 
     public function labelForMethod(): string
     {
-        return self::METHOD_LABELS[$this->method] ?? $this->method;
+        return __(self::METHOD_LABELS[$this->method] ?? $this->method);
     }
 
     public function holderName(): string

@@ -15,6 +15,8 @@ use Illuminate\View\View;
 
 class ActivityManagementController extends Controller
 {
+    use \App\Http\Controllers\Concerns\ValidatesActivityMarketFields;
+
     public function index(Request $request): View
     {
         $search = $request->get('q');
@@ -143,7 +145,7 @@ class ActivityManagementController extends Controller
             'price_xof' => ['required', 'integer', 'min:0'],
             'duration_minutes' => ['nullable', 'integer', 'min:1', 'max:10080'],
             'max_participants' => ['nullable', 'integer', 'min:1', 'max:999'],
-        ]);
+        ]) + $this->activityMarketData($request);
     }
 
     /**

@@ -6,15 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\MenuCategory;
 use App\Models\MenuItem;
 use App\Models\Provider;
+use App\Services\ImageUploadSecurityService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class MenuManagementController extends Controller
 {
+    public function __construct(private readonly ImageUploadSecurityService $imageUpload) {}
+
     public function index(Request $request): View
     {
         $search = $request->get('q');
@@ -22,7 +26,6 @@ class MenuManagementController extends Controller
         $availability = $request->get('availability');
 
         $query = MenuItem::query()
-            ->withTrashed()
             ->with(['provider', 'category'])
             ->latest();
 
@@ -67,7 +70,7 @@ class MenuManagementController extends Controller
 
         $images = [];
         foreach ($this->uploadedImages($request) as $file) {
-            $images[] = $this->storeUploadedFile($file, 'menu/admin', 'plat');
+            $images[] = $this->imageUpload->store($file, 'menu/'.$validated['provider_id'], 'plat');
         }
 
         MenuItem::create([
@@ -83,18 +86,18 @@ class MenuManagementController extends Controller
     {
         return view('admin.menu.form', [
             'menuItem' => $menuItem,
-            'categories' => MenuCategory::where('is_active', true)->orderBy('sort_order')->get(),
+            'categories' => MenuCategory::where('is_active', true)->orWhere('id', $menuItem->category_id)->orderBy('sort_order')->get(),
             'restaurants' => $this->restaurantProviders(),
         ]);
     }
 
     public function update(Request $request, MenuItem $menuItem): RedirectResponse
     {
-        $validated = $this->validated($request);
+        $validated = $this->validated($request, $menuItem);
 
         $images = $this->removeMarkedImages($request, $menuItem->images ?? []);
         foreach ($this->uploadedImages($request) as $file) {
-            $images[] = $this->storeUploadedFile($file, 'menu/admin', 'plat');
+            $images[] = $this->imageUpload->store($file, 'menu/'.$validated['provider_id'], 'plat');
         }
 
         $menuItem->update([
@@ -132,16 +135,24 @@ class MenuManagementController extends Controller
             ->get(['id', 'name']);
     }
 
-    /** @return array<string, mixed> */
-    private function validated(Request $request): array
+    /**
+     * Le plat appartient forcément à un prestataire « Restaurants & Gastronomie », dans une catégorie
+     * active (ou sa catégorie actuelle) ; les photos sont de vraies images de 5 Mo au plus.
+     *
+     * @return array<string, mixed>
+     */
+    private function validated(Request $request, ?MenuItem $current = null): array
     {
         return $request->validate([
-            'provider_id' => ['required', 'integer', 'exists:providers,id'],
+            'provider_id' => ['required', 'integer', Rule::in($this->restaurantProviders()->pluck('id')->all())],
             'name' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'integer', 'exists:menu_categories,id'],
+            'category_id' => ['required', 'integer', Rule::exists('menu_categories', 'id')->where(fn ($q) => $q->where(fn ($w) => $w->where('is_active', true)
+                ->when($current, fn ($w2) => $w2->orWhere('id', $current->category_id))))],
             'description' => ['nullable', 'string', 'max:2000'],
             'price_xof' => ['required', 'integer', 'min:0'],
-        ]);
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['file', 'image', 'max:5120'],
+        ], ['provider_id.in' => __('Choisissez un prestataire de la catégorie Restaurants & Gastronomie.')]);
     }
 
     /**
@@ -187,36 +198,6 @@ class MenuManagementController extends Controller
         }));
     }
 
-    /**
-     * Stockage via fopen() plutôt que UploadedFile::store() : sous Windows, store()
-     * appelle realpath() en interne, qui peut échouer (ValueError) quand les noms
-     * courts 8.3 sont désactivés sur le volume.
-     */
-    private function storeUploadedFile(UploadedFile $file, string $folder, string $prefix): string
-    {
-        $pathname = $file->getPathname();
-        $handle = (is_string($pathname) && $pathname !== '') ? @fopen($pathname, 'r') : false;
-
-        if (! is_resource($handle)) {
-            abort(422, 'Le fichier téléversé est invalide. Veuillez le sélectionner à nouveau.');
-        }
-
-        $extension = strtolower($file->getClientOriginalExtension()) ?: 'bin';
-        $relativePath = $folder.'/'.$prefix.'_'.Str::random(40).'.'.$extension;
-
-        try {
-            $stored = Storage::disk('public')->put($relativePath, $handle);
-        } finally {
-            is_resource($handle) && fclose($handle);
-        }
-
-        if (! $stored) {
-            abort(422, 'Le fichier téléversé est invalide. Veuillez le sélectionner à nouveau.');
-        }
-
-        return '/storage/'.$relativePath;
-    }
-
     // ── CATÉGORIES DE MENU ──────────────────────────────────────────────────
 
     public function categories(): View
@@ -254,6 +235,9 @@ class MenuManagementController extends Controller
     {
         if ($menuCategory->menuItems()->exists()) {
             return back()->with('error', 'Impossible de supprimer : des plats sont rattachés à cette catégorie.');
+        }
+        if ($menuCategory->menuItems()->onlyTrashed()->exists()) {
+            return back()->with('error', 'Impossible de supprimer : des plats supprimés y sont encore rattachés. Désactivez plutôt la catégorie.');
         }
 
         $menuCategory->delete();

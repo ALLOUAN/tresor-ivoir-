@@ -21,7 +21,7 @@ class TouristVisitController extends Controller
 {
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -79,7 +79,7 @@ class TouristVisitController extends Controller
 
         // Le prestataire ne peut qu'annuler : la confirmation vient toujours du paiement
         // (voir TouristVisitController::completeVisit), jamais d'une action manuelle ici.
-        if (! in_array($touristVisit->status, [TouristVisit::STATUS_PENDING_PAYMENT, TouristVisit::STATUS_PAID], true)) {
+        if (! in_array($touristVisit->status, [TouristVisit::STATUS_PENDING_PAYMENT, TouristVisit::STATUS_PAID, TouristVisit::STATUS_BOOKED], true)) {
             return back()->with('error', 'Cette visite ne peut plus être annulée.');
         }
 

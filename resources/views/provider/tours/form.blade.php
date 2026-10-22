@@ -12,7 +12,7 @@
 
 @section('content')
 
-<div class="max-w-2xl">
+<div class="max-w-3xl">
     @if($errors->any())
         <div class="mb-4 px-4 py-3 bg-rose-900/30 border border-rose-700/40 text-rose-200 text-sm rounded-xl">
             <ul class="list-disc pl-4 space-y-0.5">
@@ -68,6 +68,8 @@
             <textarea name="description" rows="4" maxlength="5000"
                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-100">{{ old('description', $tour->description) }}</textarea>
         </div>
+
+        @include('partials.tour-market-fields', ['tour' => $tour])
 
         <label class="flex items-center gap-2.5 cursor-pointer group">
             <input type="hidden" name="is_available" value="0">

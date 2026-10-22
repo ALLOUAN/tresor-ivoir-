@@ -48,6 +48,14 @@
             </button>
         </div>
 
+        <div class="md:col-span-2">
+            @include('partials.ai-writing-tools', ['aiWriting' => ['actions' => [
+                ['id' => 'tr_fr_en', 'label' => 'Traduire FR → EN', 'icon' => 'fa-language', 'action' => 'translate', 'from' => 'fr', 'to' => 'en', 'map' => [
+                    'title' => ['title_fr', 'title_en', 'Titre'], 'subtitle' => ['subtitle_fr', 'subtitle_en', 'Sous-titre'], 'description' => ['description_fr', 'description_en', 'Description']]],
+                ['id' => 'tr_en_fr', 'label' => 'Traduire EN → FR', 'icon' => 'fa-language', 'action' => 'translate', 'from' => 'en', 'to' => 'fr', 'map' => [
+                    'title' => ['title_en', 'title_fr', 'Titre'], 'subtitle' => ['subtitle_en', 'subtitle_fr', 'Sous-titre'], 'description' => ['description_en', 'description_fr', 'Description']]],
+            ]]])
+        </div>
         <div>
             <label class="block text-sm text-slate-300 mb-1">Titre (FR) *</label>
             <input type="text" name="title_fr" required value="{{ old('title_fr') }}"
@@ -107,7 +115,7 @@
 
         <div>
             <label class="block text-sm text-slate-300 mb-1">Image (URL)</label>
-            <input type="url" name="cover_url" id="cover_url" value="{{ old('cover_url') }}"
+            <input type="text" inputmode="url" name="cover_url" id="cover_url" value="{{ old('cover_url') }}"
                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
         </div>
 
@@ -345,7 +353,7 @@ function previewEventCoverFromUrl(url) {
     const img = document.getElementById('cover_preview_img');
     if (!wrapper || !img) return;
 
-    if (url && url.startsWith('http')) {
+    if (url && (url.startsWith('http') || url.startsWith('/'))) {
         img.src = url;
         wrapper.classList.remove('hidden');
     } else {

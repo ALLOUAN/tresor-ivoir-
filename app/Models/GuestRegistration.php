@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\URL;
 
 class GuestRegistration extends Model
 {
@@ -60,6 +61,10 @@ class GuestRegistration extends Model
         'travel_type',
         'document_type',
         'document_number',
+        'document_expiry_date',
+        'nationality',
+        'coming_from',
+        'going_to',
         'document_scan_front_url',
         'document_scan_back_url',
         'travel_reason',
@@ -94,10 +99,39 @@ class GuestRegistration extends Model
             'hotel_check_in_date' => 'date',
             'hotel_check_out_date' => 'date',
             'birth_date' => 'date',
+            'document_expiry_date' => 'date',
             'children_count' => 'integer',
             'data_confirmed' => 'boolean',
             'submitted_at' => 'datetime',
         ];
+    }
+
+    /** Fichiers de la fiche : clé publique (route) => colonne. */
+    public const FILE_COLUMNS = [
+        'recto' => 'document_scan_front_url',
+        'verso' => 'document_scan_back_url',
+        'selfie' => 'selfie_url',
+        'signature' => 'signature_url',
+    ];
+
+    /** Préfixe des fichiers rangés sur le disque privé (storage/app/private), jamais servis en direct. */
+    public const PRIVATE_PREFIX = 'private:';
+
+    /**
+     * Lien de consultation d'une pièce : lien signé à durée courte pour les fichiers privés ;
+     * les anciennes fiches (avant le passage en privé) gardent leur adresse publique.
+     */
+    public function fileUrl(string $kind, int $minutes = 30): ?string
+    {
+        $value = $this->{self::FILE_COLUMNS[$kind] ?? ''} ?? null;
+        if (! $value) {
+            return null;
+        }
+        if (! str_starts_with($value, self::PRIVATE_PREFIX)) {
+            return $value;
+        }
+
+        return URL::temporarySignedRoute('guest-registrations.file', now()->addMinutes($minutes), ['registration' => $this->id, 'kind' => $kind]);
     }
 
     public function reservation(): BelongsTo
@@ -112,16 +146,16 @@ class GuestRegistration extends Model
 
     public function labelForTravelType(): string
     {
-        return self::TRAVEL_TYPE_LABELS[$this->travel_type] ?? $this->travel_type;
+        return __(self::TRAVEL_TYPE_LABELS[$this->travel_type] ?? $this->travel_type);
     }
 
     public function labelForDocumentType(): string
     {
-        return self::DOCUMENT_TYPE_LABELS[$this->document_type] ?? $this->document_type;
+        return __(self::DOCUMENT_TYPE_LABELS[$this->document_type] ?? $this->document_type);
     }
 
     public function labelForTravelReason(): string
     {
-        return self::REASON_LABELS[$this->travel_reason] ?? $this->travel_reason;
+        return __(self::REASON_LABELS[$this->travel_reason] ?? $this->travel_reason);
     }
 }

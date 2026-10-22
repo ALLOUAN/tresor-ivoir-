@@ -1,558 +1,453 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $element->name }} — {{ $siteBrand['site_name'] ?? 'Trésors d\'Ivoire' }}</title>
+    <meta name="description" content="{{ \Illuminate\Support\Str::limit($element->short_description ?: strip_tags((string) $element->description), 155) }}">
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; } .font-serif { font-family: 'Playfair Display', serif; } html { scroll-behavior: smooth; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+    @include('partials.offer-page-theme')
     <style>
-        body { font-family: 'Inter', sans-serif; background:#e9e5d9; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
-        .hero-img { transition: transform 8s ease; }
-        .hero-wrap:hover .hero-img { transform: scale(1.04); }
-        .gallery-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
-        .gallery-scroll::-webkit-scrollbar { display: none; }
-        .gallery-item { scroll-snap-align: start; flex-shrink: 0; }
-        .tabs-bar { position: sticky; top: 0; z-index: 30; background: rgba(233, 229, 217, .92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.06); }
-        .tab-btn { position: relative; padding: 14px 20px; font-size: 13px; font-weight: 500; color: #64748b; cursor: pointer; transition: color .2s; white-space: nowrap; }
-        .tab-btn.active { color: #f2790f; }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: #f2790f; border-radius: 2px 2px 0 0; }
-        .tab-btn:hover:not(.active) { color: #cbd5e1; }
-        .tab-section { display: none; }
-        .tab-section.active { display: block; }
-        html:not(.dark) body { background:#e9e5d9; color: #1c1915; }
-        html:not(.dark) .tabs-bar { background: rgba(245,240,235,.95); border-color: rgba(0,0,0,.08); }
-        html:not(.dark) .info-block { background:#e9e5d9; border-color: rgba(0,0,0,.08); }
+        /* Fiche d'un élément culturel, charte du site et couleurs du logo. Photo entière (jamais de voile ni de texte dessus),
+           infos clés, onglets qui suivent la lecture, fiche « Patrimoine » collante, sources visibles. */
+        .ce { max-width: 1180px; margin: 0 auto; padding: 22px 20px 64px; }
+        .ce-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: #6b6458; }
+        .ce-crumb a { color: #9a4308; font-weight: 600; text-decoration: none; }
+        .ce-crumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
+        .ce-crumb li:first-child a { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #e6dccb; font-weight: 700; }
+        .ce-crumb li:first-child a:hover { border-color: #b9500a; text-decoration: none; }
+        .ce-crumb .sep { color: #c2b89e; }
+        .ce-crumb [aria-current] { font-weight: 700; color: #1d1a16; }
+
+        .ce-hero-wrap { position: relative; overflow: hidden; background: #f3ead8; border-bottom: 1px solid #e3d5bb; }
+        .ce-hero-wrap .ivm-g { opacity: .16 !important; }
+        .ce-hero { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: center; max-width: 1180px; margin: 0 auto; padding: 18px 20px 52px; }
+        .ce-hero__txt { padding: 26px 28px; border-radius: 28px; background: #f6efe1; border: 1px solid #e3d5bb; }
+        .ce-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+        .ce-pill { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 11.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; background: #fff; border: 1px solid #e3d5bb; color: #9a4308; }
+        .ce-pill i, .ce-pill .ico { font-size: 13px; }
+        .ce-pill.is-green { color: #1b6b3a; }
+        .ce-pill.is-warn { color: #b45309; } .ce-pill.is-danger { color: #b42318; } .ce-pill.is-gone { color: #57534e; }
+        .ce-title { margin: 14px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(34px, 2.8vw + 18px, 60px); font-weight: 700; line-height: 1.03; letter-spacing: -.015em; color: #1d1a16; }
+        .ce-lead { margin: 14px 0 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 19px; line-height: 1.55; color: #3a2f22; }
+        .ce-meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 14px; color: #3a2f22; }
+        .ce-meta li { display: inline-flex; align-items: center; gap: 7px; }
+        .ce-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .ce-btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 48px; padding: 0 20px; border-radius: 999px; font-size: 14.5px; font-weight: 700; text-decoration: none; border: 0; cursor: pointer; white-space: nowrap; transition: background .15s ease, border-color .15s ease; }
+        .ce-btn .ico { font-size: 18px; }
+        .ce-btn.is-main { background: #b9500a; color: #fff; }
+        .ce-btn.is-main:hover { background: #9a4308; color: #fff; }
+        .ce-btn.is-line { background: #fff; color: #9a4308; border: 1.5px solid #b9500a; }
+        .ce-btn.is-line:hover { background: #fdf4ec; }
+        .ce-btn.is-icon { width: 48px; padding: 0; background: #fff; color: #9a4308; border: 1.5px solid #e6dccb; }
+        .ce-btn:focus-visible, .ce-people a:focus-visible, .ce-rel:focus-visible, .ce-thumbs button:focus-visible, .ce-photos button:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+
+        .ce-cover { position: relative; aspect-ratio: 4 / 3; border-radius: 28px; overflow: hidden; background: #e9e1d2; border: 1px solid #e3d5bb; }
+        .ce-cover > img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+        .ce-cover__empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: rgba(var(--c), .1); color: rgb(var(--c)); text-align: center; padding: 24px; }
+        .ce-cover__empty i { width: 96px; height: 96px; border-radius: 30px; background: rgb(var(--c)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+        .ce-cover__empty b { font-family: 'Playfair Display', serif; font-size: 22px; color: #1d1a16; }
+        .ce-cover__empty span { font-size: 13px; color: #6b6458; }
+        .ce-thumbs { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; gap: 8px; }
+        .ce-thumbs button { width: 64px; height: 48px; padding: 0; border-radius: 12px; overflow: hidden; border: 2px solid #fff; background: #fff; opacity: .75; cursor: pointer; }
+        .ce-thumbs button.is-on, .ce-thumbs button:hover { opacity: 1; border-color: #b9500a; }
+        .ce-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Palette du logo */
+        .lc { --c: 217,101,15; }
+        .lc.c2 { --c: 74,138,42; } .lc.c3 { --c: 31,128,121; } .lc.c4 { --c: 201,138,12; } .lc.c5 { --c: 44,110,143; } .lc.c6 { --c: 176,134,28; } .lc.c7 { --c: 122,74,42; }
+
+        .ce-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; align-items: start; margin-top: 28px; }
+        .ce-main { display: flex; flex-direction: column; gap: 50px; min-width: 0; }
+        .ce-sec { scroll-margin-top: 150px; }
+        .ce-label { margin: 0 0 6px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #b9500a; }
+        .ce-h2 { margin: 0 0 16px; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.2vw + 18px, 32px); font-weight: 700; color: #1d1a16; }
+        .ce-text { margin: 0; font-size: 16.5px; line-height: 1.85; color: #3a2f22; white-space: pre-line; }
+        .ce-text::first-letter { float: left; margin: 6px 10px 0 0; font-family: 'Playfair Display', serif; font-size: 58px; line-height: .8; color: #b9500a; }
+        .ce-origin { margin-top: 18px; padding: 20px 22px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
+        .ce-origin b { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #9a4308; }
+        .ce-origin p { margin: 8px 0 0; font-size: 15px; line-height: 1.7; color: #3a2f22; }
+        .ce-periods { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+        .ce-periods span { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-radius: 999px; background: #e7f3ec; color: #1b6b3a; font-size: 13.5px; font-weight: 700; }
+
+        .ce-practical { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .ce-pr { display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 22px; background: rgba(var(--c), .07); border: 1px solid rgba(var(--c), .18); }
+        .ce-pr > i { width: 44px; height: 44px; border-radius: 14px; background: rgb(var(--c)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .ce-pr small { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: rgb(var(--c)); }
+        .ce-pr b { display: block; margin-top: 4px; font-size: 15.5px; line-height: 1.4; color: #1d1a16; }
+
+        .ce-people { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .ce-people a { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; }
+        .ce-people a:hover { border-color: #d8cdb8; box-shadow: 0 16px 30px -24px rgba(29,26,22,.5); }
+        .ce-people__img { flex: none; width: 64px; height: 64px; border-radius: 18px; overflow: hidden; background: rgba(var(--c), .12); color: rgb(var(--c)); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
+        .ce-people__img img { width: 100%; height: 100%; object-fit: cover; }
+        .ce-people b { display: block; font-family: 'Playfair Display', serif; font-size: 18px; color: #1d1a16; }
+        .ce-people em { display: inline-flex; margin-top: 4px; padding: 3px 10px; border-radius: 999px; background: rgba(var(--c), .12); color: rgb(var(--c)); font-style: normal; font-size: 12px; font-weight: 700; }
+        .ce-cities { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        .ce-cities a { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #ece5d6; color: #3a2f22; font-size: 13.5px; font-weight: 600; text-decoration: none; }
+        .ce-cities a:hover { border-color: #b9500a; color: #9a4308; }
+
+        .ce-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 170px; gap: 10px; }
+        .ce-photos button { padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #e9e1d2; cursor: zoom-in; }
+        .ce-photos button:first-child { grid-column: span 2; grid-row: span 2; }
+        .ce-photos img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+        .ce-photos button:hover img { transform: scale(1.04); }
+        .ce-video { aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden; background: #000; margin-top: 14px; }
+        .ce-video iframe { width: 100%; height: 100%; border: 0; }
+        .ce-cap { margin: 6px 0 0; font-size: 12.5px; color: #6b6458; }
+        .ce-audio { display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
+        .ce-audio + .ce-audio { margin-top: 12px; }
+        .ce-audio header { display: flex; align-items: center; gap: 12px; }
+        .ce-audio header i { width: 44px; height: 44px; border-radius: 14px; background: #fdf4ec; color: #b9500a; display: flex; align-items: center; justify-content: center; }
+        .ce-audio audio { width: 100%; }
+
+        .ce-sources { padding: 22px; border-radius: 24px; background: #123a25; color: #fff; }
+        .ce-sources h3 { margin: 0 0 12px; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #f6c38f; }
+        .ce-sources ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: s; }
+        .ce-sources li { counter-increment: s; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; font-size: 13.5px; line-height: 1.45; }
+        .ce-sources li::before { content: counter(s); width: 26px; height: 26px; border-radius: 999px; background: rgba(255,255,255,.12); color: #f6c38f; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+        .ce-sources a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,.35); text-underline-offset: 3px; overflow-wrap: anywhere; }
+        .ce-sources p { margin: 0; font-size: 13.5px; color: #cfe6d7; }
+
+        /* Fiche collante */
+        .ce-card { position: sticky; top: 140px; border-radius: 24px; background: #fff; border: 1px solid #e6dccb; overflow: hidden; }
+        .ce-card__head { padding: 18px 20px 14px; border-bottom: 1px solid #f0eadf; }
+        .ce-card__head small { display: block; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #8a7f6b; }
+        .ce-card__head b { display: block; margin-top: 4px; font-family: 'Playfair Display', serif; font-size: 22px; color: #1d1a16; }
+        .ce-status { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 12px 14px; border-radius: 16px; }
+        .ce-status i { width: 36px; height: 36px; border-radius: 12px; background: #fff; display: flex; align-items: center; justify-content: center; }
+        .ce-status small { display: block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
+        .ce-status b { display: block; font-size: 15px; }
+        .ce-status.is-stable { background: #e7f3ec; color: #1b6b3a; }
+        .ce-status.is-vulnerable { background: #fdf0e1; color: #b45309; }
+        .ce-status.is-en_danger { background: #fdecea; color: #b42318; }
+        .ce-status.is-disparu { background: #efedea; color: #57534e; }
+        .ce-gauge { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 10px; }
+        .ce-gauge span { height: 6px; border-radius: 999px; background: #ece5d6; }
+        .ce-gauge span.is-on { background: currentColor; }
+        .ce-card__body { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .ce-card__body .ce-btn { width: 100%; }
+        .ce-unesco { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 16px; background: #e3f3f1; color: #1f8079; font-size: 14px; font-weight: 700; }
+        .ce-card__list { margin: 4px 0 0; padding: 12px 0 0; list-style: none; border-top: 1px solid #f0eadf; display: flex; flex-direction: column; gap: 8px; }
+        .ce-card__list a { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 14px; background: #f6f3ed; color: #1d1a16; font-size: 14px; font-weight: 600; text-decoration: none; }
+        .ce-card__list a:hover { background: #fdf4ec; color: #9a4308; }
+
+        /* À découvrir aussi */
+        .ce-related { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+        .ce-rel { display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; }
+        .ce-rel:hover { border-color: #d8cdb8; box-shadow: 0 16px 30px -24px rgba(29,26,22,.5); }
+        .ce-rel__img { position: relative; aspect-ratio: 4 / 3; background: rgba(var(--c), .1); color: rgb(var(--c)); display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; }
+        .ce-rel__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .ce-rel__body { padding: 12px 14px 14px; }
+        .ce-rel__body small { display: block; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: rgb(var(--c)); }
+        .ce-rel__body b { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 4px; font-family: 'Playfair Display', serif; font-size: 16.5px; line-height: 1.25; color: #1d1a16; }
+
+        #lightbox { background: rgba(14,12,9,.94) !important; }
+
+        @media (max-width: 1023px) {
+            .ce-hero { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+            .ce-cover { order: -1; }
+            .ce-grid { grid-template-columns: minmax(0, 1fr); }
+            .ce-card { position: static; }
+            .ce-related { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 640px) {
+            .ce { padding: 16px 16px 48px; }
+            .ce-hero { padding: 14px 16px 44px; }
+            .ce-hero__txt { padding: 18px 16px; border-radius: 22px; }
+            .ce-lead { font-size: 17px; }
+            .ce-actions .ce-btn { flex: 1 1 auto; }
+            .ce-actions .ce-btn.is-icon { flex: none; }
+            .ce-cover { border-radius: 22px; }
+            .ce-practical, .ce-people { grid-template-columns: minmax(0, 1fr); }
+            .ce-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 130px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .ce-photos img { transition: none; } }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="min-h-screen">
     @include('partials.page-background')
-
-@include('partials.public-top-nav')
-
-{{-- ══ HERO ══════════════════════════════════════════════════════════════════ --}}
+    @include('partials.public-top-nav')
 @php
-    $heroMedia = $element->media->where('type', 'photo')->first();
+    $photos = $element->media->where('type', 'photo')->values();
+    $videos = $element->media->where('type', 'video')->values();
+    $audios = $element->media->where('type', 'audio')->values();
+    $heroMedia = $photos->first();
+    $heroUrl = $heroMedia?->url ?: ($element->cover_image ?: $element->thumbnail);
     $riskMap = [
-        'stable'     => ['label' => 'Stable',     'bg' => 'rgba(22,163,74,.15)',  'border' => 'rgba(22,163,74,.35)',  'text' => '#4ade80'],
-        'vulnerable' => ['label' => 'Vulnérable',  'bg' => 'rgba(224, 110, 14,.15)', 'border' => 'rgba(224, 110, 14,.35)', 'text' => '#fb923c'],
-        'en_danger'  => ['label' => 'En danger',   'bg' => 'rgba(220,38,38,.15)', 'border' => 'rgba(220,38,38,.35)', 'text' => '#f87171'],
-        'disparu'    => ['label' => 'Disparu',      'bg' => 'rgba(113,113,113,.15)','border' => 'rgba(113,113,113,.35)','text' => '#9ca3af'],
+        'stable' => ['label' => __('Stable'), 'pill' => 'is-green', 'lvl' => 1],
+        'vulnerable' => ['label' => __('Vulnérable'), 'pill' => 'is-warn', 'lvl' => 2],
+        'en_danger' => ['label' => __('En danger'), 'pill' => 'is-danger', 'lvl' => 3],
+        'disparu' => ['label' => __('Disparu'), 'pill' => 'is-gone', 'lvl' => 4],
     ];
-    $rc = $riskMap[$element->niveau_risque] ?? $riskMap['stable'];
+    $risk = $element->niveau_risque && isset($riskMap[$element->niveau_risque]) ? $element->niveau_risque : null;
+    // Peuple d'origine en premier (rôle contenant « origine »), pour le fil d'Ariane et les motifs
+    $originPeople = $peoples->first(fn ($p) => str_contains(mb_strtolower((string) $element->getRoleForPeople($p->id)), 'origine')) ?? $peoples->first();
+    $culture = \App\Support\IvorianCulture::forPeople($originPeople?->slug);
+    $sources = $element->sources ?? [];
 @endphp
 
-<section class="hero-wrap relative h-[60vh] md:h-[72vh] overflow-hidden">
-
-    @if($heroMedia)
-    <img id="mainPhoto" src="{{ $heroMedia->url }}" alt="{{ $element->name }}"
-        class="hero-img w-full h-full object-cover">
-    @elseif($element->cover_image)
-    <img src="{{ $element->cover_image }}" alt="{{ $element->name }}"
-        class="hero-img w-full h-full object-cover">
-    @elseif($element->thumbnail)
-    <img src="{{ $element->thumbnail }}" alt="{{ $element->name }}"
-        class="hero-img w-full h-full object-cover">
-    @else
-    <div class="w-full h-full flex items-center justify-center"
-        style="background: #e9e5d9;">
-        <i class="fas fa-masks-theater text-8xl opacity-10"></i>
+<section class="ce-hero-wrap">
+    @include('partials.ivorian-motifs', ['culture' => $culture['key']])
+    <div style="position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:20px 20px 0">
+        <ol class="ce-crumb" aria-label="{{ __('Fil d\'Ariane') }}">
+            <li><a href="{{ $originPeople ? route('cultural.people', $originPeople->slug) : route('cultural.peoples') }}"><i class="fas fa-arrow-left" aria-hidden="true"></i>{{ $originPeople?->name ?? __('Cultures') }}</a></li>
+            <li class="sep" aria-hidden="true">/</li>
+            <li><a href="{{ route('cultural.peoples') }}">{{ __('Cultures') }}</a></li>
+            @if($element->domain)<li class="sep" aria-hidden="true">/</li><li>{{ $element->domain->name }}</li>@endif
+            <li class="sep" aria-hidden="true">/</li>
+            <li aria-current="page">{{ $element->name }}</li>
+        </ol>
     </div>
-    @endif
-
-    <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(255, 255, 255,1) 0%, rgba(255, 255, 255,.5) 40%, rgba(255, 255, 255,.1) 100%);"></div>
-    <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(255, 255, 255,.5) 0%, transparent 60%);"></div>
-
-    {{-- Breadcrumb --}}
-    <div class="absolute top-6 left-0 right-0 max-w-7xl mx-auto px-6">
-        <nav class="flex items-center gap-1.5 text-xs text-white/50">
-            <a href="{{ route('cultural.peoples') }}" class="hover:text-orange-400 transition">Cultures</a>
-            @if($peoples->isNotEmpty())
-            <i class="fas fa-chevron-right text-[8px]"></i>
-            <a href="{{ route('cultural.people', $peoples->first()->slug) }}" class="hover:text-orange-400 transition">{{ $peoples->first()->name }}</a>
-            @endif
-            @if($element->domain)
-            <i class="fas fa-chevron-right text-[8px]"></i>
-            <span class="text-white/60 truncate max-w-[140px]">{{ $element->domain->name }}</span>
-            @endif
-            <i class="fas fa-chevron-right text-[8px]"></i>
-            <span class="text-white/80 truncate max-w-[200px]">{{ $element->name }}</span>
-        </nav>
-    </div>
-
-    {{-- Contenu bas --}}
-    <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-6 pb-10">
-        {{-- Badges --}}
-        <div class="flex flex-wrap gap-2 mb-4">
-            @if($element->is_featured)
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500 text-black text-xs font-bold">
-                <i class="fas fa-star text-[10px]"></i> À la une
-            </span>
-            @endif
-            @if($element->domain)
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border text-white text-xs"
-                style="{{ $element->domain->color ? 'border-color:'.$element->domain->color.'50' : 'border-color:rgba(255,255,255,.15)' }}">
-                @if($element->domain->icon)
-                <i class="{{ $element->domain->icon }} text-[10px]"
-                    style="{{ $element->domain->color ? 'color:'.$element->domain->color : '' }}"></i>
+    <header class="ce-hero">
+        <div class="ce-hero__txt">
+            <div class="ce-pills">
+                @if($element->domain)<span class="ce-pill"><i class="{{ $element->domain->icon ?: 'fas fa-star' }}" aria-hidden="true"></i>{{ $element->domain->name }}</span>@endif
+                @if($element->is_featured)<span class="ce-pill is-green"><x-icon name="star" />{{ __('À la une') }}</span>@endif
+                @if($risk && $risk !== 'stable')<span class="ce-pill {{ $riskMap[$risk]['pill'] }}"><x-icon name="danger-circle" />{{ $riskMap[$risk]['label'] }}</span>@endif
+                @if($element->unesco_status)<span class="ce-pill is-green"><x-icon name="global" />UNESCO</span>@endif
+            </div>
+            <h1 class="ce-title">{{ $element->name }}</h1>
+            @if($element->short_description)<p class="ce-lead">{{ $element->localized('short_description') }}</p>@endif
+            <ul class="ce-meta">
+                @if($peoples->isNotEmpty())<li><x-icon name="users-group-rounded" />{{ $peoples->pluck('name')->implode(', ') }}</li>@endif
+                @if($cities->isNotEmpty())<li><x-icon name="map-point" />{{ $cities->pluck('name')->implode(', ') }}</li>@endif
+                <li><x-icon name="eye" />{{ number_format($element->views_count, 0, ',', ' ') }} {{ __('vues') }}</li>
+            </ul>
+            <div class="ce-actions">
+                <a href="#presentation" class="ce-btn is-main"><x-icon name="book" />{{ __('Lire la présentation') }}</a>
+                @if(! empty($element->practical_info))<a href="#pratique" class="ce-btn is-line"><x-icon name="info-circle" />{{ __('En pratique') }}</a>@endif
+                <button type="button" class="ce-btn is-icon" data-ce-share data-done="{{ __('Lien copié') }}" aria-label="{{ __('Partager') }}" title="{{ __('Partager') }}"><x-icon name="share" /></button>
+            </div>
+        </div>
+        <div class="ce-cover">
+            @if($heroUrl)
+                <img id="mainPhoto" src="{{ $heroUrl }}" alt="{{ $heroMedia?->alt_text ?: $element->name }}" decoding="async" fetchpriority="high" onclick="openLightbox(this.currentSrc || this.src, @js($element->name))">
+                @if($photos->count() > 1)
+                    <div class="ce-thumbs">
+                        @foreach($photos->take(4) as $m)
+                            <button type="button" onclick="changeHeroPhoto(@js($m->url))" data-photo="{{ $m->url }}" class="{{ $loop->first ? 'is-on' : '' }}" aria-label="{{ __('Photo :n', ['n' => $loop->iteration]) }}"><img src="{{ $m->url }}" alt=""></button>
+                        @endforeach
+                    </div>
                 @endif
-                {{ $element->domain->name }}
-            </span>
-            @endif
-            @if($element->niveau_risque && $element->niveau_risque !== 'stable')
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-medium"
-                style="background:{{ $rc['bg'] }}; border-color:{{ $rc['border'] }}; color:{{ $rc['text'] }}">
-                <i class="fas fa-triangle-exclamation text-[10px]"></i> {{ $rc['label'] }}
-            </span>
-            @endif
-            @if($element->unesco_status)
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/15 border border-green-500/30 text-green-300 text-xs">
-                <i class="fas fa-earth-africa text-[10px]"></i> UNESCO
-            </span>
+            @else
+                <div class="ce-cover__empty lc c1">
+                    <i class="{{ $element->domain?->icon ?: 'fas fa-masks-theater' }}" aria-hidden="true"></i>
+                    <b>{{ $element->domain?->name ?? __('Patrimoine culturel') }}</b>
+                    <span>{{ __('Photo à venir') }}</span>
+                </div>
             @endif
         </div>
-
-        <h1 class="font-serif text-4xl md:text-5xl font-bold text-white leading-tight mb-4 drop-shadow-xl" style="max-width: 700px;">
-            {{ $element->name }}
-        </h1>
-
-        <div class="flex flex-wrap items-center gap-4 text-sm">
-            @if($peoples->isNotEmpty())
-            <span class="flex items-center gap-1.5 text-orange-300 font-semibold">
-                <i class="fas fa-users text-xs"></i>
-                {{ $peoples->pluck('name')->implode(', ') }}
-            </span>
-            @endif
-            @if($cities->isNotEmpty())
-            <span class="flex items-center gap-1.5 text-white/60">
-                <i class="fas fa-map-marker-alt text-orange-400/60 text-xs"></i>
-                {{ $cities->pluck('name')->implode(', ') }}
-            </span>
-            @endif
-            <span class="flex items-center gap-1.5 text-white/40">
-                <i class="fas fa-eye text-xs"></i> {{ number_format($element->views_count) }} vues
-            </span>
-        </div>
-    </div>
-
-    {{-- Miniatures médias flottantes --}}
-    @php $photoMedia = $element->media->where('type', 'photo'); @endphp
-    @if($photoMedia->count() > 1)
-    <div class="absolute bottom-6 right-6 hidden lg:flex gap-2">
-        @foreach($photoMedia->take(4) as $m)
-        <button onclick="changeHeroPhoto('{{ $m->url }}')"
-            class="w-16 h-12 rounded-lg overflow-hidden border-2 transition
-                {{ $loop->first ? 'border-orange-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100' }}"
-            data-photo="{{ $m->url }}">
-            <img src="{{ $m->url }}" alt="" class="w-full h-full object-cover">
-        </button>
-        @endforeach
-        @if($photoMedia->count() > 4)
-        <button onclick="document.querySelectorAll('.tab-btn').forEach(b => { if (b.textContent.includes('Galerie')) b.click(); })"
-            class="w-16 h-12 rounded-lg bg-green-950/60 border-2 border-transparent hover:border-orange-500/50 flex items-center justify-center text-white/70 hover:text-white transition text-xs font-semibold">
-            +{{ $photoMedia->count() - 4 }}
-        </button>
-        @endif
-    </div>
-    @endif
+    </header>
 </section>
 
-{{-- ══ ONGLETS STICKY ═══════════════════════════════════════════════════════ --}}
-<div class="tabs-bar">
-    <div class="max-w-7xl mx-auto px-6 flex items-center gap-0 overflow-x-auto">
-        <button class="tab-btn active" onclick="showTab('description', this)">
-            <i class="fas fa-align-left mr-1.5"></i>Description
-        </button>
-        @if($element->media->where('type', 'photo')->count() > 1 || $element->media->where('type', 'video')->isNotEmpty())
-        <button class="tab-btn" onclick="showTab('galerie', this)">
-            <i class="fas fa-images mr-1.5"></i>Galerie
-        </button>
-        @endif
-        @if($element->media->where('type', 'audio')->isNotEmpty())
-        <button class="tab-btn" onclick="showTab('audio', this)">
-            <i class="fas fa-music mr-1.5"></i>Audio
-        </button>
-        @endif
-        @if(!empty($element->practical_info))
-        <button class="tab-btn" onclick="showTab('pratique', this)">
-            <i class="fas fa-circle-info mr-1.5"></i>Infos pratiques
-        </button>
-        @endif
-    </div>
-</div>
+<main class="ce">
+    {{-- ══ INFOS CLÉS ══ --}}
+    <ul class="ox-keys">
+        @if($element->domain)<li><x-icon name="widget" /><span><small>{{ __('Domaine') }}</small><b>{{ $element->domain->name }}</b></span></li>@endif
+        @if($originPeople)<li><x-icon name="users-group-rounded" /><span><small>{{ __('Origine') }}</small><b>{{ $originPeople->name }}</b></span></li>@endif
+        @if($risk)<li class="{{ $risk === 'stable' ? 'is-ok' : '' }}"><x-icon name="shield-check" /><span><small>{{ __('Préservation') }}</small><b>{{ $riskMap[$risk]['label'] }}</b></span></li>@endif
+        @if($element->unesco_status)<li class="is-ok"><x-icon name="global" /><span><small>UNESCO</small><b>{{ $element->unesco_status }}</b></span></li>@endif
+        <li><x-icon name="eye" /><span><small>{{ __('Consultations') }}</small><b>{{ number_format($element->views_count, 0, ',', ' ') }}</b></span></li>
+    </ul>
 
-{{-- ══ CONTENU PRINCIPAL ════════════════════════════════════════════════════ --}}
-<div class="max-w-7xl mx-auto px-6 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <nav class="ox-tabs" data-ox-tabs aria-label="{{ __('Sections de la page') }}">
+        <a href="#presentation">{{ __('Présentation') }}</a>
+        @if(! empty($element->practical_info))<a href="#pratique">{{ __('En pratique') }}</a>@endif
+        @if($photos->count() > 1 || $videos->isNotEmpty())<a href="#galerie">{{ __('Galerie') }}</a>@endif
+        @if($audios->isNotEmpty())<a href="#audio">{{ __('Audio') }}</a>@endif
+        @if($peoples->isNotEmpty() || $cities->isNotEmpty())<a href="#peuples">{{ __('Peuples & lieux') }}</a>@endif
+        <a href="#sources">{{ __('Sources') }}</a>
+        @if($related->isNotEmpty())<a href="#a-decouvrir">{{ __('À découvrir aussi') }}</a>@endif
+    </nav>
 
-        {{-- ── COLONNE PRINCIPALE ─────────────────────────────────────────── --}}
-        <div class="lg:col-span-2 space-y-8">
-
-            {{-- ONGLET : Description --}}
-            <div id="tab-description" class="tab-section active space-y-8">
-
-                @if($element->short_description)
-                <p class="text-lg text-slate-300 font-light leading-relaxed border-l-2 border-orange-500/60 pl-5 italic">
-                    {{ $element->short_description }}
-                </p>
-                @endif
-
-                @if($element->description)
-                <div class="text-slate-300 leading-8 text-base whitespace-pre-line">
-                    {{ $element->description }}
-                </div>
-                @endif
-
+    <div class="ce-grid">
+        <div class="ce-main">
+            {{-- Présentation --}}
+            <section class="ox-sec ce-sec" id="presentation">
+                <p class="ce-label">{{ __('Présentation') }}</p>
+                <h2 class="ce-h2">{{ __('À propos de :e', ['e' => $element->name]) }}</h2>
+                <p class="ce-text">{{ $element->localized('description') ?: ($element->localized('short_description') ?: __('La présentation de cet élément sera bientôt documentée.')) }}</p>
                 @if($element->origine_historique)
-                <div class="info-block bg-[#ffffff] border border-slate-800 rounded-2xl p-6">
-                    <h3 class="text-orange-400 text-xs font-semibold uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <i class="fas fa-scroll"></i> Origine historique
-                    </h3>
-                    <p class="text-slate-300 leading-relaxed text-sm">{{ $element->origine_historique }}</p>
-                </div>
+                    <div class="ce-origin"><b><x-icon name="history" />{{ __('Origine historique') }}</b><p>{{ $element->origine_historique }}</p></div>
                 @endif
+                @if(! empty($element->meilleure_periode))
+                    <div class="ce-periods" aria-label="{{ __('Meilleure période') }}">
+                        @foreach($element->meilleure_periode as $periode)<span><x-icon name="calendar" />{{ $periode }}</span>@endforeach
+                    </div>
+                @endif
+            </section>
 
-                {{-- Peuples associés --}}
-                @if($peoples->isNotEmpty())
-                <div>
-                    <h2 class="text-white font-serif text-xl font-bold mb-4">Peuples pratiquants</h2>
-                    <div class="flex flex-wrap gap-3">
-                        @foreach($peoples as $p)
-                        <a href="{{ route('cultural.people', $p->slug) }}"
-                            class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#ffffff] border border-slate-800 hover:border-orange-500/40 transition group">
-                            <div class="w-8 h-8 rounded-full overflow-hidden bg-slate-700 shrink-0">
-                                @if($p->thumbnail)
-                                <img src="{{ $p->thumbnail }}" alt="{{ $p->name }}" class="w-full h-full object-cover">
-                                @else
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <i class="fas fa-user text-slate-500 text-xs"></i>
-                                </div>
-                                @endif
+            {{-- En pratique --}}
+            @if(! empty($element->practical_info))
+                <section class="ox-sec ce-sec" id="pratique">
+                    <p class="ce-label">{{ __('En pratique') }}</p>
+                    <h2 class="ce-h2">{{ __('Bon à savoir') }}</h2>
+                    <div class="ce-practical">
+                        @foreach($element->practical_info as $info)
+                            <div class="ce-pr lc c{{ ($loop->index % 7) + 1 }}">
+                                <i class="{{ $info['icon'] ?? 'fas fa-circle-info' }}" aria-hidden="true"></i>
+                                <span><small>{{ $info['label'] ?? '' }}</small><b>{{ $info['value'] ?? '' }}</b></span>
                             </div>
-                            <div>
-                                <p class="text-white text-sm font-medium group-hover:text-orange-400 transition">{{ $p->name }}</p>
-                                @php $role = $element->getRoleForPeople($p->id); @endphp
-                                @if($role)
-                                <p class="text-slate-600 text-xs">{{ $role }}</p>
-                                @endif
-                            </div>
-                        </a>
                         @endforeach
                     </div>
-                </div>
-                @endif
+                </section>
+            @endif
 
-                {{-- Villes associées --}}
-                @if($cities->isNotEmpty())
-                <div>
-                    <h2 class="text-white font-serif text-xl font-bold mb-4">Zones de pratique</h2>
-                    <div class="flex flex-wrap gap-2">
-                        @foreach($cities as $city)
-                        <a href="{{ route('tourist.city', $city->slug) }}"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#ffffff] border border-slate-800 hover:border-orange-500/30 text-slate-300 hover:text-white text-sm transition">
-                            <i class="fas fa-map-marker-alt text-orange-400/60 text-xs"></i>
-                            {{ $city->name }}
-                        </a>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
-
-                {{-- Meilleure période --}}
-                @if(!empty($element->meilleure_periode))
-                <div class="info-block bg-[#ffffff] border border-slate-800 rounded-2xl p-5">
-                    <h3 class="text-orange-400/80 text-xs font-semibold uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <i class="fas fa-calendar-days"></i> Meilleure période
-                    </h3>
-                    <div class="flex flex-wrap gap-2">
-                        @foreach($element->meilleure_periode as $periode)
-                        <span class="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/25 text-orange-300 text-sm">
-                            {{ $periode }}
-                        </span>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
-
-            </div>
-
-            {{-- ONGLET : Galerie --}}
-            <div id="tab-galerie" class="tab-section space-y-6">
-
-                @php $photos = $element->media->where('type', 'photo'); @endphp
-                @if($photos->count() > 1)
-                <div>
-                    <h2 class="text-white font-serif text-xl font-bold mb-4">
-                        Photos <span class="text-slate-600 font-sans font-normal text-sm">({{ $photos->count() }})</span>
-                    </h2>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        @foreach($photos as $photo)
-                        <div class="rounded-2xl overflow-hidden cursor-pointer group"
-                            style="{{ $loop->first ? 'grid-column: span 2; aspect-ratio: 16/9;' : 'aspect-ratio: 4/3;' }}"
-                            onclick="openLightbox('{{ $photo->url }}', '{{ addslashes($photo->caption ?? $element->name) }}')">
-                            <img src="{{ $photo->url }}" alt="{{ $photo->alt_text ?: $element->name }}"
-                                class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
-
-                @php $videos = $element->media->where('type', 'video'); @endphp
-                @if($videos->isNotEmpty())
-                <div>
-                    <h2 class="text-white font-serif text-xl font-bold mb-4 flex items-center gap-2">
-                        <i class="fas fa-play-circle text-orange-400"></i> Vidéos
-                    </h2>
-                    @foreach($videos as $video)
-                    <div class="rounded-2xl overflow-hidden bg-green-900 border border-slate-800 aspect-video mb-3">
-                        <iframe src="{{ $video->url }}" class="w-full h-full"
-                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                    </div>
-                    @if($video->caption)
-                    <p class="text-slate-500 text-xs">{{ $video->caption }}</p>
-                    @endif
-                    @endforeach
-                </div>
-                @endif
-            </div>
-
-            {{-- ONGLET : Audio --}}
-            <div id="tab-audio" class="tab-section space-y-4">
-                <h2 class="text-white font-serif text-xl font-bold mb-4">
-                    <i class="fas fa-music text-orange-400 mr-2"></i>Enregistrements audio
-                </h2>
-                @php $audios = $element->media->where('type', 'audio'); @endphp
-                @foreach($audios as $audio)
-                <div class="info-block bg-[#ffffff] border border-slate-800 rounded-2xl p-5">
-                    <div class="flex items-center gap-4 mb-3">
-                        <div class="w-12 h-12 rounded-xl bg-orange-500/15 flex items-center justify-center shrink-0">
-                            <i class="fas fa-music text-orange-400 text-lg"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            @if($audio->caption)
-                            <p class="text-white font-medium text-sm">{{ $audio->caption }}</p>
-                            @endif
-                            @if($audio->duree_secondes)
-                            <p class="text-slate-500 text-xs">{{ gmdate('i:s', $audio->duree_secondes) }}</p>
-                            @endif
-                        </div>
-                    </div>
-                    <audio controls class="w-full" style="filter: sepia(1) hue-rotate(20deg) brightness(.9);">
-                        <source src="{{ $audio->url }}">
-                    </audio>
-                </div>
-                @endforeach
-            </div>
-
-            {{-- ONGLET : Infos pratiques --}}
-            <div id="tab-pratique" class="tab-section space-y-6">
-                @if(!empty($element->practical_info))
-                <h2 class="text-white font-serif text-xl font-bold mb-4">
-                    <i class="fas fa-circle-info text-orange-400 mr-2"></i>Informations pratiques
-                </h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    @foreach($element->practical_info as $info)
-                    <div class="info-block bg-[#ffffff] border border-slate-800 rounded-xl p-4 flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-orange-500/15 flex items-center justify-center shrink-0 mt-0.5">
-                            <i class="{{ $info['icon'] ?? 'fas fa-circle-dot' }} text-orange-400 text-xs"></i>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-slate-500 text-xs mb-0.5">{{ $info['label'] ?? '' }}</p>
-                            <p class="text-white text-sm font-medium">{{ $info['value'] ?? '' }}</p>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
-            </div>
-
-        </div>
-
-        {{-- ── PANNEAU STICKY DROITE ──────────────────────────────────────── --}}
-        <div class="lg:sticky lg:top-16">
-            <div class="bg-[#ffffff] border border-slate-800 rounded-2xl overflow-hidden">
-
-                {{-- En-tête panneau --}}
-                <div class="relative h-44 overflow-hidden">
-                    @if($heroMedia)
-                    <img src="{{ $heroMedia->url }}" alt="" class="w-full h-full object-cover">
-                    @elseif($element->thumbnail)
-                    <img src="{{ $element->thumbnail }}" alt="" class="w-full h-full object-cover">
-                    @else
-                    <div class="w-full h-full" style="background: #e9e5d9;"></div>
-                    @endif
-                    <div class="absolute inset-0" style="background: linear-gradient(to top, #e9e5d9, transparent);"></div>
-                    @if($element->domain)
-                    <div class="absolute bottom-3 left-4">
-                        <p class="text-xs" style="{{ $element->domain->color ? 'color:'.$element->domain->color : 'color:#94a3b8' }}">
-                            @if($element->domain->icon)<i class="{{ $element->domain->icon }} text-[10px] mr-1"></i>@endif
-                            {{ $element->domain->name }}
-                        </p>
-                    </div>
-                    @endif
-                </div>
-
-                <div class="p-5 space-y-4">
-
-                    {{-- Statut UNESCO --}}
-                    @if($element->unesco_status)
-                    <div class="flex items-center gap-2 py-2.5 px-4 rounded-xl bg-green-500/10 border border-green-500/25">
-                        <i class="fas fa-earth-africa text-green-400 text-sm"></i>
-                        <div>
-                            <p class="text-green-400/70 text-[10px] uppercase tracking-wide">Statut UNESCO</p>
-                            <p class="text-green-300 text-sm font-medium">{{ $element->unesco_status }}</p>
-                        </div>
-                    </div>
-                    @endif
-
-                    {{-- Niveau de risque --}}
-                    @if($element->niveau_risque)
-                    <div class="flex items-center gap-2 py-2.5 px-4 rounded-xl border"
-                        style="background:{{ $rc['bg'] }}; border-color:{{ $rc['border'] }}">
-                        <i class="fas fa-shield-halved text-sm" style="color:{{ $rc['text'] }}"></i>
-                        <div>
-                            <p class="text-[10px] uppercase tracking-wide" style="color:{{ $rc['text'] }}; opacity:.7">Niveau de préservation</p>
-                            <p class="text-sm font-semibold" style="color:{{ $rc['text'] }}">{{ $rc['label'] }}</p>
-                        </div>
-                    </div>
-                    @endif
-
-                    {{-- Website --}}
-                    @if($element->website)
-                    <a href="{{ $element->website }}" target="_blank" rel="noopener"
-                        class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-orange-500/15 border border-slate-700 hover:border-orange-500/30 transition group">
-                        <i class="fas fa-globe text-orange-400 text-sm w-4 text-center"></i>
-                        <span class="text-slate-300 text-sm truncate group-hover:text-white transition">Site de référence</span>
-                        <i class="fas fa-arrow-up-right-from-square text-slate-600 text-xs ml-auto group-hover:text-orange-400 transition"></i>
-                    </a>
-                    @endif
-
-                    {{-- Peuples liens rapides --}}
-                    @if($peoples->isNotEmpty())
-                    <div>
-                        <p class="text-slate-600 text-[10px] uppercase tracking-widest mb-2">Peuples associés</p>
-                        <div class="space-y-1.5">
-                            @foreach($peoples as $p)
-                            <a href="{{ route('cultural.people', $p->slug) }}"
-                                class="flex items-center gap-2 w-full px-3 py-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 border border-slate-800 hover:border-orange-500/20 transition group text-sm">
-                                <i class="fas fa-users text-orange-400/60 text-xs w-3 text-center shrink-0"></i>
-                                <span class="text-slate-300 group-hover:text-white transition truncate">{{ $p->name }}</span>
-                                <i class="fas fa-chevron-right text-slate-700 group-hover:text-orange-400/60 text-[10px] ml-auto transition"></i>
-                            </a>
+            {{-- Galerie --}}
+            @if($photos->count() > 1 || $videos->isNotEmpty())
+                <section class="ox-sec ce-sec" id="galerie">
+                    <p class="ce-label">{{ __('Galerie') }}</p>
+                    <h2 class="ce-h2">{{ __('En images') }}</h2>
+                    @if($photos->count() > 1)
+                        <div class="ce-photos">
+                            @foreach($photos as $photo)
+                                <button type="button" onclick="openLightbox(@js($photo->url), @js($photo->caption ?? $element->name))" aria-label="{{ __('Agrandir la photo :n', ['n' => $loop->iteration]) }}"><img src="{{ $photo->url }}" alt="{{ $photo->alt_text ?: $element->name }}" loading="lazy"></button>
                             @endforeach
                         </div>
-                    </div>
                     @endif
+                    @foreach($videos as $video)
+                        <div class="ce-video"><iframe src="{{ $video->url }}" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="{{ $video->caption ?: $element->name }}"></iframe></div>
+                        @if($video->caption)<p class="ce-cap">{{ $video->caption }}</p>@endif
+                    @endforeach
+                </section>
+            @endif
 
-                    {{-- Retour --}}
-                    <a href="{{ route('cultural.peoples') }}"
-                        class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-slate-800 hover:bg-orange-500/15 border border-slate-700 hover:border-orange-500/30 text-slate-300 hover:text-white text-sm font-medium transition">
-                        <i class="fas fa-arrow-left text-xs"></i>
-                        Toutes les cultures
-                    </a>
+            {{-- Audio --}}
+            @if($audios->isNotEmpty())
+                <section class="ox-sec ce-sec" id="audio">
+                    <p class="ce-label">{{ __('Écouter') }}</p>
+                    <h2 class="ce-h2">{{ __('Enregistrements audio') }}</h2>
+                    @foreach($audios as $audio)
+                        <div class="ce-audio">
+                            <header><i class="fas fa-music" aria-hidden="true"></i><span><b class="block text-sm">{{ $audio->caption ?: $element->name }}</b>@if($audio->duree_secondes)<small class="text-xs" style="color:#6b6458">{{ gmdate('i:s', $audio->duree_secondes) }}</small>@endif</span></header>
+                            <audio controls preload="none"><source src="{{ $audio->url }}"></audio>
+                        </div>
+                    @endforeach
+                </section>
+            @endif
+
+            {{-- Peuples & lieux --}}
+            @if($peoples->isNotEmpty() || $cities->isNotEmpty())
+                <section class="ox-sec ce-sec" id="peuples">
+                    <p class="ce-label">{{ __('Peuples & lieux') }}</p>
+                    <h2 class="ce-h2">{{ __('Qui le pratique ?') }}</h2>
+                    @if($peoples->isNotEmpty())
+                        <div class="ce-people">
+                            @foreach($peoples as $p)
+                                @php $role = $element->getRoleForPeople($p->id); $pImg = $p->thumbnail ?: ($p->cover_images[0] ?? null); @endphp
+                                <a href="{{ route('cultural.people', $p->slug) }}" class="lc c{{ ($loop->index % 7) + 1 }}">
+                                    <span class="ce-people__img">@if($pImg)<img src="{{ $pImg }}" alt="{{ $p->name }}" loading="lazy">@else{{ mb_substr($p->name, 0, 1) }}@endif</span>
+                                    <span class="min-w-0"><b>{{ $p->name }}</b>@if($role)<em>{{ ucfirst($role) }}</em>@endif</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+                    @if($cities->isNotEmpty())
+                        <div class="ce-cities">@foreach($cities as $city)<a href="{{ route('tourist.city', $city->slug) }}"><x-icon name="map-point" />{{ $city->name }}</a>@endforeach</div>
+                    @endif
+                </section>
+            @endif
+
+            {{-- Sources --}}
+            <section class="ox-sec ce-sec" id="sources">
+                <div class="ce-sources">
+                    <h3><x-icon name="book" />{{ __('Sources') }}</h3>
+                    @if(! empty($sources))
+                        <ol>@foreach($sources as $src)<li><span>@if(! empty($src['url']))<a href="{{ $src['url'] }}" target="_blank" rel="noopener noreferrer">{{ $src['label'] ?? $src['url'] }}</a>@else{{ $src['label'] ?? '' }}@endif</span></li>@endforeach</ol>
+                    @else
+                        <p>{{ __('Sources en cours de documentation.') }}</p>
+                    @endif
                 </div>
-            </div>
+            </section>
         </div>
 
-    </div>
-</div>
-
-{{-- ══ ÉLÉMENTS SIMILAIRES ══════════════════════════════════════════════════ --}}
-@if($related->isNotEmpty())
-<section class="max-w-7xl mx-auto px-6 pb-20 mt-4">
-    <div class="flex items-center justify-between mb-6">
-        <h2 class="text-white font-serif text-2xl font-bold">Dans le même domaine</h2>
-        <a href="{{ route('cultural.peoples') }}"
-            class="text-orange-400 hover:text-orange-300 text-sm flex items-center gap-1.5 transition">
-            Explorer <i class="fas fa-arrow-right text-xs"></i>
-        </a>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        @foreach($related as $r)
-        @php $rMedia = $r->media->where('type', 'photo')->first(); @endphp
-        <a href="{{ route('cultural.element', $r->slug) }}"
-            class="group block bg-[#ffffff] border border-slate-800 hover:border-orange-500/30 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1">
-            <div class="relative overflow-hidden" style="aspect-ratio: 4/3;">
-                @if($rMedia)
-                <img src="{{ $rMedia->url }}" alt="{{ $r->name }}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                @elseif($r->thumbnail)
-                <img src="{{ $r->thumbnail }}" alt="{{ $r->name }}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                @else
-                <div class="w-full h-full flex items-center justify-center bg-slate-800">
-                    <i class="fas fa-masks-theater text-2xl text-slate-700"></i>
-                </div>
-                @endif
-                <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(255, 255, 255,.75), transparent);"></div>
-            </div>
-            <div class="p-4">
-                <h3 class="text-white text-sm font-semibold group-hover:text-orange-400 transition line-clamp-2 mb-1">
-                    {{ $r->name }}
-                </h3>
-                @if($r->domain)
-                <p class="text-xs" style="{{ $r->domain->color ? 'color:'.$r->domain->color : 'color:#64748b' }}">
-                    @if($r->domain->icon)<i class="{{ $r->domain->icon }} text-[10px] mr-0.5"></i>@endif
-                    {{ $r->domain->name }}
-                </p>
+        {{-- ══ FICHE PATRIMOINE ══ --}}
+        <aside class="ce-card" aria-label="{{ __('Fiche patrimoine') }}">
+            <div class="ce-card__head">
+                <small>{{ __('Fiche patrimoine') }}</small>
+                <b>{{ $element->domain?->name ?? __('Patrimoine culturel') }}</b>
+                @if($risk)
+                    <div class="ce-status is-{{ $risk }}">
+                        <i><x-icon name="shield-check" /></i>
+                        <span><small>{{ __('Niveau de préservation') }}</small><b>{{ $riskMap[$risk]['label'] }}</b></span>
+                    </div>
+                    <div class="ce-gauge is-{{ $risk }}" style="color: {{ ['stable' => '#1b6b3a', 'vulnerable' => '#d97706', 'en_danger' => '#b42318', 'disparu' => '#57534e'][$risk] }}" aria-hidden="true">
+                        @for($g = 1; $g <= 4; $g++)<span class="{{ $g <= $riskMap[$risk]['lvl'] ? 'is-on' : '' }}"></span>@endfor
+                    </div>
                 @endif
             </div>
-        </a>
-        @endforeach
+            <div class="ce-card__body">
+                @if($element->unesco_status)<div class="ce-unesco"><x-icon name="global" />{{ $element->unesco_status }}</div>@endif
+                @if($element->website)<a href="{{ $element->website }}" target="_blank" rel="noopener" class="ce-btn is-line"><x-icon name="global" />{{ __('Site de référence') }}</a>@endif
+                @if($peoples->isNotEmpty())
+                    <ul class="ce-card__list">
+                        @foreach($peoples as $p)<li><a href="{{ route('cultural.people', $p->slug) }}"><span>{{ $p->name }}</span><span aria-hidden="true">›</span></a></li>@endforeach
+                    </ul>
+                @endif
+                <a href="{{ route('cultural.peoples') }}" class="ce-btn is-main" style="height:44px"><x-icon name="users-group-rounded" />{{ __('Toutes les cultures') }}</a>
+            </div>
+        </aside>
     </div>
-</section>
-@endif
 
-{{-- ══ LIGHTBOX ═════════════════════════════════════════════════════════════ --}}
-<div id="lightbox" class="fixed inset-0 z-50 hidden bg-green-950/95 items-center justify-center p-4" onclick="closeLightbox()">
-    <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()">
-        <i class="fas fa-xmark"></i>
-    </button>
-    <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[90vh] rounded-xl object-contain" onclick="event.stopPropagation()">
-    <p id="lightbox-caption" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 text-sm"></p>
+    {{-- ══ À DÉCOUVRIR AUSSI ══ --}}
+    @if($related->isNotEmpty())
+        <section class="ox-sec ce-sec" id="a-decouvrir" style="margin-top:56px">
+            <p class="ce-label">{{ __('Dans le même domaine') }}</p>
+            <h2 class="ce-h2">{{ __('À découvrir aussi') }}</h2>
+            <div class="ce-related">
+                @foreach($related as $r)
+                    @php $rImg = $r->media->where('type', 'photo')->first()?->url ?: $r->thumbnail; @endphp
+                    <a href="{{ route('cultural.element', $r->slug) }}" class="ce-rel lc c{{ ($loop->index % 7) + 1 }}">
+                        <span class="ce-rel__img"><i class="{{ $r->domain?->icon ?: 'fas fa-masks-theater' }}" aria-hidden="true"></i>@if($rImg)<img src="{{ $rImg }}" alt="{{ $r->name }}" loading="lazy" onerror="this.remove()">@endif</span>
+                        <span class="ce-rel__body">@if($r->domain)<small>{{ $r->domain->name }}</small>@endif<b>{{ $r->name }}</b></span>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
+</main>
+
+{{-- Visionneuse --}}
+<div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeLightbox()">
+    <button class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()" aria-label="{{ __('Fermer') }}"><i class="fas fa-xmark"></i></button>
+    <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[88vh] rounded-xl object-contain" onclick="event.stopPropagation()">
+    <p id="lightbox-caption" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/70 text-sm text-center px-4"></p>
 </div>
 
 @include('partials.homepage-footer')
 
 <script>
-function showTab(name, btn) {
-    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    const section = document.getElementById('tab-' + name);
-    if (section) section.classList.add('active');
-    btn.classList.add('active');
-    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 10, behavior: 'smooth' });
-}
 function changeHeroPhoto(url) {
     const img = document.getElementById('mainPhoto');
     if (img) img.src = url;
-    document.querySelectorAll('[data-photo]').forEach(btn => {
-        const active = btn.dataset.photo === url;
-        btn.classList.toggle('border-orange-500', active);
-        btn.classList.toggle('opacity-100', active);
-        btn.classList.toggle('border-transparent', !active);
-        btn.classList.toggle('opacity-60', !active);
-    });
+    document.querySelectorAll('[data-photo]').forEach(btn => btn.classList.toggle('is-on', btn.dataset.photo === url));
 }
 function openLightbox(url, caption) {
     document.getElementById('lightbox-img').src = url;
     document.getElementById('lightbox-caption').textContent = caption || '';
     const lb = document.getElementById('lightbox');
-    lb.classList.remove('hidden');
-    lb.classList.add('flex');
+    lb.classList.remove('hidden'); lb.classList.add('flex');
     document.body.style.overflow = 'hidden';
 }
 function closeLightbox() {
     const lb = document.getElementById('lightbox');
-    lb.classList.add('hidden');
-    lb.classList.remove('flex');
+    lb.classList.add('hidden'); lb.classList.remove('flex');
     document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+document.querySelector('[data-ce-share]')?.addEventListener('click', async e => {
+    const b = e.currentTarget, data = { title: document.title, url: location.href.split('#')[0] };
+    try {
+        if (navigator.share) { await navigator.share(data); return; }
+        await navigator.clipboard.writeText(data.url);
+        b.title = b.dataset.done;
+    } catch (err) {}
+});
 </script>
 </body>
 </html>

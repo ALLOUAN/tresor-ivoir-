@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Restaurant extends Model
 {
-    use SoftDeletes;
+    use \App\Models\Concerns\HasLocalizedFields, SoftDeletes;
 
     protected $fillable = [
         'city_id',
@@ -27,11 +27,18 @@ class Restaurant extends Model
         'thumbnail', 'cover_image',
         'amenities',
         'is_featured', 'is_active', 'views_count', 'sort_order',
+        'table_capacity', 'slot_minutes', 'auto_confirm', 'max_party_size',
+        'accepts_orders', 'offers_delivery', 'table_duration_minutes',
+        'daily_special', 'daily_special_price_xof', 'daily_special_date',
     ];
 
     protected function casts(): array
     {
         return [
+            'auto_confirm' => 'boolean',
+            'accepts_orders' => 'boolean',
+            'offers_delivery' => 'boolean',
+            'daily_special_date' => 'date',
             'latitude' => 'float',
             'longitude' => 'float',
             'amenities' => 'array',
@@ -50,6 +57,12 @@ class Restaurant extends Model
     public function provider(): BelongsTo
     {
         return $this->belongsTo(Provider::class);
+    }
+
+    /** Tables du plan de salle. */
+    public function tables(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RestaurantTable::class)->ordered();
     }
 
     public function media(): MorphMany

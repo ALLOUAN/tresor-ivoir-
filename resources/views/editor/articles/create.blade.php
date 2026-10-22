@@ -27,6 +27,19 @@
 @method('PUT')
 @endif
 
+@include('partials.ai-writing-tools', ['aiWriting' => ['actions' => [
+    ['id' => 'sum_fr', 'label' => 'Résumé (FR)', 'icon' => 'fa-align-left', 'action' => 'summary', 'lang' => 'fr', 'payload' => ['title' => 'title_fr', 'content' => 'content_fr'], 'apply' => ['text' => ['excerpt_fr', 'Résumé (FR)']]],
+    ['id' => 'seo_fr', 'label' => 'SEO (FR)', 'icon' => 'fa-magnifying-glass', 'action' => 'seo', 'lang' => 'fr', 'payload' => ['title' => 'title_fr', 'content' => 'content_fr'], 'apply' => ['meta_title' => ['meta_title_fr', 'Titre SEO (FR)'], 'meta_desc' => ['meta_desc_fr', 'Description SEO (FR)']]],
+    ['id' => 'tit_fr', 'label' => 'Titres alternatifs (FR)', 'icon' => 'fa-heading', 'action' => 'titles', 'lang' => 'fr', 'payload' => ['title' => 'title_fr', 'content' => 'content_fr'], 'apply' => ['titles' => 'title_fr']],
+    ['id' => 'sum_en', 'label' => 'Summary (EN)', 'icon' => 'fa-align-left', 'action' => 'summary', 'lang' => 'en', 'payload' => ['title' => 'title_en', 'content' => 'content_en'], 'apply' => ['text' => ['excerpt_en', 'Summary (EN)']]],
+    ['id' => 'seo_en', 'label' => 'SEO (EN)', 'icon' => 'fa-magnifying-glass', 'action' => 'seo', 'lang' => 'en', 'payload' => ['title' => 'title_en', 'content' => 'content_en'], 'apply' => ['meta_title' => ['meta_title_en', 'SEO title (EN)'], 'meta_desc' => ['meta_desc_en', 'SEO description (EN)']]],
+    ['id' => 'tr_fr_en', 'label' => 'Traduire FR → EN', 'icon' => 'fa-language', 'action' => 'translate', 'from' => 'fr', 'to' => 'en', 'map' => [
+        'title' => ['title_fr', 'title_en', 'Titre'], 'excerpt' => ['excerpt_fr', 'excerpt_en', 'Résumé'], 'content' => ['content_fr', 'content_en', 'Contenu'],
+        'meta_title' => ['meta_title_fr', 'meta_title_en', 'Titre SEO'], 'meta_desc' => ['meta_desc_fr', 'meta_desc_en', 'Description SEO']]],
+    ['id' => 'tr_en_fr', 'label' => 'Traduire EN → FR', 'icon' => 'fa-language', 'action' => 'translate', 'from' => 'en', 'to' => 'fr', 'map' => [
+        'title' => ['title_en', 'title_fr', 'Titre'], 'excerpt' => ['excerpt_en', 'excerpt_fr', 'Résumé'], 'content' => ['content_en', 'content_fr', 'Contenu'],
+        'meta_title' => ['meta_title_en', 'meta_title_fr', 'Titre SEO'], 'meta_desc' => ['meta_desc_en', 'meta_desc_fr', 'Description SEO']]],
+]]])
 {{-- Lang tabs --}}
 <div class="flex items-center gap-1 mb-6 bg-green-900/50 border border-slate-800 rounded-xl p-1 w-fit">
     <button type="button" onclick="switchLang('fr')" id="tab-fr"
@@ -273,21 +286,14 @@
             </h3>
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs text-slate-500 mb-1.5">URL de l'image</label>
-                    <input type="url" name="cover_url" id="cover_url" value="{{ old('cover_url', $article->cover_url ?? null) }}"
-                        placeholder="https://…"
-                        class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/60 rounded-lg px-3 py-2.5 text-slate-300 text-sm outline-none transition placeholder-slate-600"
-                        oninput="previewCover(this.value)">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-500 mb-1.5">Ou importer un fichier</label>
+                    <label class="block text-xs text-slate-500 mb-1.5">{{ isset($article) && !empty($article->cover_url) ? 'Remplacer l\'image' : 'Importer une image' }}</label>
                     <input type="file" name="cover_image" id="cover_image" accept="image/jpeg,image/png,image/webp"
                         class="w-full bg-slate-800 border border-slate-700 file:border-0 file:bg-slate-700 file:text-slate-300 file:px-3 file:py-2 file:mr-3 rounded-lg px-3 py-2 text-slate-400 text-xs outline-none transition">
-                    <p class="text-[11px] text-slate-600 mt-1">JPG, PNG ou WEBP (max 10 Mo). Le fichier remplace l'URL si les deux sont remplis.</p>
+                    <p class="text-[11px] text-slate-600 mt-1">JPG, PNG ou WEBP (max 10 Mo). Sans nouveau fichier, l'image actuelle est conservée.</p>
                     @error('cover_image') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div id="coverPreview" class="{{ isset($article) && !empty($article->cover_url) ? '' : 'hidden' }} rounded-lg overflow-hidden h-32 bg-slate-800">
-                    <img id="coverImg" src="{{ old('cover_url', $article->cover_url ?? '') }}" alt="" class="w-full h-full object-cover">
+                    <img id="coverImg" src="{{ $article->cover_url ?? '' }}" alt="" class="w-full h-full object-cover">
                 </div>
                 <div>
                     <label class="block text-xs text-slate-500 mb-1.5">Texte alternatif</label>
@@ -499,7 +505,7 @@ function countWords(el, countId) {
 function previewCover(url) {
     const preview = document.getElementById('coverPreview');
     const img = document.getElementById('coverImg');
-    if (url && url.startsWith('http')) {
+    if (url && (url.startsWith('http') || url.startsWith('/'))) {
         img.src = url;
         preview.classList.remove('hidden');
     } else {

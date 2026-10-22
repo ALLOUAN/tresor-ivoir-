@@ -16,13 +16,15 @@ use Illuminate\View\View;
 
 class TourController extends Controller
 {
+    use \App\Http\Controllers\Concerns\ValidatesTourMarketFields;
+
     public function __construct(
         private readonly ImageUploadSecurityService $imageUpload,
     ) {}
 
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -140,7 +142,7 @@ class TourController extends Controller
             'price_xof' => ['required', 'integer', 'min:0'],
             'duration_days' => ['nullable', 'integer', 'min:1', 'max:365'],
             'max_participants' => ['nullable', 'integer', 'min:1', 'max:999'],
-        ]);
+        ]) + $this->tourMarketData($request);
     }
 
     /**
@@ -186,4 +188,100 @@ class TourController extends Controller
         }));
     }
 
+
+    /* ── Départs programmés ─────────────────────────────────────────────── */
+
+    public function departures(TourPackage $tour): View
+    {
+        $provider = $this->getProvider();
+        abort_unless((int) $tour->provider_id === (int) $provider->id, 403);
+        $departures = $tour->departures()->whereDate('departure_date', '>=', now()->subDays(30)->toDateString())
+            ->with(['bookings' => fn ($q) => $q->whereIn('status', [\App\Models\TourBooking::STATUS_DEPOSIT_PAID, \App\Models\TourBooking::STATUS_PAID, \App\Models\TourBooking::STATUS_CANCELLED])->orderBy('created_at')])
+            ->get();
+
+        return view('provider.tours.departures', compact('tour', 'departures'));
+    }
+
+    public function storeDeparture(Request $request, TourPackage $tour): RedirectResponse
+    {
+        $provider = $this->getProvider();
+        abort_unless((int) $tour->provider_id === (int) $provider->id, 403);
+        $data = $request->validate([
+            'departure_date' => ['required', 'date', 'after_or_equal:today'],
+            'seats_total' => ['required', 'integer', 'min:1', 'max:500'],
+            'min_participants' => ['nullable', 'integer', 'min:1', 'lte:seats_total'],
+            'price_xof' => ['nullable', 'integer', 'min:0'],
+            'repeat_weeks' => ['nullable', 'integer', 'min:0', 'max:52'],
+        ], [], ['departure_date' => 'date de départ', 'seats_total' => 'places']);
+
+        // Départ unique ou répété chaque semaine (ex. tous les samedis pendant 8 semaines).
+        $created = 0;
+        $date = \Carbon\CarbonImmutable::parse($data['departure_date']);
+        for ($i = 0; $i <= (int) ($data['repeat_weeks'] ?? 0); $i++) {
+            $d = $date->addWeeks($i)->toDateString();
+            $dep = \App\Models\TourDeparture::firstOrCreate(
+                ['tour_package_id' => $tour->id, 'departure_date' => $d],
+                ['seats_total' => $data['seats_total'], 'min_participants' => $data['min_participants'] ?? null, 'price_xof' => $data['price_xof'] ?? null, 'is_active' => true]
+            );
+            $created += (int) $dep->wasRecentlyCreated;
+        }
+
+        return back()->with('success', $created.' départ(s) ajouté(s).');
+    }
+
+    /** Places, minimum, prix, ouverture des inscriptions. */
+    public function updateDeparture(Request $request, TourPackage $tour, \App\Models\TourDeparture $departure): RedirectResponse
+    {
+        $this->ownedDeparture($tour, $departure);
+        $data = $request->validate([
+            'seats_total' => ['required', 'integer', 'min:'.max(1, $departure->seatsTaken()), 'max:500'],
+            'min_participants' => ['nullable', 'integer', 'min:1', 'lte:seats_total'],
+            'price_xof' => ['nullable', 'integer', 'min:0'],
+        ], ['seats_total.min' => 'Impossible de descendre sous le nombre de voyageurs déjà inscrits (:min).']);
+        $departure->update($data + ['is_active' => $request->boolean('is_active', true)]);
+        app(\App\Services\TourBookingService::class)->guaranteeIfReached($departure);
+
+        return back()->with('success', 'Départ mis à jour.');
+    }
+
+    /** Confirmer le départ même sans le minimum : les inscrits sont prévenus. */
+    public function guaranteeDeparture(TourPackage $tour, \App\Models\TourDeparture $departure): RedirectResponse
+    {
+        $this->ownedDeparture($tour, $departure);
+        abort_if($departure->cancelled_at, 422);
+        app(\App\Services\TourBookingService::class)->guaranteeIfReached($departure, force: true);
+
+        return back()->with('success', 'Départ garanti : les voyageurs inscrits sont prévenus.');
+    }
+
+    /** Annuler un départ : tous les inscrits sont remboursés à 100 % sur leur solde et prévenus. */
+    public function cancelDeparture(Request $request, TourPackage $tour, \App\Models\TourDeparture $departure): RedirectResponse
+    {
+        $this->ownedDeparture($tour, $departure);
+        $reason = $request->validate(['reason' => ['required', 'string', 'max:255']], ['reason.required' => 'Indiquez le motif, il sera transmis aux voyageurs.'])['reason'];
+        $n = app(\App\Services\TourBookingService::class)->cancelDeparture($departure, 'agency', $reason);
+
+        return back()->with('success', 'Départ annulé. '.$n.' réservation(s) remboursée(s) intégralement.');
+    }
+
+    private function ownedDeparture(TourPackage $tour, \App\Models\TourDeparture $departure): void
+    {
+        $provider = $this->getProvider();
+        abort_unless((int) $tour->provider_id === (int) $provider->id && (int) $departure->tour_package_id === (int) $tour->id, 403);
+    }
+
+    public function destroyDeparture(TourPackage $tour, \App\Models\TourDeparture $departure): RedirectResponse
+    {
+        $provider = $this->getProvider();
+        abort_unless((int) $tour->provider_id === (int) $provider->id && (int) $departure->tour_package_id === (int) $tour->id, 403);
+        if ($departure->seatsTaken() > 0) {
+            // Des voyageurs sont inscrits : on ferme les inscriptions au lieu de supprimer.
+            $departure->update(['is_active' => false]);
+
+            return back()->with('success', 'Inscriptions fermées pour ce départ (des voyageurs y sont déjà inscrits).');
+        }
+        $departure->delete();
+
+        return back()->with('success', 'Départ supprimé.');
+    }
 }

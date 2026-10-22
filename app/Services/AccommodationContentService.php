@@ -15,8 +15,11 @@ use Illuminate\Support\Str;
 class AccommodationContentService
 {
     /** Parse les lignes dynamiques de types de chambres. */
-    public function parseRoomTypes(Request $request): ?array
+    public function parseRoomTypes(Request $request, ?array $existing = null): ?array
     {
+        // Champs gérés ailleurs (périodes fermées saisies par le prestataire) : conservés tels quels.
+        $existingById = collect($existing ?? [])->filter(fn ($r) => ! empty($r['id']))->keyBy('id');
+
         $names = $request->input('room_name', []);
         $adults = $request->input('room_max_adults', []);
         $children = $request->input('room_max_children', []);
@@ -28,6 +31,8 @@ class AccommodationContentService
         $descriptions = $request->input('room_description', []);
         $beds = $request->input('room_beds', []);
         $conditions = $request->input('room_conditions', []);
+        $units = $request->input('room_units', []);
+        $ids = $request->input('room_id', []);
 
         $rooms = [];
         foreach ($names as $i => $name) {
@@ -35,7 +40,9 @@ class AccommodationContentService
                 continue;
             }
             $rooms[] = [
+                'id' => ! empty($ids[$i]) ? (string) $ids[$i] : (string) Str::uuid(),
                 'name' => trim($name),
+                'units' => ! empty($units[$i]) ? max(1, (int) $units[$i]) : null,
                 'max_adults' => (int) ($adults[$i] ?? 2),
                 'max_children' => (int) ($children[$i] ?? 0),
                 'area_m2' => ! empty($areas[$i]) ? (float) $areas[$i] : null,
@@ -50,7 +57,8 @@ class AccommodationContentService
                 'description' => ! empty($descriptions[$i]) ? trim($descriptions[$i]) : null,
                 'beds' => ! empty($beds[$i]) ? trim($beds[$i]) : null,
                 'conditions' => ! empty($conditions[$i]) ? trim($conditions[$i]) : null,
-            ];
+                'closed_ranges' => ! empty($ids[$i]) ? ($existingById->get($ids[$i])['closed_ranges'] ?? []) : [],
+            ] + (! empty($ids[$i]) ? array_intersect_key((array) $existingById->get($ids[$i]), array_flip(['weekend_price_xof', 'rate_periods', 'long_stay_min_nights', 'long_stay_percent', 'last_minute_days', 'last_minute_percent', 'ical_url', 'external_blocks', 'ical_synced_at'])) : []);
         }
 
         return $rooms ?: null;
@@ -117,6 +125,15 @@ class AccommodationContentService
         return [
             'id' => $existingId ?? (string) Str::uuid(),
             'name' => trim((string) $request->input('name', '')),
+            'units' => $request->filled('units') ? max(1, (int) $request->input('units')) : null,
+            'closed_ranges' => $this->parseClosedRanges($request),
+            'weekend_price_xof' => $request->filled('weekend_price_xof') ? max(0, (int) $request->input('weekend_price_xof')) : null,
+            'rate_periods' => $this->parseRatePeriods($request),
+            'long_stay_min_nights' => $request->filled('long_stay_min_nights') ? max(1, (int) $request->input('long_stay_min_nights')) : null,
+            'long_stay_percent' => $request->filled('long_stay_percent') ? min(90, max(0, (float) $request->input('long_stay_percent'))) : null,
+            'last_minute_days' => $request->filled('last_minute_days') ? max(1, (int) $request->input('last_minute_days')) : null,
+            'last_minute_percent' => $request->filled('last_minute_percent') ? min(90, max(0, (float) $request->input('last_minute_percent'))) : null,
+            'ical_url' => $request->filled('ical_url') ? trim((string) $request->input('ical_url')) : null,
             'max_adults' => (int) $request->input('max_adults', 2),
             'max_children' => (int) $request->input('max_children', 0),
             'area_m2' => $request->filled('area_m2') ? (float) $request->input('area_m2') : null,
@@ -128,6 +145,49 @@ class AccommodationContentService
             'beds' => $request->filled('beds') ? trim((string) $request->input('beds')) : null,
             'conditions' => $request->filled('conditions') ? trim((string) $request->input('conditions')) : null,
         ];
+    }
+
+    /**
+     * Périodes fermées saisies par paires closed_from[] / closed_to[] (dates incluses).
+     * Les lignes vides, inversées ou déjà passées sont ignorées.
+     *
+     * @return array<int, array{from: string, to: string}>
+     */
+    private function parseClosedRanges(Request $request): array
+    {
+        $froms = (array) $request->input('closed_from', []);
+        $tos = (array) $request->input('closed_to', []);
+        $today = now()->toDateString();
+        $ranges = [];
+        foreach ($froms as $i => $from) {
+            $to = $tos[$i] ?? null;
+            if (! $from || ! $to || $to < $from || $to < $today) {
+                continue;
+            }
+            $ranges[] = ['from' => (string) $from, 'to' => (string) $to];
+        }
+        usort($ranges, fn ($a, $b) => strcmp($a['from'], $b['from']));
+
+        return $ranges;
+    }
+
+    /**
+     * Périodes tarifaires (haute saison, fêtes…) : rate_from[] / rate_to[] / rate_price[] / rate_label[].
+     *
+     * @return array<int, array{from: string, to: string, price_xof: int, label: ?string}>
+     */
+    private function parseRatePeriods(Request $request): array
+    {
+        $out = [];
+        foreach ((array) $request->input('rate_from', []) as $i => $from) {
+            $to = $request->input('rate_to.'.$i);
+            $price = (int) $request->input('rate_price.'.$i);
+            if (! $from || ! $to || $to < $from || $price <= 0) continue;
+            $out[] = ['from' => (string) $from, 'to' => (string) $to, 'price_xof' => $price, 'label' => trim((string) $request->input('rate_label.'.$i)) ?: null];
+        }
+        usort($out, fn ($a, $b) => strcmp($a['from'], $b['from']));
+
+        return $out;
     }
 
     /** Upload les photos de la chambre courante (formulaire "une seule chambre") et les ajoute au tableau. */
@@ -190,6 +250,9 @@ class AccommodationContentService
     public function storeImage(\Illuminate\Http\UploadedFile $file, string $folder, string $prefix): string
     {
         $ext = strtolower($file->getClientOriginalExtension()) ?: 'jpg';
+        if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true) || ! \App\Support\ImageUploadGuard::isRealImage($file)) {
+            abort(422, 'Image invalide : formats acceptés jpeg, png ou webp.');
+        }
         $filename = $folder.'/'.$prefix.'_'.Str::random(32).'.'.$ext;
         Storage::disk('public')->put($filename, fopen($file->getPathname(), 'r'));
 

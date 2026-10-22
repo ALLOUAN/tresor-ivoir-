@@ -21,7 +21,7 @@ class TouristExperienceManagementController extends Controller
         $search = $request->get('q');
         $cityId = $request->get('city_id');
 
-        $query = TouristExperience::with('city')->withCount('media');
+        $query = TouristExperience::with('city')->withCount(['media', 'visitTypes as active_visit_types_count' => fn ($q) => $q->where('is_active', true)]);
 
         if ($search) $query->where('name', 'like', "%{$search}%");
         if ($cityId) $query->where('city_id', $cityId);

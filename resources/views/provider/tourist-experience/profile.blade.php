@@ -217,15 +217,32 @@
                 <h2 class="text-white font-semibold mb-4 flex items-center gap-2">
                     <i class="fas fa-ticket text-orange-400"></i> Réservation de visites
                 </h2>
+                @php $vtTypes = $e?->exists ? $e->visitTypes()->get() : collect(); @endphp
+                <div class="mb-4 rounded-lg border border-slate-800 p-3">
+                    <p class="text-xs text-slate-400 mb-2">{{ __('Types de visite proposés') }}</p>
+                    @forelse($vtTypes as $vt)
+                        <p class="flex items-center justify-between gap-2 text-sm {{ $vt->is_active ? 'text-slate-200' : 'text-slate-500 line-through' }}">
+                            <span><i class="fas {{ $vt->iconClass() }} text-orange-400 mr-1.5"></i>{{ $vt->name }}</span>
+                            <span class="text-xs">{{ $vt->price_xof ? number_format((int) $vt->price_xof, 0, ',', ' ').' XOF' : __('Gratuit') }}</span>
+                        </p>
+                    @empty
+                        <p class="text-slate-500 text-xs">{{ __('Aucun type de visite : les visiteurs ne peuvent pas encore réserver.') }}</p>
+                    @endforelse
+                    @if($e?->exists)
+                        <a href="{{ route('provider.tourist-experience.visit-types.index') }}" class="mt-2 inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 text-xs">
+                            <i class="fas fa-ticket-simple"></i> {{ __('Gérer les types de visite') }}
+                        </a>
+                    @endif
+                </div>
                 <div class="space-y-3 mb-4">
-                    <label class="flex items-center gap-2.5 cursor-pointer group">
+                    <label class="hidden">
                         <input type="hidden" name="visit_individual_enabled" value="0">
                         <input type="checkbox" name="visit_individual_enabled" value="1"
                                class="rounded border-slate-600 bg-slate-800 text-orange-500"
                                {{ old('visit_individual_enabled', $e->visit_individual_enabled ?? false) ? 'checked' : '' }}>
                         <span class="text-sm text-slate-300 group-hover:text-white transition">Visite individuelle</span>
                     </label>
-                    <label class="flex items-center gap-2.5 cursor-pointer group">
+                    <label class="hidden">
                         <input type="hidden" name="visit_guided_enabled" value="0">
                         <input type="checkbox" name="visit_guided_enabled" value="1"
                                class="rounded border-slate-600 bg-slate-800 text-orange-500"
@@ -241,13 +258,28 @@
                     </label>
                 </div>
                 <div class="grid grid-cols-1 gap-3">
-                    <div>
+                    <div class="hidden">
                         <label class="block text-xs text-slate-400 mb-1">Prix par participant (individuel/guidé)</label>
                         <input type="number" name="visit_individual_price_xof" min="0" placeholder="Laisser vide = gratuit"
                                value="{{ old('visit_individual_price_xof', $e->visit_individual_price_xof ?? '') }}"
                                class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
                     </div>
-                    <div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Tarif enfant (−12 ans)</label>
+                            <input type="number" name="visit_child_price_xof" min="0" placeholder="= tarif normal"
+                                   value="{{ old('visit_child_price_xof', $e->visit_child_price_xof ?? '') }}"
+                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Tarif résident (CI / CEDEAO)</label>
+                            <input type="number" name="visit_resident_price_xof" min="0" placeholder="= tarif normal"
+                                   value="{{ old('visit_resident_price_xof', $e->visit_resident_price_xof ?? '') }}"
+                                   class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none">
+                        </div>
+                        <p class="col-span-2 text-[11px] text-slate-500">Laissez vide pour appliquer le tarif normal. Les résidents présentent une pièce justificative à l'entrée.</p>
+                    </div>
+                    <div class="hidden">
                         <label class="block text-xs text-slate-400 mb-1">Supplément guide (forfait par réservation)</label>
                         <input type="number" name="visit_guide_supplement_xof" min="0" placeholder="0"
                                value="{{ old('visit_guide_supplement_xof', $e->visit_guide_supplement_xof ?? '') }}"

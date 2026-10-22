@@ -262,6 +262,8 @@ class CulturalPeopleSeeder extends Seeder
         ];
 
         foreach ($peoples as $people) {
+            // Corrections factuelles : voir Data\CulturalCorrections::peoples().
+            $people = array_merge($people, \Database\Seeders\Data\CulturalCorrections::peoples()[$people['slug']] ?? []);
             CulturalPeople::updateOrCreate(['slug' => $people['slug']], $people);
         }
 

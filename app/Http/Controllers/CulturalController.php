@@ -58,7 +58,11 @@ class CulturalController extends Controller
 
         $domains = $elements->pluck('domain')->filter()->unique('id')->values();
 
-        return view('cultural.people', compact('people', 'elements', 'domains'));
+        // Affichage : quelques autres peuples à découvrir en fin de page.
+        $others = CulturalPeople::where('is_active', 1)->where('id', '!=', $people->id)
+            ->orderByDesc('is_featured')->orderBy('sort_order')->limit(4)->get();
+
+        return view('cultural.people', compact('people', 'elements', 'domains', 'others'));
     }
 
     public function element(string $slug)

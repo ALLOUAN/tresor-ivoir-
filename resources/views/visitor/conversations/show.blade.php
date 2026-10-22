@@ -1,6 +1,6 @@
 @extends('layouts.visitor-public')
 
-@section('title', 'Conversation')
+@section('title', __('Conversation'))
 @section('page-title', 'Conversation avec ' . $conversation->provider->name)
 
 @section('content')
@@ -9,18 +9,18 @@
 
 <div class="mb-4 flex items-center justify-between gap-3">
     <a href="{{ route('visitor.conversations.index') }}" class="text-orange-400 hover:text-orange-300 text-sm transition">
-        ← Retour à mes messages
+        {{ __('← Retour à mes messages') }}
     </a>
     @unless($conversation->isBlocked())
     <div class="flex items-center gap-2">
         <button type="button" onclick="document.getElementById('report-modal').classList.remove('hidden'); document.getElementById('report-modal').classList.add('flex');"
                 class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
-            <i class="fas fa-flag mr-1"></i>Signaler
+            <i class="fas fa-flag mr-1"></i>{{ __('Signaler') }}
         </button>
         <form method="POST" action="{{ route('visitor.conversations.block', $conversation) }}" onsubmit="return confirm('Bloquer cet utilisateur ? Vous ne pourrez plus échanger de messages avec lui dans cette conversation.');">
             @csrf
             <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-red-900/50 text-slate-300 hover:text-red-300 transition">
-                <i class="fas fa-ban mr-1"></i>Bloquer
+                <i class="fas fa-ban mr-1"></i>{{ __('Bloquer') }}
             </button>
         </form>
     </div>
@@ -44,7 +44,7 @@
             @endif
         </div>
         <span class="px-2 py-1 rounded-full text-xs {{ $conversation->status === 'closed' ? 'bg-slate-500/20 text-slate-300' : 'bg-emerald-500/20 text-emerald-300' }}">
-            {{ $conversation->status === 'closed' ? 'Fermée' : 'Ouverte' }}
+            {{ $conversation->status === 'closed' ? __('Fermée') : __('Ouverte') }}
         </span>
     </div>
 
@@ -58,13 +58,13 @@
                     </p>
                     <p class="whitespace-pre-line leading-relaxed">{{ $message->body }}</p>
                     @if($message->is_flagged)
-                        <p class="mt-2 text-[11px] text-rose-300"><i class="fas fa-triangle-exclamation mr-1"></i>Ce message a été signalé automatiquement pour vérification.</p>
+                        <p class="mt-2 text-[11px] text-rose-300"><i class="fas fa-triangle-exclamation mr-1"></i>{{ __('Ce message a été signalé automatiquement pour vérification.') }}</p>
                     @endif
                     @if(! $mine)
                         <button type="button"
                                 class="mt-2 text-[11px] px-2 py-1 rounded bg-white/10 hover:bg-white/20"
                                 onclick="document.getElementById('report-message-id').value='{{ $message->id }}'; document.getElementById('report-modal').classList.remove('hidden'); document.getElementById('report-modal').classList.add('flex');">
-                            <i class="fas fa-flag mr-1"></i>Signaler ce message
+                            <i class="fas fa-flag mr-1"></i>{{ __('Signaler ce message') }}
                         </button>
                     @endif
                     @if($message->attachments->isNotEmpty())
@@ -88,27 +88,27 @@
                 </div>
             </div>
         @empty
-            <p class="text-slate-500 text-sm text-center py-8">Aucun message.</p>
+            <p class="text-slate-500 text-sm text-center py-8">{{ __('Aucun message.') }}</p>
         @endforelse
     </div>
 
     <div class="px-5 py-4 border-t border-slate-800">
         @if($conversation->isBlocked())
-            <p class="text-slate-500 text-sm text-center py-2"><i class="fas fa-ban mr-1"></i>Cette conversation est bloquée. Vous ne pouvez plus échanger de messages.</p>
+            <p class="text-slate-500 text-sm text-center py-2"><i class="fas fa-ban mr-1"></i>{{ __('Cette conversation est bloquée. Vous ne pouvez plus échanger de messages.') }}</p>
         @else
         <form method="POST" action="{{ route('visitor.conversations.reply', $conversation) }}" enctype="multipart/form-data" class="space-y-3">
             @csrf
             <textarea name="message" rows="3" required
                       class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"
-                      placeholder="Écrire un message au prestataire..."></textarea>
+                      placeholder="{{ __('Écrire un message au prestataire...') }}"></textarea>
             <div>
-                <label class="block text-xs text-slate-400 mb-1">Pièces jointes (optionnel)</label>
+                <label class="block text-xs text-slate-400 mb-1">{{ __('Pièces jointes (optionnel)') }}</label>
                 <input type="file" name="attachments[]" multiple
                        class="block w-full text-xs text-slate-300 file:mr-3 file:rounded file:border-0 file:bg-slate-700 file:px-3 file:py-1.5 file:text-slate-200 hover:file:bg-slate-600">
             </div>
             <div class="flex justify-end">
                 <button class="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg px-4 py-2 text-sm">
-                    Envoyer
+                    {{ __('Envoyer') }}
                 </button>
             </div>
         </form>
@@ -119,7 +119,7 @@
 <div id="report-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-green-950/70 px-4">
     <div class="w-full max-w-md rounded-xl border border-slate-700 bg-green-900 p-5 shadow-2xl">
         <div class="flex items-center justify-between gap-3 mb-3">
-            <h3 class="text-slate-100 font-semibold">Signaler</h3>
+            <h3 class="text-slate-100 font-semibold">{{ __('Signaler') }}</h3>
             <button type="button" onclick="document.getElementById('report-modal').classList.add('hidden'); document.getElementById('report-modal').classList.remove('flex');" class="h-8 w-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
                 <i class="fas fa-xmark"></i>
             </button>
@@ -128,7 +128,7 @@
             @csrf
             <input type="hidden" name="message_id" id="report-message-id" value="">
             <div>
-                <label class="block text-xs text-slate-400 mb-1">Motif</label>
+                <label class="block text-xs text-slate-400 mb-1">{{ __('Motif') }}</label>
                 <select name="reason" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                     @foreach(\App\Models\ConversationReport::REASON_LABELS as $value => $label)
                         <option value="{{ $value }}">{{ $label }}</option>
@@ -136,12 +136,12 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs text-slate-400 mb-1">Détails (optionnel)</label>
+                <label class="block text-xs text-slate-400 mb-1">{{ __('Détails (optionnel)') }}</label>
                 <textarea name="details" rows="3" maxlength="2000" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100"></textarea>
             </div>
             <div class="flex items-center justify-end gap-2">
-                <button type="button" onclick="document.getElementById('report-modal').classList.add('hidden'); document.getElementById('report-modal').classList.remove('flex');" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm">Annuler</button>
-                <button type="submit" class="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold">Envoyer le signalement</button>
+                <button type="button" onclick="document.getElementById('report-modal').classList.add('hidden'); document.getElementById('report-modal').classList.remove('flex');" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm">{{ __('Annuler') }}</button>
+                <button type="submit" class="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold">{{ __('Envoyer le signalement') }}</button>
             </div>
         </form>
     </div>

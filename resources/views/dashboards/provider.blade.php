@@ -4,7 +4,7 @@
 @section('page-title', 'Tableau de bord — Prestataire')
 
 @section('header-actions')
-<a href="#" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium rounded-lg transition border border-slate-700">
+<a href="{{ route('provider.profile.edit') }}" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium rounded-lg transition border border-slate-700">
     <i class="fas fa-pen"></i> Modifier ma fiche
 </a>
 @endsection
@@ -32,13 +32,14 @@ $planCode = strtolower($subscription->plan->code ?? 'bronze');
 $bannerColors = ['gold'=>'from-orange-700/40 to-orange-900/20 border-orange-600/40','silver'=>'from-slate-500/30 to-slate-700/20 border-slate-500/40','bronze'=>'from-orange-900/30 to-slate-800/20 border-orange-800/40'];
 $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 @endphp
-<div class="bg-gradient-to-r {{ $bc }} border rounded-xl p-5 mb-6 flex items-center justify-between">
+<div class="bg-gradient-to-r from-orange-900/30 to-orange-800/10 border border-orange-700/30 rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-            <i class="fas fa-gem text-orange-400 text-xl"></i>
+        <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center shrink-0">
+            <i class="fas fa-gem text-orange-400 text-2xl"></i>
         </div>
         <div>
-            <p class="text-white font-semibold">Forfait {{ ucfirst($planCode) }}</p>
+            <p class="text-orange-300 text-sm font-medium mb-0.5">Votre abonnement</p>
+            <p class="text-white text-2xl font-bold">Forfait {{ ucfirst($planCode) }}</p>
             <p class="text-slate-400 text-xs mt-0.5">
                 @php $providerDaysLeft = $subscription->ends_at ? now()->startOfDay()->diffInDays($subscription->ends_at->copy()->startOfDay(), false) : null; @endphp
                 Valide jusqu'au {{ $subscription->ends_at?->format('d/m/Y') ?? 'N/A' }}
@@ -51,12 +52,15 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
     </a>
 </div>
 @else
-<div class="bg-green-900 border border-dashed border-slate-700 rounded-xl p-5 mb-6 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-        <i class="fas fa-gem text-slate-600 text-xl"></i>
+<div class="bg-gradient-to-r from-orange-900/30 to-orange-800/10 border border-orange-700/30 rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center shrink-0">
+            <i class="fas fa-gem text-orange-400 text-2xl"></i>
+        </div>
         <div>
-            <p class="text-slate-300 font-medium text-sm">Aucun abonnement actif</p>
-            <p class="text-slate-500 text-xs">Souscrivez un forfait pour bénéficier de plus de visibilité.</p>
+            <p class="text-orange-300 text-sm font-medium mb-0.5">Votre abonnement</p>
+            <p class="text-white text-xl font-bold">Aucun abonnement actif</p>
+            <p class="text-slate-500 text-xs mt-0.5">Souscrivez un forfait pour bénéficier de plus de visibilité.</p>
         </div>
     </div>
     <a href="{{ route('provider.billing.plans') }}" class="shrink-0 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded-lg transition">
@@ -66,47 +70,48 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 @endif
 
 {{-- ── Stats ───────────────────────────────────────────────────────────── --}}
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
     @php
     $stat_cards = [
-        ['label' => 'Vues de la fiche',    'value' => number_format($stats['views']),          'icon' => 'fa-eye',            'color' => 'text-green-400',   'bg' => 'bg-green-900/20'],
-        ['label' => 'Clics téléphone',     'value' => number_format($stats['clicks_phone']),   'icon' => 'fa-phone',          'color' => 'text-emerald-400','bg' => 'bg-emerald-900/20'],
-        ['label' => 'Clics site web',      'value' => number_format($stats['clicks_website']), 'icon' => 'fa-globe',          'color' => 'text-green-400', 'bg' => 'bg-green-900/20'],
-        ['label' => 'Note moyenne',        'value' => number_format($stats['rating_avg'], 1),  'icon' => 'fa-star',           'color' => 'text-orange-400',  'bg' => 'bg-orange-900/20'],
-        ['label' => 'Nombre d\'avis',      'value' => number_format($stats['rating_count']),   'icon' => 'fa-comments',       'color' => 'text-rose-400',   'bg' => 'bg-rose-900/20'],
+        ['label' => 'Vues de la fiche', 'value' => number_format($stats['views']),          'sub' => 'Depuis la mise en ligne',                      'icon' => 'fa-eye',        'color' => 'text-green-400',   'bg' => 'bg-green-900/20'],
+        ['label' => 'Clics téléphone',  'value' => number_format($stats['clicks_phone']),   'sub' => 'Appels lancés depuis la fiche',                'icon' => 'fa-phone',      'color' => 'text-emerald-400', 'bg' => 'bg-emerald-900/20'],
+        ['label' => 'Clics site web',   'value' => number_format($stats['clicks_website']), 'sub' => 'Visites de votre site',                        'icon' => 'fa-globe',      'color' => 'text-green-400',   'bg' => 'bg-green-900/20'],
+        ['label' => 'Note moyenne',     'value' => number_format($stats['rating_avg'], 1),  'sub' => 'Sur 5',                                        'icon' => 'fa-star',       'color' => 'text-orange-400',  'bg' => 'bg-orange-900/20'],
+        ['label' => 'Nombre d\'avis',   'value' => number_format($stats['rating_count']),   'sub' => $pending_reviews.' en attente de modération', 'icon' => 'fa-comments',   'color' => 'text-rose-400',    'bg' => 'bg-rose-900/20'],
     ];
     @endphp
     @foreach($stat_cards as $card)
-    <div class="bg-green-900 border border-slate-800 rounded-xl p-4">
-        <div class="flex items-center justify-between mb-3">
-            <div class="w-8 h-8 rounded-lg {{ $card['bg'] }} flex items-center justify-center">
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-400 text-xs font-medium">{{ $card['label'] }}</span>
+            <div class="w-8 h-8 rounded-lg {{ $card['bg'] }} flex items-center justify-center shrink-0">
                 <i class="fas {{ $card['icon'] }} {{ $card['color'] }} text-sm"></i>
             </div>
         </div>
-        <p class="text-white text-xl font-bold">{{ $card['value'] }}</p>
-        <p class="text-slate-500 text-xs mt-0.5">{{ $card['label'] }}</p>
+        <div>
+            <p class="text-white text-2xl font-bold">{{ $card['value'] }}</p>
+            <p class="text-slate-500 text-xs mt-0.5">{{ $card['sub'] }}</p>
+        </div>
     </div>
     @endforeach
 </div>
 
 {{-- ── Modern charts ───────────────────────────────────────────────────── --}}
-<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
-    <div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-green-500/20 rounded-xl p-5 shadow-lg shadow-green-900/20">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-white font-semibold text-sm">Répartition des interactions</h3>
-            <span class="text-[10px] px-2 py-1 rounded-full bg-green-500/15 text-green-300 border border-green-400/20">Doughnut</span>
-        </div>
-        <div class="max-w-[340px] mx-auto">
-            <canvas id="providerDashboardInteractions" height="220"></canvas>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+    <div class="xl:col-span-2 bg-green-900 border border-slate-800 rounded-xl p-5">
+        <h2 class="text-white font-semibold text-sm">Vue globale de la performance</h2>
+        <p class="text-slate-500 text-xs mt-0.5">Vues, clics et avis de votre fiche</p>
+        <div class="h-64 mt-3">
+            <canvas id="providerDashboardOverview"></canvas>
         </div>
     </div>
 
-    <div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-green-500/20 rounded-xl p-5 shadow-lg shadow-green-900/20">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-white font-semibold text-sm">Vue globale performance</h3>
-            <span class="text-[10px] px-2 py-1 rounded-full bg-green-500/15 text-green-300 border border-green-400/20">Snapshot</span>
+    <div class="bg-green-900 border border-slate-800 rounded-xl p-5">
+        <h2 class="text-white font-semibold text-sm">Répartition des interactions</h2>
+        <p class="text-slate-500 text-xs mt-0.5">Part de chaque action des visiteurs</p>
+        <div class="h-64 mt-3">
+            <canvas id="providerDashboardInteractions"></canvas>
         </div>
-        <canvas id="providerDashboardOverview" height="220"></canvas>
     </div>
 </div>
 
@@ -290,11 +295,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
                 labels: ['Vues', 'Clics téléphone', 'Clics site web'],
                 datasets: [{
                     data: interactionsData,
-                    backgroundColor: [
-                        'rgba(59,130,246,0.92)',
-                        'rgba(16,185,129,0.92)',
-                        'rgba(168,85,247,0.92)',
-                    ],
+                    backgroundColor: ['#ef7c2b', '#31621c', '#327661'],
                     borderColor: p.ring,
                     borderWidth: 3,
                     hoverOffset: 8,
@@ -303,7 +304,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -315,30 +316,25 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
         });
 
         const overviewCtx = overviewEl.getContext('2d');
-        const gradBlue = overviewCtx.createLinearGradient(0, 0, 0, 220);
-        gradBlue.addColorStop(0, 'rgba(59,130,246,0.9)');
-        gradBlue.addColorStop(1, 'rgba(59,130,246,0.45)');
-
-        const gradAmber = overviewCtx.createLinearGradient(0, 0, 0, 220);
-        gradAmber.addColorStop(0, 'rgba(242, 121, 15,0.95)');
-        gradAmber.addColorStop(1, 'rgba(242, 121, 15,0.5)');
+        const gradBlue = '#31621c';   // vert forêt (interactions)
+        const gradAmber = '#ef7c2b';  // orange soleil (avis)
 
         overviewChart?.destroy();
         overviewChart = new Chart(overviewEl, {
             type: 'bar',
             data: {
-                labels: ['Vues', 'Tel.', 'Web', 'Avis', 'Note x10'],
+                labels: ['Vues', 'Téléphone', 'Site web', 'Avis', 'Note ×10'],
                 datasets: [{
                     data: overviewData,
                     backgroundColor: [gradBlue, gradBlue, gradBlue, gradAmber, gradAmber],
-                    borderRadius: 8,
+                    borderRadius: 4,
                     borderSkipped: false,
-                    maxBarThickness: 30,
+                    maxBarThickness: 36,
                 }],
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
                     tooltip: baseTooltip,

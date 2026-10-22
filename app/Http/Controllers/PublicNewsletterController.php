@@ -36,7 +36,7 @@ class PublicNewsletterController extends Controller
             if (! $user || mb_strtolower((string) $user->email) !== $email) {
                 return redirect()
                     ->route('dashboard')
-                    ->withErrors(['newsletter_email' => 'Utilisez uniquement l’adresse e-mail de votre compte pour vous inscrire depuis l’espace membre.']);
+                    ->withErrors(['newsletter_email' => __('Utilisez uniquement l’adresse e-mail de votre compte pour vous inscrire depuis l’espace membre.')]);
             }
         }
 

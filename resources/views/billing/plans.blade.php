@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Forfaits')
-@section('page-title', 'Gérer mon abonnement')
+@section('title', __('Forfaits'))
+@section('page-title', __('Gérer mon abonnement'))
 
 @section('content')
 @php
@@ -14,7 +14,7 @@
 
 {{-- Abonnement actuel --}}
 <div class="bg-green-900 border border-slate-800 rounded-xl p-5 mb-6">
-    <h2 class="text-white font-semibold mb-3">Abonnement actuel</h2>
+    <h2 class="text-white font-semibold mb-3">{{ __('Abonnement actuel') }}</h2>
 
     @if($currentSubscription)
         @php
@@ -26,18 +26,18 @@
         <div class="border rounded-lg px-4 py-2.5 text-sm mb-4
             {{ $isCritical ? 'border-red-500/40 bg-red-500/10 text-red-300' : ($isWarning ? 'border-orange-500/40 bg-orange-500/10 text-orange-300' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300') }}">
             <i class="fas {{ $isCritical ? 'fa-triangle-exclamation' : ($isWarning ? 'fa-clock' : 'fa-circle-check') }} mr-1.5"></i>
-            @if($isCritical) Abonnement expiré — renouvellement requis.
-            @elseif($isWarning) Expire dans {{ $remaining }} jour(s) — pensez à renouveler.
-            @else Abonnement actif — {{ $remaining }} jour(s) restant(s).
+            @if($isCritical) {{ __('Abonnement expiré — renouvellement requis.') }}
+            @elseif($isWarning) {{ __('Expire dans') }} {{ $remaining }} {{ __('jour(s) — pensez à renouveler.') }}
+            @else {{ __('Abonnement actif') }} — {{ $remaining }} {{ __('jour(s) restant(s).') }}
             @endif
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
             @foreach([
-                ['Forfait', strtoupper($currentSubscription->plan->code ?? 'N/A') . ' — ' . ($currentSubscription->plan->name_fr ?? '—')],
-                ['Cycle', $currentSubscription->billing_cycle === 'yearly' ? 'Annuel' : 'Mensuel'],
-                ['Expire le', optional($currentSubscription->ends_at)->format('d/m/Y') ?: '—'],
-                ['Jours restants', $remaining . ' jour(s)'],
+                [__('Forfait'), strtoupper($currentSubscription->plan->code ?? 'N/A') . ' — ' . ($currentSubscription->plan->name_fr ?? '—')],
+                [__('Cycle'), $currentSubscription->billing_cycle === 'yearly' ? 'Annuel' : 'Mensuel'],
+                [__('Expire le'), optional($currentSubscription->ends_at)->format('d/m/Y') ?: '—'],
+                [__('Jours restants'), $remaining . ' jour(s)'],
             ] as [$lbl, $val])
             <div class="bg-slate-800/70 border border-slate-700 rounded-lg px-3 py-2">
                 <p class="text-slate-400 text-xs">{{ $lbl }}</p>
@@ -46,7 +46,7 @@
             @endforeach
         </div>
     @else
-        <p class="text-slate-400 text-sm">Aucun abonnement actif. Choisissez un forfait ci-dessous.</p>
+        <p class="text-slate-400 text-sm">{{ __('Aucun abonnement actif. Choisissez un forfait ci-dessous.') }}</p>
     @endif
 </div>
 
@@ -67,7 +67,7 @@
 
         @if($isCurrent)
         <div class="text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/20 rounded-full px-3 py-1 self-start mb-3">
-            Plan actuel
+            {{ __('Plan actuel') }}
         </div>
         @endif
 
@@ -76,24 +76,24 @@
                 <i class="fas {{ $icon }} {{ $iconColor }} text-sm"></i>
             </div>
             <div>
-                <p class="text-white font-bold">{{ strtoupper($plan->code) }} — {{ $plan->name_fr }}</p>
-                <p class="text-slate-500 text-xs">{{ $plan->benefits_text ?: 'Boostez votre visibilité.' }}</p>
+                <p class="text-white font-bold">{{ strtoupper($plan->code) }} — {{ $plan->localized('name') }}</p>
+                <p class="text-slate-500 text-xs">{{ $plan->benefits_text ?: __('Boostez votre visibilité.') }}</p>
             </div>
         </div>
 
         <div class="mb-4 space-y-0.5 text-sm">
-            <p class="text-slate-400">Mensuel : <span class="text-white font-semibold">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} FCFA</span></p>
-            <p class="text-slate-400">Annuel : <span class="text-white font-semibold">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} FCFA</span></p>
+            <p class="text-slate-400">{{ __('Mensuel :') }} <span class="text-white font-semibold">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} {{ __('FCFA') }}</span></p>
+            <p class="text-slate-400">{{ __('Annuel :') }} <span class="text-white font-semibold">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} {{ __('FCFA') }}</span></p>
         </div>
 
         <ul class="space-y-1.5 mb-5 flex-1 text-xs text-slate-400">
             @foreach([
                 [$plan->photos_limit . ' photo(s)', $plan->photos_limit > 0],
-                ['Vidéo de présentation', $plan->has_video],
-                ['Mise en avant accueil', $plan->has_homepage],
-                ['Campagne newsletter', $plan->has_newsletter],
-                ['Posts réseaux sociaux', $plan->has_social_posts],
-                ['Badge vérifié', $plan->has_verified_badge],
+                [__('Vidéo de présentation'), $plan->has_video],
+                [__('Mise en avant accueil'), $plan->has_homepage],
+                [__('Campagne newsletter'), $plan->has_newsletter],
+                [__('Posts réseaux sociaux'), $plan->has_social_posts],
+                [__('Badge vérifié'), $plan->has_verified_badge],
                 ['Stats ' . ($plan->stats_level === 'advanced' ? 'avancées' : 'de base'), true],
                 ['Support ' . ($plan->support_level === 'priority' ? 'prioritaire' : 'e-mail'), true],
             ] as [$lbl, $ok])
@@ -107,22 +107,22 @@
         @if($isCurrent)
             <a href="{{ route('provider.billing.checkout', $plan) }}"
                class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-600 text-white transition">
-                Renouveler
+                {{ __('Renouveler') }}
             </a>
         @elseif($isUpgrade)
             <a href="{{ route('provider.billing.checkout', $plan) }}"
                class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-green-600 hover:bg-green-700 text-white transition">
-                <i class="fas fa-arrow-up text-xs mr-1"></i> Passer à ce forfait
+                <i class="fas fa-arrow-up text-xs mr-1"></i> {{ __('Passer à ce forfait') }}
             </a>
         @elseif($isDowngrade)
             <a href="{{ route('provider.billing.checkout', $plan) }}"
                class="block text-center py-2.5 rounded-lg text-sm font-semibold border border-slate-600 text-slate-300 hover:bg-slate-800 transition">
-                <i class="fas fa-arrow-down text-xs mr-1"></i> Rétrograder
+                <i class="fas fa-arrow-down text-xs mr-1"></i> {{ __('Rétrograder') }}
             </a>
         @else
             <a href="{{ route('provider.billing.checkout', $plan) }}"
                class="block text-center py-2.5 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-600 text-white transition">
-                Sélectionner
+                {{ __('Sélectionner') }}
             </a>
         @endif
     </div>

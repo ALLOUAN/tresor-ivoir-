@@ -56,7 +56,7 @@
                 </div>
                 <div>
                     <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Participants</p>
-                    <p class="text-white text-sm font-medium">{{ $visit->participants_count }}</p>
+                    <p class="text-white text-sm font-medium">{{ $visit->participants_count }}@if($visit->children_count || $visit->residents_count) <span class="text-slate-400 font-normal">(dont {{ collect([$visit->children_count ? $visit->children_count.' enfant(s)' : null, $visit->residents_count ? $visit->residents_count.' résident(s)' : null])->filter()->implode(', ') }})</span>@endif</p>
                 </div>
                 <div>
                     <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Avec guide</p>
@@ -70,6 +70,36 @@
                 <div>
                     <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Période</p>
                     <p class="text-white text-sm font-medium">{{ $visit->session_time_label }}</p>
+                </div>
+                @endif
+                @if($visit->visit_time)
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Créneau</p>
+                    <p class="text-white text-sm font-medium">{{ str_replace(':', ' h ', $visit->visit_time) }}</p>
+                </div>
+                @endif
+                @if($visit->language)
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Langue</p>
+                    <p class="text-white text-sm font-medium">{{ $visit->language }}</p>
+                </div>
+                @endif
+                @if($visit->tiersSummary())
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Tarifs</p>
+                    <p class="text-white text-sm font-medium">{{ $visit->tiersSummary() }}</p>
+                </div>
+                @endif
+                @if($visit->addons)
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Options</p>
+                    <p class="text-white text-sm font-medium">{{ collect($visit->addons)->map(fn ($a) => ($a['qty'] > 1 ? $a['qty'].' × ' : '').$a['label'])->join(', ') }}</p>
+                </div>
+                @endif
+                @if($visit->status === \App\Models\TouristVisit::STATUS_BOOKED)
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Paiement</p>
+                    <p class="text-amber-300 text-sm font-medium">À encaisser sur place : {{ number_format((int) $visit->amount_total_xof, 0, ',', ' ') }} XOF</p>
                 </div>
                 @endif
                 @if($visit->message)
@@ -93,7 +123,7 @@
             Statut actuel : <span class="text-slate-300 font-medium">{{ $visit->labelForStatus() }}</span>
         </p>
 
-        @if(in_array($visit->status, [\App\Models\TouristVisit::STATUS_PENDING_PAYMENT, \App\Models\TouristVisit::STATUS_PAID], true))
+        @if(in_array($visit->status, [\App\Models\TouristVisit::STATUS_PENDING_PAYMENT, \App\Models\TouristVisit::STATUS_PAID, \App\Models\TouristVisit::STATUS_BOOKED], true))
             <form method="POST" action="{{ route('provider.tourist-visits.status', $visit) }}"
                   onsubmit="return confirm('Annuler cette visite ?');">
                 @csrf

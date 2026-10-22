@@ -8,21 +8,39 @@
     $publicInfoGuide = $publicInfoPages->firstWhere('slug', 'user-guide');
     $publicInfoFaq = $publicInfoPages->firstWhere('slug', 'faq');
     $publicNavItems = [
-        ['label' => 'Accueil',               'icon' => 'fas fa-house',            'href' => route('home'),               'active' => request()->routeIs('home')],
-        ['label' => 'Tourisme',              'icon' => 'fas fa-umbrella-beach',   'href' => route('tourist.cities'),     'active' => request()->routeIs('tourist.*')],
+        ['label' => __('Accueil'),               'icon' => 'fas fa-house',            'href' => route('home'),               'active' => request()->routeIs('home')],
+        ['label' => __('Tourisme'),              'icon' => 'fas fa-umbrella-beach',   'href' => route('tourist.cities'),     'active' => request()->routeIs('tourist.*')],
         [
-            'label' => 'Résidences & Hôtels', 'shortLabel' => 'Hôtels & Résidences', 'icon' => 'fas fa-bed',
+            'label' => __('Résidences & Hôtels'), 'shortLabel' => __('Hôtels & Résidences'), 'icon' => 'fas fa-bed',
             'href' => route('accommodations.index'), 'dropdown' => true,
             'active' => request()->routeIs('accommodations.*') || (request()->routeIs('providers.index') && request()->get('categorie')),
         ],
-        ['label' => 'Cultures & Traditions', 'shortLabel' => 'Cultures', 'icon' => 'fas fa-masks-theater',    'href' => route('cultural.peoples'),   'active' => request()->routeIs('cultural.*')],
-        ['label' => 'Annuaire',              'icon' => 'fas fa-address-book',     'href' => route('providers.index'),    'active' => request()->routeIs('providers.*') && ! request()->get('categorie')],
-        ['label' => 'Magazine',              'icon' => 'fas fa-newspaper',        'href' => route('articles.index'),     'active' => request()->routeIs('articles.*') || request()->routeIs('discoveries.*')],
-        ['label' => 'Événements',            'icon' => 'fas fa-calendar-days',    'href' => route('events.index'),       'active' => request()->routeIs('events.*')],
+        ['label' => __('Cultures & Traditions'), 'shortLabel' => __('Cultures'), 'icon' => 'fas fa-masks-theater',    'href' => route('cultural.peoples'),   'active' => request()->routeIs('cultural.*')],
+        // Retiré de la barre du haut (reste dans le menu mobile).
+        ['headerHidden' => true, 'label' => __('Annuaire'),              'icon' => 'fas fa-address-book',     'href' => route('providers.index'),    'active' => request()->routeIs('providers.*') && ! request()->get('categorie')],
+        ['label' => __('Magazine'),              'icon' => 'fas fa-newspaper',        'href' => route('articles.index'),     'active' => request()->routeIs('articles.*') || request()->routeIs('discoveries.*')],
+        ['label' => __('Événements'),            'icon' => 'fas fa-calendar-days',    'href' => route('events.index'),       'active' => request()->routeIs('events.*')],
     ];
+    $publicNavItems[] = ['wideOnly' => true, 'label' => __('Autour de moi'), 'icon' => 'fas fa-location-crosshairs', 'href' => route('nearby.index'), 'active' => request()->routeIs('nearby.*')];
+    // Offres groupées : lien affiché seulement quand au moins une offre est publiée.
+    if (\Illuminate\Support\Facades\Schema::hasTable('bundles') && \App\Models\Bundle::active()->exists()) {
+        $publicNavItems[] = ['wideOnly' => true, 'label' => __('Offres groupées'), 'icon' => 'fas fa-layer-group', 'href' => route('bundles.index'), 'active' => request()->routeIs('bundles.*')];
+    }
+    if (config('ai.enabled', true)) {
+        $publicNavItems[] = ['wideOnly' => true, 'label' => __('Mon séjour'), 'icon' => 'fas fa-route', 'href' => route('trip.create'), 'active' => request()->routeIs('trip.*') || request()->routeIs('ai.*')];
+    }
     // Secteurs d'activité racine (configurés depuis /admin/prestataires/categories) — alimente
     // dynamiquement le menu déroulant "Hôtels & Résidences" ; toute catégorie ajoutée/désactivée
     // depuis le back-office se répercute automatiquement ici, sans toucher au code.
+    // Icône et accroche par secteur dans les menus (présentation seulement ; secteur inconnu : icône générique).
+    $sectorMeta = [
+        'restaurants' => ['chef-hat', __('Maquis, tables et saveurs')],
+        'sites-touristiques' => ['map-point', __('Lieux à visiter et à comprendre')],
+        'agences-voyages' => ['plane', __('Circuits et séjours organisés')],
+        'loisirs-culture' => ['confetti', __('Activités, spectacles, détente')],
+        'transports' => ['bus', __('Transferts, chauffeurs, location')],
+        'art-creations' => ['palette', __('Œuvres d\'artistes ivoiriens')],
+    ];
     $providerSectors = \App\Models\ProviderCategory::where('is_active', true)
         ->whereNull('parent_id')
         ->orderBy('sort_order')->orderBy('name_fr')
@@ -42,6 +60,7 @@
         };
     };
     $publicGalleryActive = request()->routeIs('gallery.public');
+    $publicMediaActive = $publicGalleryActive || request()->routeIs('gallery.public.*', 'videos.*', 'comics.*');
     $headerImage = $headerImage ?? (\Illuminate\Support\Facades\Schema::hasTable('header_images')
         ? \App\Models\HeaderImage::query()->find(1)
         : null);
@@ -57,35 +76,25 @@
     .public-topbar {
         position: relative;
         isolation: isolate;
-        background: linear-gradient(105deg, #1f6b34 0%, #1c5f2e 50%, #1a5429 100%);
-        border-bottom: 1px solid rgba(34,197,94, 0.14);
-    }
-    .public-topbar::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        background:
-            radial-gradient(100% 180% at 0% 0%, rgba(34,197,94, 0.14), transparent 52%),
-            radial-gradient(80% 120% at 100% 100%, rgba(20, 70, 40, 0.18), transparent 50%);
-        pointer-events: none;
+        /* Orange terre cuite : avec l'en-tête blanc et le bandeau vert, le haut de page reprend les couleurs du drapeau. */
+        background-color: #b9500a;
+        /* Mêmes frises que le Flash info (losanges en haut, chevrons en bas), couleurs adaptées au fond orange. */
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='14' viewBox='0 0 56 14'><path d='M14 2 l5 5 l-5 5 l-5 -5 z' fill='none' stroke='%23fff4e6' stroke-opacity='.26' stroke-width='1.2'/><path d='M14 5 l2 2 l-2 2 l-2 -2 z' fill='%23f6c38f' fill-opacity='.4'/><circle cx='42' cy='7' r='1.3' fill='%23fff4e6' fill-opacity='.3'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='12' viewBox='0 0 56 12'><path d='M30 9 l5 -5 l5 5 l5 -5 l5 5' fill='none' stroke='%23123a25' stroke-opacity='.3' stroke-width='1.3'/><circle cx='8' cy='6' r='1.2' fill='%23fff4e6' fill-opacity='.28'/></svg>");
+        background-size: 56px 14px, 56px 12px;
+        background-position: 0 3px, 28px calc(100% - 5px);
+        background-repeat: repeat-x, repeat-x;
+        border-bottom: 1px solid rgba(255,255,255,0.14);
     }
     .public-topbar > * { position: relative; z-index: 1; }
     .public-slogan-pill {
         display: inline-flex;
         align-items: center;
-        gap: 0.65rem;
-        padding: 0.5rem 1.1rem 0.5rem 0.85rem;
-        border-radius: 9999px;
-        border: 1px solid rgba(255,255,255,0.14);
-        background: rgba(233, 229, 217, 0.08);
-        box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.2);
+        gap: 0.6rem;
+        padding: 0.3rem 0;
     }
     .public-pulse-dot {
-        width: 9px; height: 9px; border-radius: 9999px;
-        background: linear-gradient(135deg, #4ade80, #22c55e);
-        box-shadow: 0 0 12px rgba(34,197,94,0.8);
-        animation: publicPulse 2.2s ease-in-out infinite;
+        width: 7px; height: 7px; border-radius: 9999px;
+        background: #ffffff;
     }
     @keyframes publicPulse {
         0%, 100% { opacity: 1; transform: scale(1); }
@@ -95,109 +104,78 @@
        le pont de thème clair (theme-light-bridge) réécrit ces classes en vert
        très foncé pour les usages sur fond clair, ce qui les rendait quasi
        invisibles sur ce bandeau à fond vert foncé. */
-    .public-slogan-text { color: #bbf7d0; }
+    .public-slogan-text { color: #fff4e6; }
+    /* Liens de la barre orange : pastilles en aplat (fond plus foncé que la barre, fin contour clair) ;
+       au survol, la pastille passe en crème et le texte en orange de la charte. */
     .public-topbar-action {
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
-        padding: 0.4rem 0.85rem;
-        border-radius: 9999px;
+        gap: 0.45rem;
+        height: 32px;
+        padding: 0 0.85rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255,244,230,0.28);
+        background: #9a4308;
         font-size: 12px;
-        font-weight: 500;
-        color: rgba(234, 255, 241, 0.92);
-        border: 1px solid rgba(255,255,255,0.14);
-        background: rgba(233, 229, 217, 0.07);
-        transition: .2s ease;
+        font-weight: 600;
+        color: #fff4e6;
+        transition: color .15s ease, background-color .15s ease, border-color .15s ease;
     }
-    .public-topbar-action:hover {
-        color: #ffffff;
-        border-color: rgba(255,255,255,0.3);
-        background: rgba(233, 229, 217, 0.16);
+    .public-topbar-action:hover,
+    .public-topbar-action:focus-visible {
+        color: #9a4308;
+        background: #fff4e6;
+        border-color: #fff4e6;
+        outline: none;
     }
-    .public-topbar-action i { font-size: 12px; color: #4ade80; transition: color .2s ease; }
-    .public-topbar-action:hover i { color: #86efac; }
+    .public-topbar-action i { font-size: 11px; color: #f6c38f; transition: color .15s ease; }
+    .public-topbar-action:hover i,
+    .public-topbar-action:focus-visible i { color: #b9500a; }
 
     /* ── Flash info ticker ───────────────────────────────── */
-    .flash-ticker-bg {
-        background:
-            radial-gradient(120% 260% at 0% 0%, rgba(242,121,15,.18), transparent 55%),
-            radial-gradient(90% 220% at 100% 100%, rgba(34,197,94,.12), transparent 55%),
-            linear-gradient(100deg, #14110d 0%, #211106 50%, #2a1408 100%);
-    }
-    .flash-ticker-sheen {
-        background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,.06) 45%, transparent 58%);
-        background-size: 220% 100%;
-        mix-blend-mode: overlay;
-        animation: flash-ticker-sheen-sweep 7s ease-in-out infinite;
-    }
-    @keyframes flash-ticker-sheen-sweep {
-        0%, 100% { background-position: 130% 0; }
-        50%      { background-position: -30% 0; }
-    }
-    .flash-ticker-accent {
-        background: linear-gradient(90deg, transparent, rgba(242,121,15,.85) 50%, transparent);
-        background-size: 200% 100%;
-        animation: flash-ticker-beam 5s ease-in-out infinite;
-    }
-    .flash-ticker-accent-bottom {
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,.08) 50%, transparent);
-    }
-    @keyframes flash-ticker-beam {
-        0%, 100% { background-position: 0% 0; }
-        50%      { background-position: 100% 0; }
-    }
+    /* Bandeau d'annonces sobre : fond encre plat, pastille orange, texte lisible.
+       Les calques décoratifs (.flash-ticker-sheen / -accent) restent dans le markup mais sont neutres. */
+    /* Frises tissées (losanges en haut, chevrons en bas, d'après les pagnes akan et baoulés) en couleurs du site ; la ligne de texte reste dégagée. */
+    .flash-ticker-bg { background-color: #123a25; background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='14' viewBox='0 0 56 14'><path d='M14 2 l5 5 l-5 5 l-5 -5 z' fill='none' stroke='%23e2742a' stroke-opacity='.28' stroke-width='1.2'/><path d='M14 5 l2 2 l-2 2 l-2 -2 z' fill='%23e0a12e' fill-opacity='.34'/><circle cx='42' cy='7' r='1.3' fill='%23e0a12e' fill-opacity='.3'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='12' viewBox='0 0 56 12'><path d='M30 9 l5 -5 l5 5 l5 -5 l5 5' fill='none' stroke='%23f3ead8' stroke-opacity='.24' stroke-width='1.2'/><circle cx='8' cy='6' r='1.2' fill='%23e0a12e' fill-opacity='.28'/></svg>"); background-size: 56px 14px, 56px 12px; background-position: 0 2px, 28px calc(100% - 5px); background-repeat: repeat-x, repeat-x; }
+    .flash-ticker-sheen,
+    .flash-ticker-accent { display: none; }
+    /* Lisière kita (3 px) sous le bandeau */
+    .flash-ticker-accent-bottom { height: 3px !important; background-color: #b9500a; background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='3'><rect width='16' height='3' fill='%23b9500a'/><rect x='16' width='6' height='3' fill='%23e0a12e'/><rect x='22' width='14' height='3' fill='%231b6b3a'/><rect x='36' width='4' height='3' fill='%23f3ead8'/><rect x='40' width='8' height='3' fill='%23b9500a'/></svg>"); background-size: 48px 3px; }
+    .flash-ticker > .relative { min-height: 0 !important; padding-top: .55rem !important; padding-bottom: .55rem !important; }
 
     .flash-ticker-badge {
         position: relative;
-        display: inline-flex; align-items: center; gap: 16px;
-        padding: 10px 28px 10px 10px;
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 4px 12px 4px 4px;
         border-radius: 999px;
-        background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
-        border: 1px solid rgba(242,121,15,.35);
-        box-shadow: 0 1px 0 rgba(255,255,255,.07) inset, 0 12px 30px rgba(0,0,0,.32);
+        background: rgba(255,255,255,.06);
     }
     .flash-ticker-badge-orb {
         position: relative;
-        width: 46px; height: 46px;
+        width: 28px; height: 28px;
         display: inline-flex; align-items: center; justify-content: center;
         border-radius: 999px;
-        background: linear-gradient(135deg, #fb923c, #f2790f 65%, #c2410c);
-        box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 0 22px rgba(242,121,15,.7);
+        background: #b9500a;
         flex-shrink: 0;
     }
-    .flash-ticker-badge-ring {
-        position: absolute; inset: -6px;
-        border-radius: 999px;
-        border: 1.5px solid rgba(242,121,15,.55);
-        animation: flash-ticker-ripple 2.4s ease-out infinite;
-    }
-    .flash-ticker-badge-ring--2 { animation-delay: 1.2s; }
-    @keyframes flash-ticker-ripple {
-        0%   { opacity: .8; transform: scale(1); }
-        100% { opacity: 0;  transform: scale(1.65); }
-    }
+    .flash-ticker-badge-ring { display: none; }
     .flash-ticker-badge-icon {
         position: relative;
-        font-size: 19px;
-        color: #fff7ed;
+        font-size: 12px;
+        color: #ffffff;
     }
     .flash-ticker-badge-copy {
         position: relative;
-        display: flex; align-items: baseline; gap: 8px;
-        font-size: 18px; font-weight: 800; letter-spacing: .05em;
+        display: flex; align-items: baseline; gap: 6px;
+        font-size: 12px; font-weight: 700; letter-spacing: .12em;
         white-space: nowrap;
     }
-    .flash-ticker-badge-live {
-        background: linear-gradient(90deg, #fed7aa, #fb923c);
-        -webkit-background-clip: text; background-clip: text;
-        color: transparent;
-        text-transform: uppercase;
-    }
-    .flash-ticker-badge-title { color: rgba(255,255,255,.82); text-transform: uppercase; font-weight: 600; }
+    .flash-ticker-badge-live { color: #fdba74; text-transform: uppercase; }
+    .flash-ticker-badge-title { color: rgba(255,255,255,.7); text-transform: uppercase; font-weight: 600; }
 
     .flash-ticker-track {
-        -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-                mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+        -webkit-mask-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65));
+                mask-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65));
     }
 
     @keyframes flash-ticker-marquee {
@@ -209,161 +187,129 @@
         animation-timing-function: linear;
         animation-iteration-count: infinite;
     }
-    .flash-ticker-track:hover .flash-ticker-scroll { animation-play-state: paused; }
+    .flash-ticker-track:hover .flash-ticker-scroll,
+    .flash-ticker-track:focus-within .flash-ticker-scroll { animation-play-state: paused; }
 
     .flash-ticker-item {
         display: inline-flex; align-items: center;
-        padding: 9px 20px;
-        border-radius: 999px;
-        font-size: 19px; font-weight: 500;
-        color: rgba(255,255,255,.92);
+        padding: 4px 14px;
+        border-radius: 6px;
+        font-size: 14px; font-weight: 500;
+        color: rgba(255,255,255,.88);
         text-decoration: none;
-        transition: background .25s ease, color .25s ease, transform .25s ease;
+        transition: color .15s ease, background-color .15s ease;
     }
     a.flash-ticker-item:hover {
         color: #fff;
-        background: rgba(255,255,255,.08);
-        transform: translateY(-1px);
+        background: rgba(255,255,255,.07);
+        text-decoration: underline;
+        text-underline-offset: 3px;
     }
     .flash-ticker-marker {
-        width: 10px; height: 10px; border-radius: 999px;
-        margin-right: 13px; flex-shrink: 0;
+        width: 6px; height: 6px; border-radius: 999px;
+        margin-right: 10px; flex-shrink: 0;
         background: #94a3b8;
-        box-shadow: 0 0 0 5px rgba(148,163,184,.15);
     }
-    .flash-ticker-item--info    .flash-ticker-marker { background: #38bdf8; box-shadow: 0 0 0 5px rgba(56,189,248,.18), 0 0 12px rgba(56,189,248,.55); }
-    .flash-ticker-item--success .flash-ticker-marker { background: #4ade80; box-shadow: 0 0 0 5px rgba(74,222,128,.18), 0 0 12px rgba(74,222,128,.55); }
-    .flash-ticker-item--warning .flash-ticker-marker { background: #fbbf24; box-shadow: 0 0 0 5px rgba(251,191,36,.18), 0 0 12px rgba(251,191,36,.55); }
-    .flash-ticker-item--urgent  .flash-ticker-marker {
-        background: #fb7185;
-        box-shadow: 0 0 0 5px rgba(251,113,133,.18), 0 0 14px rgba(251,113,133,.75);
-        animation: publicPulse 1.6s ease-in-out infinite;
-    }
+    .flash-ticker-item--info    .flash-ticker-marker { background: #7cc4ee; }
+    .flash-ticker-item--success .flash-ticker-marker { background: #6fcf8f; }
+    .flash-ticker-item--warning .flash-ticker-marker { background: #f2c14e; }
+    .flash-ticker-item--urgent  .flash-ticker-marker { background: #f2797b; }
+    /* Séparateur : petit losange ocre, en écho à la trame */
     .flash-ticker-sep {
-        width: 2px; height: 32px;
-        margin: 0 8px;
+        width: 6px; height: 6px;
+        margin: 0 14px;
         flex-shrink: 0;
         display: inline-block;
-        background: linear-gradient(180deg, transparent, rgba(255,255,255,.22), transparent);
+        border-radius: 1px;
+        transform: rotate(45deg);
+        background: #e0a12e;
+        opacity: .85;
     }
 
     .flash-ticker-close {
-        width: 46px; height: 46px;
+        width: 30px; height: 30px;
         display: inline-flex; align-items: center; justify-content: center;
         border-radius: 999px;
-        background: rgba(255,255,255,.04);
-        border: 1px solid rgba(255,255,255,.08);
         color: rgba(255,255,255,.55);
-        transition: background .25s ease, color .25s ease, border-color .25s ease, transform .3s ease;
-        font-size: 18px;
+        transition: background-color .15s ease, color .15s ease;
+        font-size: 14px;
     }
     .flash-ticker-close:hover {
-        background: rgba(242,121,15,.16);
-        border-color: rgba(242,121,15,.45);
-        color: #fdba74;
-        transform: rotate(90deg);
+        background: rgba(255,255,255,.08);
+        color: #ffffff;
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .flash-ticker-scroll,
-        .flash-ticker-sheen,
-        .flash-ticker-accent,
-        .flash-ticker-badge-ring,
-        .flash-ticker-item--urgent .flash-ticker-marker { animation: none; }
+        .flash-ticker-scroll { animation: none; }
     }
 
-    /* Toutes les tailles ci-dessus sont pensées pour desktop (badge 46px, texte
-       18-19px…) — sans ces surcharges, sur un écran de téléphone le badge et le
-       bouton fermer à eux seuls occupent presque toute la largeur et ne
-       laissent quasiment plus de place au texte défilant. */
     @media (max-width: 639px) {
-        .flash-ticker-badge {
-            gap: 8px;
-            padding: 6px 14px 6px 6px;
-        }
-        .flash-ticker-badge-orb { width: 32px; height: 32px; }
-        .flash-ticker-badge-icon { font-size: 14px; }
-        .flash-ticker-badge-copy { font-size: 12px; gap: 4px; }
-        .flash-ticker-badge-title { display: none; }
-        .flash-ticker-item {
-            font-size: 14px;
-            padding: 7px 14px;
-        }
-        .flash-ticker-marker {
-            width: 8px; height: 8px;
-            margin-right: 9px;
-        }
-        .flash-ticker-sep {
-            height: 22px;
-            margin: 0 4px;
-        }
-        .flash-ticker-close {
-            width: 34px; height: 34px;
-            font-size: 14px;
-        }
+        .flash-ticker-badge { padding: 3px; }
+        .flash-ticker-badge-copy { display: none; }
+        .flash-ticker-badge-orb { width: 26px; height: 26px; }
+        .flash-ticker-item { font-size: 13px; padding: 4px 10px; }
     }
 
     /* ── Header ──────────────────────────────────────────── */
+    /* En-tête : frise en filigrane des armoiries ivoiriennes (tête d'éléphant, soleil levant, palmier) aux couleurs
+       du drapeau, et liseré tricolore en haut. Une image d'en-tête définie en administration passe par-dessus. */
     .public-header {
-        background-image: linear-gradient(180deg, rgba(255, 255, 255,0.92) 0%, rgba(255, 255, 255,0.72) 55%, rgba(255, 255, 255,0.45) 100%), var(--header-bg-image, none);
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        backdrop-filter: blur(16px) saturate(160%);
-        -webkit-backdrop-filter: blur(16px) saturate(160%);
-        border-bottom: 2px solid rgba(34,197,94,0.55);
-        transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
+        background-color: rgba(255,255,255,.97);
+        background-image: var(--header-bg-image, none), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='84' viewBox='0 0 240 84'><g fill='none' stroke='%23f77f00' stroke-opacity='.22' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><path d='M40 30 q0 -14 14 -14 q14 0 14 14'/><path d='M40 30 q-22 -10 -22 10 q0 16 18 14'/><path d='M68 30 q22 -10 22 10 q0 16 -18 14'/><path d='M48 40 q0 16 4 24 q2 6 -4 8'/><path d='M60 40 q0 18 -4 28'/><path d='M46 46 q-8 6 -6 14'/><path d='M62 46 q8 6 6 14'/></g><g fill='%23f77f00' fill-opacity='.26'><circle cx='48' cy='31' r='1.4'/><circle cx='60' cy='31' r='1.4'/></g><g fill='none' stroke='%23d4951c' stroke-opacity='.26' stroke-width='1.7' stroke-linecap='round'><path d='M106 60 a16 16 0 0 1 32 0'/><path d='M98 60 h48'/><path d='M122 38 v-8 M108 44 l-6 -6 M136 44 l6 -6 M100 54 l-8 -2 M144 54 l8 -2'/></g><g fill='none' stroke='%23009e60' stroke-opacity='.2' stroke-width='1.7' stroke-linecap='round'><path d='M196 74 q-3 -26 2 -46'/><path d='M198 28 q-16 -6 -26 4'/><path d='M198 28 q16 -6 26 4'/><path d='M198 28 q-10 -14 -22 -12'/><path d='M198 28 q10 -14 22 -12'/><path d='M198 28 v-10'/></g></svg>");
+        background-size: cover, 240px 84px;
+        background-position: center, 0 50%;
+        background-repeat: no-repeat, repeat-x;
+        border-bottom: 1px solid #e8e1d3;
+        transition: box-shadow .2s ease;
     }
-    .public-header[style*="--header-bg-image"] {
-        background-image: var(--header-bg-image, none);
-    }
+    /* Menu et marque posés sur des capsules blanches unies : textes nets, la frise reste visible autour. */
+    .public-nav-rail { justify-self: center; width: max-content; max-width: 100%; padding: 5px 8px; border-radius: 999px; background: #fff; border: 1px solid #ece4d4; }
+    .public-brand-rail { padding: 4px 16px 4px 4px; border-radius: 22px; background: #fff; border: 1px solid #ece4d4; }
+    @media (max-width: 639px) { .public-brand-rail { padding: 3px 10px 3px 3px; border-radius: 18px; } }
+    /* Boutons ronds de l'en-tête (recherche, compte, menu) : fond blanc uni au-dessus de la frise ; les boutons colorés gardent le leur. */
+    #main-header > div [class*="bg-white/"], #main-header > div button[class*="rounded"]:not([class*="bg-"]), #main-header .btn-ghost-header, #nav-user-dropdown-btn { background-color: #fff !important; }
+    .public-header::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; pointer-events: none;
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='3'><rect width='12' height='3' fill='%23f77f00'/><rect x='12' width='6' height='3' fill='%23efe6d4'/><rect x='18' width='12' height='3' fill='%23009e60'/></svg>"); background-size: 30px 3px; background-repeat: repeat-x; }
     .public-header.header-scrolled {
-        background-image: linear-gradient(180deg, rgba(233, 229, 217, 0.97), rgba(233, 229, 217, 0.97)), var(--header-bg-image, none) !important;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-        border-bottom-color: rgba(34,197,94,0.65);
-    }
-    .public-header.header-scrolled[style*="--header-bg-image"] {
-        background-image: var(--header-bg-image, none) !important;
+        box-shadow: 0 6px 18px rgba(29,26,22,0.07);
     }
     .public-nav-pill {
         position: relative;
-        padding: 0.5rem 0.5rem;
-        border-radius: 9999px;
+        padding: 0.5rem 0.55rem;
+        border-radius: 8px;
         font-size: 0.8125rem;
         font-weight: 500;
-        letter-spacing: 0.03em;
-        color: rgba(28, 25, 21, 0.72);
-        transition: .2s ease;
+        letter-spacing: 0.01em;
+        color: #4a443a;
+        transition: color .15s ease, background-color .15s ease;
     }
-    @media (min-width: 1280px) {
-        .public-nav-pill { padding: 0.5rem 0.55rem; }
+    @media (min-width: 1536px) {
+        .public-nav-pill { padding: 0.5rem 0.7rem; }
     }
+    /* Menu desktop en texte seul : les pictogrammes restent dans le menu mobile. */
+    .public-nav-pill > i:first-child { display: none; }
     .public-nav-pill:hover {
-        color: #1c1915;
-        background: rgba(0,0,0,0.05);
+        color: #1d1a16;
+        background: #f3eee4;
     }
+    /* Page courante : texte vert forêt + filet or sous le libellé. */
     .public-nav-pill-glow::after {
         content: '';
         position: absolute;
-        left: 50%;
-        bottom: 2px;
-        width: 0;
+        left: 0.65rem;
+        right: 0.65rem;
+        bottom: 1px;
         height: 2px;
         border-radius: 2px;
-        background: linear-gradient(90deg, #16a34a, #4ade80, #22c55e);
-        transform: translateX(-50%);
-        transition: width .28s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 0 12px rgba(34,197,94,0.45);
+        background: #b8892b;
+        transform: scaleX(0);
+        transition: transform .2s ease;
     }
-    .public-nav-pill-glow:hover::after,
-    .public-nav-pill-glow.is-active::after { width: 70%; }
+    .public-nav-pill-glow.is-active::after { transform: scaleX(1); }
     .public-nav-pill.is-active {
-        color: #1a7038;
-        background: rgba(34,197,94,0.10);
-        box-shadow: inset 0 0 0 1px rgba(34,197,94,0.28);
+        color: #14532d;
+        font-weight: 600;
+        background: transparent;
     }
     /* Panneau du mega-menu "Hôtels & Résidences" : fond toujours sombre,
        non affecté par le pont de theme clair (qui réécrit text-gray-200 en
@@ -373,105 +319,71 @@
     #hotels-nav-panel .border-white\/10 { border-color: rgba(255,255,255,0.1) !important; }
     .logo-ring {
         position: relative;
-        border-radius: 1rem;
-        padding: 2px;
-        background: linear-gradient(135deg, rgba(34,197,94,0.55), rgba(255,255,255,0.12), rgba(34,197,94,0.25));
-        box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
-        transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .35s ease;
-        animation: logoFloat 5.4s ease-in-out infinite;
-    }
-    .logo-ring::before {
-        content: '';
-        position: absolute;
-        inset: -4px;
-        border-radius: inherit;
-        background: conic-gradient(from 180deg, rgba(34,197,94,0.0), rgba(34,197,94,0.5), rgba(255,255,255,0.08), rgba(34,197,94,0.0));
-        opacity: .45;
-        filter: blur(6px);
-        animation: logoHaloSpin 8s linear infinite;
-        pointer-events: none;
+        border-radius: 12px;
+        padding: 1px;
+        background: #e8e1d3;
     }
     .logo-ring-inner {
-        border-radius: calc(1rem - 2px);
+        border-radius: 11px;
         overflow: hidden;
-        background: rgba(233, 229, 217, 0.9);
-        transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), filter .35s ease;
+        background: #ffffff;
     }
-    .group:hover .logo-ring {
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 14px 34px rgba(0,0,0,0.42), 0 0 26px rgba(34,197,94,0.26), 0 0 0 1px rgba(255,255,255,0.08) inset;
-    }
-    .group:hover .logo-ring::before { opacity: .8; }
-    .group:hover .logo-ring-inner {
-        transform: scale(1.04);
-        filter: brightness(1.08) saturate(1.08);
-    }
-    @keyframes logoFloat {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-2px); }
-    }
-    @keyframes logoHaloSpin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .logo-ring, .logo-ring::before { animation: none; }
+    /* Nom du site : vert forêt plat (le dégradé vert clair d'origine manquait de contraste). */
+    #main-header .group p.bg-clip-text {
+        background: none !important;
+        color: #14532d !important;
+        -webkit-text-fill-color: #14532d;
     }
     .lang-switch-ultra {
         display: inline-flex;
-        padding: 3px;
-        border-radius: 9999px;
-        background: rgba(233, 229, 217, 0.05);
-        border: 1px solid rgba(255,255,255,0.08);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        padding: 2px;
+        border-radius: 8px;
+        background: #f3eee4;
+        border: 1px solid #e8e1d3;
     }
     .lang-switch-ultra a {
-        border-radius: 9999px;
-        padding: 0.35rem 0.75rem;
+        border-radius: 6px;
+        padding: 0.3rem 0.6rem;
         font-size: 11px;
         font-weight: 600;
         letter-spacing: 0.06em;
-        transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+        transition: background-color .15s ease, color .15s ease;
     }
     .btn-ghost-header {
-        border-radius: 9999px;
-        border: 1px solid rgba(255,255,255,0.12);
-        background: rgba(233, 229, 217, 0.04);
-        transition: border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+        border-radius: 8px;
+        border: 1px solid #e8e1d3;
+        background: #ffffff;
+        transition: border-color .15s ease, background-color .15s ease, color .15s ease;
     }
     .btn-ghost-header:hover {
-        border-color: rgba(34,197,94,0.35);
-        background: rgba(34,197,94,0.08);
-        color: #dcfce7;
-        box-shadow: 0 0 24px rgba(34,197,94,0.1);
+        border-color: #d8cdb8;
+        background: #faf8f3;
     }
+    /* Bouton d'action du header : orange d'action plein. */
     .btn-gold-header {
-        border-radius: 9999px;
-        background: #22c55e;
-        box-shadow: 0 4px 20px rgba(34,197,94,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
-        transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        border-radius: 8px;
+        background: #b9500a;
+        color: #ffffff !important;
+        transition: background-color .15s ease;
     }
-    .btn-gold-header:hover {
-        transform: translateY(-1px);
-        filter: brightness(1.05);
-        box-shadow: 0 8px 28px rgba(34,197,94,0.45), inset 0 1px 0 rgba(255,255,255,0.3);
-    }
+    .btn-gold-header:hover { background: #9a4308; }
+    .btn-gold-header i, .btn-gold-header span { color: #ffffff !important; }
     #public-mobile-menu.mobile-menu-ultra {
-        background: rgba(233, 229, 217, 0.98);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border-top: 1px solid rgba(34,197,94,0.12);
+        background: #ffffff;
+        border-top: 1px solid #e8e1d3;
+        box-shadow: 0 16px 32px rgba(29,26,22,0.10);
     }
     #public-mobile-menu.mobile-menu-ultra a {
-        border-radius: 0.75rem;
+        border-radius: 10px;
         border: 1px solid transparent;
     }
-    #public-mobile-menu.mobile-menu-ultra a:hover,
+    #public-mobile-menu.mobile-menu-ultra a:hover { background: #f3eee4; }
     #public-mobile-menu.mobile-menu-ultra a.is-active {
-        border-color: rgba(34,197,94,0.2);
-        background: rgba(34,197,94,0.06);
+        background: #eef6f0;
+        border-color: #d9ecdf;
+        color: #14532d;
+        font-weight: 600;
     }
-    #public-mobile-menu.mobile-menu-ultra a.is-active { color: #1a7038; }
 
     /* ── Dropdown "Mon espace" ───────────────────────────── */
     :root {
@@ -524,7 +436,7 @@
             <div class="public-slogan-pill">
                 <span class="public-pulse-dot shrink-0" aria-hidden="true"></span>
                 <span class="public-slogan-text text-[11px] sm:text-xs font-semibold tracking-[0.14em] uppercase">
-                    {{ $siteBrand['site_slogan'] ?: 'Magazine Culturel & Touristique Premium' }}
+                    {{ $siteBrand['site_slogan'] ?: __('Magazine Culturel & Touristique Premium') }}
                 </span>
             </div>
             <div class="flex flex-wrap items-center justify-end gap-2.5 sm:gap-3">
@@ -534,22 +446,22 @@
                 </a>
                 <a href="{{ route('prestations.public') }}" class="public-topbar-action">
                     <i class="fas fa-concierge-bell"></i>
-                    Nos prestations
+                    {{ __('Nos prestations') }}
                 </a>
                 <button type="button" onclick="openContactModal()" class="public-topbar-action cursor-pointer">
                     <i class="fas fa-message"></i>
-                    Contact
+                    {{ __('Contact') }}
                 </button>
                 @if($publicInfoGuide)
                 <a href="{{ route('information.show', $publicInfoGuide) }}" class="public-topbar-action">
                     <i class="fas fa-book-open"></i>
-                    Guide
+                    {{ __('Guide') }}
                 </a>
                 @endif
                 @if($publicInfoFaq)
                 <a href="{{ route('information.show', $publicInfoFaq) }}" class="public-topbar-action">
                     <i class="fas fa-circle-question"></i>
-                    FAQ
+                    {{ __('FAQ') }}
                 </a>
                 @endif
             </div>
@@ -571,7 +483,7 @@
     @endif
 >
     <div class="max-w-[96rem] mx-auto px-4 sm:px-6 lg:px-8 h-[4.25rem] md:h-[5.25rem] grid grid-cols-[auto_1fr_auto] items-center gap-4 md:gap-6">
-        <a href="{{ route('home') }}" class="flex items-center gap-3 sm:gap-3.5 shrink-0 group">
+        <a href="{{ route('home') }}" class="public-brand-rail flex items-center gap-3 sm:gap-3.5 shrink-0 group">
             @if(!empty($siteBrand['logo_url']))
                 <div class="logo-ring shrink-0">
                     <div class="logo-ring-inner w-12 h-12 md:w-[4rem] md:h-[4rem] flex items-center justify-center">
@@ -590,34 +502,37 @@
                     {{ $siteBrand['site_name'] }}
                 </p>
                 <p class="text-gray-500 group-hover:text-gray-400 text-[9px] md:text-[10px] tracking-[0.22em] uppercase truncate font-plus font-medium mt-0.5 transition-colors">
-                    {{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}
+                    {{ $siteBrand['site_slogan'] ?: __('Magazine Premium') }}
                 </p>
             </div>
         </a>
 
-        <nav class="hidden min-[1400px]:flex items-center justify-center gap-0.5 min-w-0 overflow-x-hidden overflow-y-visible">
+        <nav class="public-nav-rail hidden min-[1400px]:flex items-center justify-center gap-0.5 min-w-0 overflow-x-hidden overflow-y-visible">
             @foreach($publicNavItems as $item)
+                @continue(! empty($item['headerHidden']))
                 @if(!empty($item['dropdown']))
                 <div class="relative" id="hotels-nav-dropdown">
                     <a href="{{ $item['href'] }}"
-                       class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $item['active'] ? 'is-active' : '' }}">
+                       class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $item['active'] ? 'is-active' : '' }} {{ ! empty($item['wideOnly']) ? 'max-[1599px]:!hidden' : '' }}">
                         <i class="{{ $item['icon'] }} text-[10px] opacity-80"></i>
                         {{ $item['shortLabel'] ?? $item['label'] }}
                         <i class="fas fa-chevron-down text-[7px] opacity-60 shrink-0 transition-transform duration-200" id="hotels-nav-chevron"></i>
                     </a>
                     <div class="hidden fixed z-[9999]" id="hotels-nav-panel">
-                        <div class="w-64 rounded-xl border border-white/10 bg-[#0f2a18] shadow-2xl py-2 font-plus">
-                            <a href="{{ route('accommodations.index') }}"
-                               class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5 hover:text-white transition">
-                                <i class="fas fa-bed text-[11px] w-4 text-center" style="color:#E8A838;"></i> Hôtels
+                        <div class="mdd is-wide" role="menu" aria-label="{{ $item['label'] }}">
+                            <a href="{{ route('accommodations.index') }}" class="mdd-item {{ request()->routeIs('accommodations.*') ? 'is-on' : '' }}" role="menuitem">
+                                <span class="mdd-ico"><x-icon name="bed" /></span>
+                                <span class="mdd-txt"><b>{{ __('Hôtels') }}</b><small>{{ __('Hôtels, résidences et lodges') }}</small></span>
                             </a>
                             @foreach($providerSectors as $sector)
                                 @continue($sector->slug === 'hotels')
-                                <a href="{{ $sectorUrl($sector) }}"
-                                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5 hover:text-white transition">
-                                    <i class="fas {{ $sector->icon ?: 'fa-tag' }} text-[11px] w-4 text-center" style="color: {{ $sector->color_hex ?: '#f2790f' }};"></i> {{ $sector->name_fr }}
+                                @php [$secIcon, $secText] = $sectorMeta[$sector->slug] ?? ['widget', __('Adresses vérifiées')]; @endphp
+                                <a href="{{ $sectorUrl($sector) }}" class="mdd-item" role="menuitem">
+                                    <span class="mdd-ico"><x-icon :name="$secIcon" /></span>
+                                    <span class="mdd-txt"><b>{{ $sector->localized('name') }}</b><small>{{ $secText }}</small></span>
                                 </a>
                             @endforeach
+                            <p class="mdd-foot"><span>{{ __('Toutes nos adresses sont vérifiées.') }}</span><a href="{{ route('providers.index') }}">{{ __('Voir l\'annuaire') }} →</a></p>
                         </div>
                     </div>
                 </div>
@@ -634,13 +549,14 @@
                     var closeTimer = null;
                     function position() {
                         var rect = wrap.getBoundingClientRect();
-                        panel.style.left = rect.left + 'px';
+                        // Panneau large : il reste dans l'écran (mesuré une fois affiché).
+                        panel.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - panel.offsetWidth - 16)) + 'px';
                         panel.style.top = (rect.bottom + 8) + 'px';
                     }
                     function open() {
                         clearTimeout(closeTimer);
-                        position();
                         panel.classList.remove('hidden');
+                        position();
                         chevron.classList.add('rotate-180');
                     }
                     function scheduleClose() {
@@ -666,31 +582,91 @@
                 </script>
                 @else
                 <a href="{{ $item['href'] }}"
-                   class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $item['active'] ? 'is-active' : '' }}">
+                   class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $item['active'] ? 'is-active' : '' }} {{ ! empty($item['wideOnly']) ? 'max-[1599px]:!hidden' : '' }}">
                     <i class="{{ $item['icon'] }} text-[10px] opacity-80"></i>
                     {{ $item['shortLabel'] ?? $item['label'] }}
                 </a>
                 @endif
             @endforeach
-            <a href="{{ route('gallery.public') }}"
-               class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $publicGalleryActive ? 'is-active' : '' }}">
-                <i class="fas fa-camera-retro text-[10px] opacity-80"></i>
-                Galerie
-            </a>
+            {{-- Médiathèque : Galerie photo + Vidéos (menu déroulant, même mécanique que « Hôtels & Résidences »). --}}
+            <div class="relative" id="media-nav-dropdown">
+                <a href="{{ route('gallery.public') }}" aria-haspopup="true"
+                   class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $publicMediaActive ? 'is-active' : '' }}">
+                    <i class="fas fa-photo-film text-[10px] opacity-80"></i>
+                    {{ __('Médiathèque') }}
+                    <i class="fas fa-chevron-down text-[7px] opacity-60 shrink-0 transition-transform duration-200" id="media-nav-chevron"></i>
+                </a>
+                {{-- Styles propres au panneau (classes « mdd- ») : le thème clair réécrit les couleurs Tailwind
+                     (text-gray-200, text-white…), ce qui rendait les libellés illisibles sur fond vert. --}}
+                <style>
+                    .mdd { width: 300px; padding: 8px; border-radius: 18px; background: #fff; border: 1px solid #e6dccb; box-shadow: 0 24px 50px -28px rgba(29,26,22,.45); font-family: 'Inter', sans-serif; }
+                    .mdd-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; text-decoration: none; transition: background .15s ease; }
+                    .mdd-item:hover, .mdd-item:focus-visible { background: #fdf4ec; outline: none; }
+                    .mdd-item.is-on { background: #f6f3ec; }
+                    .mdd-ico { flex: none; width: 42px; height: 42px; border-radius: 12px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; }
+                    .mdd-item:hover .mdd-ico { background: #b9500a; color: #fff; }
+                    .mdd-txt b { display: block; font-size: 14.5px; font-weight: 700; color: #1d1a16; line-height: 1.3; }
+                    .mdd-txt small { display: block; margin-top: 2px; font-size: 12.5px; color: #6b6458; line-height: 1.35; }
+                    .mdd-item:hover .mdd-txt b { color: #9a4308; }
+                    .mdd.is-wide { width: 620px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; }
+                    .mdd-foot { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 4px 2px; padding: 10px 8px 4px; border-top: 1px solid #f0eadf; font-size: 12.5px; color: #6b6458; }
+                    .mdd-foot a { font-weight: 700; color: #9a4308; text-decoration: none; }
+                    .mdd-foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
+                    .mdd-new { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px; background: #b9500a; color: #fff; font-style: normal; font-size: 10.5px; font-weight: 800; vertical-align: 2px; }
+                </style>
+                <div class="hidden fixed z-[9999]" id="media-nav-panel">
+                    <div class="mdd" role="menu" aria-label="{{ __('Médiathèque') }}">
+                        <a href="{{ route('gallery.public') }}" class="mdd-item {{ request()->routeIs('gallery.public*') ? 'is-on' : '' }}" role="menuitem">
+                            <span class="mdd-ico"><x-icon name="camera" /></span>
+                            <span class="mdd-txt"><b>{{ __('Galerie photo') }}</b><small>{{ __('Les plus belles images du pays') }}</small></span>
+                        </a>
+                        <a href="{{ route('videos.index') }}" class="mdd-item {{ request()->routeIs('videos.*') ? 'is-on' : '' }}" role="menuitem">
+                            <span class="mdd-ico"><x-icon name="clapperboard-play" /></span>
+                            <span class="mdd-txt"><b>{{ __('Vidéos') }}</b><small>{{ __('À regarder, puis à réserver') }}</small></span>
+                        </a>
+                        <a href="{{ route('comics.index') }}" class="mdd-item {{ request()->routeIs('comics.*') ? 'is-on' : '' }}" role="menuitem">
+                            <span class="mdd-ico"><x-icon name="book" /></span>
+                            <span class="mdd-txt"><b>{{ __('Les Astuces de Mian') }} <em class="mdd-new">{{ __('Nouveau') }}</em></b><small>{{ __('Bandes dessinées à lire gratuitement') }}</small></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <script>
+            (function () {
+                var wrap = document.getElementById('media-nav-dropdown');
+                if (!wrap || wrap.dataset.wired) return;
+                wrap.dataset.wired = '1';
+                var panel = document.getElementById('media-nav-panel'), chevron = document.getElementById('media-nav-chevron'), t = null;
+                document.body.appendChild(panel);
+                function position() { var r = wrap.getBoundingClientRect(); panel.style.left = Math.min(r.left, window.innerWidth - 316) + 'px'; panel.style.top = (r.bottom + 8) + 'px'; }
+                function open() { clearTimeout(t); position(); panel.classList.remove('hidden'); chevron.classList.add('rotate-180'); }
+                function later() { clearTimeout(t); t = setTimeout(function () { panel.classList.add('hidden'); chevron.classList.remove('rotate-180'); }, 200); }
+                wrap.addEventListener('mouseenter', open); wrap.addEventListener('mouseleave', later);
+                wrap.addEventListener('focusin', open); wrap.addEventListener('focusout', later);
+                panel.addEventListener('mouseenter', function () { clearTimeout(t); }); panel.addEventListener('mouseleave', later);
+                panel.addEventListener('focusin', function () { clearTimeout(t); }); panel.addEventListener('focusout', later);
+                window.addEventListener('scroll', function () { panel.classList.add('hidden'); }, true);
+                window.addEventListener('resize', function () { if (!panel.classList.contains('hidden')) position(); });
+            })();
+            </script>
         </nav>
 
         <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {{-- Sélecteur FR/EN masqué tant que l'interface n'est pas traduite (il ne changeait que sa propre couleur).
+                 Pour le réafficher : LANGUAGE_SWITCH=true dans le .env une fois les traductions en place. --}}
+            @if(env('LANGUAGE_SWITCH', false))
             <div class="lang-switch-ultra hidden sm:inline-flex">
                 <a href="{{ route('lang.switch', 'fr') }}"
                    class="{{ session('locale', app()->getLocale()) === 'fr' ? 'bg-green-500 text-dark-900 shadow-sm' : 'text-gray-400 hover:text-white' }}">FR</a>
                 <a href="{{ route('lang.switch', 'en') }}"
                    class="{{ session('locale', app()->getLocale()) === 'en' ? 'bg-green-500 text-dark-900 shadow-sm' : 'text-gray-400 hover:text-white' }}">EN</a>
             </div>
+            @endif
 
             {{-- Recherche --}}
             <a href="{{ route('search') }}"
                class="w-9 h-9 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-gray-400 hover:text-green-300 hover:border-green-500/30 hover:bg-green-500/5 transition"
-               title="Recherche">
+               title="{{ __('Recherche') }}">
                 <i class="fas fa-magnifying-glass text-sm"></i>
             </a>
 
@@ -704,7 +680,7 @@
                     <span class="w-7 h-7 rounded-full bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center text-[11px] font-bold text-white shadow-sm">
                         {{ $__initials }}
                     </span>
-                    <span class="hidden 2xl:inline text-sm font-medium text-gray-300 group-hover:text-orange-100 transition-colors">Mon espace</span>
+                    <span class="hidden 2xl:inline text-sm font-medium text-gray-300 group-hover:text-orange-100 transition-colors">{{ __('Mon espace') }}</span>
                     <i class="fas fa-chevron-down text-[9px] text-gray-500 group-hover:text-orange-400 transition-all duration-200" id="nav-dd-chevron"></i>
                 </button>
 
@@ -717,7 +693,7 @@
 
                         {{-- En-tête utilisateur --}}
                         <div class="relative px-4 pt-4 pb-3.5 overflow-hidden">
-                            <div class="absolute inset-0" style="background:radial-gradient(ellipse 120% 80% at 0% 0%,var(--dd-head-gradient),transparent 65%)"></div>
+                            <div class="absolute inset-0" style="background:var(--dd-head-gradient)"></div>
                             <div class="relative flex items-start gap-3">
                                 <div class="w-11 h-11 rounded-xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-sm font-bold shadow-lg shrink-0"
                                      style="box-shadow:0 8px 24px rgba(242, 121, 15,0.3)">
@@ -742,69 +718,69 @@
                             </div>
                         </div>
 
-                        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--dd-divider) 30%,var(--dd-divider) 70%,transparent);margin:0 1rem"></div>
+                        <div style="height:1px;background:var(--dd-divider);margin:0 1rem"></div>
 
                         {{-- Navigation --}}
                         <div class="p-2">
                             @if(auth()->user()->role === 'admin')
                                 <a href="{{ route('admin.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
+                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> {{ __('Tableau de bord') }}
                                 </a>
                                 <a href="{{ route('admin.users.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-users"></i></span> Utilisateurs
+                                    <span class="nav-dd-icon"><i class="fas fa-users"></i></span> {{ __('Utilisateurs') }}
                                 </a>
                                 <a href="{{ route('admin.payments.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-chart-line"></i></span> Finance
+                                    <span class="nav-dd-icon"><i class="fas fa-chart-line"></i></span> {{ __('Finance') }}
                                 </a>
                             @elseif(auth()->user()->role === 'editor')
                                 <a href="{{ route('editor.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
+                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> {{ __('Tableau de bord') }}
                                 </a>
                                 <a href="{{ route('editor.articles.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-pen-nib"></i></span> Mes articles
+                                    <span class="nav-dd-icon"><i class="fas fa-pen-nib"></i></span> {{ __('Mes articles') }}
                                 </a>
                             @elseif(auth()->user()->role === 'provider')
                                 <a href="{{ route('provider.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
+                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> {{ __('Tableau de bord') }}
                                 </a>
                                 <a href="{{ route('provider.profile.edit') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-store"></i></span> Ma fiche
+                                    <span class="nav-dd-icon"><i class="fas fa-store"></i></span> {{ __('Ma fiche') }}
                                 </a>
                                 <a href="{{ route('provider.billing.plans') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gem"></i></span> Mon forfait
+                                    <span class="nav-dd-icon"><i class="fas fa-gem"></i></span> {{ __('Mon forfait') }}
                                 </a>
                             @else
                                 <a href="{{ route('visitor.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> Tableau de bord
+                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> {{ __('Tableau de bord') }}
                                 </a>
                                 <a href="{{ route('visitor.reservations.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-bed"></i></span> Mes réservations
+                                    <span class="nav-dd-icon"><i class="fas fa-bed"></i></span> {{ __('Mes réservations') }}
                                 </a>
                                 <a href="{{ route('visitor.receipts.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-receipt"></i></span> Mes reçus
+                                    <span class="nav-dd-icon"><i class="fas fa-receipt"></i></span> {{ __('Mes reçus') }}
                                 </a>
                                 <a href="{{ route('visitor.wallet.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-wallet"></i></span> Mon portefeuille
+                                    <span class="nav-dd-icon"><i class="fas fa-wallet"></i></span> {{ __('Mon portefeuille') }}
                                 </a>
                                 <a href="{{ route('visitor.purchases.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-image"></i></span> Mes achats
+                                    <span class="nav-dd-icon"><i class="fas fa-image"></i></span> {{ __('Mes achats') }}
                                 </a>
                                 <a href="{{ route('visitor.art-orders.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-palette"></i></span> Mes commandes Art
+                                    <span class="nav-dd-icon"><i class="fas fa-palette"></i></span> {{ __('Mes commandes Art') }}
                                 </a>
                                 <a href="{{ route('visitor.profile.edit') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-user-pen"></i></span> Mon profil
+                                    <span class="nav-dd-icon"><i class="fas fa-user-pen"></i></span> {{ __('Mon profil') }}
                                 </a>
                                 <a href="{{ route('visitor.favorites.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-heart"></i></span> Mes favoris
+                                    <span class="nav-dd-icon"><i class="fas fa-heart"></i></span> {{ __('Mes favoris') }}
                                 </a>
                                 <a href="{{ route('visitor.notifications.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-bell"></i></span> Notifications
+                                    <span class="nav-dd-icon"><i class="fas fa-bell"></i></span> {{ __('Notifications') }}
                                 </a>
                             @endif
                         </div>
 
-                        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--dd-divider) 30%,var(--dd-divider) 70%,transparent);margin:0 1rem"></div>
+                        <div style="height:1px;background:var(--dd-divider);margin:0 1rem"></div>
 
                         {{-- Déconnexion --}}
                         <div class="p-2">
@@ -812,7 +788,7 @@
                                 @csrf
                                 <button type="submit" class="nav-dd-lnk nav-dd-danger w-full text-left">
                                     <span class="nav-dd-icon"><i class="fas fa-right-from-bracket"></i></span>
-                                    Déconnexion
+                                    {{ __('Déconnexion') }}
                                 </button>
                             </form>
                         </div>
@@ -823,12 +799,12 @@
             @else
             <a href="{{ route('login') }}"
                class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-200 btn-ghost-header">
-                Connexion
+                {{ __('Connexion') }}
             </a>
             <a href="{{ route('plans.public') }}"
                class="inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 text-dark-900 text-xs sm:text-sm font-bold btn-gold-header">
                 <i class="fas fa-star text-[10px] sm:text-xs opacity-90 hidden sm:inline"></i>
-                <span>S’abonner</span>
+                <span>{{ __('S’abonner') }}</span>
             </a>
             @endauth
 
@@ -852,20 +828,16 @@
                     </button>
                     <div class="hidden">
                         <div class="flex flex-col divide-y divide-black/5 px-2 py-1">
-                            <a href="{{ route('accommodations.index') }}" class="flex items-center gap-3 px-2 py-2.5 group">
-                                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:#E8A83826;">
-                                    <i class="fas fa-bed text-sm" style="color:#E8A838;"></i>
-                                </div>
-                                <p class="font-semibold text-xs text-gray-800 flex-1">Hôtels</p>
+                            <a href="{{ route('accommodations.index') }}" class="flex items-center gap-3 px-2 py-3 group">
+                                <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon name="bed" /></span>
+                                <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Hôtels') }}</p>
                                 <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
                             </a>
                             @foreach($providerSectors as $sector)
                                 @continue($sector->slug === 'hotels')
-                                <a href="{{ $sectorUrl($sector) }}" class="flex items-center gap-3 px-2 py-2.5 group">
-                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background: {{ $sector->color_hex ? $sector->color_hex.'26' : 'rgba(242,121,15,0.15)' }};">
-                                        <i class="fas {{ $sector->icon ?: 'fa-tag' }} text-sm" style="color: {{ $sector->color_hex ?: '#f2790f' }};"></i>
-                                    </div>
-                                    <p class="font-semibold text-xs text-gray-800 flex-1">{{ $sector->name_fr }}</p>
+                                <a href="{{ $sectorUrl($sector) }}" class="flex items-center gap-3 px-2 py-3 group">
+                                    <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon :name="($sectorMeta[$sector->slug] ?? ['widget'])[0]" /></span>
+                                    <p class="font-semibold text-xs text-gray-800 flex-1">{{ $sector->localized('name') }}</p>
                                     <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
                                 </a>
                             @endforeach
@@ -878,13 +850,37 @@
                 </a>
                 @endif
             @endforeach
-            <a href="{{ route('gallery.public') }}"
-               class="w-full text-left block px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $publicGalleryActive ? 'is-active' : '' }}">
-                Galerie Tresors d'Ivoire
-            </a>
+            {{-- Médiathèque (accordéon) --}}
+            <div>
+                <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.fa-chevron-down').classList.toggle('rotate-180'); this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true')"
+                        aria-expanded="{{ $publicMediaActive ? 'true' : 'false' }}"
+                        class="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $publicMediaActive ? 'is-active' : '' }}">
+                    <span>{{ __('Médiathèque') }}</span>
+                    <i class="fas fa-chevron-down text-xs transition-transform duration-200 {{ $publicMediaActive ? 'rotate-180' : '' }}"></i>
+                </button>
+                <div class="{{ $publicMediaActive ? '' : 'hidden' }}">
+                    <div class="flex flex-col divide-y divide-black/5 px-2 py-1">
+                        <a href="{{ route('gallery.public') }}" class="flex items-center gap-3 px-2 py-3 group">
+                            <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon name="camera" /></span>
+                            <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Galerie photo') }}</p>
+                            <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
+                        </a>
+                        <a href="{{ route('videos.index') }}" class="flex items-center gap-3 px-2 py-3 group">
+                            <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon name="clapperboard-play" /></span>
+                            <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Vidéos') }}</p>
+                            <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
+                        </a>
+                        <a href="{{ route('comics.index') }}" class="flex items-center gap-3 px-2 py-3 group">
+                            <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon name="book" /></span>
+                            <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Les Astuces de Mian') }} <span style="display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#b9500a;color:#fff;font-size:10px;font-weight:800">{{ __('Nouveau') }}</span></p>
+                            <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <div class="pt-4 mt-2 border-t border-black/10 flex flex-col gap-2">
-                <a href="{{ route('login') }}" class="text-center py-3 text-sm font-semibold text-gray-700 btn-ghost-header">Connexion</a>
-                <a href="{{ route('plans.public') }}" class="text-center py-3 text-sm font-bold text-dark-900 btn-gold-header">S’abonner</a>
+                <a href="{{ route('login') }}" class="text-center py-3 text-sm font-semibold text-gray-700 btn-ghost-header">{{ __('Connexion') }}</a>
+                <a href="{{ route('plans.public') }}" class="text-center py-3 text-sm font-bold text-dark-900 btn-gold-header">{{ __('S’abonner') }}</a>
             </div>
         </div>
     </div>
@@ -901,7 +897,7 @@
     $flashDuration = max(35, $activeFlashInfos->count() * 10);
 @endphp
 <div id="flash-ticker" class="flash-ticker relative z-10 overflow-hidden text-white"
-     data-flash-ids="{{ $flashIdsKey }}" role="region" aria-label="Fil d'actualités">
+     data-flash-ids="{{ $flashIdsKey }}" role="region" aria-label="{{ __('Fil d\'actualités') }}">
     <div class="flash-ticker-bg absolute inset-0 pointer-events-none" aria-hidden="true"></div>
     <div class="flash-ticker-sheen absolute inset-0 pointer-events-none" aria-hidden="true"></div>
     <div class="flash-ticker-accent absolute inset-x-0 top-0 h-px pointer-events-none" aria-hidden="true"></div>
@@ -916,8 +912,8 @@
                     <i class="fas fa-tower-broadcast flash-ticker-badge-icon"></i>
                 </span>
                 <span class="flash-ticker-badge-copy">
-                    <span class="flash-ticker-badge-live">Flash</span>
-                    <span class="flash-ticker-badge-title">Info</span>
+                    <span class="flash-ticker-badge-live">{{ __('Flash') }}</span>
+                    <span class="flash-ticker-badge-title">{{ __('Info') }}</span>
                 </span>
             </span>
         </div>
@@ -942,7 +938,7 @@
         </div>
 
         @if($flashAllDismissible)
-        <button type="button" class="flash-ticker-close shrink-0" onclick="dismissFlashTicker()" aria-label="Fermer le fil d'actualités">
+        <button type="button" class="flash-ticker-close shrink-0" onclick="dismissFlashTicker()" aria-label="{{ __('Fermer le fil d\'actualités') }}">
             <i class="fas fa-xmark"></i>
         </button>
         @endif
@@ -972,73 +968,208 @@
 {{-- ══════════════════════════════════════════════════════════
      MODAL DE CONTACT
 ══════════════════════════════════════════════════════════ --}}
-<div id="contact-modal" class="hidden fixed inset-0 z-[60] p-4 bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+<div id="contact-modal" class="hidden fixed inset-0 z-[60] p-4 bg-black/40" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
     <div class="absolute inset-0" onclick="closeContactModal()" aria-hidden="true"></div>
-    <div class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-black/10 bg-white shadow-2xl">
-        <div class="sticky top-0 flex items-center justify-between gap-4 px-5 py-4 border-b border-black/10 bg-white/95 backdrop-blur">
-            <div>
-                <p id="contact-modal-title" class="font-serif text-lg text-gray-900 font-semibold flex items-center gap-2">
-                    <i class="fas fa-pen-to-square text-green-500 text-sm"></i>
-                    Envoyez-nous un message
-                </p>
-                <p class="text-gray-500 text-xs mt-0.5">Nous vous répondrons dans les plus brefs délais.</p>
+    <style>
+        /* Fenêtre de contact : en-tête vert à motifs, sujets en un clic, champs confortables. Aplats. */
+        .ct { position: relative; width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; border-radius: 26px; background: #fff; color: #1d1a16; font-family: 'Inter', sans-serif; }
+        .ct-head { position: relative; overflow: hidden; padding: 22px 24px 26px; background: #123a25; color: #fff; }
+        .ct-head .ivm-g { opacity: .1 !important; }
+        .ct-head .ivm-g > * { stroke: #f6c38f !important; }
+        .ct-head > :not(.ivm):not(.ivm-band) { position: relative; z-index: 1; }
+        .ct-head .ivm-band { height: 6px; }
+        .ct-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+        .ct-kick { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,.12); color: #f6c38f; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+        .ct-title { margin: 10px 0 0; font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; line-height: 1.15; color: #fff; }
+        .ct-sub { margin: 6px 0 0; font-size: 14px; color: #cfe6d7; }
+        .ct-close { flex: none; width: 40px; height: 40px; border-radius: 999px; border: 0; background: rgba(255,255,255,.12); color: #fff; font-size: 18px; cursor: pointer; }
+        .ct-close:hover { background: rgba(255,255,255,.22); }
+        .ct-trust { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: #e7f3ec; }
+        .ct-trust li { display: inline-flex; align-items: center; gap: 6px; }
+        .ct-trust a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+        .ct-form { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px; }
+        .ct-topics { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ct-topics button { height: 34px; padding: 0 13px; border-radius: 999px; border: 1px solid #e6dccb; background: #fff; color: #3a2f22; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .ct-topics button:hover { border-color: #b9500a; color: #9a4308; }
+        .ct-topics button.is-on { background: #fdf4ec; border-color: #b9500a; color: #9a4308; }
+        .ct-label { display: block; margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #1d1a16; }
+        .ct-label em { font-style: normal; font-weight: 600; color: #8a7f6b; }
+        .ct-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .ct-input { width: 100%; min-height: 48px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid #e6dccb; background: #fbf9f5; color: #1d1a16; font: inherit; font-size: 15px; outline: none; transition: border-color .15s ease, background .15s ease; }
+        .ct-input:focus { border-color: #b9500a; background: #fff; box-shadow: 0 0 0 4px rgba(185,80,10,.12); }
+        textarea.ct-input { min-height: 130px; resize: vertical; line-height: 1.55; }
+        .ct-err { margin: 5px 0 0; font-size: 12.5px; font-weight: 600; color: #b42318; }
+        .ct-count { margin: 5px 0 0; text-align: right; font-size: 12px; color: #8a7f6b; }
+        .ct-send { display: flex; align-items: center; justify-content: center; gap: 9px; height: 52px; border: 0; border-radius: 999px; background: #b9500a; color: #fff; font-size: 15.5px; font-weight: 800; cursor: pointer; }
+        .ct-send:hover { background: #9a4308; }
+        .ct-legal { margin: 0; text-align: center; font-size: 12px; color: #8a7f6b; }
+        .ct button:focus-visible, .ct a:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        @media (max-width: 520px) {
+            #contact-modal { padding: 0 !important; align-items: flex-end !important; }
+            .ct { max-width: none; max-height: 94vh; border-radius: 24px 24px 0 0; }
+            .ct-row { grid-template-columns: minmax(0, 1fr); }
+            .ct-title { font-size: 22px; }
+            .ct-head { padding: 18px 18px 22px; }
+            .ct-form { padding: 16px 18px 20px; }
+        }
+    </style>
+    <div class="ct">
+        <div class="ct-head">
+            @include('partials.ivorian-motifs', ['culture' => 'newsletter'])
+            <div class="ct-top">
+                <div>
+                    <span class="ct-kick"><x-icon name="chat-round-dots" />{{ __('Contact') }}</span>
+                    <p id="contact-modal-title" class="ct-title">{{ __('Envoyez-nous un message') }}</p>
+                    <p class="ct-sub">{{ __('Nous vous répondrons dans les plus brefs délais.') }}</p>
+                </div>
+                <button type="button" onclick="closeContactModal()" class="ct-close" aria-label="{{ __('Fermer') }}">×</button>
             </div>
-            <button type="button" onclick="closeContactModal()" class="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg border border-black/10 text-gray-400 hover:text-gray-900 hover:bg-black/5 transition" aria-label="Fermer">
-                <i class="fas fa-times"></i>
-            </button>
+            <ul class="ct-trust">
+                <li><x-icon name="shield-check" />{{ __('Données protégées') }}</li>
+                <li><x-icon name="chat-round-dots" />{{ __('Ou appelez le') }} <a href="{{ $topPhoneHref }}">{{ $topPhoneDisplay }}</a></li>
+            </ul>
         </div>
-        <form method="post" action="{{ route('contact.store') }}" class="p-5 space-y-4">
+        <form method="post" action="{{ route('contact.store') }}" class="ct-form">
             @csrf
+            {{-- Marqueur : rouvre cette fenêtre seulement si l'erreur vient de ce formulaire
+                 (la connexion et l'inscription ont aussi un champ « email »). --}}
+            <input type="hidden" name="_contact_form" value="1">
+
             <div>
-                <label for="contact-name" class="block text-xs font-medium text-gray-500 mb-1.5">Nom complet</label>
-                <div class="relative">
-                    <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-green-500/60 text-xs"></i>
-                    <input id="contact-name" name="name" type="text" required maxlength="255" value="{{ old('name') }}"
-                        class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-white border border-black/10 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50"
-                        placeholder="Jean Dupont" autocomplete="name">
+                <span class="ct-label">{{ __('Votre demande concerne') }} <em>{{ __('(facultatif)') }}</em></span>
+                <div class="ct-topics" data-ct-topics>
+                    @foreach([__('Réservation'), __('Devenir prestataire'), __('Partenariat'), __('Signaler une erreur'), __('Autre')] as $topic)
+                        <button type="button">{{ $topic }}</button>
+                    @endforeach
                 </div>
-                @error('name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="ct-row">
+                <div>
+                    <label for="contact-name" class="ct-label">{{ __('Nom complet') }}</label>
+                    <input id="contact-name" name="name" type="text" required maxlength="255" value="{{ old('name') }}" class="ct-input" placeholder="{{ __('Jean Dupont') }}" autocomplete="name">
+                    @error('name')<p class="ct-err">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="contact-email" class="ct-label">{{ __('E-mail') }}</label>
+                    <input id="contact-email" name="email" type="email" required maxlength="255" value="{{ old('email') }}" class="ct-input" placeholder="vous@exemple.ci" autocomplete="email">
+                    @error('email')<p class="ct-err">{{ $message }}</p>@enderror
+                </div>
             </div>
             <div>
-                <label for="contact-email" class="block text-xs font-medium text-gray-500 mb-1.5">E-mail</label>
-                <div class="relative">
-                    <i class="fas fa-at absolute left-3 top-1/2 -translate-y-1/2 text-green-500/60 text-xs"></i>
-                    <input id="contact-email" name="email" type="email" required maxlength="255" value="{{ old('email') }}"
-                        class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-white border border-black/10 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50"
-                        placeholder="vous@exemple.ci" autocomplete="email">
-                </div>
-                @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                <label for="contact-subject" class="ct-label">{{ __('Objet') }}</label>
+                <input id="contact-subject" name="subject" type="text" required maxlength="255" value="{{ old('subject') }}" class="ct-input" placeholder="{{ __('Sujet de votre message') }}">
+                @error('subject')<p class="ct-err">{{ $message }}</p>@enderror
             </div>
             <div>
-                <label for="contact-subject" class="block text-xs font-medium text-gray-500 mb-1.5">Objet</label>
-                <div class="relative">
-                    <i class="fas fa-circle-notch absolute left-3 top-1/2 -translate-y-1/2 text-green-500/60 text-[10px]"></i>
-                    <input id="contact-subject" name="subject" type="text" required maxlength="255" value="{{ old('subject') }}"
-                        class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-white border border-black/10 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50"
-                        placeholder="Sujet de votre message">
-                </div>
-                @error('subject')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                <label for="contact-message" class="ct-label">{{ __('Message') }}</label>
+                <textarea id="contact-message" name="message" rows="5" required maxlength="5000" class="ct-input" placeholder="{{ __('Comment pouvons-nous vous aider ?') }}">{{ old('message') }}</textarea>
+                <p class="ct-count" data-ct-count>0 / 5000</p>
+                @error('message')<p class="ct-err">{{ $message }}</p>@enderror
             </div>
-            <div>
-                <label for="contact-message" class="block text-xs font-medium text-gray-500 mb-1.5">Message</label>
-                <div class="relative">
-                    <i class="fas fa-comment-dots absolute left-3 top-3 text-green-500/60 text-xs"></i>
-                    <textarea id="contact-message" name="message" rows="5" required maxlength="5000"
-                        class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-white border border-black/10 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50 resize-y min-h-[120px]"
-                        placeholder="Comment pouvons-nous vous aider ?">{{ old('message') }}</textarea>
-                </div>
-                @error('message')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-            <button type="submit" class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-green-500 hover:bg-green-400 text-white font-bold text-sm transition shadow-lg shadow-green-500/20">
-                <i class="fas fa-paper-plane text-xs"></i>
-                Envoyer le message
-            </button>
+            <button type="submit" class="ct-send"><x-icon name="plane" />{{ __('Envoyer le message') }}</button>
+            <p class="ct-legal">{{ __('Vos informations servent uniquement à vous répondre.') }}</p>
         </form>
     </div>
+    <script>
+    (function () {
+        const subject = document.getElementById('contact-subject'), msg = document.getElementById('contact-message'), count = document.querySelector('[data-ct-count]');
+        document.querySelectorAll('[data-ct-topics] button').forEach(b => b.addEventListener('click', () => {
+            document.querySelectorAll('[data-ct-topics] button').forEach(x => x.classList.toggle('is-on', x === b));
+            subject.value = b.textContent.trim();
+        }));
+        const upd = () => { count.textContent = msg.value.length + ' / 5000'; };
+        msg.addEventListener('input', upd); upd();
+    })();
+    </script>
 </div>
-@if($errors->hasAny(['name', 'email', 'subject', 'message']))
+@if(old('_contact_form') && $errors->hasAny(['name', 'email', 'subject', 'message']))
     <span id="contact-modal-autoopen" class="hidden" aria-hidden="true"></span>
 @endif
+
+@include('partials.mian-welcome')
+
+{{-- Barre d'onglets mobile (bas d'écran) : accès rapide + bouton Menu (ouvre le menu de l'en-tête) --}}
+@php
+    $tabUser = auth()->user();
+    $tabDashboard = $tabUser ? match ($tabUser->role) {
+        'admin' => route('admin.dashboard'),
+        'editor' => route('editor.dashboard'),
+        'provider' => route('provider.dashboard'),
+        default => route('visitor.dashboard'),
+    } : null;
+@endphp
+<style>
+    .ti-tabbar { display: none; }
+    @media (max-width: 767px) {
+        body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+        .ti-tabbar {
+            display: grid; grid-template-columns: repeat(5, 1fr); align-items: end;
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+            padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+            background: #ffffff; border-top: 1px solid #e8e1d3; box-shadow: 0 -6px 20px rgb(29 26 22 / .08);
+        }
+        .ti-tab {
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
+            padding: 6px 2px; border: 0; background: none; cursor: pointer;
+            font: 600 11px/1.1 Inter, system-ui, sans-serif; color: #6b6458; text-decoration: none;
+        }
+        .ti-tab i { font-size: 19px; height: 24px; display: flex; align-items: center; }
+        .ti-tab.is-active { color: #14532d; }
+        .ti-tab.is-active i { background: #e6f1e9; border-radius: 10px; padding: 0 14px; }
+        .ti-tab--gold { color: #9a4308; }
+        .ti-tab--gold i { color: #b8892b; }
+        .ti-tab--main { margin-top: -26px; color: #14532d; }
+        .ti-tab--main i {
+            width: 56px; height: 56px; border-radius: 50%; padding: 0; justify-content: center;
+            background: #1b6b3a; color: #ffffff; font-size: 22px; border: 4px solid #ffffff;
+            box-shadow: 0 8px 18px rgb(27 107 58 / .35);
+        }
+        .ti-tab--main.is-active i { background: #14532d; padding: 0; border-radius: 50%; }
+        .ti-tab[aria-expanded="true"] { color: #b9500a; }
+    }
+</style>
+<nav class="ti-tabbar" aria-label="{{ __('Navigation mobile') }}">
+    <a href="{{ route('home') }}" class="ti-tab {{ request()->routeIs('home') ? 'is-active' : '' }}">
+        <i class="fas fa-house"></i><span>{{ __('Accueil') }}</span>
+    </a>
+    <a href="{{ route('tourist.cities') }}" class="ti-tab {{ request()->routeIs('tourist.*') ? 'is-active' : '' }}">
+        <i class="fas fa-umbrella-beach"></i><span>{{ __('Tourisme') }}</span>
+    </a>
+    @if($tabUser)
+    <a href="{{ $tabDashboard }}" class="ti-tab ti-tab--main">
+        <i class="fas fa-user"></i><span>{{ __('Mon espace') }}</span>
+    </a>
+    <a href="{{ route('events.index') }}" class="ti-tab {{ request()->routeIs('events.*') ? 'is-active' : '' }}">
+        <i class="fas fa-calendar-days"></i><span>{{ __('Événements') }}</span>
+    </a>
+    @else
+    <a href="{{ route('login') }}" class="ti-tab ti-tab--main {{ request()->routeIs('login') ? 'is-active' : '' }}">
+        <i class="fas fa-right-to-bracket"></i><span>{{ __('Connexion') }}</span>
+    </a>
+    <a href="{{ route('plans.public') }}" class="ti-tab ti-tab--gold">
+        <i class="fas fa-star"></i><span>{{ __('S’abonner') }}</span>
+    </a>
+    @endif
+    <button type="button" id="ti-tab-menu" class="ti-tab" aria-expanded="false" aria-controls="public-mobile-menu">
+        <i class="fas fa-bars"></i><span>{{ __('Menu') }}</span>
+    </button>
+</nav>
+@include('partials.ai-chat-widget')
+<script>
+    (function () {
+        var tab = document.getElementById('ti-tab-menu');
+        var menu = document.getElementById('public-mobile-menu');
+        if (!tab || !menu) return;
+        function sync() { tab.setAttribute('aria-expanded', menu.classList.contains('hidden') ? 'false' : 'true'); }
+        tab.addEventListener('click', function () {
+            menu.classList.toggle('hidden');
+            sync();
+        });
+        var burger = document.getElementById('public-menu-toggle');
+        if (burger) burger.addEventListener('click', function () { setTimeout(sync, 0); });
+    })();
+</script>
 
 @include('partials.theme-light-bridge')
 <script>
@@ -1081,6 +1212,7 @@
             el.classList.remove('hidden');
             el.classList.add('flex', 'items-center', 'justify-center');
             document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('contact-name')?.focus(), 60);
         };
         window.closeContactModal = function () {
             const el = document.getElementById('contact-modal');
@@ -1095,3 +1227,6 @@
 </script>
 
 @include('partials.homepage-bubbles')
+
+{{-- Charte d'interface commune des pages publiques (après les styles propres à chaque page). --}}
+@include('partials.ui-kit')

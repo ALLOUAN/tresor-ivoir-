@@ -31,6 +31,7 @@ class PayoutRiskEngineTest extends TestCase
             'name' => 'Prestataire Test',
             'slug' => 'prestataire-test-'.uniqid(),
             'status' => 'active',
+            'is_verified' => true, // retraits réservés aux comptes vérifiés (ProviderVerificationTest)
             'payout_method' => 'orange_money',
             'payout_account_number' => '0700000001',
         ]);

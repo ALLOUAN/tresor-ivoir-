@@ -1,0 +1,27 @@
+{
+ "files": [
+  "articles/index.blade.php",
+  "prestations/show.blade.php"
+ ],
+ "config": {
+  "theme": {
+   "extend": {
+    "colors": {
+     "gold": {
+      "300": "#fdbe7b",
+      "400": "#fa9a3c",
+      "500": "#f2790f",
+      "600": "#d4630a"
+     },
+     "dark": {
+      "500": "#e9e5d9",
+      "600": "#e9e5d9",
+      "700": "#e9e5d9",
+      "800": "#e9e5d9",
+      "900": "#e9e5d9"
+     }
+    }
+   }
+  }
+ }
+}

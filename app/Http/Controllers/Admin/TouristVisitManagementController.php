@@ -121,7 +121,7 @@ class TouristVisitManagementController extends Controller
                     $v->reference,
                     $v->created_at?->format('Y-m-d H:i:s'),
                     TouristVisit::STATUS_LABELS[$v->status] ?? $v->status,
-                    TouristVisit::TYPE_LABELS[$v->visit_type] ?? $v->visit_type,
+                    $v->labelForType(),
                     $v->with_guide ? 'oui' : 'non',
                     ($v->session_date ?? $v->desired_date)?->format('Y-m-d'),
                     $v->session_time_label,

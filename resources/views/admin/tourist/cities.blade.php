@@ -259,7 +259,8 @@
                 <div class="flex items-center justify-between mb-2">
                     <label class="text-xs text-slate-400">
                         <i class="fas fa-image text-orange-400/70 mr-1"></i>
-                        Miniature <span class="text-slate-600">(vignette dans la liste des villes)</span>
+                        Miniature <span class="text-slate-600">(vignette des cartes : accueil, liste des villes)</span>
+                        <span class="block text-[11px] text-slate-500 mt-0.5">Une photo sans texte, de préférence carrée ou en hauteur (1200 px minimum). La couverture, elle, reste la bannière large du haut de la page ville.</span>
                     </label>
                     <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-0.5">
                         <button type="button" id="thumb_btn_url"

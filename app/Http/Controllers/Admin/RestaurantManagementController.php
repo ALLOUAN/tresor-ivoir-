@@ -45,13 +45,15 @@ class RestaurantManagementController extends Controller
     public function create()
     {
         $cities = TouristCity::orderBy('name')->get();
+        $providers = $this->restaurantProviders();
 
-        return view('admin.restaurant.form', compact('cities'));
+        return view('admin.restaurant.form', compact('cities', 'providers'));
     }
 
     public function store(Request $request)
     {
         $data = $this->validateRestaurant($request);
+        $data['provider_id'] = $data['provider_id'] ?? null;
         $data['slug'] = $this->uniqueSlug($data['name']);
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active'] = $request->boolean('is_active', true);
@@ -80,13 +82,15 @@ class RestaurantManagementController extends Controller
         $restaurant->load('media');
         $cities = TouristCity::orderBy('name')->get();
 
-        return view('admin.restaurant.form', ['restaurant' => $restaurant, 'cities' => $cities]);
+        return view('admin.restaurant.form', ['restaurant' => $restaurant, 'cities' => $cities, 'providers' => $this->restaurantProviders($restaurant)]);
     }
 
     public function update(Request $request, Restaurant $restaurant)
     {
-        $data = $this->validateRestaurant($request);
-        $data['slug'] = $this->uniqueSlug($data['name'], $restaurant->id);
+        $data = $this->validateRestaurant($request, $restaurant);
+        $data['provider_id'] = $data['provider_id'] ?? null;
+        // Adresse stable : fixée à la création, pour ne pas casser les menus QR imprimés ni les liens partagés.
+        $data['slug'] = $restaurant->slug ?: $this->uniqueSlug($data['name'], $restaurant->id);
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_active'] = $request->boolean('is_active');
         $data['amenities'] = $this->parseAmenities($request);
@@ -207,9 +211,28 @@ class RestaurantManagementController extends Controller
         return $slug;
     }
 
-    private function validateRestaurant(Request $request): array
+    /**
+     * Prestataires « Restaurants & Gastronomie » pouvant être rattachés : sans autre restaurant
+     * (un prestataire n'a qu'une fiche restaurant, dont il gère la carte et les réservations).
+     */
+    private function restaurantProviders(?Restaurant $current = null)
+    {
+        return \App\Models\Provider::query()
+            ->where(fn ($q) => $q
+                ->where(fn ($eligible) => $eligible
+                    ->whereHas('category', fn ($c) => $c->where('slug', 'restaurants')
+                        ->orWhereHas('parent', fn ($p) => $p->where('slug', 'restaurants')))
+                    ->whereDoesntHave('restaurant'))
+                // Le prestataire déjà rattaché reste toujours proposé (pas de détachement involontaire).
+                ->when($current?->provider_id, fn ($q2) => $q2->orWhere('id', $current->provider_id)))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+    }
+
+    private function validateRestaurant(Request $request, ?Restaurant $current = null): array
     {
         return $request->validate([
+            'provider_id' => ['nullable', 'integer', \Illuminate\Validation\Rule::in($this->restaurantProviders($current)->pluck('id')->all())],
             'city_id' => 'required|exists:tourist_cities,id',
             'name' => 'required|string|max:150',
             'short_description' => 'nullable|string|max:300',

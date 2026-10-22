@@ -1,348 +1,417 @@
 @extends('layouts.visitor-public')
 
-@section('title', 'Mon Espace')
-@section('page-title', 'Mon espace visiteur')
+@section('title', __('Mon Espace'))
 
 @section('content')
+@php
+    $vdUser = auth()->user();
+    $vdHour = (int) now('Africa/Abidjan')->format('G');
+    $vdHello = $vdHour < 5 || $vdHour >= 18 ? __('Bonsoir') : __('Bonjour');
+    // Prochain séjour : la réservation à venir (ou en cours) la plus proche.
+    $vdNext = ($my_reservations ?? collect())
+        ->filter(fn ($r) => in_array($r->computed_status, [\App\Models\Reservation::COMPUTED_STATUS_UPCOMING, \App\Models\Reservation::COMPUTED_STATUS_ONGOING], true))
+        ->sortBy(fn ($r) => $r->check_in)
+        ->first();
+    $vdNextImg = $vdNext?->accommodation?->cover_image ?? $vdNext?->accommodation?->thumbnail;
+    $vdDays = $vdNext ? (int) now('Africa/Abidjan')->startOfDay()->diffInDays($vdNext->check_in->copy()->startOfDay(), false) : null;
+    $vdStatusTone = [
+        \App\Models\Reservation::COMPUTED_STATUS_UPCOMING => 'lagoon',
+        \App\Models\Reservation::COMPUTED_STATUS_ONGOING => 'palm',
+        \App\Models\Reservation::COMPUTED_STATUS_COMPLETED => 'sun',
+        \App\Models\Reservation::COMPUTED_STATUS_CANCELLED => 'rose',
+    ];
+@endphp
+<style>
+    /* Espace client : bandeau d'accueil vert à motifs + prochain séjour, chiffres clés aux couleurs du logo,
+       raccourcis, réservations, inspirations. Aplats ; ombre au survol seulement. */
+    .vd { --sunset: 217,101,15; --palm: 74,138,42; --lagoon: 31,128,121; --sun: 201,138,12; --rose: 192,54,44; color: #1d1a16; font-family: 'Inter', sans-serif; }
+    .vd a { text-decoration: none; }
+    .vd-alert { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; padding: 12px 14px; border-radius: 14px; font-size: 14px; }
+    .vd-alert.is-ok { background: #eef6ef; border: 1px solid #cfe4d3; color: #1f5a33; }
+    .vd-alert.is-info { background: #fdf4ec; border: 1px solid #f1dcc4; color: #9a4308; }
+    .vd-alert.is-err { background: #fdeceb; border: 1px solid #f5c2bd; color: #8a241c; }
 
+    .vd-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 24px; align-items: center; padding: 28px; border-radius: 28px; background: #123a25; color: #fff; }
+    .vd-hero .ivm-g { opacity: .09 !important; }
+    .vd-hero .ivm-g > * { stroke: #f6c38f !important; }
+    .vd-hero .ivm-band { height: 6px; }
+    .vd-hero > :not(.ivm):not(.ivm-band) { position: relative; z-index: 1; }
+    .vd-me { display: flex; align-items: center; gap: 16px; }
+    .vd-avatar { flex: none; width: 64px; height: 64px; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: #b9500a; color: #fff; font-size: 22px; font-weight: 800; letter-spacing: .02em; }
+    .vd-hello { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #f6c38f; }
+    .vd-name { margin: 4px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(26px, 3vw, 34px); font-weight: 700; line-height: 1.1; color: #fff; }
+    .vd-lead { margin: 12px 0 0; max-width: 46ch; font-size: 15px; line-height: 1.55; color: #cfe6d7; }
+    .vd-hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .vd-chip { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: rgba(255,255,255,.12); color: #fff; font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+    .vd-chip:hover { background: rgba(255,255,255,.2); }
+    .vd-chip .ico { width: 16px; height: 16px; color: #f6c38f; }
+    .vd-chip.is-on { background: rgba(110,231,183,.14); color: #d6f5e3; cursor: default; }
+
+    .vd-next { display: block; overflow: hidden; border-radius: 22px; background: #fff; color: #1d1a16; transition: box-shadow .2s ease, transform .2s ease; }
+    .vd-next:hover { transform: translateY(-2px); box-shadow: 0 24px 40px -30px rgba(0,0,0,.6); }
+    .vd-next__img { position: relative; height: 130px; background: #e9e1d2; }
+    .vd-next__img img { width: 100%; height: 100%; object-fit: cover; }
+    .vd-next__img .ico { position: absolute; inset: 0; margin: auto; width: 40px; height: 40px; color: #b9500a; }
+    .vd-next__count { position: absolute; left: 12px; top: 12px; display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 999px; background: #b9500a; color: #fff; font-size: 12.5px; font-weight: 800; }
+    .vd-next__body { padding: 14px 16px 16px; }
+    .vd-next__body small { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #1f8079; }
+    .vd-next__body b { display: block; margin-top: 4px; font-family: 'Playfair Display', serif; font-size: 19px; line-height: 1.2; }
+    .vd-next__body p { display: flex; align-items: center; gap: 6px; margin: 8px 0 0; font-size: 13.5px; color: #4a443a; }
+    .vd-next__body p .ico { width: 15px; height: 15px; color: #b9500a; }
+    .vd-next.is-empty { padding: 20px; }
+    .vd-next.is-empty b { margin-top: 0; }
+    .vd-next.is-empty p { display: block; margin: 6px 0 14px; font-size: 14px; line-height: 1.5; color: #4a443a; }
+    .vd-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px; background: #b9500a; color: #fff !important; font-size: 14px; font-weight: 800; }
+    .vd-btn:hover { background: #9a4308; }
+    .vd-btn .ico { width: 16px; height: 16px; }
+
+    .vd-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+    .vd-stat { --c: var(--sunset); display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 20px; background: #fff; border: 1px solid #ece5d6; color: #1d1a16; transition: border-color .15s ease, box-shadow .2s ease; }
+    .vd-stat:hover { border-color: rgba(var(--c), .5); box-shadow: 0 18px 30px -26px rgba(29,26,22,.5); }
+    .vd-stat.is-palm { --c: var(--palm); } .vd-stat.is-lagoon { --c: var(--lagoon); } .vd-stat.is-sun { --c: var(--sun); }
+    .vd-stat__ico { width: 40px; height: 40px; border-radius: 13px; display: flex; align-items: center; justify-content: center; background: rgba(var(--c), .12); color: rgb(var(--c)); }
+    .vd-stat__ico .ico { width: 20px; height: 20px; }
+    .vd-stat b { font-size: 26px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+    .vd-stat span { font-size: 13.5px; font-weight: 600; color: #4a443a; }
+    .vd-stat small { font-size: 12px; color: #8a7f6b; }
+
+    .vd-quick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+    .vd-quick a { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 16px; background: #fbf9f5; border: 1px solid #ece5d6; color: #2f2a22; font-size: 14px; font-weight: 700; }
+    .vd-quick a:hover { border-color: #b9500a; color: #9a4308; background: #fff; }
+    .vd-quick .ico { flex: none; width: 20px; height: 20px; color: #b9500a; }
+
+    .vd-sec { margin-top: 30px; }
+    .vd-sec__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .vd-h2 { margin: 0; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #1d1a16; }
+    .vd-more { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; font-weight: 700; color: #9a4308; }
+    .vd-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .vd-more .ico { width: 14px; height: 14px; }
+    .vd-cols { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; }
+    .vd-panel { border-radius: 22px; background: #fff; border: 1px solid #ece5d6; overflow: hidden; }
+
+    .vd-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-top: 1px solid #f0eadf; color: #1d1a16; }
+    .vd-row:first-child { border-top: 0; }
+    a.vd-row:hover { background: #fbf9f5; }
+    .vd-row__ico { flex: none; width: 44px; height: 44px; border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #fdf4ec; color: #b9500a; }
+    .vd-row__ico img { width: 100%; height: 100%; object-fit: cover; }
+    .vd-row__ico .ico { width: 20px; height: 20px; }
+    .vd-row__txt { flex: 1; min-width: 0; }
+    .vd-row__txt b { display: block; font-size: 14.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vd-row__txt small { display: block; margin-top: 3px; font-size: 12.5px; color: #6b6458; }
+    .vd-pill { --c: var(--lagoon); flex: none; display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: rgba(var(--c), .12); color: rgb(var(--c)); font-size: 12px; font-weight: 800; }
+    .vd-pill.is-palm { --c: var(--palm); } .vd-pill.is-sun { --c: var(--sun); } .vd-pill.is-rose { --c: var(--rose); }
+    .vd-go { flex: none; width: 34px; height: 34px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: #f6f3ec; color: #6b6458; }
+    .vd-go .ico { width: 15px; height: 15px; }
+    .vd-empty { padding: 28px 18px; text-align: center; font-size: 14px; color: #6b6458; }
+    .vd-empty .ico { width: 34px; height: 34px; color: #d8cdb8; }
+    .vd-empty p { margin: 8px 0 14px; }
+
+    .vd-buys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .vd-buy { display: block; color: #1d1a16; }
+    .vd-buy span { display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 16px; background: #f0e8da; border: 1px solid #ece5d6; }
+    .vd-buy img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+    .vd-buy:hover img { transform: scale(1.04); }
+    .vd-buy b { display: block; margin-top: 8px; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vd-buy small { font-size: 12px; color: #6b6458; }
+
+    .vd-arts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .vd-art { display: flex; flex-direction: column; overflow: hidden; border-radius: 20px; background: #fff; border: 1px solid #ece5d6; color: #1d1a16; transition: border-color .15s ease, box-shadow .2s ease; }
+    .vd-art:hover { border-color: #d8cdb8; box-shadow: 0 18px 30px -26px rgba(29,26,22,.5); }
+    .vd-art__img { position: relative; aspect-ratio: 16 / 9; background: #f0e8da; display: flex; align-items: center; justify-content: center; color: #b9500a; }
+    .vd-art__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .vd-art__img .ico { width: 32px; height: 32px; }
+    .vd-art__body { padding: 12px 14px 14px; }
+    .vd-art__body small { font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #b9500a; }
+    .vd-art__body b { display: -webkit-box; margin-top: 4px; font-size: 15px; line-height: 1.35; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .vd-art__body p { margin: 6px 0 0; font-size: 12.5px; color: #8a7f6b; }
+
+    .vd-ev { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-top: 1px solid #f0eadf; color: #1d1a16; }
+    .vd-ev:first-child { border-top: 0; }
+    .vd-ev:hover { background: #fbf9f5; }
+    .vd-date { flex: none; width: 52px; padding: 6px 0; border-radius: 14px; background: #123a25; color: #fff; text-align: center; }
+    .vd-date small { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #f6c38f; }
+    .vd-date b { display: block; font-size: 20px; line-height: 1.1; }
+    .vd-ev__txt { min-width: 0; flex: 1; }
+    .vd-ev__txt b { display: -webkit-box; font-size: 14px; line-height: 1.35; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .vd-ev__txt small { display: block; margin-top: 3px; font-size: 12.5px; color: #6b6458; }
+
+    .vd-rev { padding: 14px 16px; border-top: 1px solid #f0eadf; }
+    .vd-rev:first-child { border-top: 0; }
+    .vd-rev__top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .vd-rev__top b { font-size: 14.5px; }
+    .vd-stars { display: inline-flex; gap: 2px; color: #e0a12e; font-size: 13px; letter-spacing: 1px; }
+    .vd-stars i { font-style: normal; color: #e3d9c6; }
+    .vd-rev p { margin: 6px 0 0; font-size: 13.5px; line-height: 1.5; color: #4a443a; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .vd-rev small { font-size: 12px; color: #8a7f6b; }
+    .vd a:focus-visible, .vd button:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+
+    @media (max-width: 900px) {
+        .vd-hero { grid-template-columns: minmax(0, 1fr); padding: 22px; }
+        .vd-cols { grid-template-columns: minmax(0, 1fr); }
+        .vd-stats, .vd-quick { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+        .vd-hero { padding: 18px 16px 22px; border-radius: 22px; gap: 18px; }
+        .vd-avatar { width: 52px; height: 52px; border-radius: 16px; font-size: 18px; }
+        .vd-name { font-size: 24px; }
+        .vd-lead { font-size: 14px; margin-top: 8px; }
+        .vd-stat { padding: 12px; gap: 8px; border-radius: 18px; }
+        .vd-stat b { font-size: 22px; }
+        .vd-quick a { padding: 10px 12px; font-size: 13px; }
+        .vd-arts { grid-template-columns: minmax(0, 1fr); }
+        .vd-buys { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .vd-h2 { font-size: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .vd-next, .vd-buy img { transition: none; } }
+</style>
+
+<div class="vd">
 @include('partials.visitor-account-nav')
 
-@if(session('newsletter_success'))
-    <div class="mb-5 px-4 py-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-200 text-sm rounded-xl flex items-center gap-2">
-        <i class="fas fa-circle-check"></i> {{ session('newsletter_success') }}
-    </div>
-@endif
-@if(session('newsletter_info'))
-    <div class="mb-5 px-4 py-3 bg-slate-800 border border-slate-600 text-slate-200 text-sm rounded-xl flex items-center gap-2">
-        <i class="fas fa-circle-info text-orange-400"></i> {{ session('newsletter_info') }}
-    </div>
-@endif
-@if(session('newsletter_error'))
-    <div class="mb-5 px-4 py-3 bg-rose-900/30 border border-rose-700/40 text-rose-200 text-sm rounded-xl flex items-center gap-2">
-        <i class="fas fa-circle-exclamation"></i> {{ session('newsletter_error') }}
-    </div>
-@endif
-@if($errors->has('newsletter_email'))
-    <div class="mb-5 px-4 py-3 bg-rose-900/30 border border-rose-700/40 text-rose-200 text-sm rounded-xl">
-        {{ $errors->first('newsletter_email') }}
-    </div>
-@endif
+@if(session('newsletter_success'))<div class="vd-alert is-ok" role="status"><x-icon name="check-circle" />{{ session('newsletter_success') }}</div>@endif
+@if(session('newsletter_info'))<div class="vd-alert is-info" role="status"><x-icon name="info-circle" />{{ session('newsletter_info') }}</div>@endif
+@if(session('newsletter_error'))<div class="vd-alert is-err" role="alert"><x-icon name="danger-circle" />{{ session('newsletter_error') }}</div>@endif
+@if($errors->has('newsletter_email'))<div class="vd-alert is-err" role="alert"><x-icon name="danger-circle" />{{ $errors->first('newsletter_email') }}</div>@endif
 
-{{-- ── Welcome banner ──────────────────────────────────────────────────── --}}
-<div class="bg-gradient-to-r from-orange-900/30 to-green-900 border border-orange-700/20 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-5">
-    <div class="w-14 h-14 rounded-2xl bg-orange-500 flex items-center justify-center text-white text-xl font-bold shrink-0">
-        {{ auth()->user()->initials }}
+{{-- ── Accueil + prochain séjour ── --}}
+<section class="vd-hero" aria-labelledby="vd-name">
+    @include('partials.ivorian-motifs', ['culture' => 'national'])
+    <div>
+        <div class="vd-me">
+            <span class="vd-avatar" aria-hidden="true">{{ $vdUser->initials }}</span>
+            <div>
+                <p class="vd-hello">{{ $vdHello }}</p>
+                <h1 class="vd-name" id="vd-name">{{ $vdUser->first_name }}</h1>
+            </div>
+        </div>
+        <p class="vd-lead">{{ __('Votre espace voyage : réservations, reçus, favoris et messages, réunis au même endroit.') }}</p>
+        <div class="vd-hero-actions">
+            @if($newsletter)
+                <span class="vd-chip is-on"><x-icon name="check-circle" />{{ __('Abonné à la newsletter') }}</span>
+            @else
+                <form method="post" action="{{ route('newsletter.subscribe') }}">
+                    @csrf
+                    <input type="hidden" name="newsletter_email" value="{{ old('newsletter_email', $vdUser->email) }}">
+                    <input type="hidden" name="redirect_to" value="dashboard">
+                    <button type="submit" class="vd-chip"><x-icon name="star-shine" />{{ __('S’abonner à la newsletter') }}</button>
+                </form>
+            @endif
+            <a href="{{ route('visitor.profile.edit') }}" class="vd-chip"><x-icon name="user-rounded" />{{ __('Mon profil') }}</a>
+        </div>
     </div>
-    <div class="flex-1">
-        <h2 class="text-white text-xl font-bold">Bienvenue, {{ auth()->user()->first_name }} !</h2>
-        <p class="text-slate-400 text-sm mt-0.5">Découvrez les richesses culturelles et touristiques de Côte d'Ivoire.</p>
-    </div>
-    {{-- Newsletter status --}}
-    @if($newsletter)
-    <div class="hidden sm:flex items-center gap-2 bg-emerald-900/30 border border-emerald-700/30 rounded-lg px-4 py-2">
-        <i class="fas fa-envelope-circle-check text-emerald-400"></i>
-        <span class="text-emerald-300 text-xs font-medium">Abonné à la newsletter</span>
-    </div>
+
+    @if($vdNext)
+        <a href="{{ route('visitor.reservations.show', $vdNext) }}" class="vd-next">
+            <span class="vd-next__img">
+                @if($vdNextImg)<img src="{{ $vdNextImg }}" alt="" loading="lazy" decoding="async">@else<x-icon name="bed" />@endif
+                <span class="vd-next__count">
+                    @if($vdNext->computed_status === \App\Models\Reservation::COMPUTED_STATUS_ONGOING)
+                        {{ __('En cours') }}
+                    @elseif($vdDays === 0)
+                        {{ __('Aujourd\'hui') }}
+                    @elseif($vdDays === 1)
+                        {{ __('Demain') }}
+                    @else
+                        {{ __('Dans :n jours', ['n' => $vdDays]) }}
+                    @endif
+                </span>
+            </span>
+            <span class="vd-next__body">
+                <small>{{ __('Votre prochain séjour') }}</small>
+                <b>{{ $vdNext->accommodation_name }}</b>
+                <p><x-icon name="calendar" />{{ $vdNext->check_in->translatedFormat('d M') }} → {{ $vdNext->check_out->translatedFormat('d M Y') }}</p>
+            </span>
+        </a>
     @else
-    <form method="post" action="{{ route('newsletter.subscribe') }}" class="hidden sm:flex items-stretch shrink-0">
-        @csrf
-        <input type="hidden" name="newsletter_email" value="{{ old('newsletter_email', auth()->user()->email) }}">
-        <input type="hidden" name="redirect_to" value="dashboard">
-        <button type="submit" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 py-2 transition text-left">
-            <i class="fas fa-envelope text-orange-400"></i>
-            <span class="text-slate-300 text-xs font-medium">S’abonner avec mon e-mail</span>
-        </button>
-    </form>
+        <div class="vd-next is-empty">
+            <b>{{ __('Où partez-vous ensuite ?') }}</b>
+            <p>{{ __('Hôtels, résidences et expériences dans tout le pays, à réserver en quelques clics.') }}</p>
+            <a href="{{ route('accommodations.index') }}" class="vd-btn"><x-icon name="bed" />{{ __('Trouver un hébergement') }}</a>
+        </div>
     @endif
-    @if(! $newsletter)
-    <form method="post" action="{{ route('newsletter.subscribe') }}" class="sm:hidden w-full">
-        @csrf
-        <input type="hidden" name="newsletter_email" value="{{ old('newsletter_email', auth()->user()->email) }}">
-        <input type="hidden" name="redirect_to" value="dashboard">
-        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 py-2.5 transition text-sm text-slate-300 font-medium">
-            <i class="fas fa-envelope text-orange-400"></i>
-            S’abonner à la newsletter
-        </button>
-    </form>
-    @endif
-</div>
+</section>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-    <a href="{{ route('visitor.profile.edit') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
-        <p class="text-slate-400 text-xs uppercase">Profil</p>
-        <p class="text-white font-semibold mt-1">Modifier mes informations</p>
+{{-- ── Chiffres clés ── --}}
+<div class="vd-stats">
+    <a href="{{ route('visitor.reservations.index') }}" class="vd-stat">
+        <span class="vd-stat__ico"><x-icon name="bed" /></span>
+        <b>{{ number_format($reservation_stats['total'] ?? 0) }}</b>
+        <span>{{ __('Réservations') }}</span>
+        <small>{{ trans_choice(':count à venir|:count à venir', $reservation_stats['upcoming'] ?? 0, ['count' => $reservation_stats['upcoming'] ?? 0]) }}</small>
     </a>
-    <a href="{{ route('visitor.purchases.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
-        <p class="text-slate-400 text-xs uppercase flex items-center gap-1.5">
-            <i class="fas fa-image text-orange-400/80 text-[10px]"></i> Mes achats
-        </p>
-        <p class="text-white font-semibold mt-1">{{ number_format($purchases_count ?? 0) }} image{{ ($purchases_count ?? 0) > 1 ? 's' : '' }} achetée{{ ($purchases_count ?? 0) > 1 ? 's' : '' }}</p>
+    <a href="{{ route('visitor.favorites.index') }}" class="vd-stat is-palm">
+        <span class="vd-stat__ico"><x-icon name="heart" /></span>
+        <b>{{ number_format($favorites_count ?? 0) }}</b>
+        <span>{{ __('Favoris') }}</span>
+        <small>{{ __('Vos adresses enregistrées') }}</small>
     </a>
-    <a href="{{ route('visitor.favorites.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
-        <p class="text-slate-400 text-xs uppercase">Wishlist</p>
-        <p class="text-white font-semibold mt-1">{{ number_format($favorites_count ?? 0) }} favoris enregistrés</p>
+    <a href="{{ route('visitor.notifications.index') }}" class="vd-stat is-lagoon">
+        <span class="vd-stat__ico"><x-icon name="alarm" /></span>
+        <b>{{ number_format($unread_notifications ?? 0) }}</b>
+        <span>{{ __('Notifications') }}</span>
+        <small>{{ __('non lues') }}</small>
     </a>
-    <a href="{{ route('visitor.notifications.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
-        <p class="text-slate-400 text-xs uppercase">Notifications</p>
-        <p class="text-white font-semibold mt-1">{{ number_format($unread_notifications ?? 0) }} non lues</p>
+    <a href="{{ route('visitor.purchases.index') }}" class="vd-stat is-sun">
+        <span class="vd-stat__ico"><x-icon name="gallery" /></span>
+        <b>{{ number_format($purchases_count ?? 0) }}</b>
+        <span>{{ __('Achats') }}</span>
+        <small>{{ __('Photos achetées') }}</small>
     </a>
 </div>
 
-{{-- ── Achats récents ───────────────────────────────────────────────────── --}}
-@if(($purchases_count ?? 0) > 0)
-<div class="mb-6">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-white font-semibold flex items-center gap-2">
-            <i class="fas fa-image text-orange-400"></i> Mes achats récents
-        </h2>
-        <a href="{{ route('visitor.purchases.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
+{{-- ── Raccourcis ── --}}
+<nav class="vd-quick" aria-label="{{ __('Raccourcis') }}">
+    <a href="{{ route('accommodations.index') }}"><x-icon name="buildings" />{{ __('Réserver un séjour') }}</a>
+    <a href="{{ route('tourist.cities') }}"><x-icon name="map-point" />{{ __('Explorer les régions') }}</a>
+    <a href="{{ route('visitor.conversations.index') }}"><x-icon name="chat-round-dots" />{{ __('Mes messages') }}</a>
+    <a href="{{ route('visitor.wallet.index') }}"><x-icon name="wallet-money" />{{ __('Mon portefeuille') }}</a>
+</nav>
+
+{{-- ── Réservations + reçus ── --}}
+<div class="vd-sec vd-cols">
+    <section aria-labelledby="vd-res">
+        <div class="vd-sec__head">
+            <h2 class="vd-h2" id="vd-res">{{ __('Mes réservations') }}</h2>
+            @if(($my_reservations ?? collect())->isNotEmpty())<a href="{{ route('visitor.reservations.index') }}" class="vd-more">{{ __('Tout voir') }}<x-icon name="alt-arrow-right" /></a>@endif
+        </div>
+        <div class="vd-panel">
+            @forelse($my_reservations ?? [] as $reservation)
+                @php $rImg = $reservation->accommodation?->cover_image ?? $reservation->accommodation?->thumbnail; @endphp
+                <a href="{{ route('visitor.reservations.show', $reservation) }}" class="vd-row">
+                    <span class="vd-row__ico">@if($rImg)<img src="{{ $rImg }}" alt="" loading="lazy" decoding="async">@else<x-icon name="bed" />@endif</span>
+                    <span class="vd-row__txt">
+                        <b>{{ $reservation->accommodation_name }}</b>
+                        <small>{{ $reservation->check_in->format('d/m/Y') }} → {{ $reservation->check_out->format('d/m/Y') }} · {{ $reservation->reference }}</small>
+                    </span>
+                    <span class="vd-pill is-{{ $vdStatusTone[$reservation->computed_status] ?? 'lagoon' }}">{{ $reservation->labelForComputedStatus() }}</span>
+                </a>
+            @empty
+                <div class="vd-empty">
+                    <x-icon name="suitcase" />
+                    <p>{{ __('Aucune réservation pour le moment.') }}</p>
+                    <a href="{{ route('accommodations.index') }}" class="vd-btn"><x-icon name="bed" />{{ __('Trouver un hébergement') }}</a>
+                </div>
+            @endforelse
+        </div>
+    </section>
+
+    <section aria-labelledby="vd-rec">
+        <div class="vd-sec__head">
+            <h2 class="vd-h2" id="vd-rec">{{ __('Derniers reçus') }}</h2>
+            @if(($latest_receipts ?? collect())->isNotEmpty())<a href="{{ route('visitor.receipts.index') }}" class="vd-more">{{ __('Tout voir') }}<x-icon name="alt-arrow-right" /></a>@endif
+        </div>
+        <div class="vd-panel">
+            @forelse($latest_receipts ?? [] as $receipt)
+                <a href="{{ $receipt->receiptUrl() }}" class="vd-row">
+                    <span class="vd-row__ico"><x-icon name="clipboard-list" /></span>
+                    <span class="vd-row__txt"><b>{{ $receipt->accommodation_name }}</b><small>{{ $receipt->reference }}</small></span>
+                    <span class="vd-go"><x-icon name="alt-arrow-right" /></span>
+                </a>
+            @empty
+                <div class="vd-empty"><x-icon name="clipboard-list" /><p style="margin-bottom:0">{{ __('Aucun reçu pour le moment.') }}</p></div>
+            @endforelse
+        </div>
+    </section>
+</div>
+
+{{-- ── Achats récents ── --}}
+@if(($purchases_count ?? 0) > 0 && ($recent_purchases ?? collect())->isNotEmpty())
+<section class="vd-sec" aria-labelledby="vd-buys">
+    <div class="vd-sec__head">
+        <h2 class="vd-h2" id="vd-buys">{{ __('Mes achats récents') }}</h2>
+        <a href="{{ route('visitor.purchases.index') }}" class="vd-more">{{ __('Tout voir') }}<x-icon name="alt-arrow-right" /></a>
     </div>
-    <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
+    <div class="vd-buys">
         @foreach($recent_purchases as $purchase)
             @php $media = $purchase->media; @endphp
-            <div class="flex items-center gap-4 px-5 py-3.5">
-                <a href="{{ route('gallery.public.show', $media->uuid) }}" class="shrink-0 w-12 h-12 rounded-lg overflow-hidden bg-slate-800 border border-slate-700 hover:border-orange-500/50 transition">
-                    @if($media->url)
-                        <img src="{{ $media->url }}" alt="{{ $media->alt_text ?? $media->title }}" class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center">
-                            <i class="fas fa-image text-slate-600"></i>
-                        </div>
-                    @endif
+            @if($media)
+                <a href="{{ route('gallery.public.show', $media->uuid) }}" class="vd-buy">
+                    <span>@if($media->url)<img src="{{ $media->url }}" alt="{{ $media->alt_text ?? $media->title }}" loading="lazy" decoding="async">@endif</span>
+                    <b>{{ $media->title ?? $media->original_name }}</b>
+                    <small>{{ $purchase->paid_at?->format('d/m/Y') }} · {{ number_format((float) $purchase->amount, 0, ',', ' ') }} {{ __('FCFA') }}</small>
                 </a>
-                <div class="flex-1 min-w-0">
-                    <p class="text-white text-sm font-medium truncate">{{ $media->title ?? $media->original_name }}</p>
-                    <p class="text-slate-500 text-xs mt-0.5">{{ $purchase->paid_at->format('d/m/Y') }} · <span class="text-orange-400/80">{{ number_format((float) $purchase->amount, 0, ',', ' ') }} FCFA</span></p>
-                </div>
-                <a href="{{ route('gallery.public.show', $media->uuid) }}"
-                   class="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition">
-                    Voir
-                </a>
-            </div>
+            @endif
         @endforeach
     </div>
-</div>
+</section>
 @endif
 
-{{-- ── Statistiques réservations ───────────────────────────────────────── --}}
-@if(($reservation_stats['total'] ?? 0) > 0)
-<div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
-    @php
-        $dashStatCards = [
-            ['label' => 'Total', 'value' => $reservation_stats['total'], 'icon' => 'fa-layer-group', 'bg' => 'bg-slate-700', 'color' => 'text-slate-300'],
-            ['label' => 'À venir', 'value' => $reservation_stats['upcoming'], 'icon' => 'fa-clock', 'bg' => 'bg-blue-500/20', 'color' => 'text-blue-300'],
-            ['label' => 'En cours', 'value' => $reservation_stats['ongoing'], 'icon' => 'fa-hourglass-half', 'bg' => 'bg-emerald-500/20', 'color' => 'text-emerald-300'],
-            ['label' => 'Terminées', 'value' => $reservation_stats['completed'], 'icon' => 'fa-circle-check', 'bg' => 'bg-orange-500/20', 'color' => 'text-orange-300'],
-            ['label' => 'Annulées', 'value' => $reservation_stats['cancelled'], 'icon' => 'fa-circle-xmark', 'bg' => 'bg-rose-500/20', 'color' => 'text-rose-300'],
-        ];
-    @endphp
-    @foreach($dashStatCards as $card)
-        <a href="{{ route('visitor.reservations.index') }}" class="bg-green-900 border border-slate-800 rounded-xl p-4 hover:border-orange-600/50 transition">
-            <div class="w-8 h-8 rounded-lg {{ $card['bg'] }} flex items-center justify-center mb-2">
-                <i class="fas {{ $card['icon'] }} {{ $card['color'] }} text-sm"></i>
-            </div>
-            <p class="text-white text-xl font-bold">{{ $card['value'] }}</p>
-            <p class="text-slate-500 text-xs mt-0.5">{{ $card['label'] }}</p>
-        </a>
-    @endforeach
-</div>
-@endif
-
-{{-- ── Mes réservations / Mes reçus ────────────────────────────────────── --}}
-@if(($my_reservations ?? collect())->isNotEmpty())
-<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-    <div class="xl:col-span-2">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-bed text-orange-400"></i> Mes réservations
-            </h2>
-            <a href="{{ route('visitor.reservations.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
+{{-- ── Inspirations : articles + événements ── --}}
+<div class="vd-sec vd-cols">
+    <section aria-labelledby="vd-arts">
+        <div class="vd-sec__head">
+            <h2 class="vd-h2" id="vd-arts">{{ __('À lire pour votre prochain voyage') }}</h2>
+            <a href="{{ route('articles.index') }}" class="vd-more">{{ __('Magazine') }}<x-icon name="alt-arrow-right" /></a>
         </div>
-        <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-800">
-            @foreach($my_reservations as $reservation)
-                <div class="flex items-center gap-4 px-5 py-3.5">
-                    <div class="shrink-0 w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
-                        <i class="fas fa-hotel text-orange-400/80 text-sm"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-white text-sm font-medium truncate">{{ $reservation->accommodation_name }}</p>
-                        <p class="text-slate-500 text-xs mt-0.5">
-                            {{ $reservation->check_in->format('d/m/Y') }} → {{ $reservation->check_out->format('d/m/Y') }}
-                            · <span class="text-orange-400/80">{{ $reservation->reference }}</span>
-                        </p>
-                    </div>
-                    <a href="{{ route('visitor.reservations.show', $reservation) }}"
-                       class="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition">
-                        Voir les détails
+        @if($featured_articles->isEmpty())
+            <div class="vd-panel vd-empty"><x-icon name="book" /><p style="margin-bottom:0">{{ __('Aucun article à la une pour le moment.') }}</p></div>
+        @else
+            <div class="vd-arts">
+                @foreach($featured_articles as $article)
+                    @php $aTitle = $article->localized('title') ?: $article->title_fr; @endphp
+                    <a href="{{ route('articles.show', $article->slug_fr) }}" class="vd-art">
+                        <span class="vd-art__img">
+                            <x-icon name="book" />
+                            @if($article->cover_url)<img src="{{ $article->cover_url }}" alt="{{ $article->cover_alt ?: '' }}" loading="lazy" decoding="async" onerror="this.remove()">@endif
+                        </span>
+                        <span class="vd-art__body">
+                            <small>{{ $article->category?->localized('name') ?: __('Magazine') }}</small>
+                            <b>{{ $aTitle }}</b>
+                            <p>{{ $article->published_at?->translatedFormat('d M Y') }}@if($article->reading_time) · {{ __(':n min', ['n' => $article->reading_time]) }}@endif</p>
+                        </span>
                     </a>
-                </div>
-            @endforeach
-        </div>
-    </div>
+                @endforeach
+            </div>
+        @endif
+    </section>
 
-    <div>
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-receipt text-orange-400"></i> Derniers reçus
-            </h2>
-            @if(($latest_receipts ?? collect())->isNotEmpty())
-            <a href="{{ route('visitor.receipts.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
-            @endif
+    <section aria-labelledby="vd-evs">
+        <div class="vd-sec__head">
+            <h2 class="vd-h2" id="vd-evs">{{ __('Événements à venir') }}</h2>
+            <a href="{{ route('events.index') }}" class="vd-more">{{ __('Agenda') }}<x-icon name="alt-arrow-right" /></a>
         </div>
-        <div class="space-y-3">
-            @forelse($latest_receipts ?? [] as $receipt)
-                <a href="{{ $receipt->receiptUrl() }}" class="group flex items-center gap-3 bg-green-900 border border-slate-800 hover:border-orange-700/40 rounded-xl p-3.5 transition">
-                    <div class="shrink-0 w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
-                        <i class="fas fa-receipt text-orange-400/80 text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-white text-sm font-medium truncate group-hover:text-orange-300 transition">{{ $receipt->accommodation_name }}</p>
-                        <p class="text-slate-500 text-xs mt-0.5">{{ $receipt->reference }}</p>
-                    </div>
+        <div class="vd-panel">
+            @forelse($upcoming_events as $event)
+                <a href="{{ route('events.show', $event->slug) }}" class="vd-ev">
+                    <span class="vd-date"><small>{{ $event->starts_at->translatedFormat('M') }}</small><b>{{ $event->starts_at->format('d') }}</b></span>
+                    <span class="vd-ev__txt">
+                        <b>{{ $event->localized('title') ?: $event->title_fr }}</b>
+                        <small>{{ $event->city }}@if($event->category?->localized('name')) · {{ $event->category->localized('name') }}@endif</small>
+                    </span>
                 </a>
             @empty
-                <div class="bg-green-900 border border-slate-800 rounded-xl p-6 text-center text-slate-500 text-sm">
-                    <i class="fas fa-receipt text-slate-700 text-2xl mb-2 block"></i>
-                    Aucun reçu pour le moment.
-                </div>
+                <div class="vd-empty"><x-icon name="calendar" /><p style="margin-bottom:0">{{ __('Aucun événement à venir.') }}</p></div>
             @endforelse
         </div>
-    </div>
-</div>
-@endif
-
-{{-- ── Two columns ─────────────────────────────────────────────────────── --}}
-<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-
-    {{-- Featured articles --}}
-    <div class="xl:col-span-2">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-newspaper text-orange-400"></i> Articles à la une
-            </h2>
-            <a href="{{ route('articles.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Tous les articles →</a>
-        </div>
-
-        @if($featured_articles->isEmpty())
-        <div class="bg-green-900 border border-slate-800 rounded-xl p-10 text-center text-slate-500 text-sm">
-            <i class="fas fa-newspaper text-slate-700 text-3xl mb-2 block"></i>
-            Aucun article à la une pour le moment.
-        </div>
-        @else
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            @foreach($featured_articles as $article)
-            <a href="{{ route('articles.show', $article->slug_fr) }}" class="group bg-green-900 border border-slate-800 rounded-xl overflow-hidden hover:border-orange-700/50 transition">
-                {{-- Cover placeholder --}}
-                <div class="h-32 bg-slate-800 flex items-center justify-center relative overflow-hidden">
-                    <i class="fas fa-image text-slate-600 text-3xl"></i>
-                    @if($article->is_featured)
-                    <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                        <i class="fas fa-star mr-1 text-[10px]"></i>À la une
-                    </span>
-                    @endif
-                </div>
-                <div class="p-4">
-                    <span class="text-xs text-orange-400 font-medium">{{ $article->category->name ?? 'Non classé' }}</span>
-                    <h3 class="text-white text-sm font-semibold mt-1 line-clamp-2 group-hover:text-orange-400 transition">
-                        {{ $article->title }}
-                    </h3>
-                    <div class="flex items-center gap-3 mt-2 text-xs text-slate-500">
-                        <span>{{ $article->author->first_name ?? 'Rédaction' }}</span>
-                        <span>·</span>
-                        <span>{{ $article->published_at?->diffForHumans() }}</span>
-                        <span>·</span>
-                        <span><i class="fas fa-eye mr-0.5"></i>{{ number_format($article->views_count) }}</span>
-                    </div>
-                </div>
-            </a>
-            @endforeach
-        </div>
-        @endif
-    </div>
-
-    {{-- Sidebar: upcoming events --}}
-    <div>
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-white font-semibold flex items-center gap-2">
-                <i class="fas fa-calendar-days text-green-400"></i> Événements à venir
-            </h2>
-            <a href="{{ route('events.index') }}" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir tout →</a>
-        </div>
-
-        <div class="space-y-3">
-            @forelse($upcoming_events as $event)
-            <a href="{{ route('events.show', $event->slug) }}" class="group flex items-start gap-3 bg-green-900 border border-slate-800 hover:border-green-700/40 rounded-xl p-4 transition">
-                {{-- Date badge --}}
-                <div class="shrink-0 w-12 text-center bg-green-900/30 border border-green-800/40 rounded-lg py-1.5">
-                    <p class="text-green-300 text-xs font-bold uppercase">{{ $event->starts_at->format('M') }}</p>
-                    <p class="text-white text-xl font-bold leading-none">{{ $event->starts_at->format('d') }}</p>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-white text-sm font-medium group-hover:text-green-300 transition line-clamp-2">
-                        {{ $event->title }}
-                    </p>
-                    <p class="text-slate-500 text-xs mt-1">
-                        <i class="fas fa-location-dot mr-1"></i>{{ $event->city }}
-                        @if($event->category)
-                        · <span class="text-green-400">{{ $event->category->name }}</span>
-                        @endif
-                    </p>
-                </div>
-            </a>
-            @empty
-            <div class="bg-green-900 border border-slate-800 rounded-xl p-6 text-center text-slate-500 text-sm">
-                <i class="fas fa-calendar text-slate-700 text-2xl mb-2 block"></i>
-                Aucun événement à venir.
-            </div>
-            @endforelse
-        </div>
-    </div>
+    </section>
 </div>
 
-{{-- ── My reviews ──────────────────────────────────────────────────────── --}}
-<div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
-    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
-        <h2 class="text-white font-semibold text-sm flex items-center gap-2">
-            <i class="fas fa-star text-orange-400"></i> Mes derniers avis
-        </h2>
-        <a href="#" class="text-orange-400 hover:text-orange-300 text-xs transition">Voir mes avis →</a>
-    </div>
-    <div class="divide-y divide-slate-800">
+{{-- ── Mes avis ── --}}
+<section class="vd-sec" aria-labelledby="vd-revs">
+    <div class="vd-sec__head"><h2 class="vd-h2" id="vd-revs">{{ __('Mes derniers avis') }}</h2></div>
+    <div class="vd-panel">
         @forelse($my_reviews as $review)
-        <div class="px-5 py-4 flex items-start justify-between gap-4">
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1.5">
-                    <span class="text-white text-sm font-medium">{{ $review->provider->business_name ?? '—' }}</span>
-                    @php
-                    $rstatus = ['approved'=>['text-emerald-400','bg-emerald-900/30','Approuvé'],'pending'=>['text-orange-400','bg-orange-900/30','En attente'],'rejected'=>['text-red-400','bg-red-900/30','Refusé']];
-                    [$rc, $rbg, $rl] = $rstatus[$review->status] ?? ['text-slate-400','bg-slate-800',$review->status];
-                    @endphp
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs {{ $rc }} {{ $rbg }}">{{ $rl }}</span>
+            @php
+                $rstatus = ['approved' => ['palm', __('Publié')], 'pending' => ['sun', __('En attente')], 'rejected' => ['rose', __('Refusé')]];
+                [$rTone, $rLabel] = $rstatus[$review->status] ?? ['lagoon', $review->status];
+            @endphp
+            <div class="vd-rev">
+                <div class="vd-rev__top">
+                    <b>{{ $review->provider->name ?? __('Établissement') }}</b>
+                    <span class="vd-stars" aria-label="{{ __(':n sur 5', ['n' => $review->rating]) }}">{{ str_repeat('★', (int) $review->rating) }}<i>{{ str_repeat('★', 5 - (int) $review->rating) }}</i></span>
+                    <span class="vd-pill is-{{ $rTone }}">{{ $rLabel }}</span>
+                    <small>{{ $review->created_at->diffForHumans() }}</small>
                 </div>
-                <div class="flex items-center gap-1 mb-1.5">
-                    @for($i = 1; $i <= 5; $i++)
-                    <i class="fas fa-star text-xs {{ $i <= $review->rating ? 'text-orange-400' : 'text-slate-700' }}"></i>
-                    @endfor
-                    <span class="text-slate-500 text-xs ml-2">{{ $review->created_at->diffForHumans() }}</span>
-                </div>
-                @if($review->comment)
-                <p class="text-slate-400 text-xs line-clamp-2">{{ $review->comment }}</p>
-                @endif
+                @if($review->comment)<p>{{ $review->comment }}</p>@endif
             </div>
-            <a href="#" class="shrink-0 text-slate-600 hover:text-orange-400 text-xs transition">
-                <i class="fas fa-pen"></i>
-            </a>
-        </div>
         @empty
-        <div class="px-5 py-10 text-center text-slate-500 text-sm">
-            <i class="fas fa-star text-slate-700 text-3xl mb-3 block"></i>
-            <p class="mb-3">Vous n'avez pas encore rédigé d'avis.</p>
-            <a href="{{ route('providers.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded-lg transition">
-                <i class="fas fa-compass"></i> Explorer les prestataires
-            </a>
-        </div>
+            <div class="vd-empty">
+                <x-icon name="star" />
+                <p>{{ __('Vous n\'avez pas encore rédigé d\'avis.') }}</p>
+                <a href="{{ route('providers.index') }}" class="vd-btn"><x-icon name="compass" />{{ __('Explorer les prestataires') }}</a>
+            </div>
         @endforelse
     </div>
+</section>
 </div>
-
 @endsection

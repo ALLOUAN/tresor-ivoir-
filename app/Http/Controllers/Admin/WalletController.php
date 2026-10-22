@@ -185,6 +185,11 @@ class WalletController extends Controller
             'payment_reference' => ['required', 'string', 'max:255'],
         ]);
 
+        // Virement automatique déjà parti : le marquer payé à la main risquerait un double versement.
+        if ($payoutRequest->transfer_status === 'sent') {
+            return back()->with('error', 'Ce retrait a déjà été envoyé par virement automatique ('.$payoutRequest->transfer_reference.') : il sera marqué payé dès la confirmation de l\'opérateur.');
+        }
+
         try {
             $wallet->markPayoutPaid($payoutRequest, Auth::user(), $validated['payment_reference']);
         } catch (\RuntimeException $e) {

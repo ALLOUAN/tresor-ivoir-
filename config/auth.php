@@ -92,6 +92,9 @@ return [
     |
     */
 
+    // Refuser les mots de passe présents dans des fuites connues (Have I Been Pwned, k-anonymat).
+    'password_breach_check' => env('PASSWORD_BREACH_CHECK', true),
+
     'passwords' => [
         'users' => [
             'provider' => 'users',
@@ -113,5 +116,12 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+
+
+    /*
+    | Double authentification des administrateurs (code à 6 chiffres envoyé par e-mail).
+    | À activer une fois l'envoi d'e-mails vérifié en production : ADMIN_2FA_ENABLED=true.
+    */
+    'admin_two_factor' => (bool) env('ADMIN_2FA_ENABLED', false),
 
 ];

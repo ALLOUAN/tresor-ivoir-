@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Accommodation extends Model
 {
-    use SoftDeletes;
+    use \App\Models\Concerns\HasLocalizedFields, SoftDeletes;
 
     protected $fillable = [
         'city_id',
         'provider_id',
         'name', 'slug', 'type', 'stars',
-        'short_description', 'description', 'cancellation_policy',
+        'short_description', 'description', 'cancellation_policy', 'free_cancellation_days',
         'adresse', 'quartier', 'latitude', 'longitude',
         'phone', 'email', 'website',
         'thumbnail', 'cover_image',
@@ -204,7 +204,7 @@ class Accommodation extends Model
     /** Libellé lisible du type. */
     public function getTypeLabelAttribute(): string
     {
-        return match ($this->type) {
+        return __(match ($this->type) {
             'hotel'      => 'Hôtel',
             'resort'     => 'Resort',
             'guesthouse' => 'Maison d\'hôtes',
@@ -214,7 +214,7 @@ class Accommodation extends Model
             'eco_lodge'  => 'Éco-lodge',
             'residence'  => 'Résidence',
             default      => ucfirst($this->type),
-        };
+        });
     }
 
     /** Retourne les étoiles sous forme de tableau [filled, empty]. */

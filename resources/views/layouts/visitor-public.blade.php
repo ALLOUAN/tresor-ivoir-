@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,22 +9,9 @@
     @endif
     <title>@yield('title', 'Mon espace') — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: { 300:'#fdbe7b', 400:'#fa9a3c', 500:'#f2790f', 600:'#d4630a' },
-                        dark: { 600:'#e9e5d9', 700:'#e9e5d9', 800:'#e9e5d9', 900:'#e9e5d9' },
-                    }
-                }
-            }
-        }
-    </script>
-    @stack('styles')
+        @stack('styles')
     <style>
         html:not(.dark) body                    { background-color:#e9e5d9!important; color:#1c1915!important; }
         html:not(.dark) .text-white             { color:#1c1915!important; }
@@ -55,25 +42,28 @@
         /* Hover states on cards */
         html:not(.dark) .hover\:border-orange-600\/50:hover { border-color:rgba(224, 110, 14,.35)!important; }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-a2d53ae5.css') }}?v={{ @filemtime(public_path('css/tw-a2d53ae5.css')) }}">
+    @include('partials.visitor-skin')
 </head>
-<body class="bg-[#ffffff] text-white min-h-screen flex flex-col font-sans">
-    @include('partials.page-background')
+<body class="min-h-screen flex flex-col font-sans" style="background:#f6f3ed">
 
     @include('partials.public-top-nav')
 
-    {{-- Fil d'Ariane / titre de page --}}
+    {{-- En-tête de page : fil d'Ariane + titre (motifs discrets) --}}
     @hasSection('page-title')
-    <div class="page-title-bar border-b border-white/6 bg-white/2 pt-24 sm:pt-28 pb-6">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6">
-            <h1 class="text-white text-xl font-bold font-plus">@yield('page-title')</h1>
+    <header class="va-head">
+        @include('partials.ivorian-motifs', ['culture' => 'national', 'band' => false])
+        <div class="va-head__in">
+            <p class="va-crumb"><a href="{{ route('visitor.dashboard') }}">{{ __('Mon espace') }}</a><span aria-hidden="true">›</span><span>@yield('page-title')</span></p>
+            <h1 class="va-title">@yield('page-title')</h1>
         </div>
-    </div>
+    </header>
     @else
-    <div class="pt-20 sm:pt-24"></div>
+    <div class="va-top"></div>
     @endif
 
     {{-- Flash messages --}}
-    <div class="max-w-5xl mx-auto w-full px-4 sm:px-6 mt-4">
+    <div class="va-flash max-w-5xl mx-auto w-full px-4 sm:px-6 mt-4">
         @if(session('success'))
             <div class="mb-4 px-4 py-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-200 text-sm rounded-xl flex items-center gap-2">
                 <i class="fas fa-circle-check"></i> {{ session('success') }}
@@ -87,7 +77,7 @@
     </div>
 
     {{-- Contenu principal --}}
-    <main class="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 pb-14">
+    <main class="va flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 pb-14">
         @yield('content')
     </main>
 

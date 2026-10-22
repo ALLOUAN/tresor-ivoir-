@@ -1,632 +1,607 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $site->name }} — {{ $siteBrand['site_name'] ?? 'Trésors d\'Ivoire' }}</title>
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; } .font-serif { font-family: 'Playfair Display', serif; } html { scroll-behavior: smooth; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+    @include('partials.offer-page-theme')
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background:#e9e5d9; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        /* Fiche site touristique, charte du site : crème, vert forêt, orange, Playfair. Photo entière sans texte
+           posé dessus, bande d'infos clés, onglets qui suivent la lecture, module « Visiter ». Aplats, ombre au survol. */
+        .ts { max-width: 1180px; margin: 0 auto; padding: 22px 20px 64px; }
+        .ts-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: #6b6458; }
+        .ts-crumb a { color: #9a4308; font-weight: 600; text-decoration: none; }
+        .ts-crumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
+        .ts-crumb li:first-child a { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #e6dccb; font-weight: 700; }
+        .ts-crumb li:first-child a:hover { border-color: #b9500a; text-decoration: none; }
+        .ts-crumb .sep { color: #c2b89e; }
+        .ts-crumb [aria-current] { font-weight: 700; color: #1d1a16; max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Hero */
-        .hero-img { transition: transform 8s ease; }
-        .hero-wrap:hover .hero-img { transform: scale(1.04); }
+        .ts-hero { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 34px; align-items: center; margin: 20px 0 24px; }
+        .ts-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+        .ts-pill { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 13px; border-radius: 999px; background: #fdf4ec; color: #9a4308; font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+        .ts-pill i, .ts-pill .ico { font-size: 14px; }
+        .ts-pill.is-green { background: #e7f3ec; color: #1b6b3a; }
+        .ts-title { margin: 14px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(34px, 3vw + 18px, 60px); font-weight: 700; line-height: 1.03; letter-spacing: -.015em; color: #1d1a16; }
+        .ts-lead { margin: 14px 0 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 19px; line-height: 1.5; color: #4a443a; }
+        .ts-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 16px 0 0; padding: 0; list-style: none; font-size: 14.5px; color: #3a352c; }
+        .ts-meta li { display: inline-flex; align-items: center; gap: 7px; }
+        .ts-meta .ico { color: #b9500a; font-size: 17px; }
+        .ts-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+        .ts-btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 50px; padding: 0 20px; border-radius: 999px; font-size: 14.5px; font-weight: 700; text-decoration: none; white-space: nowrap; border: 0; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+        .ts-btn .ico { font-size: 18px; }
+        .ts-btn.is-main { background: #b9500a; color: #fff; }
+        .ts-btn.is-main:hover { background: #9a4308; color: #fff; }
+        .ts-btn.is-line { background: #fff; color: #9a4308; border: 1.5px solid #b9500a; }
+        .ts-btn.is-line:hover { background: #fdf4ec; }
+        .ts-btn:focus-visible, .ts-thumbs button:focus-visible, .ts-photos button:focus-visible, .ts-rel:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
 
-        /* Galerie scroll */
-        .gallery-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
-        .gallery-scroll::-webkit-scrollbar { display: none; }
-        .gallery-item { scroll-snap-align: start; flex-shrink: 0; }
+        .ts-cover { position: relative; aspect-ratio: 4 / 3; border-radius: 28px; overflow: hidden; background: #e9e1d2; border: 1px solid #e6dccb; }
+        .ts-cover > img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+        .ts-cover__empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 64px; }
+        .ts-thumbs { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; gap: 8px; }
+        .ts-thumbs button { width: 64px; height: 48px; padding: 0; border-radius: 12px; overflow: hidden; border: 2px solid #fff; background: #fff; opacity: .75; cursor: pointer; transition: opacity .15s ease, border-color .15s ease; }
+        .ts-thumbs button.is-on, .ts-thumbs button:hover { opacity: 1; border-color: #b9500a; }
+        .ts-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+        .ts-thumbs .ts-more { display: flex; align-items: center; justify-content: center; opacity: 1; font-size: 13px; font-weight: 800; color: #9a4308; }
 
-        /* Onglets sticky */
-        .tabs-bar { position: sticky; top: 0; z-index: 30; background: rgba(233, 229, 217, .92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.06); }
-        .tab-btn { position: relative; padding: 14px 20px; font-size: 13px; font-weight: 500; color: #64748b; cursor: pointer; transition: color .2s; white-space: nowrap; }
-        .tab-btn.active { color: #f2790f; }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: #f2790f; border-radius: 2px 2px 0 0; }
-        .tab-btn:hover:not(.active) { color: #1c1915; }
+        .ts-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 40px; align-items: start; margin-top: 28px; }
+        .ts-main { display: flex; flex-direction: column; gap: 50px; min-width: 0; }
+        .ts-label { margin: 0 0 6px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #b9500a; }
+        .ts-h2 { margin: 0 0 16px; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.2vw + 18px, 32px); font-weight: 700; color: #1d1a16; }
+        .ts-text { margin: 0; font-size: 16px; line-height: 1.8; color: #3a352c; white-space: pre-line; }
+        .ts-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
+        .ts-fact { padding: 16px; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; }
+        .ts-fact .ico { font-size: 20px; color: #b9500a; }
+        .ts-fact b { display: block; margin-top: 8px; font-size: 16px; color: #1d1a16; }
+        .ts-fact small { display: block; font-size: 12px; color: #8a7f6b; }
 
-        /* Sections */
-        .tab-section { display: none; }
-        .tab-section.active { display: block; }
+        .ts-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 170px; gap: 10px; }
+        .ts-photos button { position: relative; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #e9e1d2; cursor: zoom-in; }
+        .ts-photos button:first-child { grid-column: span 2; grid-row: span 2; }
+        .ts-photos img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+        .ts-photos button:hover img { transform: scale(1.04); }
+        .ts-video { aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden; background: #000; }
+        .ts-video iframe { width: 100%; height: 100%; border: 0; }
+        .ts-cap { margin: 6px 0 0; font-size: 12.5px; color: #6b6458; }
 
-        /* Panneau sticky */
-        .sticky-panel { position: sticky; top: 64px; }
+        .ts-geo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+        .ts-geo div { padding: 14px 16px; border-radius: 16px; background: #fff; border: 1px solid #ece5d6; }
+        .ts-geo small { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #8a7f6b; }
+        .ts-geo b { display: block; margin-top: 3px; font-size: 14.5px; font-weight: 600; color: #1d1a16; overflow-wrap: anywhere; }
+        .ts-way { margin-top: 14px; padding: 18px 20px; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; display: flex; flex-direction: column; gap: 14px; }
+        .ts-way div { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; }
+        .ts-way .ico { width: 40px; height: 40px; border-radius: 12px; background: #fdf4ec; color: #b9500a; justify-content: center; font-size: 19px; }
+        .ts-way b { display: block; font-size: 14px; color: #1d1a16; }
+        .ts-way p { margin: 3px 0 0; font-size: 14px; line-height: 1.6; color: #4a443a; white-space: pre-line; }
+        .ts-embed { aspect-ratio: 16 / 8; border-radius: 20px; overflow: hidden; border: 1px solid #ece5d6; }
+        .ts-embed iframe { width: 100%; height: 100%; border: 0; }
 
-        /* Horaire badge */
-        .schedule-open { background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.3); color: #4ade80; }
-        .schedule-closed { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.25); color: #f87171; }
+        .ts-hours { border-radius: 20px; background: #fff; border: 1px solid #ece5d6; overflow: hidden; }
+        .ts-hours li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; font-size: 14px; color: #3a352c; border-top: 1px solid #f0eadf; }
+        .ts-hours li:first-child { border-top: 0; }
+        .ts-hours li.is-today { background: #fdf4ec; font-weight: 700; color: #1d1a16; }
+        .ts-hours li.is-today span:first-child::after { content: attr(data-today); margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: #b9500a; color: #fff; font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+        .ts-open { padding: 4px 10px; border-radius: 999px; background: #e7f3ec; color: #1b6b3a; font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .ts-closed { padding: 4px 10px; border-radius: 999px; background: #fdecea; color: #b42318; font-size: 12.5px; font-weight: 700; }
+        .ts-infos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+        .ts-info { display: flex; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #fff; border: 1px solid #ece5d6; }
+        .ts-info > i { flex: none; width: 36px; height: 36px; border-radius: 11px; background: #fdf4ec; color: #b9500a; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .ts-info small { display: block; font-size: 12px; color: #8a7f6b; }
+        .ts-info b { display: block; margin-top: 2px; font-size: 14px; font-weight: 600; color: #1d1a16; }
 
-        /* Light mode */
-        html:not(.dark) body { background:#e9e5d9; color: #1c1915; }
-        html:not(.dark) .tabs-bar { background: rgba(245,240,235,.95); border-color: rgba(0,0,0,.08); }
-        html:not(.dark) .info-block { background:#f0ece1; border-color: rgba(0,0,0,.12); }
-        html:not(.dark) .sticky-panel-inner { background:#f0ece1; border-color: rgba(0,0,0,.12); box-shadow: 0 8px 20px rgba(0,0,0,.05); }
+        .ts-related { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+        .ts-rel { display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; }
+        .ts-rel:hover { border-color: #d8cdb8; box-shadow: 0 16px 30px -24px rgba(29,26,22,.5); }
+        .ts-rel__img { position: relative; aspect-ratio: 4 / 3; background: #f3eee4; color: #b9500a; display: flex; align-items: center; justify-content: center; font-size: 28px; overflow: hidden; }
+        .ts-rel__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .ts-rel__img em { position: absolute; top: 8px; right: 8px; padding: 3px 9px; border-radius: 999px; background: #fff; color: #9a4308; font-style: normal; font-size: 11px; font-weight: 800; }
+        .ts-rel__body { padding: 12px 14px 14px; }
+        .ts-rel__body b { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.25; color: #1d1a16; }
+        .ts-rel__body span { display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; font-size: 12.5px; color: #6b6458; }
+        .ts-rel__body span .ico { color: #b9500a; font-size: 13px; }
+        .ts-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+        .ts-more-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 18px; font-size: 14px; font-weight: 700; color: #9a4308; text-decoration: none; }
+        .ts-more-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+        /* Module Visiter */
+        .ts-card { position: sticky; top: 140px; border-radius: 24px; background: #fff; border: 1px solid #e6dccb; overflow: hidden; scroll-margin-top: 140px; }
+        .ts-card__head { padding: 20px 22px 16px; border-bottom: 1px solid #f0eadf; }
+        .ts-card__head small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8a7f6b; }
+        .ts-card__price { margin: 4px 0 0; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #1d1a16; }
+        .ts-today { display: inline-flex; align-items: center; gap: 7px; margin-top: 10px; padding: 5px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 700; }
+        .ts-today.is-open { background: #e7f3ec; color: #1b6b3a; }
+        .ts-today.is-closed { background: #fdecea; color: #b42318; }
+        .ts-today .dot { width: 8px; height: 8px; border-radius: 999px; background: currentColor; }
+        .ts-card__body { padding: 18px 22px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .ts-card__body .ts-btn { width: 100%; }
+        .ts-card__list { margin: 6px 0 0; padding: 14px 0 0; list-style: none; border-top: 1px solid #f0eadf; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: #3a352c; }
+        .ts-card__list li { display: flex; align-items: flex-start; gap: 10px; line-height: 1.45; min-width: 0; }
+        .ts-card__list .ico { flex: none; color: #b9500a; font-size: 18px; margin-top: 1px; }
+        .ts-card__list a { color: #1d1a16; text-decoration: none; overflow-wrap: anywhere; }
+        .ts-card__list a:hover { color: #9a4308; text-decoration: underline; }
+        .ts-card__list small { display: block; font-size: 12px; color: #8a7f6b; }
+
+        /* Infos pratiques : statut en direct, semaine en barres, « Bon à savoir », actions */
+        .pv-top { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 14px; }
+        .pv-now { display: flex; flex-direction: column; padding: 22px; border-radius: 24px; background: #1b6b3a; color: #fff; }
+        .pv-status { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border-radius: 999px; background: #fff; font-size: 12.5px; font-weight: 800; }
+        .pv-status .dot { width: 9px; height: 9px; border-radius: 999px; background: currentColor; }
+        .pv-status.is-open { color: #1b6b3a; }
+        .pv-status.is-open .dot { animation: pv-pulse 1.8s ease-out infinite; }
+        .pv-status.is-soon { color: #9a4308; }
+        .pv-status.is-closed { color: #b42318; }
+        @keyframes pv-pulse { 0% { box-shadow: 0 0 0 0 rgba(27,107,58,.55); } 100% { box-shadow: 0 0 0 8px rgba(27,107,58,0); } }
+        .pv-big { margin: 16px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(30px, 1.6vw + 20px, 40px); font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+        .pv-sub { margin: 6px 0 0; font-size: 13.5px; color: #cfe6d7; }
+        .pv-day { margin-top: auto; padding-top: 22px; }
+        .pv-day__track { position: relative; display: block; height: 12px; border-radius: 999px; background: rgba(255,255,255,.16); }
+        .pv-day__win { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: #f6c38f; }
+        .pv-day__now { position: absolute; top: -5px; width: 4px; height: 22px; margin-left: -2px; border-radius: 4px; background: #fff; box-shadow: 0 0 0 3px #1b6b3a; }
+        .pv-day__ticks { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #cfe6d7; }
+        .pv-week { align-self: start; margin: 0; padding: 8px 0; list-style: none; border-radius: 24px; background: #fff; border: 1px solid #ece5d6; }
+        .pv-week li { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 12px 18px; }
+        .pv-week li + li { border-top: 1px solid #f4efe6; }
+        .pv-week li.is-today { background: #fdf4ec; }
+        .pv-week__day { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 14px; font-weight: 600; color: #1d1a16; }
+        .pv-week__day em { padding: 2px 8px; border-radius: 999px; background: #b9500a; color: #fff; font-style: normal; font-size: 10.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+        .pv-week__bar { position: relative; display: block; height: 8px; border-radius: 999px; background: #f1ece2; }
+        .pv-week__bar span { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: #1b6b3a; }
+        .pv-week li.is-today .pv-week__bar span { background: #b9500a; }
+        .pv-week__bar.is-closed { background: #f6dcd8; }
+        .pv-week__h { font-size: 13.5px; font-weight: 700; color: #1d1a16; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .pv-week__h.is-closed { color: #b42318; }
+        .pv-h3 { margin: 26px 0 12px; font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #6b6458; }
+        .pv-tips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .pv-tip { display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 20px; background: #fff; border: 1px solid #ece5d6; }
+        .pv-tip__ic { width: 42px; height: 42px; border-radius: 14px; background: #fdf4ec; color: #b9500a; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+        .pv-tip small { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #8a7f6b; }
+        .pv-tip b { display: block; margin-top: 4px; font-size: 15px; line-height: 1.4; font-weight: 600; color: #1d1a16; }
+        .pv-tip.is-warn { background: #fff8eb; border-color: #f3dcae; }
+        .pv-tip.is-warn .pv-tip__ic { background: #fdebc8; color: #9a5b00; }
+        .pv-tip.is-money .pv-tip__ic { background: #e7f3ec; color: #1b6b3a; }
+        .pv-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+        .pv-actions .ts-btn { height: 46px; }
+
+        #lightbox { background: rgba(14,12,9,.94) !important; }
+
+        @media (max-width: 1023px) {
+            .ts-hero { grid-template-columns: 1fr; gap: 20px; }
+            .ts-cover { order: -1; }
+            .ts-grid { grid-template-columns: 1fr; }
+            .ts-card { position: static; }
+            .ts-related { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 767px) {
+            .ts { padding: 16px 16px 120px; }
+            .ts-crumb li.is-mid { display: none; }
+            .ts-cover { border-radius: 22px; }
+            .ts-thumbs button { width: 52px; height: 40px; }
+            .ts-lead { font-size: 17px; }
+            .ts-meta { flex-direction: column; gap: 8px; }
+            .ts-actions .ts-btn { flex: 1 1 auto; }
+            .ts-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .ts-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 130px; }
+            .ts-photos button:last-child:nth-child(even) { grid-column: span 2; }
+            .ts-geo, .ts-infos { grid-template-columns: minmax(0, 1fr); }
+            .ts-embed { aspect-ratio: 4 / 3; }
+            .pv-top { grid-template-columns: minmax(0, 1fr); }
+            .pv-week li { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; padding: 12px 16px; }
+            .pv-week__bar { grid-column: 1 / -1; grid-row: 2; }
+            .pv-tips { grid-template-columns: minmax(0, 1fr); }
+            .pv-tip { flex-direction: row; align-items: center; }
+            .pv-actions .ts-btn { flex: 1 1 auto; }
+        }
+        @media (prefers-reduced-motion: reduce) { .ts-photos img { transition: none; } }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="min-h-screen">
     @include('partials.page-background')
-
-@include('partials.public-top-nav')
-
-{{-- ══ HERO ══════════════════════════════════════════════════════════════════ --}}
-@php $heroPhoto = $site->photos->first(); @endphp
-<section class="hero-wrap relative h-[60vh] md:h-[75vh] overflow-hidden">
-
-    {{-- Image de fond --}}
-    @if($heroPhoto)
-    <img id="mainPhoto" src="{{ $heroPhoto->url }}" alt="{{ $site->name }}"
-        class="hero-img w-full h-full object-cover">
-    @elseif($site->thumbnail)
-    <img src="{{ $site->thumbnail }}" alt="{{ $site->name }}"
-        class="hero-img w-full h-full object-cover">
-    @else
-    <div class="w-full h-full flex items-center justify-center"
-        style="background: #e9e5d9;">
-        <i class="fas fa-image text-8xl opacity-10"></i>
-    </div>
-    @endif
-
-    {{-- Overlays --}}
-    <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(255, 255, 255,1) 0%, rgba(255, 255, 255,.5) 40%, rgba(255, 255, 255,.1) 100%);"></div>
-    <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(255, 255, 255,.5) 0%, transparent 60%);"></div>
-
-    {{-- Breadcrumb en haut --}}
-    <div class="absolute top-6 left-0 right-0 max-w-7xl mx-auto px-6">
-        <nav class="flex items-center gap-1.5 text-xs text-white/50">
-            <a href="{{ route('tourist.cities') }}" class="hover:text-orange-400 transition">Régions</a>
-            <i class="fas fa-chevron-right text-[8px]"></i>
-            <a href="{{ route('tourist.city', $site->city->slug) }}" class="hover:text-orange-400 transition">{{ $site->city->name }}</a>
-            <i class="fas fa-chevron-right text-[8px]"></i>
-            <a href="{{ route('tourist.category', [$site->city->slug, $site->category->slug]) }}" class="hover:text-orange-400 transition">{{ $site->category->name }}</a>
-            <i class="fas fa-chevron-right text-[8px]"></i>
-            <span class="text-white/80 truncate max-w-[200px]">{{ $site->name }}</span>
-        </nav>
-    </div>
-
-    {{-- Contenu bas du hero --}}
-    <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-6 pb-10">
-
-        {{-- Badges --}}
-        <div class="flex flex-wrap gap-2 mb-4">
-            @if($site->is_featured)
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500 text-black text-xs font-bold">
-                <i class="fas fa-star text-[10px]"></i> Site vedette
-            </span>
-            @endif
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white text-xs"
-                style="{{ $site->category->color ? 'border-color:'.$site->category->color.'50' : '' }}">
-                <i class="{{ $site->category->icon ?: 'fas fa-tag' }} text-[10px]"
-                    style="{{ $site->category->color ? 'color:'.$site->category->color : '' }}"></i>
-                {{ $site->category->name }}
-            </span>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/70 text-xs">
-                <i class="fas fa-city text-orange-400/70 text-[10px]"></i>
-                {{ $site->city->name }}
-            </span>
-        </div>
-
-        {{-- Titre --}}
-        <h1 class="font-serif text-4xl md:text-6xl font-bold text-white leading-tight mb-4 drop-shadow-xl" style="max-width: 700px;">
-            {{ $site->name }}
-        </h1>
-
-        {{-- Stats rapides --}}
-        <div class="flex flex-wrap items-center gap-4 text-sm">
-            @if($site->entrance_fee)
-            <span class="flex items-center gap-1.5 text-orange-300 font-semibold">
-                <i class="fas fa-ticket text-xs"></i> {{ $site->entrance_fee }}
-            </span>
-            @endif
-            @if($site->localite || $site->departement)
-            <span class="flex items-center gap-1.5 text-white/60">
-                <i class="fas fa-map-marker-alt text-orange-400/60 text-xs"></i>
-                {{ $site->localite ?? $site->departement }}
-            </span>
-            @endif
-            @if($site->distance_centre_km)
-            <span class="flex items-center gap-1.5 text-white/60">
-                <i class="fas fa-route text-xs"></i> {{ $site->distance_centre_km }} km du centre
-            </span>
-            @endif
-            <span class="flex items-center gap-1.5 text-white/40">
-                <i class="fas fa-eye text-xs"></i> {{ number_format($site->views_count) }} vues
-            </span>
-        </div>
-    </div>
-
-    {{-- Galerie miniatures flottantes --}}
-    @if($site->photos->count() > 1)
-    <div class="absolute bottom-6 right-6 hidden lg:flex gap-2">
-        @foreach($site->photos->take(4) as $photo)
-        <button onclick="changeHeroPhoto('{{ $photo->url }}')"
-            class="w-16 h-12 rounded-lg overflow-hidden border-2 transition
-                {{ $loop->first ? 'border-orange-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100' }}"
-            data-photo="{{ $photo->url }}">
-            <img src="{{ $photo->url }}" alt="" class="w-full h-full object-cover">
-        </button>
-        @endforeach
-        @if($site->photos->count() > 4)
-        <button onclick="scrollToGallery()"
-            class="w-16 h-12 rounded-lg bg-green-950/60 border-2 border-transparent hover:border-orange-500/50 flex items-center justify-center text-white/70 hover:text-white transition text-xs font-semibold">
-            +{{ $site->photos->count() - 4 }}
-        </button>
+    @include('partials.public-top-nav')
+@php
+    $heroPhoto = $site->photos->first();
+    $heroUrl = $heroPhoto?->url ?: $site->thumbnail;
+    $cat = $site->category;
+    $catColor = $cat?->color ?: '#b9500a';
+    $place = $site->localite ?? $site->departement;
+    $keyFacts = array_filter([
+        $site->superficie_ha ? ['ruler-angular', __('Superficie'), number_format($site->superficie_ha, 2, ',', ' ').' ha'] : null,
+        $site->altitude_m ? ['flag', __('Altitude'), $site->altitude_m.' m'] : null,
+        $site->distance_centre_km ? ['route', __('Distance centre'), $site->distance_centre_km.' km'] : null,
+        $site->entrance_fee ? ['ticket', __('Entrée'), $site->entrance_fee] : null,
+    ]);
+    // Horaires : comprend « Lundi », « Lundi au Samedi », « Lun - Ven », « Tous les jours »… (heure d'Abidjan, UTC+0).
+    $dayNames = ['lundi' => 1, 'lun' => 1, 'mardi' => 2, 'mar' => 2, 'mercredi' => 3, 'mer' => 3, 'jeudi' => 4, 'jeu' => 4, 'vendredi' => 5, 'ven' => 5, 'samedi' => 6, 'sam' => 6, 'dimanche' => 7, 'dim' => 7,
+        'monday' => 1, 'tuesday' => 2, 'wednesday' => 3, 'thursday' => 4, 'friday' => 5, 'saturday' => 6, 'sunday' => 7];
+    $parseDays = function (string $label) use ($dayNames): array {
+        $l = mb_strtolower(trim($label));
+        if (preg_match('/tous les jours|7\s*j|every ?day|daily/u', $l)) return range(1, 7);
+        preg_match_all('/\b(' . implode('|', array_keys($dayNames)) . ')\b/u', $l, $m);
+        $found = array_map(fn ($d) => $dayNames[$d], $m[1]);
+        if (count($found) === 2 && preg_match('/\b(au|à|a|to)\b|[-–]/u', $l)) {
+            [$a, $b] = $found;
+            return $a <= $b ? range($a, $b) : array_merge(range($a, 7), range(1, $b));
+        }
+        return array_values(array_unique($found));
+    };
+    $toMin = fn ($t) => preg_match('/^(\d{1,2})[:hH](\d{2})?/', (string) $t, $mm) ? ((int) $mm[1]) * 60 + (int) ($mm[2] ?? 0) : null;
+    $todayIdx = now('Africa/Abidjan')->isoWeekday();
+    $schedRows = collect($site->schedules ?? [])->map(function ($s) use ($parseDays, $toMin, $todayIdx) {
+        $o = $toMin($s['opens'] ?? null); $c = $toMin($s['closes'] ?? null);
+        if ($o !== null && $c !== null && $c <= $o) $c = 1440;
+        $days = $parseDays((string) ($s['day'] ?? ''));
+        return $s + ['o' => $o, 'c' => $c, 'is_today' => in_array($todayIdx, $days, true)];
+    });
+    $todaySchedule = $schedRows->firstWhere('is_today', true);
+    $hhmm = fn (int $m) => sprintf('%02d:%02d', intdiv($m, 60) % 24, $m % 60);
+    $pvLabels = ['open' => __('Ouvert maintenant'), 'soon' => __('Ferme bientôt'), 'before' => __('Fermé pour le moment'), 'after' => __("Fermé pour aujourd'hui"), 'closes' => __('Ferme à :h'), 'opens' => __('Ouvre à :h'), 'reopen' => __('Réouverture demain')];
+    $hasGallery = $site->photos->count() > 1 || $site->videos->isNotEmpty();
+    $hasGeo = $site->map_embed_url || ($site->latitude && $site->longitude) || $site->departement || $site->sous_prefecture || $site->localite || $site->point_repere || $site->acces_description;
+    $hasPractical = ! empty($site->practical_info) || ! empty($site->schedules);
+@endphp
+<main class="ts">
+    <ol class="ts-crumb" aria-label="{{ __('Fil d\'Ariane') }}">
+        <li><a href="{{ route('tourist.city', $site->city->slug) }}"><i class="fas fa-arrow-left" aria-hidden="true"></i>{{ $site->city->name }}</a></li>
+        <li class="sep is-mid" aria-hidden="true">/</li>
+        <li class="is-mid"><a href="{{ route('tourist.cities') }}">{{ __('Régions') }}</a></li>
+        @if($cat)
+            <li class="sep is-mid" aria-hidden="true">/</li>
+            <li class="is-mid"><a href="{{ route('tourist.category', [$site->city->slug, $cat->slug]) }}">{{ $cat->name }}</a></li>
         @endif
-    </div>
-    @endif
-</section>
+        <li class="sep" aria-hidden="true">/</li>
+        <li aria-current="page">{{ $site->name }}</li>
+    </ol>
 
-{{-- ══ ONGLETS STICKY ═══════════════════════════════════════════════════════ --}}
-<div class="tabs-bar">
-    <div class="max-w-7xl mx-auto px-6 flex items-center gap-0 overflow-x-auto">
-        <button class="tab-btn active" onclick="showTab('description', this)">
-            <i class="fas fa-align-left mr-1.5"></i>Description
-        </button>
-        @if($site->photos->count() > 1 || $site->videos->isNotEmpty())
-        <button class="tab-btn" onclick="showTab('galerie', this)">
-            <i class="fas fa-images mr-1.5"></i>Galerie
-        </button>
-        @endif
-        <button class="tab-btn" onclick="showTab('localisation', this)">
-            <i class="fas fa-map-location-dot mr-1.5"></i>Localisation
-        </button>
-        @if(!empty($site->practical_info) || !empty($site->schedules))
-        <button class="tab-btn" onclick="showTab('pratique', this)">
-            <i class="fas fa-circle-info mr-1.5"></i>Infos pratiques
-        </button>
-        @endif
-    </div>
-</div>
-
-{{-- ══ CONTENU PRINCIPAL ════════════════════════════════════════════════════ --}}
-<div class="max-w-7xl mx-auto px-6 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-
-        {{-- ── COLONNE PRINCIPALE ─────────────────────────────────────────── --}}
-        <div class="lg:col-span-2 space-y-8">
-
-            {{-- ONGLET : Description --}}
-            <div id="tab-description" class="tab-section active space-y-8">
-
-                @if($site->short_description)
-                <p class="text-lg text-slate-300 font-light leading-relaxed border-l-2 border-orange-500/60 pl-5 italic">
-                    {{ $site->short_description }}
-                </p>
+    {{-- ══ EN-TÊTE ══ --}}
+    <header class="ts-hero">
+        <div class="min-w-0">
+            <div class="ts-pills">
+                @if($cat)<span class="ts-pill"><i class="{{ $cat->icon ?: 'fas fa-tag' }}" aria-hidden="true"></i>{{ $cat->name }}</span>@endif
+                @if($site->is_featured)<span class="ts-pill is-green"><x-icon name="star" />{{ __('Site vedette') }}</span>@endif
+            </div>
+            <h1 class="ts-title">{{ $site->name }}</h1>
+            @if($site->short_description)<p class="ts-lead">{{ $site->localized('short_description') }}</p>@endif
+            <ul class="ts-meta">
+                <li><x-icon name="city" />{{ $site->city->name }}@if($place) · {{ $place }}@endif</li>
+                @if($site->distance_centre_km)<li><x-icon name="route" />{{ $site->distance_centre_km }} {{ __('km du centre') }}</li>@endif
+                <li><x-icon name="eye" />{{ number_format($site->views_count, 0, ',', ' ') }} {{ __('vues') }}</li>
+            </ul>
+            <div class="ts-actions">
+                @if($site->latitude && $site->longitude)
+                    <a href="{{ route('directions.go', ['site', $site->slug]) }}" data-in-page-route target="_blank" rel="noopener noreferrer" class="ts-btn is-main"><x-icon name="streets-navigation" />{{ __('Itinéraire') }}</a>
                 @endif
+                @if($hasGallery)<a href="#galerie" class="ts-btn is-line"><x-icon name="gallery" />{{ __('Photos') }}@if($site->photos->count() > 1) ({{ $site->photos->count() }})@endif</a>@endif
+                @if($hasPractical)<a href="#pratique" class="ts-btn is-line"><x-icon name="clock-circle" />{{ __('Horaires & infos') }}</a>@endif
+            </div>
+        </div>
+        <div class="ts-cover">
+            @if($heroUrl)
+                <img id="mainPhoto" src="{{ $heroUrl }}" alt="{{ $heroPhoto?->alt_text ?: $site->name }}" decoding="async" fetchpriority="high" onclick="openLightbox(this.currentSrc || this.src, @js($site->name))">
+            @else
+                <span class="ts-cover__empty" style="background: {{ $catColor }}1a; color: {{ $catColor }}"><i class="{{ $cat?->icon ?: 'fas fa-landmark' }}" aria-hidden="true"></i></span>
+            @endif
+            @if($site->photos->count() > 1)
+                <div class="ts-thumbs">
+                    @foreach($site->photos->take(4) as $photo)
+                        <button type="button" onclick="changeHeroPhoto(@js($photo->url))" data-photo="{{ $photo->url }}" class="{{ $loop->first ? 'is-on' : '' }}" aria-label="{{ __('Photo :n', ['n' => $loop->iteration]) }}"><img src="{{ $photo->url }}" alt=""></button>
+                    @endforeach
+                    @if($site->photos->count() > 4)<button type="button" class="ts-more" onclick="scrollToGallery()">+{{ $site->photos->count() - 4 }}</button>@endif
+                </div>
+            @endif
+        </div>
+    </header>
 
+    {{-- ══ INFOS CLÉS ══ --}}
+    <ul class="ox-keys">
+        <li><x-icon name="map-point" /><span><small>{{ __('Lieu') }}</small><b>{{ $place ?: $site->city->name }}</b></span></li>
+        @if($cat)<li><x-icon name="widget" /><span><small>{{ __('Catégorie') }}</small><b>{{ $cat->name }}</b></span></li>@endif
+        <li><x-icon name="ticket" /><span><small>{{ __('Entrée') }}</small><b>{{ $site->entrance_fee ?: __('Non précisé') }}</b></span></li>
+        @if($todaySchedule)
+            <li class="{{ ($todaySchedule['closed'] ?? false) ? '' : 'is-ok' }}"><x-icon name="clock-circle" /><span><small>{{ __('Aujourd\'hui') }}</small><b>{{ ($todaySchedule['closed'] ?? false) ? __('Fermé') : ($todaySchedule['opens'] ?? '').'–'.($todaySchedule['closes'] ?? '') }}</b></span></li>
+        @endif
+    </ul>
+
+    <nav class="ox-tabs" data-ox-tabs aria-label="{{ __('Sections de la page') }}">
+        <a href="#presentation">{{ __('Présentation') }}</a>
+        @if($hasGallery)<a href="#galerie">{{ __('Galerie') }}</a>@endif
+        @if($hasGeo)<a href="#acces">{{ __('Accès') }}</a>@endif
+        @if($hasPractical)<a href="#pratique">{{ __('Infos pratiques') }}</a>@endif
+        @if($related->isNotEmpty())<a href="#a-voir-aussi">{{ __('À voir aussi') }}</a>@endif
+    </nav>
+
+    <div class="ts-grid">
+        <div class="ts-main">
+            {{-- Présentation --}}
+            <section class="ox-sec" id="presentation">
+                <p class="ts-label">{{ __('Présentation') }}</p>
+                <h2 class="ts-h2">{{ __('À découvrir') }}</h2>
                 @if($site->description)
-                <div class="text-slate-300 leading-8 text-base whitespace-pre-line space-y-4">
-                    {{ $site->description }}
-                </div>
+                    <p class="ts-text">{{ $site->localized('description') }}</p>
+                @elseif($site->short_description)
+                    <p class="ts-text">{{ $site->localized('short_description') }}</p>
                 @endif
-
-                {{-- Données clés --}}
-                @php
-                $keyFacts = array_filter([
-                    $site->superficie_ha ? ['fas fa-expand-arrows-alt', 'Superficie', number_format($site->superficie_ha, 2).' ha'] : null,
-                    $site->altitude_m    ? ['fas fa-mountain',           'Altitude',   $site->altitude_m.' m'] : null,
-                    $site->distance_centre_km ? ['fas fa-route', 'Distance centre', $site->distance_centre_km.' km'] : null,
-                    $site->entrance_fee  ? ['fas fa-ticket',             'Entrée',     $site->entrance_fee] : null,
-                ]);
-                @endphp
-                @if(!empty($keyFacts))
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    @foreach($keyFacts as [$icon, $label, $val])
-                    <div class="info-block bg-[#ffffff] border border-slate-800 rounded-2xl p-4 text-center">
-                        <i class="{{ $icon }} text-orange-400 text-lg mb-2 block"></i>
-                        <p class="text-white font-semibold text-sm">{{ $val }}</p>
-                        <p class="text-slate-600 text-xs mt-0.5">{{ $label }}</p>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
-            </div>
-
-            {{-- ONGLET : Galerie --}}
-            <div id="tab-galerie" class="tab-section" id="section-galerie">
-                @if($site->photos->count() > 1)
-                <div class="space-y-3">
-                    <h2 class="text-white font-serif text-xl font-bold">
-                        Photos <span class="text-slate-600 font-sans font-normal text-sm">({{ $site->photos->count() }})</span>
-                    </h2>
-                    {{-- Grid masonry-like --}}
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        @foreach($site->photos as $photo)
-                        <div class="rounded-2xl overflow-hidden cursor-pointer group"
-                            style="{{ $loop->first ? 'grid-column: span 2; aspect-ratio: 16/9;' : 'aspect-ratio: 4/3;' }}"
-                            onclick="openLightbox('{{ $photo->url }}', '{{ addslashes($photo->caption ?? $site->name) }}')">
-                            <img src="{{ $photo->url }}"
-                                alt="{{ $photo->alt_text ?: $site->name }}"
-                                class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
+                @if(! empty($keyFacts))
+                    <div class="ts-facts">
+                        @foreach($keyFacts as [$icon, $label, $val])
+                            <div class="ts-fact"><x-icon :name="$icon" /><b>{{ $val }}</b><small>{{ $label }}</small></div>
                         @endforeach
                     </div>
-                </div>
                 @endif
+            </section>
 
-                @if($site->videos->isNotEmpty())
-                <div class="space-y-3 mt-6">
-                    <h2 class="text-white font-serif text-xl font-bold flex items-center gap-2">
-                        <i class="fas fa-play-circle text-orange-400"></i> Vidéos
-                    </h2>
-                    @foreach($site->videos as $video)
-                    <div class="rounded-2xl overflow-hidden bg-green-900 border border-slate-800 aspect-video">
-                        <iframe src="{{ $video->url }}" class="w-full h-full"
-                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                    </div>
-                    @if($video->caption)
-                    <p class="text-slate-500 text-xs">{{ $video->caption }}</p>
+            {{-- Galerie --}}
+            @if($hasGallery)
+                <section class="ox-sec" id="galerie">
+                    <p class="ts-label">{{ __('Galerie') }}</p>
+                    <h2 class="ts-h2">{{ __('Photos') }}@if($site->photos->count() > 1) <span class="font-sans text-base font-normal text-[#8a7f6b]">({{ $site->photos->count() }})</span>@endif</h2>
+                    @if($site->photos->count() > 1)
+                        <div class="ts-photos">
+                            @foreach($site->photos as $photo)
+                                <button type="button" onclick="openLightbox(@js($photo->url), @js($photo->caption ?? $site->name))" aria-label="{{ __('Agrandir la photo :n', ['n' => $loop->iteration]) }}">
+                                    <img src="{{ $photo->url }}" alt="{{ $photo->alt_text ?: $site->name }}" loading="lazy">
+                                </button>
+                            @endforeach
+                        </div>
                     @endif
-                    @endforeach
-                </div>
-                @endif
-            </div>
+                    @if($site->videos->isNotEmpty())
+                        <h3 class="mt-6 mb-3 flex items-center gap-2 text-lg font-bold text-[#1d1a16]"><x-icon name="play-circle" class="text-[#b9500a]" />{{ __('Vidéos') }}</h3>
+                        @foreach($site->videos as $video)
+                            <div class="ts-video {{ ! $loop->first ? 'mt-4' : '' }}"><iframe src="{{ $video->url }}" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="{{ $video->caption ?: $site->name }}"></iframe></div>
+                            @if($video->caption)<p class="ts-cap">{{ $video->caption }}</p>@endif
+                        @endforeach
+                    @endif
+                </section>
+            @endif
 
-            {{-- ONGLET : Localisation --}}
-            <div id="tab-localisation" class="tab-section space-y-5">
-                <h2 class="text-white font-serif text-xl font-bold">Situation géographique</h2>
-
-                {{-- Carte --}}
-                @if($site->map_embed_url)
-                <div class="rounded-2xl overflow-hidden border border-slate-800" style="aspect-ratio: 16/7;">
-                    <iframe src="{{ $site->map_embed_url }}" class="w-full h-full"
-                        frameborder="0" allowfullscreen loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-                @elseif($site->latitude && $site->longitude)
-                <a href="https://maps.google.com/?q={{ $site->latitude }},{{ $site->longitude }}"
-                    target="_blank"
-                    class="info-block flex items-center gap-4 bg-[#ffffff] border border-slate-800 hover:border-orange-500/40 rounded-2xl p-6 transition group">
-                    <div class="w-14 h-14 rounded-xl bg-orange-500/15 flex items-center justify-center shrink-0 group-hover:bg-orange-500/25 transition">
-                        <i class="fas fa-map-location-dot text-2xl text-orange-400"></i>
-                    </div>
-                    <div>
-                        <p class="text-white font-semibold group-hover:text-orange-400 transition">Voir sur Google Maps</p>
-                        <p class="text-slate-500 text-sm font-mono mt-0.5">{{ $site->latitude }}, {{ $site->longitude }}</p>
-                    </div>
-                    <i class="fas fa-arrow-up-right-from-square text-slate-700 group-hover:text-orange-400 transition ml-auto"></i>
-                </a>
-                @endif
-
-                {{-- Détails géographiques en grille --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    @if($site->departement)
-                    <div class="info-block bg-[#ffffff] border border-slate-800 rounded-xl p-4">
-                        <p class="text-slate-600 text-xs uppercase tracking-widest mb-1">Département</p>
-                        <p class="text-white font-medium">{{ $site->departement }}</p>
-                    </div>
-                    @endif
-                    @if($site->sous_prefecture)
-                    <div class="info-block bg-[#ffffff] border border-slate-800 rounded-xl p-4">
-                        <p class="text-slate-600 text-xs uppercase tracking-widest mb-1">Sous-préfecture</p>
-                        <p class="text-white font-medium">{{ $site->sous_prefecture }}</p>
-                    </div>
-                    @endif
-                    @if($site->localite)
-                    <div class="info-block bg-[#ffffff] border border-slate-800 rounded-xl p-4">
-                        <p class="text-slate-600 text-xs uppercase tracking-widest mb-1">Localité</p>
-                        <p class="text-white font-medium">{{ $site->localite }}</p>
-                    </div>
-                    @endif
+            {{-- Accès --}}
+            @if($hasGeo)
+                <section class="ox-sec" id="acces">
+                    <p class="ts-label">{{ __('Accès') }}</p>
+                    <h2 class="ts-h2">{{ __('Situation géographique') }}</h2>
                     @if($site->latitude && $site->longitude)
-                    <div class="info-block bg-[#ffffff] border border-slate-800 rounded-xl p-4">
-                        <p class="text-slate-600 text-xs uppercase tracking-widest mb-1">Coordonnées GPS</p>
-                        <p class="text-white font-mono text-sm">{{ $site->latitude }}, {{ $site->longitude }}</p>
-                    </div>
-                    @endif
-                </div>
-
-                @if($site->point_repere || $site->acces_description)
-                <div class="info-block bg-[#ffffff] border border-slate-800 rounded-2xl p-5 space-y-4">
-                    @if($site->point_repere)
-                    <div>
-                        <p class="text-orange-400/80 text-xs font-semibold uppercase tracking-widest mb-2">
-                            <i class="fas fa-crosshairs mr-1.5"></i>Point de repère
-                        </p>
-                        <p class="text-slate-300 text-sm leading-relaxed">{{ $site->point_repere }}</p>
-                    </div>
-                    @endif
-                    @if($site->acces_description)
-                    @if($site->point_repere)<div class="border-t border-slate-800"></div>@endif
-                    <div>
-                        <p class="text-orange-400/80 text-xs font-semibold uppercase tracking-widest mb-2">
-                            <i class="fas fa-route mr-1.5"></i>Comment s'y rendre
-                        </p>
-                        <p class="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{{ $site->acces_description }}</p>
-                    </div>
-                    @endif
-                </div>
-                @endif
-            </div>
-
-            {{-- ONGLET : Infos pratiques --}}
-            <div id="tab-pratique" class="tab-section space-y-6">
-
-                {{-- Horaires --}}
-                @if(!empty($site->schedules))
-                <div>
-                    <h2 class="text-white font-serif text-xl font-bold mb-4">
-                        <i class="fas fa-clock text-orange-400 mr-2"></i>Horaires d'ouverture
-                    </h2>
-                    <div class="info-block bg-[#ffffff] border border-slate-800 rounded-2xl divide-y divide-slate-800 overflow-hidden">
-                        @foreach($site->schedules as $s)
-                        <div class="flex items-center justify-between px-5 py-3">
-                            <span class="text-slate-300 text-sm font-medium">{{ $s['day'] }}</span>
-                            @if($s['closed'] ?? false)
-                            <span class="px-3 py-1 rounded-full text-xs font-medium schedule-closed">Fermé</span>
-                            @else
-                            <span class="px-3 py-1 rounded-full text-xs font-medium schedule-open font-mono">
-                                {{ $s['opens'] ?? '—' }} – {{ $s['closes'] ?? '—' }}
-                            </span>
-                            @endif
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
-
-                {{-- Infos pratiques --}}
-                @if(!empty($site->practical_info))
-                <div>
-                    <h2 class="text-white font-serif text-xl font-bold mb-4">
-                        <i class="fas fa-circle-info text-orange-400 mr-2"></i>Informations pratiques
-                    </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        @foreach($site->practical_info as $info)
-                        <div class="info-block bg-[#ffffff] border border-slate-800 rounded-xl p-4 flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-orange-500/15 flex items-center justify-center shrink-0 mt-0.5">
-                                <i class="{{ $info['icon'] ?? 'fas fa-circle-dot' }} text-orange-400 text-xs"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-slate-500 text-xs mb-0.5">{{ $info['label'] }}</p>
-                                <p class="text-white text-sm font-medium">{{ $info['value'] }}</p>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
-            </div>
-
-        </div>
-
-        {{-- ── PANNEAU STICKY DROITE ──────────────────────────────────────── --}}
-        <div class="sticky-panel">
-            <div class="sticky-panel-inner bg-[#ffffff] border border-slate-800 rounded-2xl overflow-hidden">
-
-                {{-- En-tête du panneau --}}
-                <div class="relative h-40 overflow-hidden">
-                    @if($heroPhoto)
-                    <img src="{{ $heroPhoto->url }}" alt="" class="w-full h-full object-cover">
-                    @elseif($site->thumbnail)
-                    <img src="{{ $site->thumbnail }}" alt="" class="w-full h-full object-cover">
-                    @else
-                    <div class="w-full h-full bg-linear-to-br from-orange-900/40 to-green-900"></div>
-                    @endif
-                    <div class="absolute inset-0 bg-linear-to-t from-[#ffffff] to-transparent"></div>
-                    <div class="absolute bottom-3 left-4">
-                        <p class="text-slate-400 text-xs">{{ $site->city->name }} · {{ $site->category->name }}</p>
-                    </div>
-                </div>
-
-                <div class="p-5 space-y-4">
-
-                    {{-- Tarif en vedette --}}
-                    @if($site->entrance_fee)
-                    <div class="flex items-center justify-between py-2.5 px-4 rounded-xl bg-orange-500/10 border border-orange-500/25">
-                        <span class="text-orange-300/80 text-xs font-medium flex items-center gap-1.5">
-                            <i class="fas fa-ticket text-[10px]"></i> Entrée
-                        </span>
-                        <span class="text-orange-300 font-bold text-sm">{{ $site->entrance_fee }}</span>
-                    </div>
-                    @endif
-
-                    {{-- Contacts --}}
-                    @if($site->phone || $site->email || $site->website)
-                    <div class="space-y-2">
-                        @if($site->website)
-                        <a href="{{ $site->website }}" target="_blank" rel="noopener"
-                            class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-orange-500/15 border border-slate-700 hover:border-orange-500/30 transition group">
-                            <i class="fas fa-globe text-orange-400 text-sm w-4 text-center"></i>
-                            <span class="text-slate-300 text-sm truncate group-hover:text-white transition">Site officiel</span>
-                            <i class="fas fa-arrow-up-right-from-square text-slate-600 text-xs ml-auto group-hover:text-orange-400 transition"></i>
-                        </a>
-                        @endif
-                        @if($site->phone)
-                        <a href="tel:{{ $site->phone }}"
-                            class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
-                            <i class="fas fa-phone text-orange-400 text-sm w-4 text-center"></i>
-                            <span class="text-slate-300 text-sm">{{ $site->phone }}</span>
-                        </a>
-                        @endif
-                        @if($site->email)
-                        <a href="mailto:{{ $site->email }}"
-                            class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
-                            <i class="fas fa-envelope text-orange-400 text-sm w-4 text-center"></i>
-                            <span class="text-slate-300 text-sm truncate">{{ $site->email }}</span>
-                        </a>
-                        @endif
-                    </div>
-                    @endif
-
-                    {{-- Adresse --}}
-                    @if($site->localite || $site->departement)
-                    <div class="flex items-start gap-3 px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-800">
-                        <i class="fas fa-map-marker-alt text-orange-400/70 text-sm mt-0.5 w-4 text-center shrink-0"></i>
-                        <div class="text-sm text-slate-400 leading-relaxed">
-                            @if($site->localite)<span class="text-white">{{ $site->localite }}</span>@endif
-                            @if($site->departement)<br>{{ $site->departement }}@endif
-                            @if($site->city->name)<br>{{ $site->city->name }}@endif
-                        </div>
-                    </div>
-                    @endif
-
-                    {{-- Prochaine ouverture (dernier horaire) --}}
-                    @if(!empty($site->schedules))
-                    @php
-                        $today = now()->locale('fr')->dayName;
-                        $todaySchedule = collect($site->schedules)->firstWhere('day', ucfirst($today));
-                    @endphp
-                    @if($todaySchedule)
-                    <div class="flex items-center gap-2 text-xs">
-                        @if($todaySchedule['closed'] ?? false)
-                        <span class="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
-                        <span class="text-red-400 font-medium">Fermé aujourd'hui</span>
-                        @else
-                        <span class="w-2 h-2 rounded-full bg-green-500 shrink-0 animate-pulse"></span>
-                        <span class="text-green-400 font-medium">
-                            Ouvert · {{ $todaySchedule['opens'] ?? '' }}–{{ $todaySchedule['closes'] ?? '' }}
-                        </span>
-                        @endif
-                    </div>
-                    @endif
-                    @endif
-
-                    {{-- Carte + bouton Google Maps --}}
-                    @if($site->latitude && $site->longitude)
-                    <div class="rounded-xl overflow-hidden border border-slate-800" style="aspect-ratio: 16/10;">
-                        <iframe src="https://www.google.com/maps?q={{ $site->latitude }},{{ $site->longitude }}&output=embed"
-                            class="w-full h-full" frameborder="0" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                    <a href="https://maps.google.com/?q={{ $site->latitude }},{{ $site->longitude }}"
-                        target="_blank"
-                        class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-black font-semibold text-sm transition">
-                        <i class="fas fa-map-location-dot"></i>
-                        Itinéraire Google Maps
-                    </a>
+                        @include('partials.route-map', [
+                            'type' => 'site', 'slug' => $site->slug,
+                            'lat' => $site->latitude, 'lng' => $site->longitude, 'name' => $site->name,
+                            'accent' => '#b9500a', 'height' => 'clamp(340px, 55vh, 520px)', 'frameClass' => 'rounded-2xl overflow-hidden',
+                        ])
                     @elseif($site->map_embed_url)
-                    <div class="rounded-xl overflow-hidden border border-slate-800" style="aspect-ratio: 16/10;">
-                        <iframe src="{{ $site->map_embed_url }}"
-                            class="w-full h-full" frameborder="0" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                    <a href="{{ $site->map_embed_url }}"
-                        target="_blank"
-                        class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-black font-semibold text-sm transition">
-                        <i class="fas fa-map-location-dot"></i>
-                        Itinéraire Google Maps
-                    </a>
+                        <div class="ts-embed"><iframe src="{{ $site->map_embed_url }}" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{{ __('Carte') }}"></iframe></div>
                     @endif
-                </div>
-            </div>
+                    @if($site->departement || $site->sous_prefecture || $site->localite || ($site->latitude && $site->longitude))
+                        <div class="ts-geo">
+                            @if($site->departement)<div><small>{{ __('Département') }}</small><b>{{ $site->departement }}</b></div>@endif
+                            @if($site->sous_prefecture)<div><small>{{ __('Sous-préfecture') }}</small><b>{{ $site->sous_prefecture }}</b></div>@endif
+                            @if($site->localite)<div><small>{{ __('Localité') }}</small><b>{{ $site->localite }}</b></div>@endif
+                            @if($site->latitude && $site->longitude)<div><small>{{ __('Coordonnées GPS') }}</small><b class="font-mono text-sm">{{ $site->latitude }}, {{ $site->longitude }}</b></div>@endif
+                        </div>
+                    @endif
+                    @if($site->point_repere || $site->acces_description)
+                        <div class="ts-way">
+                            @if($site->point_repere)<div><x-icon name="point-on-map" /><span><b>{{ __('Point de repère') }}</b><p>{{ $site->point_repere }}</p></span></div>@endif
+                            @if($site->acces_description)<div><x-icon name="routing" /><span><b>{{ __('Comment s\'y rendre') }}</b><p>{{ $site->acces_description }}</p></span></div>@endif
+                        </div>
+                    @endif
+                </section>
+            @endif
+
+            {{-- Infos pratiques --}}
+            @if($hasPractical)
+                <section class="ox-sec" id="pratique">
+                    <p class="ts-label">{{ __('Préparer sa visite') }}</p>
+                    <h2 class="ts-h2">{{ __('Infos pratiques') }}</h2>
+
+                    @if($schedRows->isNotEmpty())
+                        <div class="pv-top">
+                            {{-- Statut en direct (heure d'Abidjan) --}}
+                            <div class="pv-now" data-pv
+                                 @if($todaySchedule && ! ($todaySchedule['closed'] ?? false) && $todaySchedule['o'] !== null) data-open="{{ $todaySchedule['o'] }}" data-close="{{ $todaySchedule['c'] }}" @endif>
+                                <span class="pv-status is-{{ $todaySchedule && ! ($todaySchedule['closed'] ?? false) ? 'open' : 'closed' }}" data-pv-status>
+                                    <span class="dot" aria-hidden="true"></span><span data-pv-label>{{ $todaySchedule && ! ($todaySchedule['closed'] ?? false) ? __('Ouvert aujourd\'hui') : __('Fermé aujourd\'hui') }}</span>
+                                </span>
+                                <p class="pv-big" data-pv-big>
+                                    @if($todaySchedule && ! ($todaySchedule['closed'] ?? false) && $todaySchedule['o'] !== null)
+                                        {{ $hhmm($todaySchedule['o']) }} – {{ $hhmm($todaySchedule['c']) }}
+                                    @else
+                                        {{ __('Repos') }}
+                                    @endif
+                                </p>
+                                <p class="pv-sub" data-pv-sub>{{ __('Horaires d\'aujourd\'hui') }} · {{ ucfirst(now('Africa/Abidjan')->locale(app()->getLocale())->dayName) }}</p>
+                                @if($todaySchedule && ! ($todaySchedule['closed'] ?? false) && $todaySchedule['o'] !== null)
+                                    <div class="pv-day" aria-hidden="true">
+                                        <span class="pv-day__track"><span class="pv-day__win" style="left: {{ round($todaySchedule['o'] / 14.4, 2) }}%; width: {{ round(($todaySchedule['c'] - $todaySchedule['o']) / 14.4, 2) }}%"></span><span class="pv-day__now" data-pv-now hidden></span></span>
+                                        <span class="pv-day__ticks"><span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>24h</span></span>
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- Semaine --}}
+                            <ul class="pv-week" aria-label="{{ __('Horaires d\'ouverture') }}">
+                                @foreach($schedRows as $s)
+                                    <li class="{{ $s['is_today'] ? 'is-today' : '' }}">
+                                        <span class="pv-week__day">{{ $s['day'] }}@if($s['is_today'])<em>{{ __('Aujourd\'hui') }}</em>@endif</span>
+                                        @if(($s['closed'] ?? false) || $s['o'] === null)
+                                            <span class="pv-week__bar is-closed" aria-hidden="true"></span>
+                                            <span class="pv-week__h is-closed">{{ ($s['closed'] ?? false) ? __('Fermé') : (($s['opens'] ?? '—').' – '.($s['closes'] ?? '—')) }}</span>
+                                        @else
+                                            <span class="pv-week__bar" aria-hidden="true"><span style="left: {{ round($s['o'] / 14.4, 2) }}%; width: {{ round(($s['c'] - $s['o']) / 14.4, 2) }}%"></span></span>
+                                            <span class="pv-week__h">{{ $hhmm($s['o']) }} – {{ $hhmm($s['c']) }}</span>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if(! empty($site->practical_info))
+                        <h3 class="pv-h3">{{ __('Bon à savoir') }}</h3>
+                        <div class="pv-tips">
+                            @foreach($site->practical_info as $info)
+                                @php
+                                    $lbl = mb_strtolower((string) ($info['label'] ?? ''));
+                                    $tone = preg_match('/sécurité|securite|attention|prudence|vigilan/u', $lbl.' '.mb_strtolower((string) ($info['value'] ?? ''))) ? 'warn' : (preg_match('/paiement|prix|tarif|argent|monnaie/u', $lbl) ? 'money' : 'base');
+                                    $hay = $lbl.' '.mb_strtolower((string) ($info['value'] ?? ''));
+                                    $tipIcon = collect(['wallet-money' => '/paiement|espèces|carte|prix|tarif|monnaie/u', 'shield-check' => '/sécurité|securite|vigilan|prudence|attention/u', 'plate' => '/maquis|restaurant|manger|repas|cuisine/u', 'car' => '/parking|voiture|stationnement/u', 'clock-circle' => '/horaire|heure|affluence|moment/u', 'camera' => '/photo/u', 'users-group-rounded' => '/guide|visite guidée|groupe/u', 'accessibility' => '/accessib|handicap|pmr/u'])->search(fn ($re) => preg_match($re, $hay)) ?: 'info-circle';
+                                @endphp
+                                <div class="pv-tip is-{{ $tone }}">
+                                    <span class="pv-tip__ic"><x-icon :name="$tipIcon" /></span>
+                                    <span class="min-w-0"><small>{{ $info['label'] }}</small><b>{{ $info['value'] }}</b></span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div class="pv-actions">
+                        @if($site->latitude && $site->longitude)
+                            <a href="{{ route('directions.go', ['site', $site->slug]) }}" data-in-page-route target="_blank" rel="noopener noreferrer" class="ts-btn is-main"><x-icon name="streets-navigation" />{{ __('Y aller') }}</a>
+                        @endif
+                        @if($site->phone)<a href="tel:{{ $site->phone }}" class="ts-btn is-line"><x-icon name="chat-round-dots" />{{ __('Appeler') }}</a>@endif
+                        <button type="button" class="ts-btn is-line" data-pv-share data-done="{{ __('Lien copié') }}"><x-icon name="share" /><span>{{ __('Partager') }}</span></button>
+                    </div>
+                </section>
+            @endif
+
+            {{-- À voir aussi --}}
+            @if($related->isNotEmpty())
+                <section class="ox-sec" id="a-voir-aussi">
+                    <div class="ts-head">
+                        <div><p class="ts-label">{{ __('Dans le même thème') }}</p><h2 class="ts-h2">{{ __('À voir aussi') }}</h2></div>
+                        @if($cat)<a href="{{ route('tourist.category', [$site->city->slug, $cat->slug]) }}" class="ts-more-link">{{ __('Voir tout') }}<x-icon name="alt-arrow-right" /></a>@endif
+                    </div>
+                    <div class="ts-related">
+                        @foreach($related as $r)
+                            @php $rImg = $r->media->first()?->url ?: $r->thumbnail; @endphp
+                            <a href="{{ route('tourist.site', $r->slug) }}" class="ts-rel">
+                                <span class="ts-rel__img">
+                                    <i class="{{ $cat?->icon ?: 'fas fa-landmark' }}" aria-hidden="true"></i>
+                                    @if($rImg)<img src="{{ $rImg }}" alt="{{ $r->name }}" loading="lazy" decoding="async" onerror="this.remove()">@endif
+                                    @if($r->entrance_fee)<em>{{ $r->entrance_fee }}</em>@endif
+                                </span>
+                                <span class="ts-rel__body">
+                                    <b>{{ $r->name }}</b>
+                                    @if($r->localite || $r->departement)<span><x-icon name="map-point" />{{ $r->localite ?? $r->departement }}</span>@endif
+                                </span>
+                            </a>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
         </div>
 
-    </div>
-</div>
-
-{{-- ══ SITES SIMILAIRES ═════════════════════════════════════════════════════ --}}
-@if($related->isNotEmpty())
-<section class="max-w-7xl mx-auto px-6 pb-20 mt-4">
-    <div class="flex items-center justify-between mb-6">
-        <h2 class="text-white font-serif text-2xl font-bold">À voir aussi</h2>
-        <a href="{{ route('tourist.category', [$site->city->slug, $site->category->slug]) }}"
-            class="text-orange-400 hover:text-orange-300 text-sm flex items-center gap-1.5 transition">
-            Voir tout <i class="fas fa-arrow-right text-xs"></i>
-        </a>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        @foreach($related as $r)
-        @php $rPhoto = $r->media->first(); @endphp
-        <a href="{{ route('tourist.site', $r->slug) }}"
-            class="group block bg-[#ffffff] border border-slate-800 hover:border-orange-500/30 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1">
-            <div class="relative overflow-hidden" style="aspect-ratio: 4/3;">
-                @if($rPhoto)
-                <img src="{{ $rPhoto->url }}" alt="{{ $r->name }}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                @elseif($r->thumbnail)
-                <img src="{{ $r->thumbnail }}" alt="{{ $r->name }}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                @else
-                <div class="w-full h-full flex items-center justify-center bg-slate-800">
-                    <i class="fas fa-image text-2xl text-slate-700"></i>
-                </div>
-                @endif
-                <div class="absolute inset-0 bg-linear-to-t from-green-950/70 to-transparent"></div>
-                @if($r->entrance_fee)
-                <span class="absolute top-2 right-2 px-3 py-1 bg-green-950/70 text-white text-xs font-medium rounded-full">
-                    {{ $r->entrance_fee }}
-                </span>
+        {{-- ══ MODULE VISITER ══ --}}
+        <aside class="ts-card" id="reserver" aria-label="{{ __('Visiter') }}">
+            <div class="ts-card__head">
+                <small>{{ __('Entrée') }}</small>
+                <p class="ts-card__price">{{ $site->entrance_fee ?: __('Non précisé') }}</p>
+                @if($todaySchedule)
+                    @if($todaySchedule['closed'] ?? false)
+                        <span class="ts-today is-closed"><span class="dot"></span>{{ __('Fermé aujourd\'hui') }}</span>
+                    @else
+                        <span class="ts-today is-open"><span class="dot"></span>{{ __('Aujourd\'hui') }} · {{ $todaySchedule['o'] !== null ? $hhmm($todaySchedule['o']).'–'.$hhmm($todaySchedule['c']) : ($todaySchedule['opens'] ?? '').'–'.($todaySchedule['closes'] ?? '') }}</span>
+                    @endif
                 @endif
             </div>
-            <div class="p-4">
-                <h3 class="text-white text-sm font-semibold group-hover:text-orange-400 transition line-clamp-2 mb-1">
-                    {{ $r->name }}
-                </h3>
-                @if($r->localite || $r->departement)
-                <p class="text-slate-500 text-xs flex items-center gap-1">
-                    <i class="fas fa-map-marker-alt text-orange-400/50 text-[10px]"></i>
-                    {{ $r->localite ?? $r->departement }}
-                </p>
+            <div class="ts-card__body">
+                @if($site->latitude && $site->longitude)
+                    <a href="{{ route('directions.go', ['site', $site->slug]) }}" data-in-page-route target="_blank" rel="noopener noreferrer" class="ts-btn is-main"><x-icon name="streets-navigation" />{{ __('Afficher l\'itinéraire') }}</a>
+                @elseif($site->map_embed_url)
+                    <a href="{{ $site->map_embed_url }}" target="_blank" rel="noopener noreferrer" class="ts-btn is-main"><x-icon name="streets-navigation" />{{ __('Afficher l\'itinéraire') }}</a>
                 @endif
+                @if($site->website)
+                    <a href="{{ $site->website }}" target="_blank" rel="noopener" class="ts-btn is-line"><x-icon name="global" />{{ __('Site officiel') }}</a>
+                @endif
+                <ul class="ts-card__list">
+                    <li><x-icon name="map-point" /><span>{{ $site->localite ?: $site->city->name }}@if($site->departement)<small>{{ $site->departement }}@if($site->localite) · {{ $site->city->name }}@endif</small>@endif</span></li>
+                    @if($site->phone)<li><x-icon name="chat-round-dots" /><a href="tel:{{ $site->phone }}">{{ $site->phone }}</a></li>@endif
+                    @if($site->email)<li><x-icon name="notes" /><a href="mailto:{{ $site->email }}">{{ $site->email }}</a></li>@endif
+                    @if($cat)<li><i class="{{ $cat->icon ?: 'fas fa-tag' }} text-[#b9500a] text-center" style="width:18px;margin-top:4px" aria-hidden="true"></i><span>{{ $cat->name }}<small>{{ $site->city->name }}</small></span></li>@endif
+                </ul>
             </div>
-        </a>
-        @endforeach
+        </aside>
     </div>
-</section>
-@endif
+</main>
 
-{{-- ══ LIGHTBOX ═════════════════════════════════════════════════════════════ --}}
-<div id="lightbox" class="fixed inset-0 z-50 hidden bg-green-950/95 items-center justify-center p-4" onclick="closeLightbox()">
-    <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()">
-        <i class="fas fa-xmark"></i>
-    </button>
-    <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[90vh] rounded-xl object-contain" onclick="event.stopPropagation()">
-    <p id="lightbox-caption" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 text-sm"></p>
+{{-- Barre mobile --}}
+<div class="ox-bar" data-ox-bar>
+    <span><small>{{ __('Entrée') }}</small><b>{{ \Illuminate\Support\Str::limit($site->entrance_fee ?: __('Non précisé'), 22) }}</b></span>
+    @if($site->latitude && $site->longitude)
+        <a href="{{ route('directions.go', ['site', $site->slug]) }}" data-in-page-route target="_blank" rel="noopener noreferrer"><x-icon name="streets-navigation" />{{ __('Itinéraire') }}</a>
+    @else
+        <a href="#reserver"><x-icon name="info-circle" />{{ __('Infos') }}</a>
+    @endif
 </div>
 
+{{-- Visionneuse --}}
+<div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeLightbox()">
+    <button class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()" aria-label="{{ __('Fermer') }}"><i class="fas fa-xmark"></i></button>
+    <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[88vh] rounded-xl object-contain" onclick="event.stopPropagation()">
+    <p id="lightbox-caption" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/70 text-sm text-center px-4"></p>
+</div>
+
+@include('partials.sources-list', ['sources' => $site->sources ?? []])
 @include('partials.homepage-footer')
 
 <script>
-// ── Onglets ───────────────────────────────────────────────────────────────
-function showTab(name, btn) {
-    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    const section = document.getElementById('tab-' + name);
-    if (section) section.classList.add('active');
-    btn.classList.add('active');
-    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 10, behavior: 'smooth' });
-}
-
-// ── Photo hero ────────────────────────────────────────────────────────────
+// ── Photo principale ──
 function changeHeroPhoto(url) {
     const img = document.getElementById('mainPhoto');
     if (img) img.src = url;
-    document.querySelectorAll('[data-photo]').forEach(btn => {
-        const isActive = btn.dataset.photo === url;
-        btn.classList.toggle('border-orange-500', isActive);
-        btn.classList.toggle('opacity-100', isActive);
-        btn.classList.toggle('border-transparent', !isActive);
-        btn.classList.toggle('opacity-60', !isActive);
-    });
+    document.querySelectorAll('[data-photo]').forEach(btn => btn.classList.toggle('is-on', btn.dataset.photo === url));
 }
-
-// ── Scroll vers galerie ───────────────────────────────────────────────────
+// ── Vers la galerie ──
 function scrollToGallery() {
-    document.querySelectorAll('.tab-btn').forEach(b => {
-        if (b.textContent.includes('Galerie')) b.click();
-    });
+    document.getElementById('galerie')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
-// ── Lightbox ──────────────────────────────────────────────────────────────
+// ── Visionneuse ──
 function openLightbox(url, caption) {
     document.getElementById('lightbox-img').src = url;
     document.getElementById('lightbox-caption').textContent = caption || '';
     const lb = document.getElementById('lightbox');
-    lb.classList.remove('hidden');
-    lb.classList.add('flex');
+    lb.classList.remove('hidden'); lb.classList.add('flex');
     document.body.style.overflow = 'hidden';
 }
 function closeLightbox() {
     const lb = document.getElementById('lightbox');
-    lb.classList.add('hidden');
-    lb.classList.remove('flex');
+    lb.classList.add('hidden'); lb.classList.remove('flex');
     document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ── Statut en direct (Côte d'Ivoire = UTC+0) ──
+(function () {
+    const box = document.querySelector('[data-pv]');
+    if (!box || box.dataset.open === undefined) return;
+    const open = +box.dataset.open, close = +box.dataset.close;
+    const status = box.querySelector('[data-pv-status]'), label = box.querySelector('[data-pv-label]'), sub = box.querySelector('[data-pv-sub]'), now = box.querySelector('[data-pv-now]');
+    const T = @json($pvLabels);
+    const fmt = m => String(Math.floor(m / 60) % 24).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+    function tick() {
+        const d = new Date(), m = d.getUTCHours() * 60 + d.getUTCMinutes();
+        let k, s;
+        if (m < open) { k = 'closed'; label.textContent = T.before; s = T.opens.replace(':h', fmt(open)); }
+        else if (m >= close) { k = 'closed'; label.textContent = T.after; s = T.reopen; }
+        else if (close - m <= 60) { k = 'soon'; label.textContent = T.soon; s = T.closes.replace(':h', fmt(close)); }
+        else { k = 'open'; label.textContent = T.open; s = T.closes.replace(':h', fmt(close)); }
+        status.className = 'pv-status is-' + k;
+        sub.textContent = s;
+        if (now) { now.hidden = false; now.style.left = (m / 14.4) + '%'; }
+    }
+    tick(); setInterval(tick, 60000);
+})();
+
+// ── Partager ──
+document.querySelector('[data-pv-share]')?.addEventListener('click', async e => {
+    const b = e.currentTarget, data = { title: document.title, url: location.href.split('#')[0] };
+    try {
+        if (navigator.share) { await navigator.share(data); return; }
+        await navigator.clipboard.writeText(data.url);
+        b.querySelector('span').textContent = b.dataset.done;
+    } catch (err) {}
+});
 </script>
 </body>
 </html>

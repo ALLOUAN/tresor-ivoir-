@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Événements — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ __('Événements') }} — {{ $siteBrand['site_name'] }}</title>
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -21,14 +20,14 @@
             inset: 0;
             z-index: -1;
             background:
-                radial-gradient(120% 80% at 5% 0%, rgba(242, 121, 15,0.12), transparent 50%),
-                radial-gradient(110% 70% at 90% 8%, rgba(148, 163, 184, 0.08), transparent 50%);
+                linear-gradient(transparent, transparent),
+                linear-gradient(transparent, transparent);
             pointer-events: none;
         }
         .events-hero {
             background-image:
-                linear-gradient(130deg, rgba(24,24,21,0.86), rgba(14,14,12,0.94)),
-                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%);
+                linear-gradient(rgba(19, 19, 17, 0.9), rgba(19, 19, 17, 0.9)),
+                linear-gradient(transparent, transparent);
             background-size: auto, auto;
             background-position: 0 0, 0 0;
             background-repeat: repeat, no-repeat;
@@ -61,7 +60,7 @@
         }
         .event-card {
             border: 1px solid rgba(255,255,255,0.07);
-            background: linear-gradient(180deg, rgba(255, 255, 255,0.96), rgba(14,14,12,0.96));
+            background: rgba(135, 135, 134, 0.96);
             box-shadow: 0 12px 36px rgba(0,0,0,0.3);
             transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color .25s ease, box-shadow .3s ease;
         }
@@ -80,7 +79,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.08) 45%, rgba(0,0,0,0.15));
+            background: rgba(0, 0, 0, 0.28);
             pointer-events: none;
         }
         .event-cover img {
@@ -101,7 +100,7 @@
             padding: 0.36rem;
             border-radius: 0.85rem;
             border: 1px solid rgba(255,255,255,0.1);
-            background: linear-gradient(130deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
             animation: ctaRowIn .55s cubic-bezier(.2,.8,.2,1) both;
         }
@@ -157,8 +156,8 @@
         }
         html:not(.dark) .events-hero {
             background-image:
-                linear-gradient(130deg, rgba(255,255,255,0.96), rgba(247,243,235,0.98)),
-                radial-gradient(circle at top right, rgba(242, 121, 15,0.1), transparent 40%);
+                linear-gradient(rgba(251, 249, 245, 0.97), rgba(251, 249, 245, 0.97)),
+                linear-gradient(transparent, transparent);
             background-size: auto, auto;
             background-position: 0 0, 0 0;
             background-repeat: repeat, no-repeat;
@@ -182,7 +181,7 @@
         html:not(.dark) .events-input::placeholder { color:#5c574e; }
         html:not(.dark) .event-card {
             border-color: rgba(0,0,0,0.1);
-            background: linear-gradient(180deg, #e9e5d9, #f8f4ec);
+            background: #f1ede3;
             box-shadow: 0 10px 24px rgba(0,0,0,0.06);
         }
         html:not(.dark) .event-card:hover {
@@ -194,14 +193,14 @@
             background:#e9e5d9;
         }
         html:not(.dark) .event-cover::after {
-            background: linear-gradient(to top, rgba(255,255,255,0.92), rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.06));
+            background: rgba(255, 255, 255, 0.39);
         }
         html:not(.dark) .event-cover-missing {
             background: rgba(235,229,218,0.95);
         }
         html:not(.dark) .event-cta-row {
             border-color: rgba(0,0,0,0.08);
-            background: linear-gradient(130deg, rgba(255,255,255,0.95), rgba(248,244,236,0.92));
+            background: rgba(252, 250, 246, 0.94);
         }
         html:not(.dark) .event-price-badge-modern {
             border-color: rgba(194, 94, 10,0.28);
@@ -210,6 +209,7 @@
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(194, 94, 10,0.14);
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="bg-[#ffffff] text-white">
     @include('partials.page-background')
@@ -221,110 +221,64 @@
             : null;
     @endphp
 
-    <section class="events-hero relative py-20 overflow-hidden"
+    <section class="events-hero hero-events relative py-20 overflow-hidden"
         @if($eventsHeroImage && $eventsHeroImage->isVisible())
             style="--events-hero-bg-image: url('{{ $eventsHeroImage->image_url }}');"
         @endif
     >
+        @include('partials.ivorian-motifs', ['culture' => 'evenements', 'band' => ! ($eventsHeroImage && $eventsHeroImage->isVisible())])
         <a href="{{ route('home') }}" class="absolute top-6 right-6 z-10 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-sm text-orange-300 hover:text-orange-200 hover:border-orange-400/45 hover:bg-orange-500/10 transition">
             <i class="fas fa-arrow-left text-[11px]"></i>
-            Retour accueil
+            {{ __('Retour accueil') }}
         </a>
         <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-            <div class="inline-block rounded-2xl bg-green-950/70 backdrop-blur-md px-6 py-8 sm:px-12 sm:py-10">
-                <p class="text-orange-300/90 text-[11px] tracking-[.26em] uppercase mb-3 font-semibold">Agenda culturel</p>
-                <h1 class="font-serif text-4xl md:text-5xl font-bold text-white leading-tight mb-4">Agenda des événements</h1>
-                <p class="text-gray-200 text-xl max-w-2xl mx-auto">Explorez les rendez-vous à venir avec une expérience de lecture premium.</p>
+            <div class="ti-hero-card inline-block rounded-2xl px-6 py-8 sm:px-12 sm:py-10">
+                <p class="text-orange-300/90 text-[11px] tracking-[.26em] uppercase mb-3 font-semibold">{{ __('Agenda culturel') }}</p>
+                <h1 class="font-serif text-4xl md:text-5xl font-bold text-white leading-tight mb-4">{{ __('Agenda des événements') }}</h1>
+                <p class="text-gray-200 text-xl max-w-2xl mx-auto">{{ __('Explorez les rendez-vous à venir avec une expérience de lecture premium.') }}</p>
             </div>
         </div>
     </section>
 
+@include('partials.hero-separator')
+
     <div class="events-shell max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <form method="GET" action="{{ route('events.index') }}" class="events-filter-panel rounded-2xl p-4 sm:p-5 grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
-            <input type="text" name="q" value="{{ $search }}" placeholder="Rechercher un événement..." class="events-input md:col-span-2 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-gray-500">
+            <input type="text" name="q" value="{{ $search }}" placeholder="{{ __('Rechercher un événement...') }}" class="events-input md:col-span-2 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-gray-500">
             <select name="categorie" class="events-input rounded-xl px-3.5 py-2.5 text-sm text-gray-200">
-                <option value="">Toutes catégories</option>
+                <option value="">{{ __('Toutes catégories') }}</option>
                 @foreach($categories as $cat)
-                    <option value="{{ $cat->slug }}" @selected($activeCategory?->id === $cat->id)>{{ $cat->name_fr }}</option>
+                    <option value="{{ $cat->slug }}" @selected($activeCategory?->id === $cat->id)>{{ $cat->localized('name') }}</option>
                 @endforeach
             </select>
             <select name="ville" class="events-input rounded-xl px-3.5 py-2.5 text-sm text-gray-200">
-                <option value="">Toutes villes</option>
+                <option value="">{{ __('Toutes villes') }}</option>
                 @foreach($cities as $v)
                     <option value="{{ $v }}" @selected($city === $v)>{{ $v }}</option>
                 @endforeach
             </select>
             <select name="periode" class="events-input rounded-xl px-3.5 py-2.5 text-sm text-gray-200">
-                <option value="upcoming" @selected($period === 'upcoming')>À venir</option>
-                <option value="past" @selected($period === 'past')>Passés</option>
-                <option value="all" @selected($period === 'all')>Tous</option>
+                <option value="upcoming" @selected($period === 'upcoming')>{{ __('À venir') }}</option>
+                <option value="past" @selected($period === 'past')>{{ __('Passés') }}</option>
+                <option value="all" @selected($period === 'all')>{{ __('Tous') }}</option>
             </select>
             <div class="md:col-span-5 flex flex-wrap gap-2">
                 <button class="inline-flex items-center gap-1.5 bg-orange-500 hover:bg-orange-400 text-black font-semibold px-4 py-2.5 rounded-xl text-sm transition">
                     <i class="fas fa-sliders text-[11px]"></i>
-                    Filtrer
+                    {{ __('Filtrer') }}
                 </button>
                 <a href="{{ route('events.index') }}" class="inline-flex items-center gap-1.5 bg-[#ffffff] hover:bg-[#ffffff] border border-white/10 px-4 py-2.5 rounded-xl text-sm transition">
                     <i class="fas fa-rotate-right text-[11px]"></i>
-                    Réinitialiser
+                    {{ __('Réinitialiser') }}
                 </a>
             </div>
         </form>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($events as $event)
-                <div class="event-card group rounded-2xl overflow-hidden relative">
-                    <a href="{{ route('events.show', $event->slug) }}" class="absolute inset-0 z-[1]" aria-label="Voir {{ $event->title_fr }}"></a>
-                    <div class="event-cover h-44">
-                        @if(!empty($event->cover_url))
-                            <img src="{{ $event->cover_url }}" alt="{{ $event->cover_alt ?: $event->title_fr }}" class="h-full w-full object-cover" loading="lazy" decoding="async">
-                        @else
-                            <div class="event-cover-missing h-full w-full flex items-center justify-center">
-                                <div class="text-center px-4">
-                                    <i class="fas fa-image text-orange-300/75 text-xl mb-2"></i>
-                                    <p class="text-[11px] uppercase tracking-[0.2em] text-orange-200/85 font-semibold">Couverture requise</p>
-                                </div>
-                            </div>
-                        @endif
-                        <div class="absolute top-3 left-3 z-[1]">
-                            <span class="inline-flex items-center rounded-full bg-green-950/50 border border-white/20 px-2.5 py-1 text-[10px] uppercase tracking-wide text-orange-200 font-semibold backdrop-blur">
-                                {{ $event->category->name_fr ?? 'Événement' }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h2 class="text-lg font-semibold leading-snug">{{ $event->title_fr }}</h2>
-                        <p class="text-gray-400 text-sm mt-3 flex items-center gap-1.5">
-                            <i class="fas fa-calendar text-[11px] text-orange-400/70"></i>
-                            {{ $event->starts_at?->format('d/m/Y H:i') }}
-                        </p>
-                        <p class="text-gray-500 text-sm mt-1.5 flex items-center gap-1.5">
-                            <i class="fas fa-location-dot text-[11px] text-orange-400/70"></i>
-                            {{ $event->city ?: 'Côte d\'Ivoire' }}
-                        </p>
-                        <div class="event-cta-row">
-                            <span class="event-price-badge-modern">
-                                <i class="fas fa-ticket text-[10px]"></i>
-                                @if($event->is_free || (float) ($event->price ?? 0) <= 0)
-                                    Gratuit
-                                @else
-                                    {{ number_format((float) $event->price, 0, ',', ' ') }} FCFA
-                                @endif
-                            </span>
-                            <a href="{{ $event->ticket_url ?: route('events.show', $event->slug) }}"
-                               @if($event->ticket_url) target="_blank" rel="noopener noreferrer" @endif
-                               class="event-ticket-btn-modern relative z-[2]">
-                                @if($event->ticket_url)
-                                    <i class="fas fa-ticket-simple text-[10px]"></i> Réserver
-                                @else
-                                    <i class="fas fa-arrow-right text-[10px]"></i> Voir détails
-                                @endif
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                @include('partials.event-card', ['event' => $event, 'headingTag' => 'h2'])
             @empty
-                <p class="text-gray-500 col-span-3 rounded-2xl border border-dashed border-white/12 bg-white/[0.02] px-5 py-10 text-center">Aucun événement trouvé.</p>
+                <p class="text-gray-500 col-span-3 rounded-2xl border border-dashed border-white/12 bg-white/[0.02] px-5 py-10 text-center">{{ __('Aucun événement trouvé.') }}</p>
             @endforelse
         </div>
 

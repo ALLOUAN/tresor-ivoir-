@@ -50,6 +50,67 @@ class WalletTransaction extends Model
 
     /** @var array<string, string> */
     public const TYPE_LABELS = [
+        'gift_sale_collected' => 'Bon cadeau encaissé',
+        'gift_commission' => 'Commission plateforme (bon cadeau)',
+        'gift_transfer_to_provider' => 'Transfert vers prestataire (bon cadeau)',
+        'gift_credit_pending' => 'Crédit bon cadeau (en attente d\'utilisation)',
+        'gift_credit_available' => 'Crédit bon cadeau (utilisé)',
+        'art_installment_1' => 'Acompte œuvre (paiement en plusieurs fois)',
+        'art_installment_2' => 'Échéance 2 — œuvre',
+        'art_installment_3' => 'Échéance 3 — œuvre',
+        'art_wallet_payment' => 'Paiement d\'œuvre depuis le solde',
+        'art_wallet_installment_1' => 'Acompte d\'œuvre depuis le solde',
+        'art_wallet_installment_2' => 'Échéance 2 depuis le solde',
+        'art_wallet_installment_3' => 'Échéance 3 depuis le solde',
+        'art_refund_client' => 'Remboursement d\'œuvre crédité',
+        'art_refund_platform' => 'Remboursement d\'œuvre (part plateforme)',
+        'art_commission_deposit_collected' => 'Acompte sur mesure encaissé',
+        'art_commission_balance_collected' => 'Solde sur mesure encaissé',
+        'art_commission_deposit_transfer' => 'Transfert artiste (acompte sur mesure)',
+        'art_commission_balance_transfer' => 'Transfert artiste (solde sur mesure)',
+        'art_commission_deposit_credit' => 'Crédit artiste (acompte sur mesure)',
+        'art_commission_balance_credit' => 'Crédit artiste (solde sur mesure)',
+        'art_commission_deposit_wallet_payment' => 'Acompte sur mesure depuis le solde',
+        'art_commission_balance_wallet_payment' => 'Solde sur mesure depuis le solde',
+        'art_commission_refund_client' => 'Remboursement sur mesure crédité',
+        'art_commission_refund_provider' => 'Remboursement sur mesure (part artiste)',
+        'art_commission_refund_platform' => 'Remboursement sur mesure (part plateforme)',
+        'transport_collected' => 'Transport encaissé',
+        'transport_transfer' => 'Transfert vers prestataire (transport)',
+        'transport_credit' => 'Crédit prestataire (transport)',
+        'transport_wallet_payment' => 'Paiement de transport depuis le solde',
+        'transport_refund_client' => 'Remboursement transport crédité',
+        'transport_refund_provider' => 'Remboursement transport (part prestataire)',
+        'transport_refund_platform' => 'Remboursement transport (part plateforme)',
+        'leisure_collected' => 'Activité de loisirs encaissée',
+        'leisure_transfer' => 'Transfert vers prestataire (loisirs)',
+        'leisure_credit' => 'Crédit prestataire (loisirs)',
+        'leisure_wallet_payment' => 'Paiement d\'activité depuis le solde',
+        'leisure_refund_client' => 'Remboursement activité crédité',
+        'leisure_refund_provider' => 'Remboursement activité (part prestataire)',
+        'leisure_refund_platform' => 'Remboursement activité (part plateforme)',
+        'leisure_pass_collected' => 'Carte multi-séances encaissée',
+        'leisure_pass_transfer' => 'Transfert vers prestataire (carte)',
+        'leisure_pass_credit' => 'Crédit prestataire (carte multi-séances)',
+        'leisure_pass_wallet_payment' => 'Achat de carte depuis le solde',
+        'tour_deposit_collected' => 'Acompte circuit encaissé',
+        'tour_balance_collected' => 'Solde circuit encaissé',
+        'tour_full_collected' => 'Circuit encaissé',
+        'tour_deposit_commission' => 'Commission plateforme (acompte circuit)',
+        'tour_balance_commission' => 'Commission plateforme (solde circuit)',
+        'tour_full_commission' => 'Commission plateforme (circuit)',
+        'tour_deposit_credit_pending' => 'Crédit agence — acompte circuit (en attente du départ)',
+        'tour_balance_credit_pending' => 'Crédit agence — solde circuit (en attente du départ)',
+        'tour_full_credit_pending' => 'Crédit agence — circuit (en attente du départ)',
+        'tour_credit_available' => 'Crédit agence — circuit (disponible)',
+        'tour_refund_client_credit' => 'Remboursement circuit crédité',
+        'tour_refund_provider_debit' => 'Remboursement circuit (part agence)',
+        'tour_refund_platform_debit' => 'Remboursement circuit (part plateforme)',
+        'booking_sale_collected' => 'Réservation encaissée',
+        'booking_commission' => 'Commission plateforme (réservation)',
+        'booking_transfer_to_provider' => 'Transfert vers prestataire (réservation)',
+        'booking_credit_pending' => 'Crédit prestataire réservation (en attente)',
+        'booking_credit_available' => 'Crédit prestataire réservation (disponible)',
         self::TYPE_DEPOSIT_COLLECTED => 'Acompte encaissé',
         self::TYPE_COMMISSION => 'Commission plateforme',
         self::TYPE_TRANSFER_TO_PROVIDER => 'Transfert vers prestataire',
@@ -98,6 +159,13 @@ class WalletTransaction extends Model
         'wallet_topup_id',
         'artwork_order_id',
         'tourist_visit_id',
+        'booking_request_id',
+        'tour_booking_id',
+        'activity_booking_id',
+        'leisure_pass_purchase_id',
+        'transport_booking_id',
+        'art_commission_id',
+        'gift_card_id',
         'reversed_by_transaction_id',
         'description',
         'metadata',
@@ -143,6 +211,21 @@ class WalletTransaction extends Model
         return $this->belongsTo(ArtworkOrder::class);
     }
 
+    public function artCommission(): BelongsTo
+    {
+        return $this->belongsTo(ArtCommission::class);
+    }
+
+    public function tourBooking(): BelongsTo
+    {
+        return $this->belongsTo(TourBooking::class);
+    }
+
+    public function bookingRequest(): BelongsTo
+    {
+        return $this->belongsTo(BookingRequest::class);
+    }
+
     public function touristVisit(): BelongsTo
     {
         return $this->belongsTo(TouristVisit::class);
@@ -155,11 +238,11 @@ class WalletTransaction extends Model
 
     public function labelForType(): string
     {
-        return self::TYPE_LABELS[$this->type] ?? $this->type;
+        return __(self::TYPE_LABELS[$this->type] ?? $this->type);
     }
 
     public function labelForStatus(): string
     {
-        return self::STATUS_LABELS[$this->status] ?? $this->status;
+        return __(self::STATUS_LABELS[$this->status] ?? $this->status);
     }
 }

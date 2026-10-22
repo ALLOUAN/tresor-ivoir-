@@ -6,7 +6,7 @@
     }
     $imgAlt = trim((string) ($media->alt_text ?? ''));
     if ($imgAlt === '') {
-        $imgAlt = trim((string) ($media->title ?? $media->original_name ?? 'Image'));
+        $imgAlt = trim((string) ($media->title ?? $media->original_name ?? __('Image')));
     }
     $title = trim((string) ($media->title ?? ''));
     $caption = trim((string) ($media->caption ?? ''));
@@ -18,7 +18,7 @@
     $authorInitial = $authorLabel ? mb_strtoupper(mb_substr($authorLabel, 0, 1)) : null;
 @endphp
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="scroll-smooth overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,11 +26,10 @@
     @if(!empty($siteBrand['favicon_url']))
         <link rel="icon" href="{{ $siteBrand['favicon_url'] }}" type="image/png">
     @endif
-    <title>{{ $pageTitle }} — Galerie — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ $pageTitle }} — {{ __('Galerie') }} — {{ $siteBrand['site_name'] }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $metaDesc }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <style>
         * { box-sizing: border-box; }
@@ -40,6 +39,7 @@
         ::-webkit-scrollbar-track { background:#f3f0ea; }
         ::-webkit-scrollbar-thumb { background: #f2790f; border-radius: 3px; }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="bg-[#e9e5d9] text-[#1c1915] antialiased font-sans">
     @include('partials.page-background')
@@ -55,15 +55,14 @@
                 <div class="relative rounded-[1.75rem] overflow-hidden bg-gray-100 shadow-[0_2px_24px_rgba(0,0,0,0.12)]">
                     <a href="{{ route('gallery.public') }}"
                        class="absolute top-4 left-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1c1915] shadow-md hover:bg-gray-100 transition"
-                       aria-label="Retour à la galerie" title="Retour à la galerie">
+                       aria-label="{{ __('Retour à la galerie') }}" title="{{ __('Retour à la galerie') }}">
                         <i class="fas fa-arrow-left text-sm"></i>
                     </a>
                     <a href="{{ url($media->url) }}" download
                        class="gallery-download-btn absolute top-4 right-4 z-10 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-red-600 text-white text-sm font-bold shadow-md hover:bg-red-700 transition"
                        data-media-uuid="{{ $media->uuid }}">
                         <i class="fas fa-download text-xs"></i>
-                        Télécharger
-                        (<span class="download-count">{{ $media->downloads_count ?? 0 }}</span>)
+                        {{ __('Télécharger (') }}<span class="download-count">{{ $media->downloads_count ?? 0 }}</span>)
                     </a>
                     <img src="{{ url($media->url) }}" alt="{{ $imgAlt }}"
                          class="w-full h-auto block">
@@ -99,7 +98,7 @@
             {{-- ══ Colonne droite : « Idées susceptibles de vous plaire » ══ --}}
             @if($relatedImages->isNotEmpty())
                 <div>
-                    <h2 class="font-plus text-lg sm:text-xl font-bold text-[#1c1915] mb-4">Idées susceptibles de vous plaire</h2>
+                    <h2 class="font-plus text-lg sm:text-xl font-bold text-[#1c1915] mb-4">{{ __('Idées susceptibles de vous plaire') }}</h2>
                     <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5">
                         @foreach($relatedImages as $img)
                             @include('gallery.partials.related-card', ['img' => $img, 'isLiked' => ($likedMediaIds[$img->id] ?? false)])

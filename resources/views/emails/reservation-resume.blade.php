@@ -7,7 +7,7 @@
 <body style="font-family: Arial, sans-serif; color: #1c1915; background:#f6f3ed; margin:0; padding:24px 0;">
     <table role="presentation" width="100%" style="max-width:560px; margin:0 auto; background:#ffffff; border:1px solid rgba(0,0,0,.08); border-radius:14px; overflow:hidden;" cellpadding="0" cellspacing="0">
         <tr>
-            <td style="background:linear-gradient(135deg,#1c1712,#14130f); padding:22px 26px;">
+            <td style="background:#181511; padding:22px 26px;">
                 @if(!empty($branding['logo_url']))
                     <img src="{{ $branding['logo_url'] }}" alt="{{ $branding['site_name'] }}" style="height:34px; display:block;">
                 @else
@@ -40,7 +40,7 @@
                 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px 0;">
                     <tr>
                         <td>
-                            <a href="{{ $guestRegistrationUrl }}" style="display:inline-block; padding:12px 20px; background:linear-gradient(135deg,#f4c65a,#f2790f,#c25e0a); color:#1b1408; font-weight:bold; text-decoration:none; border-radius:8px; font-size:13px;">
+                            <a href="{{ $guestRegistrationUrl }}" style="display:inline-block; padding:12px 20px; background:#e38a26; color:#1b1408; font-weight:bold; text-decoration:none; border-radius:8px; font-size:13px;">
                                 Terminer ma réservation
                             </a>
                         </td>

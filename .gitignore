@@ -25,3 +25,6 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /api.zip
+
+# Archives locales (ne pas versionner)
+/*.zip

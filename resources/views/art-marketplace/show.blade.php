@@ -1,293 +1,274 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $artwork->title }} — Art &amp; Créations — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ $artwork->title }} — {{ __('Art & Créations') }} — {{ $siteBrand['site_name'] }}</title>
+    <meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags((string) $artwork->description), 155) }}">
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
         .font-serif { font-family: 'Playfair Display', serif; }
-        .field-input { width: 100%; background: #f7f7f5; border: 1.5px solid rgba(20,18,12,0.10); border-radius: 10px; padding: 10px 12px; font-size: 14px; color: #1c1915; }
-        .field-input:focus { outline: none; border-color: #f2790f; box-shadow: 0 0 0 3px rgba(242,121,15,0.14); }
-        .btn-primary { background: #f2790f; color: #fff; font-weight: 700; }
-        .btn-primary:hover { background: #d4630a; }
+        /* Champs et boutons du module d'achat */
+        .field-input { width: 100%; background: #fff; border: 1.5px solid #e6dfd1; border-radius: 12px; padding: 11px 13px; font-size: 14px; color: #1c1915; }
+        .field-input:focus { outline: none; border-color: #ef7c2b; box-shadow: 0 0 0 3px rgba(239,124,43,.16); }
+        .btn-primary { background: #b9500a; color: #fff; font-weight: 700; }
+        .btn-primary:hover { background: #9a4308; }
+
+        /* Galerie : l'œuvre n'est jamais recadrée (object-fit: contain sur un mur neutre). */
+        .aw-stage { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 3.4; padding: clamp(18px, 4vw, 48px); border-radius: 28px; background: #ebe5da; overflow: hidden; }
+        .aw-stage img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 16px 22px rgba(29,26,22,.32)); cursor: zoom-in; }
+        .aw-stage__btn { position: absolute; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; border: 0; background: rgba(255,255,255,.95); color: #1d1a16; font-size: 13px; font-weight: 700; box-shadow: 0 6px 18px rgba(29,26,22,.18); cursor: pointer; }
+        .aw-stage__btn:hover { background: #fff; color: #9a4308; }
+        .aw-stage__btn:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .aw-stage__zoom { right: 16px; bottom: 16px; width: 40px; padding: 0; justify-content: center; }
+        .aw-stage__count { left: 16px; bottom: 16px; height: 32px; cursor: default; font-weight: 600; }
+        .aw-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 10px; }
+        .aw-thumb { aspect-ratio: 1; padding: 0; border: 2px solid transparent; border-radius: 14px; overflow: hidden; background: #ebe5da; cursor: pointer; }
+        .aw-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .aw-thumb.is-active { border-color: #b9500a; }
+        .aw-thumb:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+
+        /* Colonne d'achat */
+        .aw-side { position: sticky; top: 92px; }
+        .aw-title { margin: 8px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(30px, 2.4vw + 14px, 44px); font-weight: 700; line-height: 1.08; letter-spacing: -.015em; }
+        .aw-artist { display: flex; align-items: center; gap: 10px; margin: 12px 0 0; color: #3d372c; font-size: 14px; }
+        .aw-artist img, .aw-artist__ph { width: 36px; height: 36px; flex: none; border-radius: 999px; object-fit: cover; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; }
+        .aw-artist a { font-weight: 700; color: #1d1a16; } .aw-artist a:hover { color: #9a4308; text-decoration: underline; }
+        .aw-price { margin: 16px 0 0; font-size: 28px; font-weight: 800; color: #1d1a16; }
+        .aw-price small { font-size: 13px; font-weight: 600; color: #6b6458; }
+        .aw-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+        .aw-facts li { padding: 10px 12px; border-radius: 14px; background: #fff; border: 1px solid #ece5d6; }
+        .aw-facts small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #8a7f6b; }
+        .aw-facts b { display: block; margin-top: 2px; font-size: 13.5px; color: #1d1a16; }
+        .aw-side #acheter { margin-top: 18px; border-radius: 22px; border-color: #ece5d6; box-shadow: 0 18px 44px -28px rgba(29,26,22,.35); }
+
+        /* Sections */
+        .aw-sec { padding-top: 36px; margin-top: 36px; border-top: 1px solid #e6dfd1; }
+        .aw-h2 { margin: 0 0 14px; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.2vw + 16px, 30px); font-weight: 700; }
+        .aw-kicker { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #b9500a; }
+        .aw-text { margin: 0; font-size: 16px; line-height: 1.75; color: #3d372c; white-space: pre-line; }
+        .aw-dl { margin: 0; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; overflow: hidden; }
+        .aw-dl > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; padding: 12px 16px; border-top: 1px solid #f1ebe0; font-size: 14px; }
+        .aw-dl > div:first-child { border-top: 0; }
+        .aw-dl dt { color: #6b6458; } .aw-dl dd { margin: 0; color: #1d1a16; font-weight: 600; }
+        .aw-artist-card { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 18px; padding: 20px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
+        .aw-artist-card__photo { width: 96px; height: 96px; border-radius: 999px; object-fit: cover; background: #fdf4ec; color: #b9500a; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .aw-btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+        .aw-btn--dark { background: #1d1a16; color: #fff; } .aw-btn--dark:hover { background: #000; }
+        .aw-btn--line { border: 1.5px solid #ddd5c5; color: #1d1a16; background: #fff; } .aw-btn--line:hover { border-color: #b9500a; color: #9a4308; }
+        .aw-btn:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .aw-ship { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .aw-ship > div { display: flex; gap: 12px; padding: 14px 16px; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; font-size: 14px; color: #3d372c; }
+        .aw-ship i { width: 36px; height: 36px; flex: none; border-radius: 12px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; }
+        .aw-ship b { display: block; color: #1d1a16; }
+        .aw-more { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+        .aw-card { display: block; border-radius: 18px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; transition: border-color .15s ease, box-shadow .15s ease; }
+        .aw-card:hover { border-color: #ddd0bb; box-shadow: 0 14px 30px -20px rgba(29,26,22,.45); }
+        .aw-card__img { aspect-ratio: 1; background: #ebe5da; display: flex; align-items: center; justify-content: center; padding: 14px; }
+        .aw-card__img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .aw-card__body { display: block; padding: 10px 12px 12px; }
+        .aw-card__body b { display: block; font-family: 'Playfair Display', serif; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .aw-card__body small { font-size: 13px; color: #6b6458; }
+        .aw-flash { margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; font-size: 14px; }
+        @media (max-width: 1023px) { .aw-side { position: static; } .aw-more { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 639px) {
+            .aw-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .aw-dl > div { grid-template-columns: 110px minmax(0, 1fr); }
+            .aw-ship { grid-template-columns: 1fr; }
+            .aw-artist-card { grid-template-columns: 64px minmax(0, 1fr); padding: 16px; }
+            .aw-artist-card__photo { width: 64px; height: 64px; font-size: 22px; }
+        }
     </style>
+    @include('partials.detail-theme')
+    @include('partials.booking-page-theme')
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="text-[#1c1915]">
+<body class="dx text-[#1c1915]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
+@php
+    $fmt = fn (int $x) => number_format($x, 0, ',', ' ').' FCFA';
+    $images = collect($artwork->images ?? [])->filter()->values();
+    $profile = $artwork->provider ? \App\Models\ArtistProfile::forProvider($artwork->provider) : null;
+    $dims = $artwork->width_cm ? (float) $artwork->width_cm.' × '.(float) $artwork->height_cm.($artwork->depth_cm ? ' × '.(float) $artwork->depth_cm : '').' cm' : $artwork->dimensions;
+    $editions = $artwork->editions()->where('is_active', true)->get();
+    $sold = $artwork->status === \App\Models\Artwork::STATUS_SOLD;
+    $more = \App\Models\Artwork::where('provider_id', $artwork->provider_id)->whereKeyNot($artwork->id)
+        ->whereIn('status', [\App\Models\Artwork::STATUS_PUBLISHED, \App\Models\Artwork::STATUS_SOLD])->latest()->take(4)->get();
+    $delivery = $profile ? $profile->deliveryOptions($artwork) : [];
+@endphp
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-28 pb-16">
+<main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <a href="{{ route('art.index') }}" class="hx-back"><i class="fas fa-arrow-left" aria-hidden="true"></i>{{ __('Art & Créations') }}</a>
 
-        @if(session('success'))
-            <div class="mb-5 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
-                <i class="fas fa-circle-check mr-1"></i> {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="mb-5 px-4 py-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
-                <i class="fas fa-circle-exclamation mr-1"></i> {{ session('error') }}
-            </div>
-        @endif
+    <div class="mt-6">
+        @if(session('success'))<p class="aw-flash bg-emerald-50 border border-emerald-200 text-emerald-800"><i class="fas fa-circle-check mr-1" aria-hidden="true"></i>{{ session('success') }}</p>@endif
+        @if(session('error'))<p class="aw-flash bg-rose-50 border border-rose-200 text-rose-800"><i class="fas fa-circle-exclamation mr-1" aria-hidden="true"></i>{{ session('error') }}</p>@endif
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <div class="rounded-2xl overflow-hidden bg-[#14130f] aspect-square">
-                    @if(!empty($artwork->images[0]))
-                        <img id="artwork-main-image" src="{{ $artwork->images[0] }}" class="w-full h-full object-cover" alt="{{ $artwork->title }}">
-                    @endif
-                </div>
-                @if(count($artwork->images ?? []) > 1)
-                    <div class="grid grid-cols-4 gap-2 mt-2" id="artwork-thumbs">
-                        @foreach($artwork->images as $i => $img)
-                            <button type="button" data-thumb-src="{{ $img }}"
-                                    class="artwork-thumb rounded-lg overflow-hidden aspect-square border-2 transition {{ $i === 0 ? 'border-orange-500' : 'border-transparent' }}">
-                                <img src="{{ $img }}" class="w-full h-full object-cover" alt="">
-                            </button>
-                        @endforeach
-                    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        {{-- Galerie --}}
+        <div class="lg:col-span-7 min-w-0">
+            <div class="aw-stage">
+                @if($images->isNotEmpty())
+                    <img id="artwork-main-image" src="{{ $images[0] }}" alt="{{ $artwork->title }}">
+                    <button type="button" class="aw-stage__btn aw-stage__zoom" id="aw-zoom" aria-label="{{ __('Agrandir la photo') }}"><i class="fas fa-expand" aria-hidden="true"></i></button>
+                    @if($images->count() > 1)<span class="aw-stage__btn aw-stage__count"><i class="fas fa-images" aria-hidden="true"></i><span id="aw-count">1</span> / {{ $images->count() }}</span>@endif
+                @else
+                    <i class="fas fa-palette text-5xl text-[#b9500a]" aria-hidden="true"></i>
                 @endif
             </div>
-
-            <div>
-                <p class="text-[11px] uppercase tracking-wide text-orange-600 font-semibold mb-1">{{ $artwork->category?->name_fr }}</p>
-                <h1 class="font-serif text-2xl sm:text-3xl font-bold">{{ $artwork->title }}</h1>
-                @if($artwork->provider)
-                <a href="{{ route('providers.show', $artwork->provider->slug) }}" class="inline-flex items-center gap-2 text-[#8a7f6b] text-sm mt-1 hover:text-orange-600 transition group">
-                    @if($artwork->provider->cover_url || $artwork->provider->logo_url)
-                        <img src="{{ $artwork->provider->logo_url ?: $artwork->provider->cover_url }}" alt="" class="w-6 h-6 rounded-full object-cover border border-black/10">
-                    @endif
-                    Par <span class="font-medium group-hover:underline">{{ $artwork->provider->name }}</span>
-                </a>
-                @endif
-
-                <p class="text-2xl font-bold mt-4">{{ number_format((int) $artwork->price_xof, 0, ',', ' ') }} XOF</p>
-
-                @if($artwork->description)
-                    <p class="text-[#4a4436] text-sm mt-4 leading-relaxed whitespace-pre-line">{{ $artwork->description }}</p>
-                @endif
-
-                <div class="grid grid-cols-2 gap-3 mt-5 text-sm">
-                    @if($artwork->medium)
-                        <div><p class="text-[#8a7f6b] text-xs">Technique</p><p class="font-medium">{{ $artwork->medium }}</p></div>
-                    @endif
-                    @if($artwork->dimensions)
-                        <div><p class="text-[#8a7f6b] text-xs">Dimensions</p><p class="font-medium">{{ $artwork->dimensions }}</p></div>
-                    @endif
-                    @if($artwork->year_created)
-                        <div><p class="text-[#8a7f6b] text-xs">Année</p><p class="font-medium">{{ $artwork->year_created }}</p></div>
-                    @endif
+            @if($images->count() > 1)
+                <div class="aw-thumbs" id="artwork-thumbs">
+                    @foreach($images as $i => $img)
+                        <button type="button" class="aw-thumb artwork-thumb {{ $i === 0 ? 'is-active' : '' }}" data-thumb-src="{{ $img }}" aria-label="{{ __('Photo :n', ['n' => $i + 1]) }}"><img src="{{ $img }}" alt="" loading="lazy"></button>
+                    @endforeach
                 </div>
+            @endif
+        </div>
 
-                <div class="mt-6">
-                    @if($artwork->isAvailable())
-                        <button type="button" id="btn-acheter"
-                                data-uuid="{{ $artwork->uuid }}"
-                                data-title="{{ $artwork->title }}"
-                                data-price-label="{{ number_format((int) $artwork->price_xof, 0, ',', ' ') }} XOF"
-                                data-authenticated="{{ auth()->check() ? 'true' : 'false' }}"
-                                data-user-name="{{ auth()->check() ? trim(auth()->user()->first_name.' '.auth()->user()->last_name) : '' }}"
-                                data-user-email="{{ auth()->user()->email ?? '' }}"
-                                data-user-phone="{{ auth()->user()->phone ?? '' }}"
-                                class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl transition">
-                            <i class="fas fa-cart-plus"></i> Acheter cette œuvre
-                        </button>
-                    @else
-                        <span class="inline-flex items-center gap-2 bg-slate-200 text-slate-500 px-6 py-3 rounded-xl font-semibold">
-                            <i class="fas fa-circle-xmark"></i> Œuvre indisponible
-                        </span>
-                    @endif
+        {{-- Informations et achat --}}
+        <div class="lg:col-span-5 min-w-0">
+            <div class="aw-side">
+                <div class="hx-pills mb-0">
+                    @if($artwork->category)<span class="hx-pill"><i class="fas fa-palette" aria-hidden="true"></i>{{ $artwork->category->localized('name') }}</span>@endif
+                    @if($sold)<span class="hx-pill" style="background:#1d1a16;color:#fff">{{ __('Vendue') }}</span>@elseif($editions->isNotEmpty())<span class="hx-pill"><i class="fas fa-layer-group" aria-hidden="true"></i>{{ __('Éditions limitées') }}</span>@endif
                 </div>
+                <h1 class="aw-title">{{ $artwork->title }}</h1>
+                @if($profile)
+                    <p class="aw-artist">
+                        @if($profile->photo || $artwork->provider->logo_url)<img src="{{ $profile->photo ?: $artwork->provider->logo_url }}" alt="">@else<span class="aw-artist__ph"><i class="fas fa-palette" aria-hidden="true"></i></span>@endif
+                        <span>{{ __('Par') }} <a href="{{ route('artist.show', $profile->slug) }}">{{ $profile->display_name }}</a>@if($profile->city)<span class="text-[#8a7f6b]"> · {{ $profile->city }}</span>@endif</span>
+                    </p>
+                @endif
+                <p class="aw-price">{{ $fmt((int) $artwork->price_xof) }}@if($editions->isNotEmpty()) <small>· {{ __('tirages dès :a', ['a' => $fmt((int) $editions->min('price_xof'))]) }}</small>@endif</p>
+
+                <ul class="aw-facts">
+                    @if($artwork->medium)<li><small>{{ __('Technique') }}</small><b>{{ $artwork->medium }}</b></li>@endif
+                    @if($dims)<li><small>{{ __('Dimensions') }}</small><b>{{ $dims }}</b></li>@endif
+                    @if($artwork->year_created)<li><small>{{ __('Année') }}</small><b>{{ $artwork->year_created }}</b></li>@endif
+                </ul>
+                @include('art-marketplace._wall', ['artwork' => $artwork])
+                @include('art-marketplace._buy', ['artwork' => $artwork])
             </div>
         </div>
     </div>
 
-    {{-- Modal d'achat --}}
-    <div id="modal-achat" class="hidden fixed inset-0 z-[60] p-4 bg-black/50 backdrop-blur-sm items-center justify-center">
-        <div id="modal-backdrop" class="absolute inset-0"></div>
-        <div class="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl">
-            <div class="sticky top-0 flex items-center justify-between gap-4 px-5 py-4 border-b border-black/10 bg-white">
-                <h2 id="modal-title" class="font-serif text-lg font-semibold">Finaliser votre achat</h2>
-                <button id="modal-close" class="w-8 h-8 flex items-center justify-center rounded-full text-[#8a7f6b] hover:bg-black/5"><i class="fas fa-times"></i></button>
-            </div>
+    @if($artwork->description)
+        <section class="aw-sec max-w-3xl">
+            <p class="aw-kicker">{{ __('L\'œuvre') }}</p>
+            <h2 class="aw-h2">{{ __('À propos de l\'œuvre') }}</h2>
+            <p class="aw-text">{{ $artwork->description }}</p>
+        </section>
+    @endif
 
-            <div class="mx-5 mt-4 flex items-center justify-between rounded-xl border border-black/10 bg-[#f7f4ec] px-4 py-3">
-                <p id="modal-artwork-title" class="text-sm font-semibold"></p>
-                <span id="modal-artwork-price" class="rounded-full bg-[#f2790f] text-white text-xs font-bold px-3 py-1"></span>
-            </div>
-
-            <div id="step-register">
-                <form id="form-register" class="space-y-3 px-5 pt-4 pb-5">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="field-label text-xs text-[#6b6355]">Prénom *</label><input type="text" name="first_name" required class="field-input"></div>
-                        <div><label class="field-label text-xs text-[#6b6355]">Nom *</label><input type="text" name="last_name" required class="field-input"></div>
-                    </div>
-                    <div><label class="field-label text-xs text-[#6b6355]">Email *</label><input type="email" name="email" required class="field-input"></div>
-                    <div><label class="field-label text-xs text-[#6b6355]">Téléphone *</label><input type="tel" name="phone" required class="field-input"></div>
-                    <div><label class="field-label text-xs text-[#6b6355]">Mot de passe *</label><input type="password" name="password" required class="field-input"></div>
-                    <div id="register-error" class="hidden rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700"></div>
-                    <button type="submit" id="btn-submit-register" class="btn-primary w-full py-3 rounded-xl">
-                        <span id="btn-register-label">Créer mon compte et continuer</span>
-                    </button>
-                </form>
-            </div>
-
-            <div id="step-summary" class="hidden px-5 pb-5 pt-4 space-y-4">
-                <div class="rounded-xl border border-black/10 px-4 py-3 text-sm">
-                    <p id="summary-name" class="font-semibold"></p>
-                    <p id="summary-email" class="text-[#8a7f6b] text-xs"></p>
-                </div>
-                <div class="flex items-center justify-between rounded-xl border border-black/10 bg-[#f7f4ec] px-4 py-3">
-                    <span class="text-sm font-semibold">Total à payer</span>
-                    <span id="summary-total" class="text-lg font-bold text-[#f2790f]"></span>
-                </div>
-                <div id="pay-error" class="hidden rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700"></div>
-                <button type="button" id="btn-pay-cinetpay" class="btn-primary w-full py-3 rounded-xl">
-                    <span id="btn-pay-label">Payer via CinetPay</span>
-                </button>
+    <section class="aw-sec grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+            <p class="aw-kicker">{{ __('Fiche technique') }}</p>
+            <h2 class="aw-h2">{{ __('Détails') }}</h2>
+            <dl class="aw-dl">
+                <div><dt>{{ __('Titre') }}</dt><dd>{{ $artwork->title }}</dd></div>
+                @if($profile)<div><dt>{{ __('Artiste') }}</dt><dd>{{ $profile->display_name }}</dd></div>@endif
+                @if($artwork->category)<div><dt>{{ __('Catégorie') }}</dt><dd>{{ $artwork->category->localized('name') }}</dd></div>@endif
+                @if($artwork->medium)<div><dt>{{ __('Technique') }}</dt><dd>{{ $artwork->medium }}</dd></div>@endif
+                @if($dims)<div><dt>{{ __('Dimensions') }}</dt><dd>{{ $dims }}</dd></div>@endif
+                @if($artwork->year_created)<div><dt>{{ __('Année') }}</dt><dd>{{ $artwork->year_created }}</dd></div>@endif
+                <div><dt>{{ __('Exemplaire') }}</dt><dd>{{ $artwork->stock_quantity > 1 ? trans_choice(':count exemplaire|:count exemplaires', $artwork->stock_quantity) : __('Original, pièce unique') }}@if($editions->isNotEmpty()) · {{ trans_choice(':count édition limitée|:count éditions limitées', $editions->count()) }}@endif</dd></div>
+                <div><dt>{{ __('Authenticité') }}</dt><dd>{{ __('Certificat numéroté, vérifiable en ligne') }}</dd></div>
+            </dl>
+        </div>
+        <div>
+            <p class="aw-kicker">{{ __('Achat serein') }}</p>
+            <h2 class="aw-h2">{{ __('Livraison et retours') }}</h2>
+            <div class="aw-ship">
+                @foreach($delivery as $key => $opt)
+                    <div><i class="fas {{ $key === 'pickup' ? 'fa-store' : 'fa-truck' }}" aria-hidden="true"></i><span><b>{{ \Illuminate\Support\Str::before($opt['label'], ' — ') }}</b>{{ $opt['fee'] ? $fmt($opt['fee']) : __('Gratuit') }}@if($key === 'pickup' && $profile?->pickup_address)<br><small class="text-[#6b6458]">{{ $profile->pickup_address }}</small>@endif</span></div>
+                @endforeach
+                <div><i class="fas fa-shield-halved" aria-hidden="true"></i><span><b>{{ __('Assurance transport') }}</b>{{ __(':p % de la valeur, en option', ['p' => rtrim(rtrim(number_format((float) ($profile?->insurance_percent ?? 2), 2, ',', ''), '0'), ',')]) }}</span></div>
+                @if($profile?->returns_accepted)
+                    <div><i class="fas fa-rotate-left" aria-hidden="true"></i><span><b>{{ __('Retour sous :n jours', ['n' => \App\Models\ArtworkOrder::RETURN_DAYS]) }}</b>{{ __('après réception, œuvre dans son état d\'origine') }}</span></div>
+                @endif
+                <div><i class="fas fa-lock" aria-hidden="true"></i><span><b>{{ __('Paiement protégé') }}</b>{{ __('L\'artiste est payé après la réception') }}</span></div>
             </div>
         </div>
-    </div>
+    </section>
 
-    @include('partials.homepage-footer')
+    @if($profile)
+        <section class="aw-sec">
+            <p class="aw-kicker">{{ __('L\'artiste') }}</p>
+            <h2 class="aw-h2">{{ $profile->display_name }}</h2>
+            <div class="aw-artist-card">
+                @if($profile->photo)<img src="{{ $profile->photo }}" alt="{{ $profile->display_name }}" class="aw-artist-card__photo">@else<span class="aw-artist-card__photo"><i class="fas fa-palette" aria-hidden="true"></i></span>@endif
+                <div class="min-w-0">
+                    @if($profile->tagline)<p class="font-serif text-lg font-bold m-0">{{ $profile->tagline }}</p>@endif
+                    @if($profile->bio)<p class="aw-text text-[15px] mt-2">{{ \Illuminate\Support\Str::limit($profile->bio, 360) }}</p>@endif
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <a href="{{ route('artist.show', $profile->slug) }}" class="aw-btn aw-btn--dark">{{ __('Voir la page de l\'artiste') }}<i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                        @if($profile->accepts_commissions)<a href="{{ route('artist.commission', $profile->slug) }}" class="aw-btn aw-btn--line"><i class="fas fa-paintbrush" aria-hidden="true"></i>{{ __('Commande sur mesure') }}</a>@endif
+                    </div>
+                </div>
+            </div>
+        </section>
+    @endif
 
-    <script>
-    (function () {
-        // Galerie : clic sur une miniature -> affichage dans le grand cadre
-        const mainImage = document.getElementById('artwork-main-image');
-        const thumbs = document.querySelectorAll('.artwork-thumb');
-        if (mainImage && thumbs.length) {
-            thumbs.forEach((thumb) => {
-                thumb.addEventListener('click', () => {
-                    mainImage.src = thumb.dataset.thumbSrc;
-                    thumbs.forEach((t) => t.classList.toggle('border-orange-500', t === thumb));
-                    thumbs.forEach((t) => t.classList.toggle('border-transparent', t !== thumb));
-                });
-            });
-        }
-    })();
+    @if($more->isNotEmpty())
+        <section class="aw-sec">
+            <p class="aw-kicker">{{ $profile?->display_name }}</p>
+            <h2 class="aw-h2">{{ __('Autres œuvres de l\'artiste') }}</h2>
+            <div class="aw-more">
+                @foreach($more as $w)
+                    <a href="{{ route('art.show', $w->slug) }}" class="aw-card">
+                        <span class="aw-card__img">@if($w->images[0] ?? null)<img src="{{ $w->images[0] }}" alt="{{ $w->title }}" loading="lazy">@else<i class="fas fa-palette text-2xl text-[#b9500a]" aria-hidden="true"></i>@endif</span>
+                        <span class="aw-card__body"><b>{{ $w->title }}</b><small>{{ $w->status === \App\Models\Artwork::STATUS_SOLD ? __('Vendue') : $fmt((int) $w->price_xof) }}</small></span>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
+</main>
 
-    (function () {
-        const modal = document.getElementById('modal-achat');
-        const btnAcheter = document.getElementById('btn-acheter');
-        const btnClose = document.getElementById('modal-close');
-        const backdrop = document.getElementById('modal-backdrop');
-        const stepReg = document.getElementById('step-register');
-        const stepSum = document.getElementById('step-summary');
-        const formReg = document.getElementById('form-register');
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+<div class="tp-lb" id="tp-lb" role="dialog" aria-modal="true" aria-label="{{ __('Photos de l\'œuvre') }}">
+    <button type="button" data-lb-close style="top:16px;right:16px" aria-label="{{ __('Fermer') }}"><i class="fas fa-xmark"></i></button>
+    <button type="button" data-lb-step="-1" style="left:16px;top:50%" aria-label="{{ __('Photo précédente') }}"><i class="fas fa-chevron-left"></i></button>
+    <img src="" alt="{{ $artwork->title }}">
+    <button type="button" data-lb-step="1" style="right:16px;top:50%" aria-label="{{ __('Photo suivante') }}"><i class="fas fa-chevron-right"></i></button>
+</div>
 
-        let registerUrl = null;
-        let payUrl = null;
-
-        function openModal() { modal.classList.remove('hidden'); modal.classList.add('flex'); }
-        function closeModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
-
-        function showStep(step) {
-            stepReg.classList.toggle('hidden', step !== 'register');
-            stepSum.classList.toggle('hidden', step !== 'summary');
-        }
-
-        function fillSummary(name, email, priceLabel) {
-            document.getElementById('summary-name').textContent = name;
-            document.getElementById('summary-email').textContent = email;
-            document.getElementById('summary-total').textContent = priceLabel;
-        }
-
-        if (btnAcheter) {
-            btnAcheter.addEventListener('click', () => {
-                openModal();
-                const d = btnAcheter.dataset;
-                document.getElementById('modal-artwork-title').textContent = d.title;
-                document.getElementById('modal-artwork-price').textContent = d.priceLabel;
-
-                registerUrl = `/art-creations/achat/${d.uuid}/creer-et-payer`;
-                payUrl = `/art-creations/achat/${d.uuid}/payer`;
-
-                if (d.authenticated === 'true') {
-                    fillSummary(d.userName, d.userEmail, d.priceLabel);
-                    showStep('summary');
-                } else {
-                    showStep('register');
-                }
-            });
-        }
-
-        [btnClose, backdrop].forEach((el) => el?.addEventListener('click', closeModal));
-
-        formReg?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const errEl = document.getElementById('register-error');
-            const btnLbl = document.getElementById('btn-register-label');
-            const btnBtn = document.getElementById('btn-submit-register');
-            errEl.classList.add('hidden');
-            btnBtn.disabled = true;
-            btnLbl.textContent = 'Création en cours…';
-
-            const body = Object.fromEntries(new FormData(formReg));
-
-            try {
-                const res = await fetch(registerUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
-                    body: JSON.stringify(body),
-                });
-                const data = await res.json();
-
-                if (data.success && data.payment_url) {
-                    window.location.href = data.payment_url;
-                    return;
-                }
-
-                const msg = data.errors ? Object.values(data.errors).flat().join(' ') : (data.message || 'Une erreur est survenue.');
-                errEl.textContent = msg;
-                errEl.classList.remove('hidden');
-            } catch (err) {
-                errEl.textContent = 'Erreur réseau. Veuillez réessayer.';
-                errEl.classList.remove('hidden');
-            }
-
-            btnBtn.disabled = false;
-            btnLbl.textContent = 'Créer mon compte et continuer';
-        });
-
-        document.getElementById('btn-pay-cinetpay')?.addEventListener('click', async () => {
-            const errEl = document.getElementById('pay-error');
-            const btnLbl = document.getElementById('btn-pay-label');
-            const btnBtn = document.getElementById('btn-pay-cinetpay');
-            errEl.classList.add('hidden');
-            btnBtn.disabled = true;
-            btnLbl.textContent = 'Redirection en cours…';
-
-            try {
-                const res = await fetch(payUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
-                    body: JSON.stringify({}),
-                });
-                const data = await res.json();
-
-                if (data.success && data.payment_url) {
-                    window.location.href = data.payment_url;
-                    return;
-                }
-
-                errEl.textContent = data.message || 'Une erreur est survenue.';
-                errEl.classList.remove('hidden');
-            } catch (err) {
-                errEl.textContent = 'Erreur réseau. Veuillez réessayer.';
-                errEl.classList.remove('hidden');
-            }
-
-            btnBtn.disabled = false;
-            btnLbl.textContent = 'Payer via CinetPay';
-        });
-    })();
-    </script>
+@include('partials.homepage-footer')
+<script>
+(function () {
+    const photos = @json($images);
+    const main = document.getElementById('artwork-main-image');
+    if (!main || !photos.length) return;
+    const thumbs = Array.from(document.querySelectorAll('.artwork-thumb'));
+    const count = document.getElementById('aw-count');
+    let at = 0;
+    function show(i) {
+        at = (i + photos.length) % photos.length;
+        main.src = photos[at];
+        if (count) count.textContent = at + 1;
+        thumbs.forEach((t, k) => t.classList.toggle('is-active', k === at));
+    }
+    thumbs.forEach((t, k) => t.addEventListener('click', () => show(k)));
+    const lb = document.getElementById('tp-lb'), lbImg = lb.querySelector('img');
+    const open = () => { lbImg.src = photos[at]; lb.classList.add('is-open'); lb.querySelector('[data-lb-close]').focus(); };
+    main.addEventListener('click', open);
+    document.getElementById('aw-zoom')?.addEventListener('click', open);
+    lb.querySelector('[data-lb-close]').addEventListener('click', () => lb.classList.remove('is-open'));
+    lb.querySelectorAll('[data-lb-step]').forEach(b => b.addEventListener('click', () => { show(at + (+b.dataset.lbStep)); lbImg.src = photos[at]; }));
+    lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('is-open'); });
+    document.addEventListener('keydown', e => {
+        if (!lb.classList.contains('is-open')) return;
+        if (e.key === 'Escape') lb.classList.remove('is-open');
+        if (e.key === 'ArrowLeft') { show(at - 1); lbImg.src = photos[at]; }
+        if (e.key === 'ArrowRight') { show(at + 1); lbImg.src = photos[at]; }
+    });
+})();
+</script>
 </body>
 </html>

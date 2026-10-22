@@ -17,7 +17,7 @@ class ArtworkOrderController extends Controller
 {
     private function getProvider(): Provider
     {
-        $provider = Provider::query()->where('user_id', Auth::id())->first();
+        $provider = Provider::forUserQuery(Auth::id())->first();
         if (! $provider) {
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
@@ -99,8 +99,12 @@ class ArtworkOrderController extends Controller
             return back()->with('success', 'Commande marquée comme expédiée.');
         }
 
-        $artworkOrder->update(['status' => ArtworkOrder::STATUS_DELIVERED, 'delivered_at' => now()]);
-        $walletService->releaseArtworkOrderCredit($artworkOrder);
+        // Garantie de retour : la part de l'artiste est libérée 7 jours après la remise (tâche planifiée),
+        // pas immédiatement, sauf si l'artiste n'accepte pas les retours.
+        $artworkOrder->update(['status' => ArtworkOrder::STATUS_DELIVERED, 'delivered_at' => now(), 'received_at' => $artworkOrder->received_at ?? now()]);
+        if (! (\App\Models\ArtistProfile::where('provider_id', $artworkOrder->provider_id)->value('returns_accepted') ?? true)) {
+            $walletService->releaseArtworkOrderCredit($artworkOrder);
+        }
 
         $buyer?->notify(new VisitorSystemNotification(
             'Commande livrée',
@@ -108,6 +112,6 @@ class ArtworkOrderController extends Controller
             route('visitor.art-orders.index'),
         ));
 
-        return back()->with('success', 'Commande marquée comme livrée — votre solde a été crédité.');
+        return back()->with('success', 'Commande marquée comme remise. Votre part sera disponible après le délai de retour de '.ArtworkOrder::RETURN_DAYS.' jours.');
     }
 }

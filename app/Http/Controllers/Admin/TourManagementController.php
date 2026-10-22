@@ -15,6 +15,8 @@ use Illuminate\View\View;
 
 class TourManagementController extends Controller
 {
+    use \App\Http\Controllers\Concerns\ValidatesTourMarketFields;
+
     public function index(Request $request): View
     {
         $search = $request->get('q');
@@ -143,7 +145,7 @@ class TourManagementController extends Controller
             'price_xof' => ['required', 'integer', 'min:0'],
             'duration_days' => ['nullable', 'integer', 'min:1', 'max:365'],
             'max_participants' => ['nullable', 'integer', 'min:1', 'max:999'],
-        ]);
+        ]) + $this->tourMarketData($request);
     }
 
     /**

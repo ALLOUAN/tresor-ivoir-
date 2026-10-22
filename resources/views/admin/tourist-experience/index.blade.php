@@ -125,6 +125,11 @@
                 </div>
 
                 <h3 class="text-white font-semibold text-sm leading-tight mb-2 line-clamp-1">{{ $experience->name }}</h3>
+                @if(! $experience->active_visit_types_count)
+                    <a href="{{ route('admin.tourist-experiences.visit-types.index', $experience) }}" class="mb-2 inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-amber-300">
+                        <i class="fas fa-triangle-exclamation"></i> {{ __('Aucun type de visite') }}
+                    </a>
+                @endif
 
                 @if($experience->short_description)
                 <p class="text-slate-500 text-xs leading-relaxed line-clamp-2 mb-3">{{ $experience->short_description }}</p>
@@ -148,6 +153,9 @@
                         </form>
                     </div>
                     <div class="flex items-center gap-1">
+                        <a href="{{ route('admin.tourist-experiences.visit-types.index', $experience) }}" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="{{ __('Types de visite') }}" aria-label="{{ __('Types de visite') }}">
+                            <i class="fas fa-ticket-simple text-xs"></i>
+                        </a>
                         <a href="{{ route('admin.tourist-experiences.edit', $experience) }}" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-orange-900/40 flex items-center justify-center text-slate-400 hover:text-orange-300 transition" title="Modifier">
                             <i class="fas fa-pen text-xs"></i>
                         </a>

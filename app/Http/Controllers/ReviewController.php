@@ -28,11 +28,12 @@ class ReviewController extends Controller
                 ->where('user_id', Auth::id())->exists();
 
             if ($alreadyReviewed) {
-                return back()->with('error', 'Vous avez déjà laissé un avis pour cet établissement.');
+                return back()->with('error', __('Vous avez déjà laissé un avis pour cet établissement.'));
             }
 
             $data['user_id'] = Auth::id();
-            $data['author_name'] = $data['author_name'] ?: Auth::user()->full_name;
+            [$data['reservation_id'], $data['is_verified']] = Review::verifiedStayFor(Auth::user(), $provider);
+            $data['author_name'] = ($data['author_name'] ?? null) ?: Auth::user()->full_name;
         }
 
         $data['provider_id'] = $provider->id;
@@ -41,6 +42,6 @@ class ReviewController extends Controller
 
         Review::create($data);
 
-        return back()->with('success', 'Votre avis a été soumis et sera publié après modération. Merci !');
+        return back()->with('success', __('Votre avis a été soumis et sera publié après modération. Merci !'));
     }
 }

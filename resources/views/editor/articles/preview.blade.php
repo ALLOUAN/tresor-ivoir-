@@ -22,6 +22,7 @@
 @endsection
 
 @section('content')
+@include('partials.lettrine-style')
 <article class="max-w-3xl mx-auto space-y-6">
     <div class="text-xs text-slate-500 uppercase tracking-wider">
         {{ $article->category?->name_fr ?? 'Rubrique' }}

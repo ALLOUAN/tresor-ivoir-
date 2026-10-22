@@ -109,6 +109,11 @@
                 <div>
                     <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Document</p>
                     <p class="text-white text-sm font-medium">{{ $reg->labelForDocumentType() }} — {{ $reg->document_number }}</p>
+                    @if($reg->document_expiry_date)<p class="text-slate-500 text-xs mt-0.5">Valide jusqu'au {{ $reg->document_expiry_date->format('d/m/Y') }}</p>@endif
+                </div>
+                <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Nationalité</p>
+                    <p class="text-white text-sm font-medium">{{ $reg->nationality ?: '—' }}</p>
                 </div>
                 <div>
                     <p class="text-slate-500 text-xs uppercase tracking-wide mb-1">Type de voyage</p>
@@ -124,10 +129,12 @@
                 </div>
             </div>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ $reg->document_scan_front_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-id-card mr-1"></i>Pièce recto</a>
-                <a href="{{ $reg->document_scan_back_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-id-card mr-1"></i>Pièce verso</a>
-                <a href="{{ $reg->selfie_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-camera-retro mr-1"></i>Selfie</a>
-                <a href="{{ $reg->signature_url }}" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas fa-signature mr-1"></i>Signature</a>
+                {{-- Pièces sur disque privé : liens signés valables 30 minutes --}}
+                @foreach(['recto' => ['fa-id-card', 'Pièce recto'], 'verso' => ['fa-id-card', 'Pièce verso'], 'selfie' => ['fa-camera-retro', 'Selfie'], 'signature' => ['fa-signature', 'Signature']] as $kind => [$icon, $label])
+                    @if($url = $reg->fileUrl($kind))
+                        <a href="{{ $url }}" target="_blank" rel="noopener" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"><i class="fas {{ $icon }} mr-1"></i>{{ $label }}</a>
+                    @endif
+                @endforeach
             </div>
         @else
             <p class="text-slate-500 text-sm"><i class="fas fa-circle-info mr-1"></i>Le client n'a pas encore complété sa fiche d'enregistrement.</p>
@@ -160,5 +167,17 @@
             </form>
         @endif
     </div>
+
+    {{-- Arrivée : le client scanne ce code avec son téléphone et remplit sa fiche voyageur en quelques secondes. --}}
+    @if(! $reservation->guestRegistration && $reservation->status !== \App\Models\Reservation::STATUS_CANCELLED && $reservation->payment_status === \App\Models\Reservation::PAYMENT_DEPOSIT_PAID)
+        <div class="bg-green-900 border border-slate-800 rounded-xl p-5 flex flex-wrap items-center gap-5">
+            <img src="{{ \App\Support\Qr::dataUri($reservation->guestRegistrationUrl(), 200) }}" alt="QR code de la fiche voyageur" class="w-36 h-36 rounded-lg bg-white p-1">
+            <div class="flex-1 min-w-[200px]">
+                <h3 class="text-white font-semibold text-sm mb-1"><i class="fas fa-qrcode text-orange-400 mr-1"></i> Arrivée express</h3>
+                <p class="text-slate-400 text-sm">À la réception, montrez ce code au client : il le scanne avec son téléphone et remplit sa fiche d'enregistrement (identité, pièce, signature) sans paperasse.</p>
+                <a href="{{ $reservation->guestRegistrationUrl() }}" target="_blank" class="inline-flex items-center gap-1 mt-2 text-orange-300 hover:text-orange-200 text-sm"><i class="fas fa-up-right-from-square text-xs"></i> Ouvrir la fiche sur cet appareil</a>
+            </div>
+        </div>
+    @endif
 </div>
 @endsection

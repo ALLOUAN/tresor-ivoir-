@@ -71,7 +71,18 @@ class TouristController extends Controller
                     ->count();
             });
 
-        return view('tourist.city', compact('city', 'categories'));
+        // Affichage : sites incontournables et hébergements de la ville.
+        $sites = TouristSite::with(['category', 'media' => fn ($q) => $q->where('type', 'photo')->orderBy('sort_order')->limit(1)])
+            ->where('city_id', $city->id)->where('is_active', 1)
+            ->orderBy('is_featured', 'desc')->orderBy('sort_order')->orderBy('name')
+            ->get();
+
+        $accommodations = Accommodation::with(['city', 'provider', 'media' => fn ($q) => $q->where('type', 'photo')->orderBy('sort_order')->limit(2)])
+            ->where('city_id', $city->id)->where('is_active', 1)
+            ->orderBy('is_featured', 'desc')->orderBy('stars', 'desc')->orderBy('sort_order')
+            ->take(6)->get();
+
+        return view('tourist.city', compact('city', 'categories', 'sites', 'accommodations'));
     }
 
     public function category(string $citySlug, string $categorySlug)

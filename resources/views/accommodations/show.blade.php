@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="fr" id="html-root" class="overflow-x-hidden">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" id="html-root" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $accommodation->name }} — Résidences &amp; Hôtels — {{ $siteBrand['site_name'] }}</title>
+    <title>{{ $accommodation->name }} — {{ __('Résidences & Hôtels') }} — {{ $siteBrand['site_name'] }}</title>
+    @include('partials.share-meta', ['title' => $accommodation->name, 'description' => $accommodation->short_description ?: $accommodation->description, 'image' => $accommodation->cover_image ?: $accommodation->thumbnail, 'url' => route('accommodations.show', $accommodation)])
     @include('partials.theme-init')
     @include('partials.theme-light-bridge')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/fr.js"></script>
@@ -29,7 +29,7 @@
         .bkp-date-loading { position: relative; }
         .bkp-date-loading::after {
             content: ''; position: absolute; inset: 0; border-radius: .75rem;
-            background: repeating-linear-gradient(45deg, rgba(0,0,0,.03) 0, rgba(0,0,0,.03) 8px, transparent 8px, transparent 16px);
+            background: rgba(0, 0, 0, 0.02);
             pointer-events: none;
         }
     </style>
@@ -61,13 +61,13 @@
 
         .bento-card {
             border: 1px solid rgba(0,0,0,0.07);
-            background: linear-gradient(180deg, #ffffff, #fbf8f2);
+            background: #fdfcf9;
             box-shadow: 0 10px 28px rgba(20,18,12,0.06);
         }
         .bento-icon {
             width: 2.2rem; height: 2.2rem; border-radius: 0.75rem;
             display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, rgba(242,121,15,0.18), rgba(242,121,15,0.06));
+            background: rgba(242, 121, 15, 0.12);
             color: #d4630a;
         }
         .section-kicker { letter-spacing: .22em; }
@@ -75,7 +75,7 @@
         .related-tile { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 10px 26px rgba(20,18,12,0.06); transition: transform .25s ease, box-shadow .25s ease; }
         .related-tile:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(194,94,10,0.16); }
 
-        .booking-card { border: 1px solid rgba(0,0,0,0.08); background: linear-gradient(180deg, #ffffff, #fbf7ee); box-shadow: 0 20px 50px rgba(20,18,12,0.1); }
+        .booking-card { border: 1px solid rgba(0,0,0,0.08); background: #fdfbf7; box-shadow: 0 20px 50px rgba(20,18,12,0.1); }
         .bkp-room-card { transition: transform .18s ease, border-color .18s ease, background .18s ease; }
         .bkp-room-card:hover { transform: translateY(-2px); }
         .bkp-room-card.is-selected { border-color: rgba(242,121,15,0.55) !important; background: rgba(242,121,15,0.07) !important; box-shadow: 0 10px 22px rgba(242,121,15,0.14); }
@@ -86,282 +86,516 @@
             border-top: 1px solid rgba(0,0,0,0.08); background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
             box-shadow: 0 -10px 26px rgba(20,18,12,0.1); padding-bottom: env(safe-area-inset-bottom, 0);
         }
+
+        /* ══ Fiche hébergement — refonte visuelle (présentation seule) ══════════════════════════════
+           Galerie en mosaïque, en-tête éditorial, sections en cartes posées, module de réservation
+           « carte d'embarquement » ; aplats aux couleurs du logo, aucun dégradé. */
+        .hx-back { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #ece5d6; color: #9a4308; font-size: 13px; font-weight: 700; }
+        .hx-back:hover { border-color: #ef7c2b; color: #9a4308; }
+        .hx-back i { font-size: 11px; }
+        .hx-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; margin: 22px 0 22px; }
+        .hx-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .hx-pill { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border-radius: 999px; background: #fdf4ec; color: #9a4308; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+        .hx-pill.is-gold { background: #febf48; color: #1f1a0e; letter-spacing: .12em; }
+        .hx-pill.is-ok { background: #eef6f0; color: #14532d; text-transform: none; letter-spacing: 0; }
+        .hx-title { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(34px, 3.4vw + 14px, 56px); font-weight: 700; line-height: 1.04; letter-spacing: -.02em; color: #1d1a16; }
+        .hx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin: 14px 0 0; font-size: 15px; color: #4a443a; }
+        .hx-meta > span { display: inline-flex; align-items: center; gap: 7px; }
+        .hx-meta i { color: #1b6b3a; font-size: 13px; }
+        .hx-rate { height: 32px; padding: 0 12px; border-radius: 999px; background: #f6ecd5; color: #6f5416; font-weight: 700; font-size: 14px; }
+        .hx-rate i { color: #b8892b !important; }
+        .hx-rate small { font-weight: 500; font-size: 12px; }
+        .hx-rate.is-new { background: #eef6f0; color: #14532d; }
+        .hx-rate.is-new i { color: #1b6b3a !important; }
+        .hx-actions { display: flex; align-items: center; gap: 10px; }
+        .hx-actions .ti-round { background: #fff; border: 1px solid #ece5d6; box-shadow: none; }
+
+        .hx-gallery { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 10px; height: clamp(340px, 52vh, 540px); }
+        .hx-gallery.is-single { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+        .hx-gallery__main { grid-row: span 2; border-radius: 28px; overflow: hidden; position: relative; background: #f3eee4; }
+        .hx-gallery__main img { transition: transform .7s ease; }
+        .hx-gallery__main:hover img { transform: scale(1.03); }
+        .hx-gallery__empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .hx-gallery__empty i { width: 76px; height: 76px; border-radius: 999px; background: #fff; color: #ef7c2b; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; }
+        .hx-gallery__tile { position: relative; padding: 0; border: 0; border-radius: 22px; overflow: hidden; background: #f3eee4; cursor: pointer; }
+        .hx-gallery__tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+        .hx-gallery__tile:hover img { transform: scale(1.07); }
+        .hx-gallery__tile:focus-visible, .hx-arrow:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .hx-gallery__more { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(29,26,22,.55); color: #fff; font-size: 16px; font-weight: 700; }
+        .hx-gallery.is-single .hx-gallery__main { grid-row: auto; }
+        .hx-zoom, .hx-gallery__count { position: absolute; z-index: 2; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 999px; background: rgba(255,255,255,.95); color: #1d1a16; box-shadow: 0 2px 8px rgba(29,26,22,.18); }
+        .hx-zoom { right: 16px; bottom: 16px; width: 42px; height: 42px; font-size: 14px; }
+        .hx-gallery__room { position: absolute; z-index: 2; left: 16px; top: 16px; display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 999px; background: #1b6b3a; color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(29,26,22,.18); }
+        .hx-gallery__count { left: 16px; bottom: 16px; height: 32px; padding: 0 12px; font-size: 13px; font-weight: 700; }
+        .hx-arrow { position: absolute; top: 50%; z-index: 3; width: 46px; height: 46px; margin-top: -23px; border: 0; border-radius: 999px; background: rgba(255,255,255,.95); color: #1d1a16; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(29,26,22,.25); transition: transform .15s ease, background .15s ease; }
+        .hx-arrow:hover { background: #b9500a; color: #fff; transform: scale(1.06); }
+        .hx-arrow.is-prev { left: 16px; } .hx-arrow.is-next { right: 16px; }
+        .hx-videos { display: flex; gap: 10px; margin-top: 10px; }
+        .hx-videos__tile { position: relative; width: 120px; height: 80px; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #1d1a16; cursor: pointer; }
+        .hx-videos__tile img { width: 100%; height: 100%; object-fit: cover; }
+        .hx-videos__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(29,26,22,.35); }
+
+        /* Galerie « fiche produit » : bande de vignettes verticale + grande image */
+        .hx-gal { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px; height: clamp(360px, 58vh, 580px); }
+        .hx-gal.is-single { grid-template-columns: minmax(0, 1fr); }
+        .hx-gal__thumbs { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 2px; scrollbar-width: thin; scroll-snap-type: y proximity; }
+        .hx-gal__thumb { position: relative; flex: none; width: 84px; height: 84px; padding: 0; border: 2px solid transparent; border-radius: 16px; overflow: hidden; background: #f3eee4; cursor: pointer; opacity: .72; scroll-snap-align: start; transition: opacity .15s ease, border-color .15s ease, transform .15s ease; }
+        .hx-gal__thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .hx-gal__thumb:hover { opacity: 1; transform: translateY(-1px); }
+        .hx-gal__thumb.is-active { opacity: 1; border-color: #b9500a; box-shadow: 0 0 0 3px rgba(239,124,43,.18); }
+        .hx-gal__thumb:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .hx-gal__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(29,26,22,.45); font-size: 14px; }
+        .hx-gal__main { position: relative; border-radius: 28px; overflow: hidden; background: #f6f3ec; border: 1px solid #ece5d6; }
+        .hx-gal__main > img { transition: opacity .25s ease; }
+        .hx-gal__tools { position: absolute; z-index: 3; top: 14px; right: 14px; display: flex; flex-direction: column; gap: 8px; }
+        .hx-gal__tool { width: 42px; height: 42px; border: 0; border-radius: 999px; background: rgba(255,255,255,.96); color: #1d1a16; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; box-shadow: 0 2px 10px rgba(29,26,22,.18); transition: color .15s ease, transform .15s ease; }
+        .hx-gal__tool:hover { color: #b9500a; transform: scale(1.06); }
+        .hx-gal__tool.is-on { color: #e11d2a; }
+        .hx-gal__tool:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .hx-gal .hx-arrow { width: 44px; height: 44px; margin-top: -22px; }
+        @media (max-width: 767px) {
+            .hx-gal { grid-template-columns: minmax(0, 1fr); height: auto; gap: 10px; }
+            .hx-gal__main { order: -1; aspect-ratio: 4 / 3; border-radius: 22px; }
+            .hx-gal__thumbs { flex-direction: row; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x proximity; }
+            .hx-gal__thumb { width: 64px; height: 64px; border-radius: 12px; }
+            .hx-gal .hx-arrow { width: 38px; height: 38px; margin-top: -19px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .hx-gal__thumb, .hx-gal__main > img { transition: none; } }
+
+        .hx-tabs { position: sticky; top: 76px; z-index: 20; display: flex; gap: 4px; padding: 6px; overflow-x: auto; scrollbar-width: none; background: rgba(255,255,255,.96); border: 1px solid #ece5d6; border-radius: 999px; box-shadow: 0 10px 30px -24px rgba(29,26,22,.5); }
+        .hx-tabs::-webkit-scrollbar { display: none; }
+        .hx-tabs a { flex: none; height: 38px; padding: 0 16px; border-radius: 999px; display: inline-flex; align-items: center; color: #4a443a; font-size: 14px; font-weight: 600; transition: background .15s ease, color .15s ease; }
+        .hx-tabs a:hover { background: #fdf4ec; color: #9a4308; }
+        .hx-kicker { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #b9500a; }
+        .hx-h2 { margin: 0 0 18px; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.4vw + 16px, 30px); font-weight: 700; line-height: 1.15; color: #1d1a16; }
+        .hx-sechead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+        .hx-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; color: #9a4308; font-size: 14px; font-weight: 700; }
+        .hx-link i { font-size: 11px; transition: transform .2s ease; }
+        .hx-link:hover i { transform: translateX(3px); }
+        section[id] { scroll-margin-top: 150px; }
+
+        .hx-lead { margin: 0 0 14px; font-family: 'Playfair Display', serif; font-size: clamp(20px, 1vw + 14px, 24px); line-height: 1.4; color: #1d1a16; }
+        .hx-text { margin: 0; font-size: 16px; line-height: 1.75; color: #3d372c; white-space: pre-line; }
+        .hx-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 24px 0 0; padding: 0; list-style: none; }
+        .hx-facts li { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 14px; border-radius: 20px; background: #fff; border: 1px solid #ece5d6; font-size: 15px; font-weight: 700; color: #1d1a16; }
+        .hx-facts small { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #6b6458; }
+        .hx-facts__icon { width: 42px; height: 42px; flex-shrink: 0; border-radius: 14px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; }
+
+        .hx-amen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+        .hx-amen li { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 12px 14px; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; font-size: 14px; font-weight: 600; color: #1d1a16; }
+        .hx-amen__icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 999px; background: #eef6f0; color: #1b6b3a; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+
+        .hx-rooms { display: flex; flex-direction: column; gap: 14px; }
+        .hx-room { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 10px; background: #fff; border: 1px solid #ece5d6; border-radius: 26px; box-shadow: 0 14px 36px -30px rgba(29,26,22,.45); transition: transform .2s ease, border-color .2s ease; }
+        .hx-room:hover { transform: translateY(-3px); border-color: #d8cdb8; }
+        .hx-room__media { position: relative; height: 120px; border-radius: 18px; overflow: hidden; background: #f3eee4; display: flex; align-items: center; justify-content: center; color: #ef7c2b; font-size: 24px; }
+        .hx-room__media[role="button"] { cursor: zoom-in; }
+        .hx-room__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .hx-room__count { position: absolute; right: 8px; bottom: 8px; height: 24px; padding: 0 8px; border-radius: 999px; background: rgba(29,26,22,.7); color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; }
+        .hx-room__body { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+        .hx-room__name { margin: 0; font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #1d1a16; }
+        .hx-room__specs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+        .hx-room__specs li { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #f6f3ec; color: #3a352c; font-size: 12.5px; }
+        .hx-room__specs i { font-size: 11px; color: #b9500a; }
+        .hx-room__amen { margin: 0; font-size: 13px; color: #6b6458; }
+        .hx-room__badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+        .hx-room__badges span { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 999px; background: #febf48; color: #1f1a0e; font-size: 12px; font-weight: 700; }
+        .hx-room__badges i { font-size: 10px; }
+        .hx-room__cond { margin: 0; display: flex; gap: 6px; font-size: 12px; color: #6b6458; }
+        .hx-room__cond i { margin-top: 2px; color: #8a6a1f; }
+        .hx-room__side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; padding-right: 8px; }
+        .hx-room__price { margin: 0; text-align: right; line-height: 1.1; }
+        .hx-room__price small { display: block; margin-bottom: 3px; font-size: 11px; color: #6b6458; }
+        .hx-room__price strong { font-size: 22px; font-weight: 800; color: #1d1a16; letter-spacing: -.01em; }
+        .hx-room__price em { display: block; font-style: normal; font-size: 12px; color: #6b6458; }
+
+        .hx-cond { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .hx-cond__item { display: flex; gap: 14px; align-items: flex-start; padding: 18px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; font-size: 14px; line-height: 1.6; color: #3d372c; }
+        .hx-cond__item p { margin: 0; }
+        .hx-cond__item.is-ok { background: #eef6f0; border-color: #cfe4d5; color: #14532d; font-weight: 600; }
+        .hx-cond__item.is-wide { grid-column: 1 / -1; }
+        .hx-cond__icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 14px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; }
+        .hx-cond__item.is-ok .hx-cond__icon { background: #fff; color: #1b6b3a; }
+
+        .hx-map { position: relative; border-radius: 28px; overflow: hidden; background: #f3eee4; border: 1px solid #ece5d6; }
+        .hx-map iframe { display: block; width: 100%; height: 300px; border: 0; filter: saturate(.85); }
+        .hx-map__lock { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 14px; align-items: flex-start; padding: 16px; border-radius: 20px; background: rgba(255,255,255,.97); box-shadow: 0 12px 30px -16px rgba(29,26,22,.5); }
+        .hx-map__title { margin: 0; font-size: 15px; font-weight: 700; color: #1d1a16; }
+        .hx-map__text { margin: 4px 0 8px; font-size: 13px; line-height: 1.55; color: #6b6458; }
+        .hx-map__lock .hx-link { margin: 0; }
+        .hx-map:not(:has(iframe)) .hx-map__lock { position: static; }
+
+        .hx-score { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 18px; padding: 8px 16px 8px 8px; border-radius: 999px; background: #fff; border: 1px solid #ece5d6; font-size: 13px; color: #6b6458; }
+        .hx-score strong { width: 46px; height: 46px; border-radius: 999px; background: #1b6b3a; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 17px; }
+        .hx-score i { color: #b8892b; }
+        .hx-reviews { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .hx-review { padding: 18px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
+        .hx-review__head { display: flex; align-items: center; gap: 10px; }
+        .hx-review__avatar { width: 40px; height: 40px; flex-shrink: 0; border-radius: 999px; background: #327661; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+        .hx-review__name { display: block; font-size: 14px; font-weight: 700; color: #1d1a16; }
+        .hx-review__ok { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #1b6b3a; }
+        .hx-review__stars { margin-left: auto; display: inline-flex; gap: 2px; color: #b8892b; font-size: 12px; }
+        .hx-review__stars .is-off { color: #e3dccb; }
+        .hx-review__title { margin: 12px 0 0; font-size: 14px; font-weight: 700; color: #1d1a16; }
+        .hx-review__text { margin: 6px 0 0; font-size: 14px; line-height: 1.6; color: #4a443a; }
+
+        /* Module de réservation : carte nette, en-tête prix, sélection orange */
+        .booking-card { background: #fff !important; border: 1px solid #ece5d6 !important; border-radius: 30px !important; box-shadow: 0 26px 60px -36px rgba(29,26,22,.55) !important; }
+        .hx-book-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: -4px -4px 16px; padding: 14px 16px; border-radius: 22px; background: #1b6b3a; color: #fff; }
+        .hx-book-head small { display: block; font-size: 12px; color: #dcebd0; }
+        .hx-book-head strong { font-size: 26px; font-weight: 800; letter-spacing: -.01em; }
+        .hx-book-head em { font-style: normal; font-size: 13px; color: #dcebd0; }
+        .hx-book-head .hx-book-rate { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: 999px; background: #febf48; color: #1f1a0e; font-size: 13px; font-weight: 700; }
+        .bkp-room-card { border-radius: 18px !important; }
+        .bkp-room-card.is-selected { border-color: #b9500a !important; background: #fdf4ec !important; box-shadow: 0 0 0 3px rgba(239,124,43,.18) !important; }
+        .bkp-pay-method.is-active { border-color: #b9500a !important; background: #fdf4ec !important; }
+        #booking-module input, #booking-module .bkp-step { font-size: 15px; }
+        #booking-module input:focus { outline: 2px solid #ef7c2b; outline-offset: 0; border-color: #ef7c2b; }
+        #bkp-submit { background: #b9500a; color: #fff; box-shadow: 0 14px 30px -14px rgba(185,80,10,.7); border-radius: 999px; }
+        #bkp-submit:hover { background: #9a4308; }
+        /* Compte express : note sous les coordonnées et encart du code (saisi sans quitter la page) */
+        .bkx-note { display: flex; gap: 8px; margin: 2px 0 0; font-size: 12px; line-height: 1.45; color: #6b6458; }
+        .bkx-note i { margin-top: 2px; color: #1f8079; }
+        .bkx { margin: 0 0 12px; padding: 14px; border-radius: 18px; background: #fdf4ec; border: 1px solid #f1dcc4; }
+        .bkx[hidden] { display: none; }
+        .bkx-title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; font-weight: 800; color: #1d1a16; }
+        .bkx-title i { color: #b9500a; }
+        .bkx-text { margin: 4px 0 10px; font-size: 12.5px; color: #4a443a; }
+        .bkx-input { width: 100%; height: 52px; border-radius: 14px; border: 1.5px solid #e1d7c4; background: #fff; text-align: center; font-size: 24px; font-weight: 800; letter-spacing: .45em; color: #1d1a16; font-variant-numeric: tabular-nums; }
+        .bkx-input:focus { outline: none; border-color: #b9500a; box-shadow: 0 0 0 4px rgba(185,80,10,.14); }
+        .bkx-err { min-height: 0; margin: 6px 0 0; font-size: 12.5px; font-weight: 600; color: #b42318; }
+        .bkx-err:empty { display: none; }
+        .bkx-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 10px; }
+        .bkx-ok { flex: 1 1 100%; height: 46px; border: 0; border-radius: 999px; background: #b9500a; color: #fff; font-size: 14px; font-weight: 800; cursor: pointer; }
+        .bkx-ok:hover { background: #9a4308; }
+        .bkx-ok[disabled] { opacity: .6; cursor: progress; }
+        .bkx-link { border: 0; padding: 0; background: none; font-size: 12.5px; font-weight: 700; color: #9a4308; cursor: pointer; }
+        .bkx-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+        .bkx-link[disabled] { color: #a89e8b; cursor: default; text-decoration: none; }
+        .bkx-hint { margin: 8px 0 0; font-size: 11.5px; color: #8a7f6b; }
+
+        @media (max-width: 1023px) {
+            .hx-gallery { grid-template-columns: 1fr 1fr; grid-template-rows: 2fr 1fr; height: auto; }
+            .hx-gallery__main { grid-column: 1 / -1; grid-row: auto; aspect-ratio: 16 / 10; }
+            .hx-gallery__tile { aspect-ratio: 4 / 3; }
+            .hx-gallery__tile:nth-of-type(n+4) { display: none; }
+        }
+        @media (max-width: 767px) {
+            .hx-head { align-items: flex-start; }
+            .hx-actions .ti-cta { display: none; }
+            .hx-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .hx-amen, .hx-cond, .hx-reviews { grid-template-columns: 1fr; }
+            .hx-room { grid-template-columns: 96px minmax(0, 1fr); }
+            .hx-room__media { height: 96px; }
+            .hx-room__side { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; padding: 8px 4px 2px; border-top: 1px solid #ece5d6; }
+            .hx-room__price { text-align: left; }
+            .hx-map__lock { position: static; margin: 0; border-radius: 0; box-shadow: none; }
+            .hx-tabs { top: 64px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .hx-room, .hx-gallery__main img, .hx-gallery__tile img { transition: none; } }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
 <body class="text-[#1c1915]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <a href="{{ route('accommodations.index') }}" class="inline-flex items-center gap-2 text-[#c25e0a] hover:text-[#a24d08] transition text-sm font-semibold">
-            <i class="fas fa-arrow-left text-[11px]"></i> Résidences &amp; Hôtels
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+        <a href="{{ route('accommodations.index') }}" class="hx-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> {{ __('Résidences & Hôtels') }}
         </a>
 
         @php
             $photos = $accommodation->photos;
             $mainPhoto = $photos->first()?->url ?: $accommodation->cover_image;
+            $hxRating = (float) ($accommodation->provider?->rating_avg ?? 0);
+            $hxReviews = (int) ($accommodation->provider?->rating_count ?? 0);
+            $hxPrices = collect($accommodation->room_types ?? [])->pluck('price_xof')->filter(fn ($p) => (int) $p > 0);
+            $hxWhere = collect([$accommodation->quartier, $accommodation->city?->name, $accommodation->city?->region_administrative])->filter()->unique()->join(' · ');
         @endphp
 
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start mt-4">
-            <div class="lg:col-span-3 space-y-14">
-
-                {{-- ── GALERIE ────────────────────────────────────────────── --}}
-                @php
-                    $heroGalleryItems = collect();
-                    if ($mainPhoto) {
-                        $heroGalleryItems->push(['type' => 'photo', 'url' => $mainPhoto]);
-                    }
-                    foreach ($photos->skip(1)->take(4) as $p) {
-                        $heroGalleryItems->push(['type' => 'photo', 'url' => $p->url]);
-                    }
-                    foreach ($accommodation->videos as $v) {
-                        $heroGalleryItems->push(['type' => 'video', 'embedUrl' => $v->embedUrl(), 'url' => $v->url]);
-                    }
-                @endphp
-                <script id="hero-gallery-json" type="application/json">@json($heroGalleryItems->values())</script>
-                <div class="space-y-3 reveal is-visible">
-                    <div class="hero-cover rounded-3xl relative" id="hero-cover" style="height:clamp(320px,55vh,520px)">
-                        @if($mainPhoto)
-                            <img id="hero-cover-img" src="{{ $mainPhoto }}" alt="{{ $accommodation->name }}"
-                                 class="w-full h-full object-cover cursor-zoom-in" loading="lazy"
-                                 onclick="openLightbox(this.src)">
-                            <span id="hero-zoom-hint" class="zoom-hint absolute bottom-4 right-4 w-10 h-10 rounded-full bg-black/55 border border-white/20 backdrop-blur flex items-center justify-center text-white pointer-events-none">
-                                <i class="fas fa-magnifying-glass-plus text-sm"></i>
-                            </span>
-                        @else
-                            <div id="hero-cover-empty" class="w-full h-full flex items-center justify-center text-white/30"><i class="fas fa-hotel text-4xl"></i></div>
-                        @endif
-                        <div id="hero-cover-video-wrap" class="absolute inset-0 hidden">
-                            <iframe id="hero-cover-video-iframe" src="" class="w-full h-full hidden" loading="lazy"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen></iframe>
-                            <video id="hero-cover-video-native" src="" controls preload="metadata" class="w-full h-full object-cover hidden"></video>
-                        </div>
-                        <div class="absolute top-5 left-5 flex flex-wrap gap-2">
-                            <span class="inline-flex items-center rounded-full bg-black/55 border border-white/20 px-3.5 py-1.5 text-[10px] uppercase tracking-wide text-orange-100 font-bold backdrop-blur">
-                                {{ $accommodation->type_label }}
-                            </span>
-                            @if($accommodation->stars)
-                            <span class="inline-flex items-center rounded-full bg-black/55 border border-white/20 px-3.5 py-1.5 text-[10px] text-orange-100 font-bold backdrop-blur">
-                                {{ str_repeat('★', $accommodation->stars) }}
-                            </span>
-                            @endif
-                        </div>
-
-                        @if($heroGalleryItems->count() > 1)
-                        <button onclick="heroSlide(-1)" class="glass-arrow absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 h-10 pl-3 pr-4 rounded-full text-white z-10 active:scale-95">
-                            <i class="fas fa-arrow-left text-xs"></i>
-                            <span class="text-[11px] text-white/60 hidden sm:inline">Préc.</span>
-                        </button>
-                        <button onclick="heroSlide(+1)" class="glass-arrow absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 h-10 pl-4 pr-3 rounded-full text-white z-10 active:scale-95">
-                            <span class="text-[11px] text-white/60 hidden sm:inline">Suiv.</span>
-                            <i class="fas fa-arrow-right text-xs"></i>
-                        </button>
-                        @endif
-                    </div>
-
-                    @if($photos->count() > 1)
-                    <div class="grid grid-cols-4 gap-2">
-                        @foreach($photos->skip(1)->take(4) as $i => $p)
-                        <div class="gallery-tile aspect-square" onclick="showHeroItem({{ $i + 1 }})">
-                            <img src="{{ $p->url }}" alt="" class="w-full h-full object-cover" loading="lazy">
-                        </div>
-                        @endforeach
-                    </div>
+        {{-- ── EN-TÊTE : type, nom, lieu, note, actions ─────────────────── --}}
+        <header class="hx-head reveal is-visible">
+            <div class="min-w-0">
+                <div class="hx-pills">
+                    <span class="hx-pill"><i class="fas fa-hotel" aria-hidden="true"></i>{{ $accommodation->type_label }}</span>
+                    @if($accommodation->stars)
+                        <span class="hx-pill is-gold" aria-label="{{ $accommodation->stars }} {{ __('étoiles') }}">{{ str_repeat('★', $accommodation->stars) }}</span>
                     @endif
+                    @if($accommodation->provider?->is_verified)
+                        <span class="hx-pill is-ok"><i class="fas fa-circle-check" aria-hidden="true"></i>{{ __('Vérifié') }}</span>
+                    @endif
+                </div>
+                <h1 class="hx-title">{{ $accommodation->name }}</h1>
+                <p class="hx-meta">
+                    @if($hxWhere)<span><i class="fas fa-location-dot" aria-hidden="true"></i>{{ $hxWhere }}</span>@endif
+                    @if($hxRating > 0)
+                        <span class="hx-rate"><i class="fas fa-star" aria-hidden="true"></i>{{ number_format($hxRating, 1, ',', ' ') }}@if($hxReviews > 0)<small>({{ trans_choice(':count avis|:count avis', $hxReviews) }})</small>@endif</span>
+                    @else
+                        <span class="hx-rate is-new"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>{{ __('Nouveau') }}</span>
+                    @endif
+                </p>
+            </div>
+            <div class="hx-actions">
+                <button type="button" class="ti-round" data-place-share="{{ route('accommodations.show', $accommodation->slug) }}" data-place-title="{{ $accommodation->name }}" aria-label="{{ __('Partager :name', ['name' => $accommodation->name]) }}" title="{{ __('Partager') }}"><i class="fas fa-share-nodes" aria-hidden="true"></i></button>
+                @include('partials.place-card-fav', ['providerId' => $accommodation->provider_id, 'name' => $accommodation->name, 'favClass' => 'ti-round'])
+                @if($hxPrices->isNotEmpty())
+                    <a href="#booking-module" class="ti-cta">{{ __('Réserver') }}<i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                @endif
+            </div>
+        </header>
 
-                    @if($accommodation->videos->isNotEmpty())
-                    @php $videoIndexOffset = 1 + min($photos->count() - 1, 4); @endphp
-                    <div class="grid grid-cols-4 gap-2">
-                        @foreach($accommodation->videos as $i => $v)
-                        <div class="gallery-tile aspect-square relative" onclick="showHeroItem({{ $videoIndexOffset + $i }})">
-                            @if($v->videoThumbnailUrl())
-                                <img src="{{ $v->videoThumbnailUrl() }}" alt="" class="w-full h-full object-cover" loading="lazy">
+        {{-- ── GALERIE en mosaïque (photo principale + 4 vignettes) ───────── --}}
+        @php
+            // Photos de la galerie : celles de la chambre demandée (?room=…) en premier, puis celles de
+            // l'établissement ; sans chambre précisée, l'établissement puis toutes les chambres.
+            $hxRoomPhotos = fn ($room) => array_values(array_filter((array) ($room['photos'] ?? [])));
+            $hxRooms = collect($accommodation->room_types ?? []);
+            $hxSelectedRoom = is_string(request('room')) ? $hxRooms->first(fn ($r) => ($r['name'] ?? null) === request('room')) : null;
+            $hxHotelUrls = collect([$mainPhoto])->merge($photos->pluck('url'))->filter();
+            $hxGalleryUrls = ($hxSelectedRoom
+                    ? collect($hxRoomPhotos($hxSelectedRoom))->merge($hxHotelUrls)
+                    : $hxHotelUrls->merge($hxRooms->flatMap($hxRoomPhotos)))
+                ->filter()->unique()->values();
+            $hxGalleryLabel = $hxSelectedRoom && $hxRoomPhotos($hxSelectedRoom) ? $hxSelectedRoom['name'] : null;
+            $mainPhoto = $hxGalleryUrls->first();
+
+            $heroGalleryItems = $hxGalleryUrls->map(fn ($url) => ['type' => 'photo', 'url' => $url]);
+            foreach ($accommodation->videos as $v) {
+                $heroGalleryItems->push(['type' => 'video', 'embedUrl' => $v->embedUrl(), 'url' => $v->url]);
+            }
+            $hxThumbs = $hxGalleryUrls->slice(1, 4)->values();
+            $hxMorePhotos = max(0, $hxGalleryUrls->count() - 5);
+        @endphp
+        <script id="hero-gallery-json" type="application/json">@json($heroGalleryItems->values())</script>
+        <div class="hx-gal {{ $heroGalleryItems->count() <= 1 ? 'is-single' : '' }} reveal is-visible">
+            {{-- Bande de vignettes : toutes les photos (et vidéos), la vignette active est encadrée --}}
+            @if($heroGalleryItems->count() > 1)
+                <div class="hx-gal__thumbs" aria-label="{{ __('Photos de :name', ['name' => $accommodation->name]) }}">
+                    @foreach($heroGalleryItems as $i => $item)
+                        <button type="button" class="hx-gal__thumb {{ $i === 0 ? 'is-active' : '' }}" data-hero-index="{{ $i }}"
+                                onclick="showHeroItem({{ $i }})" aria-label="{{ $item['type'] === 'video' ? __('Lire la vidéo') : __('Voir la photo :n', ['n' => $i + 1]) }}"
+                                aria-current="{{ $i === 0 ? 'true' : 'false' }}">
+                            @if($item['type'] === 'video')
+                                @php $vThumb = $accommodation->videos->firstWhere('url', $item['url'])?->videoThumbnailUrl(); @endphp
+                                @if($vThumb)<img src="{{ $vThumb }}" alt="" loading="lazy" decoding="async">@endif
+                                <span class="hx-gal__play" aria-hidden="true"><i class="fas fa-play"></i></span>
                             @else
-                                <div class="w-full h-full bg-black/80"></div>
+                                <img src="{{ $item['url'] }}" alt="" loading="lazy" decoding="async">
                             @endif
-                            <span class="absolute inset-0 flex items-center justify-center bg-black/35">
-                                <i class="fas fa-play text-white text-lg"></i>
-                            </span>
-                        </div>
-                        @endforeach
-                    </div>
+                        </button>
+                    @endforeach
+                </div>
+            @endif
+
+            <div class="hero-cover hx-gal__main" id="hero-cover">
+                @if($hxGalleryLabel)
+                    <span class="hx-gallery__room"><i class="fas fa-bed" aria-hidden="true"></i>{{ __('Photos : :room', ['room' => $hxGalleryLabel]) }}</span>
+                @endif
+                @if($mainPhoto)
+                    <img id="hero-cover-img" src="{{ $mainPhoto }}" alt="{{ $hxGalleryLabel ? $hxGalleryLabel.' — '.$accommodation->name : $accommodation->name }}"
+                         class="w-full h-full object-cover cursor-zoom-in" decoding="async"
+                         onclick="openLightbox(this.currentSrc || this.src)">
+                @else
+                    <div id="hero-cover-empty" class="hx-gallery__empty"><i class="fas fa-hotel" aria-hidden="true"></i></div>
+                @endif
+                <div id="hero-cover-video-wrap" class="absolute inset-0 hidden">
+                    <iframe id="hero-cover-video-iframe" src="" class="w-full h-full hidden" loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    <video id="hero-cover-video-native" src="" controls preload="metadata" class="w-full h-full object-cover hidden"></video>
+                </div>
+
+                {{-- Actions en haut à droite : favori, agrandir --}}
+                <div class="hx-gal__tools">
+                    @include('partials.place-card-fav', ['providerId' => $accommodation->provider_id, 'name' => $accommodation->name, 'favClass' => 'hx-gal__tool'])
+                    @if($mainPhoto)
+                        <button type="button" id="hero-zoom-hint" class="hx-gal__tool" onclick="const i = document.getElementById('hero-cover-img'); openLightbox(i.currentSrc || i.src)" aria-label="{{ __('Agrandir la photo') }}" title="{{ __('Agrandir la photo') }}"><i class="fas fa-expand" aria-hidden="true"></i></button>
                     @endif
                 </div>
 
-                {{-- ── EN-TÊTE + DESCRIPTION ──────────────────────────────── --}}
-                <section class="reveal">
-                    <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ $accommodation->type_label }}</p>
-                    <h1 class="font-serif text-3xl sm:text-4xl font-bold mb-2">{{ $accommodation->name }}</h1>
-                    <p class="text-[#8a7f6b] text-sm mb-6">
-                        <i class="fas fa-location-dot text-[#d4630a]/70 mr-1"></i>
-                        {{ $accommodation->city?->name }}{{ $accommodation->city?->region_administrative ? ' · '.$accommodation->city->region_administrative : '' }}
-                        @if($accommodation->provider && $accommodation->provider->rating_avg)
-                        <span class="ml-2 inline-flex items-center gap-1 text-[#c25e0a] font-bold"><i class="fas fa-star text-[10px]"></i> {{ number_format((float) $accommodation->provider->rating_avg, 1) }}</span>
-                        @endif
-                    </p>
+                @if($heroGalleryItems->count() > 1)
+                    <button type="button" onclick="heroSlide(-1)" class="hx-arrow is-prev" aria-label="{{ __('Photo précédente') }}"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                    <button type="button" onclick="heroSlide(+1)" class="hx-arrow is-next" aria-label="{{ __('Photo suivante') }}"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                    <span class="hx-gallery__count"><i class="fas fa-images" aria-hidden="true"></i><span id="hero-index">1</span>&nbsp;/&nbsp;{{ $heroGalleryItems->count() }}</span>
+                @endif
+            </div>
+        </div>
 
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-start mt-8">
+            <div class="lg:col-span-3 space-y-12">
+
+                {{-- Navigation de la fiche (ancres) --}}
+                <nav class="hx-tabs" aria-label="{{ __('Sections de la fiche') }}">
+                    <a href="#apercu">{{ __('Aperçu') }}</a>
+                    @if(!empty($accommodation->amenities))<a href="#equipements">{{ __('Équipements') }}</a>@endif
+                    @if(!empty($accommodation->room_types))<a href="#chambres-disponibles">{{ __('Chambres') }}</a>@endif
+                    <a href="#conditions">{{ __('Conditions') }}</a>
+                    <a href="#localisation">{{ __('Localisation') }}</a>
+                    @if($reviews->isNotEmpty())<a href="#avis">{{ __('Avis') }}</a>@endif
+                </nav>
+
+                {{-- ── APERÇU ─────────────────────────────────────────────── --}}
+                <section class="reveal" id="apercu">
                     @if($accommodation->short_description)
-                    <p class="text-[#3d372c] text-base font-medium mb-3">{{ $accommodation->short_description }}</p>
+                        <p class="hx-lead">{{ $accommodation->localized('short_description') }}</p>
                     @endif
-                    <p class="text-[#3d372c] leading-relaxed text-[15px] whitespace-pre-line">{{ $accommodation->description ?: 'Description non disponible.' }}</p>
+                    <p class="hx-text">{{ $accommodation->localized('description') ?: __('Description non disponible.') }}</p>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+                    <ul class="hx-facts">
                         @if($accommodation->check_in_time)
-                        <div class="bento-card rounded-xl p-3.5">
-                            <div class="bento-icon mb-2"><i class="fas fa-right-to-bracket text-[11px]"></i></div>
-                            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">Arrivée</p>
-                            <p class="text-sm font-bold mt-0.5">{{ $accommodation->check_in_time }}</p>
-                        </div>
+                            <li><span class="hx-facts__icon"><i class="fas fa-right-to-bracket" aria-hidden="true"></i></span><span><small>{{ __('Arrivée') }}</small>{{ \Illuminate\Support\Str::of($accommodation->check_in_time)->substr(0, 5) }}</span></li>
                         @endif
                         @if($accommodation->check_out_time)
-                        <div class="bento-card rounded-xl p-3.5">
-                            <div class="bento-icon mb-2"><i class="fas fa-right-from-bracket text-[11px]"></i></div>
-                            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">Départ</p>
-                            <p class="text-sm font-bold mt-0.5">{{ $accommodation->check_out_time }}</p>
-                        </div>
+                            <li><span class="hx-facts__icon"><i class="fas fa-right-from-bracket" aria-hidden="true"></i></span><span><small>{{ __('Départ') }}</small>{{ \Illuminate\Support\Str::of($accommodation->check_out_time)->substr(0, 5) }}</span></li>
                         @endif
-                        <div class="bento-card rounded-xl p-3.5">
-                            <div class="bento-icon mb-2"><i class="fas fa-city text-[11px]"></i></div>
-                            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">Ville</p>
-                            <p class="text-sm font-bold mt-0.5">{{ $accommodation->city?->name ?: 'N/A' }}</p>
-                        </div>
-                        <div class="bento-card rounded-xl p-3.5">
-                            <div class="bento-icon mb-2"><i class="fas fa-phone text-[11px]"></i></div>
-                            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">Contact</p>
-                            <p class="text-sm font-bold mt-0.5 truncate">{{ $accommodation->phone ?: 'Via réservation' }}</p>
-                        </div>
-                    </div>
+                        <li><span class="hx-facts__icon"><i class="fas fa-city" aria-hidden="true"></i></span><span><small>{{ __('Ville') }}</small>{{ $accommodation->city?->name ?: 'N/A' }}</span></li>
+                        <li><span class="hx-facts__icon"><i class="fas fa-phone" aria-hidden="true"></i></span><span class="min-w-0"><small>{{ __('Contact') }}</small><span class="block truncate">{{ $accommodation->phone ?: __('Via réservation') }}</span></span></li>
+                    </ul>
                 </section>
 
                 {{-- ── ÉQUIPEMENTS ────────────────────────────────────────── --}}
                 @if(!empty($accommodation->amenities))
-                <section class="reveal">
-                    <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">Confort</p>
-                    <h2 class="font-serif text-2xl font-bold mb-5">Équipements &amp; services</h2>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <section class="reveal" id="equipements">
+                    <p class="hx-kicker">{{ __('Confort') }}</p>
+                    <h2 class="hx-h2">{{ __('Équipements & services') }}</h2>
+                    <ul class="hx-amen">
                         @foreach($accommodation->amenities as $am)
-                        <div class="flex items-center gap-2.5 bento-card rounded-xl p-3">
-                            <i class="{{ $am['icon'] ?? 'fas fa-check' }} text-[#d4630a] text-sm shrink-0"></i>
-                            <span class="text-sm font-medium truncate">{{ $am['label'] ?? '' }}</span>
-                        </div>
+                            <li><span class="hx-amen__icon"><i class="{{ $am['icon'] ?? 'fas fa-check' }}" aria-hidden="true"></i></span>{{ $am['label'] ?? '' }}</li>
                         @endforeach
-                    </div>
+                    </ul>
                 </section>
                 @endif
 
                 {{-- ── CHAMBRES ───────────────────────────────────────────── --}}
                 @if(!empty($accommodation->room_types))
                 <section class="reveal" id="chambres-disponibles">
-                    <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">Hébergement</p>
-                    <h2 class="font-serif text-2xl font-bold mb-5">Chambres &amp; logements disponibles</h2>
-                    <div class="space-y-3">
-                        @foreach($accommodation->room_types as $room)
-                        @php $roomPhotos = array_values(array_filter((array) ($room['photos'] ?? []))); @endphp
-                        <div class="bento-card rounded-2xl p-4">
-                            <div class="flex items-center gap-4">
-                                @if(!empty($roomPhotos))
-                                <div class="flex gap-1.5 shrink-0">
-                                    @foreach(array_slice($roomPhotos, 0, 3) as $ri => $photoUrl)
-                                    <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-black/5 cursor-zoom-in" onclick="openLightbox('{{ $photoUrl }}')">
-                                        <img src="{{ $photoUrl }}" alt="" class="w-full h-full object-cover">
-                                        @if($ri === 2 && count($roomPhotos) > 3)
-                                        <div class="absolute inset-0 bg-black/55 flex items-center justify-center text-white text-xs font-bold">
-                                            +{{ count($roomPhotos) - 3 }}
-                                        </div>
-                                        @endif
-                                    </div>
-                                    @endforeach
-                                </div>
-                                @endif
-                                <div class="flex-1 min-w-0">
-                                    <p class="font-semibold">{{ $room['name'] ?? 'Chambre' }}</p>
-                                    <p class="text-[#8a7f6b] text-xs mt-1">
-                                        <i class="fas fa-user mr-1"></i>{{ $room['max_adults'] ?? 2 }} pers. max
-                                        @if(!empty($room['beds'])) · <i class="fas fa-bed mr-0.5"></i>{{ $room['beds'] }} @endif
-                                        @if(!empty($room['area_m2'])) · {{ $room['area_m2'] }} m² @endif
-                                        @if(!empty($room['amenities'])) · {{ is_array($room['amenities']) ? implode(', ', $room['amenities']) : $room['amenities'] }} @endif
-                                    </p>
-                                    @if(!empty($room['description']))
-                                    <p class="text-[#5c5548] text-xs mt-1.5 leading-relaxed">{{ $room['description'] }}</p>
-                                    @endif
-                                </div>
-                                <div class="text-right shrink-0">
-                                    <p class="text-[#c25e0a] font-extrabold text-sm whitespace-nowrap">
-                                        {{ number_format((int) ($room['price_xof'] ?? 0), 0, ',', ' ') }} XOF<span class="text-[#8a7f6b] font-normal text-xs">/nuit</span>
-                                    </p>
-                                    @if(!empty($room['price_xof']))
-                                    <button type="button" onclick="reserveThisRoom('{{ addslashes($room['name'] ?? 'Chambre') }}')"
-                                            class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#c25e0a]/10 hover:bg-[#c25e0a]/20 text-[#c25e0a] text-[11px] font-bold transition whitespace-nowrap">
-                                        <i class="fas fa-bed text-[10px]"></i> Réserver cette chambre
-                                    </button>
-                                    @endif
-                                </div>
-                            </div>
-                            @if(!empty($room['conditions']))
-                            <p class="text-[#8a7f6b] text-[11px] mt-2.5 pt-2.5 border-t border-black/5 leading-relaxed">
-                                <i class="fas fa-circle-info mr-1"></i>{{ $room['conditions'] }}
-                            </p>
-                            @endif
+                    <div class="hx-sechead">
+                        <div>
+                            <p class="hx-kicker">{{ __('Hébergement') }}</p>
+                            <h2 class="hx-h2">{{ __('Chambres & logements disponibles') }}</h2>
                         </div>
+                        <a href="{{ route('accommodations.rooms', $accommodation->slug) }}" class="hx-link">{{ __('Voir sur une page dédiée') }}<i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="hx-rooms">
+                        @foreach($accommodation->room_types as $room)
+                        @php
+                            $roomPhotos = array_values(array_filter((array) ($room['photos'] ?? [])));
+                            $roomBadges = app(\App\Services\RoomRates::class)->badges($room);
+                        @endphp
+                        <article class="hx-room">
+                            <div class="hx-room__media" @if(!empty($roomPhotos)) role="button" tabindex="0" onclick="openLightbox('{{ $roomPhotos[0] }}')" onkeydown="if(event.key==='Enter'){openLightbox('{{ $roomPhotos[0] }}')}" aria-label="{{ __('Agrandir la photo de :name', ['name' => $room['name'] ?? __('Chambre')]) }}" @endif>
+                                @if(!empty($roomPhotos))
+                                    <img src="{{ $roomPhotos[0] }}" alt="" loading="lazy" decoding="async">
+                                    @if(count($roomPhotos) > 1)<span class="hx-room__count">+{{ count($roomPhotos) - 1 }}</span>@endif
+                                @else
+                                    <i class="fas fa-bed" aria-hidden="true"></i>
+                                @endif
+                            </div>
+                            <div class="hx-room__body">
+                                <h3 class="hx-room__name">{{ $room['name'] ?? __('Chambre') }}</h3>
+                                <ul class="hx-room__specs">
+                                    <li><i class="fas fa-user-group" aria-hidden="true"></i>{{ $room['max_adults'] ?? 2 }} {{ __('pers. max') }}</li>
+                                    @if(!empty($room['beds']))<li><i class="fas fa-bed" aria-hidden="true"></i>{{ $room['beds'] }}</li>@endif
+                                    @if(!empty($room['area_m2']))<li><i class="fas fa-ruler-combined" aria-hidden="true"></i>{{ $room['area_m2'] }} m²</li>@endif
+                                </ul>
+                                @if(!empty($room['amenities']))
+                                    <p class="hx-room__amen">{{ is_array($room['amenities']) ? implode(' · ', $room['amenities']) : $room['amenities'] }}</p>
+                                @endif
+                                @if($roomBadges)
+                                    <p class="hx-room__badges">@foreach($roomBadges as $badge)<span><i class="fas fa-tag" aria-hidden="true"></i>{{ $badge }}</span>@endforeach</p>
+                                @endif
+                                @if(!empty($room['conditions']))
+                                    <p class="hx-room__cond"><i class="fas fa-circle-info" aria-hidden="true"></i>{{ $room['conditions'] }}</p>
+                                @endif
+                            </div>
+                            <div class="hx-room__side">
+                                @if(!empty($room['price_xof']))
+                                    <p class="hx-room__price"><small>{{ __('À partir de') }}</small><strong>{{ number_format((int) $room['price_xof'], 0, ',', ' ') }}</strong> <em>{{ __('FCFA / nuit') }}</em></p>
+                                    <button type="button" onclick="reserveThisRoom('{{ addslashes($room['name'] ?? __('Chambre')) }}')" class="ti-cta">
+                                        {{ __('Choisir') }}<i class="fas fa-arrow-right" aria-hidden="true"></i>
+                                    </button>
+                                @else
+                                    <p class="hx-room__price"><small>{{ __('Tarif') }}</small><strong>{{ __('Sur demande') }}</strong></p>
+                                @endif
+                            </div>
+                        </article>
                         @endforeach
                     </div>
-                    <a href="{{ route('accommodations.rooms', $accommodation->slug) }}"
-                       class="inline-flex items-center gap-1.5 mt-4 text-[#c25e0a] text-xs font-bold hover:text-[#a24d08] transition">
-                        Voir sur une page dédiée <i class="fas fa-arrow-right text-[10px]"></i>
-                    </a>
                 </section>
                 @endif
 
                 {{-- ── CONDITIONS ─────────────────────────────────────────── --}}
-                @if($accommodation->cancellation_policy)
-                <section class="reveal">
-                    <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">À savoir</p>
-                    <h2 class="font-serif text-2xl font-bold mb-4">Conditions de réservation &amp; d'annulation</h2>
-                    <div class="bento-card rounded-2xl p-5 text-[#3d372c] text-sm leading-relaxed whitespace-pre-line">{{ $accommodation->cancellation_policy }}</div>
+                @php $freeDays = (new \App\Models\Reservation(['accommodation_id' => $accommodation->id]))->setRelation('accommodation', $accommodation)->freeCancellationDays(); @endphp
+                <section class="reveal" id="conditions">
+                    <p class="hx-kicker">{{ __('À savoir') }}</p>
+                    <h2 class="hx-h2">{{ __('Conditions de réservation & d\'annulation') }}</h2>
+                    <div class="hx-cond">
+                        <div class="hx-cond__item is-ok">
+                            <span class="hx-cond__icon"><i class="fas fa-rotate-left" aria-hidden="true"></i></span>
+                            <p>{{ __('Annulation gratuite en ligne jusqu\'à') }} {{ $freeDays }} {{ __('jour') }}{{ $freeDays > 1 ? 's' : '' }} {{ __('avant l\'arrivée : l\'acompte est remboursé en totalité. Au-delà, l\'acompte n\'est plus remboursable.') }}</p>
+                        </div>
+                        <div class="hx-cond__item">
+                            <span class="hx-cond__icon"><i class="fas fa-shield-halved" aria-hidden="true"></i></span>
+                            <p>{{ __('Paiement sécurisé via CinetPay · solde réglé sur place') }}</p>
+                        </div>
+                        @if($accommodation->cancellation_policy)
+                            <div class="hx-cond__item is-wide">
+                                <span class="hx-cond__icon"><i class="fas fa-file-lines" aria-hidden="true"></i></span>
+                                <p class="whitespace-pre-line">{{ $accommodation->cancellation_policy }}</p>
+                            </div>
+                        @endif
+                    </div>
                 </section>
-                @endif
 
                 {{-- ── LOCALISATION (floutée avant réservation payée) ─────── --}}
-                <section class="reveal">
-                    <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">Où se trouve l'établissement</p>
-                    <h2 class="font-serif text-2xl font-bold mb-4">Localisation</h2>
-                    @if($accommodation->city?->name)
-                    <div class="bento-card rounded-2xl overflow-hidden mb-3">
-                        <iframe src="https://www.google.com/maps?q={{ urlencode($accommodation->city->name) }}&z=12&output=embed"
-                                class="w-full" style="height:220px; border:0;" loading="lazy"
-                                referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                    @endif
-                    <div class="bento-card rounded-2xl p-4 flex items-start gap-3">
-                        <div class="bento-icon shrink-0"><i class="fas fa-lock text-[11px]"></i></div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-semibold">Adresse exacte et itinéraire précis</p>
-                            <p class="text-[#8a7f6b] text-xs mt-1 leading-relaxed">
-                                Pour des raisons de sécurité, l'adresse précise n'est communiquée qu'aux voyageurs ayant réservé et payé l'acompte en ligne. Elle apparaîtra automatiquement sur votre page de confirmation.
-                            </p>
-                            <a href="{{ route('accommodations.rooms', $accommodation->slug) }}" class="inline-flex items-center gap-1.5 mt-2 text-[#c25e0a] text-xs font-bold hover:text-[#a24d08] transition">
-                                Réserver pour débloquer <i class="fas fa-arrow-right text-[10px]"></i>
-                            </a>
+                <section class="reveal" id="localisation">
+                    <p class="hx-kicker">{{ __('Où se trouve l\'établissement') }}</p>
+                    <h2 class="hx-h2">{{ __('Localisation') }}</h2>
+                    <div class="hx-map">
+                        @if($accommodation->city?->name)
+                            <iframe src="https://www.google.com/maps?q={{ urlencode($accommodation->city->name) }}&z=12&output=embed"
+                                    title="{{ __('Carte : :name', ['name' => $accommodation->city->name]) }}"
+                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        @endif
+                        <div class="hx-map__lock">
+                            <span class="hx-cond__icon"><i class="fas fa-lock" aria-hidden="true"></i></span>
+                            <div class="min-w-0">
+                                <p class="hx-map__title">{{ __('Adresse exacte et itinéraire précis') }}</p>
+                                <p class="hx-map__text">{{ __('Pour des raisons de sécurité, l\'adresse précise n\'est communiquée qu\'aux voyageurs ayant réservé et payé l\'acompte en ligne. Elle apparaîtra automatiquement sur votre page de confirmation.') }}</p>
+                                <a href="#booking-module" class="hx-link">{{ __('Réserver pour débloquer') }}<i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 {{-- ── AVIS ────────────────────────────────────────────────── --}}
                 @if($reviews->isNotEmpty())
-                <section class="reveal">
-                    <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">Retours d'expérience</p>
-                    <h2 class="font-serif text-2xl font-bold mb-5">Avis clients</h2>
-                    <div class="space-y-4">
-                        @foreach($reviews as $review)
-                        <div class="review-card rounded-xl p-4">
-                            <div class="flex items-center justify-between mb-2">
-                                <p class="font-semibold text-sm">{{ $review->author_name ?: ($review->user->full_name ?? 'Anonyme') }}</p>
-                                <span class="text-[#c25e0a] text-sm font-bold">{{ $review->rating }} ★</span>
-                            </div>
-                            @if($review->title)<p class="text-sm font-medium">{{ $review->title }}</p>@endif
-                            <p class="text-[#5c5548] text-sm mt-1">{{ $review->comment }}</p>
+                <section class="reveal" id="avis">
+                    <div class="hx-sechead">
+                        <div>
+                            <p class="hx-kicker">{{ __('Retours d\'expérience') }}</p>
+                            <h2 class="hx-h2">{{ __('Avis clients') }}</h2>
                         </div>
+                        @if($hxRating > 0)
+                            <span class="hx-score"><strong>{{ number_format($hxRating, 1, ',', ' ') }}</strong><span><i class="fas fa-star" aria-hidden="true"></i> {{ trans_choice(':count avis|:count avis', max($hxReviews, $reviews->count())) }}</span></span>
+                        @endif
+                    </div>
+                    <div class="hx-reviews">
+                        @foreach($reviews as $review)
+                            @php $rvName = $review->author_name ?: ($review->user->full_name ?? __('Anonyme')); @endphp
+                            <article class="hx-review">
+                                <div class="hx-review__head">
+                                    <span class="hx-review__avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr($rvName, 0, 1)) }}</span>
+                                    <span class="min-w-0">
+                                        <span class="hx-review__name">{{ $rvName }}</span>
+                                        @if($review->is_verified)<span class="hx-review__ok"><i class="fas fa-circle-check" aria-hidden="true"></i>{{ __('Séjour vérifié') }}</span>@endif
+                                    </span>
+                                    <span class="hx-review__stars" aria-label="{{ $review->rating }}/5">@for($s = 1; $s <= 5; $s++)<i class="fas fa-star {{ $s <= (int) $review->rating ? '' : 'is-off' }}" aria-hidden="true"></i>@endfor</span>
+                                </div>
+                                @if($review->title)<p class="hx-review__title">{{ $review->title }}</p>@endif
+                                <p class="hx-review__text">{{ $review->comment }}</p>
+                            </article>
                         @endforeach
                     </div>
                 </section>
@@ -379,43 +613,26 @@
                         // Lecture seule : ne crée pas de wallet juste pour afficher un solde à 0.
                         $walletBalanceXof = $canBook ? (int) (\App\Models\Wallet::where('user_id', auth()->id())->value('balance_available_xof') ?? 0) : 0;
                     @endphp
+                    @include('partials.trust-badges', ['provider' => $accommodation->provider, 'freeCancelDays' => $freeDays ?? 0])
+                    @if($accommodation->provider?->gift_cards_enabled)<div class="mb-3">@include('partials.gift-card-cta', ['provider' => $accommodation->provider])</div>@endif
                     <div class="booking-card rounded-3xl p-5 relative" id="booking-module" data-deposit-percent="{{ $depositPercent }}">
-                        <h2 class="font-serif text-xl font-bold mb-1">Réserver une chambre</h2>
-                        <p class="text-[#8a7f6b] text-xs mb-4">Acompte de {{ rtrim(rtrim(number_format($depositPercent, 1), '0'), '.') }}% payé en ligne · solde réglé sur place à l'hôtel.</p>
-
-                        @unless($canBook)
-                        <div class="absolute inset-0 z-20 rounded-3xl bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center text-center px-6 py-8">
-                            <div class="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center mb-3">
-                                <i class="fas fa-lock text-[#c25e0a]"></i>
-                            </div>
-                            @auth
-                                <p class="text-[#1c1915] font-bold text-sm mb-1">Vérifiez votre e-mail pour réserver</p>
-                                <p class="text-[#8a7f6b] text-xs mb-4 max-w-[220px]">Un code de vérification vous a été envoyé. Confirmez-le pour finaliser vos réservations.</p>
-                                <a href="{{ route('verification.notice') }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs">
-                                    <i class="fas fa-envelope-circle-check text-xs"></i> Vérifier mon e-mail
-                                </a>
-                            @else
-                                <p class="text-[#1c1915] font-bold text-sm mb-1">Connectez-vous pour réserver</p>
-                                <p class="text-[#8a7f6b] text-xs mb-4 max-w-[220px]">La création d'un compte est nécessaire avant toute réservation d'hôtel ou de résidence.</p>
-                                <div class="flex items-center gap-2">
-                                    <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs">
-                                        <i class="fas fa-right-to-bracket text-xs"></i> Se connecter
-                                    </a>
-                                    <a href="{{ route('register', ['role' => 'visitor', 'redirect' => url()->current()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#1c1915] transition">
-                                        Créer un compte
-                                    </a>
-                                </div>
-                            @endauth
+                        @if($hxPrices->isNotEmpty())
+                        <div class="hx-book-head">
+                            <p class="m-0"><small>{{ __('À partir de') }}</small><strong>{{ number_format((int) $hxPrices->min(), 0, ',', ' ') }}</strong> <em>{{ __('FCFA / nuit') }}</em></p>
+                            @if($hxRating > 0)<span class="hx-book-rate"><i class="fas fa-star" aria-hidden="true"></i>{{ number_format($hxRating, 1, ',', ' ') }}</span>@endif
                         </div>
-                        @endunless
+                        @endif
+                        <h2 class="font-serif text-xl font-bold mb-1">{{ __('Réserver une chambre') }}</h2>
+                        <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Acompte de') }} {{ rtrim(rtrim(number_format($depositPercent, 1), '0'), '.') }}{{ __('% payé en ligne · solde réglé sur place à l\'hôtel.') }}</p>
 
-                        <div class="{{ $canBook ? '' : 'pointer-events-none select-none' }}">
+
+                        <div>
                         <div class="grid grid-cols-1 gap-3 mb-5">
                             @foreach($accommodation->room_types as $room)
                             <button type="button"
                                     class="bkp-room-card text-left rounded-2xl border border-black/8 bg-white hover:border-orange-400/50 p-3.5 flex items-center gap-3"
                                     data-room-id="{{ $room['id'] ?? '' }}"
-                                    data-room-name="{{ $room['name'] ?? 'Chambre' }}"
+                                    data-room-name="{{ $room['name'] ?? __('Chambre') }}"
                                     data-room-price="{{ (int) ($room['price_xof'] ?? 0) }}">
                                 @if(!empty($room['thumbnail']))
                                 <div class="w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-black/5">
@@ -423,14 +640,17 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $room['name'] ?? 'Chambre' }}</p>
+                                    <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $room['name'] ?? __('Chambre') }}</p>
                                     <p class="text-[#8a7f6b] text-xs mt-0.5">
-                                        <i class="fas fa-user text-[#d4630a]/70 mr-1"></i>{{ $room['max_adults'] ?? 2 }} pers. max
+                                        <i class="fas fa-user text-[#d4630a]/70 mr-1"></i>{{ $room['max_adults'] ?? 2 }} {{ __('pers. max') }}
                                         @if(!empty($room['area_m2'])) · {{ $room['area_m2'] }} m² @endif
                                     </p>
                                     <p class="text-[#c25e0a] text-sm font-bold mt-1">
-                                        {{ number_format((int) ($room['price_xof'] ?? 0), 0, ',', ' ') }} XOF<span class="text-[#8a7f6b] font-normal text-xs">/nuit</span>
+                                        {{ number_format((int) ($room['price_xof'] ?? 0), 0, ',', ' ') }} {{ __('FCFA') }}<span class="text-[#8a7f6b] font-normal text-xs">{{ __('/nuit') }}</span>
                                     </p>
+                                    @foreach(app(\App\Services\RoomRates::class)->badges($room) as $badge)
+                                        <span class="inline-block mt-1 mr-1 px-2 py-0.5 rounded-full bg-[#31621c]/10 text-[#31621c] text-[11px] font-semibold">{{ $badge }}</span>
+                                    @endforeach
                                 </div>
                             </button>
                             @endforeach
@@ -441,36 +661,36 @@
                              après (constaté : invisible une fois le calendrier ouvert). --}}
                         <p id="bkp-dates-hint" class="text-sm text-[#5c5548] font-medium leading-snug mb-2 flex items-start gap-2">
                             <i class="fas fa-calendar-days text-[#c25e0a] mt-0.5"></i>
-                            <span>Choisissez d'abord une chambre pour voir ses disponibilités.</span>
+                            <span>{{ __('Choisissez d\'abord une chambre pour voir ses disponibilités.') }}</span>
                         </p>
                         <div id="bkp-dates-legend" class="hidden items-center gap-2.5 mb-3 flex-wrap">
                             <span class="inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-700">
                                 <span class="w-5 h-5 rounded-md border border-emerald-300 bg-white flex items-center justify-center text-[10px] font-bold text-emerald-700">12</span>
                                 <i class="fas fa-circle-check text-emerald-500"></i>
-                                Disponible
+                                {{ __('Disponible') }}
                             </span>
                             <span class="inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-red-50 border border-red-200 text-xs font-semibold text-red-600">
                                 <span class="w-5 h-5 rounded-md bg-red-100 border border-red-200 flex items-center justify-center text-[10px] font-bold text-red-400 line-through">12</span>
                                 <i class="fas fa-ban text-red-400"></i>
-                                Indisponible
+                                {{ __('Indisponible') }}
                             </span>
                         </div>
                         <div id="bkp-dates-wrap" class="grid grid-cols-2 gap-2.5 mb-3">
                             <div>
-                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">Arrivée</label>
-                                <input type="text" id="bkp-checkin" readonly placeholder="Sélectionner"
+                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">{{ __('Arrivée') }}</label>
+                                <input type="text" id="bkp-checkin" readonly placeholder="{{ __('Sélectionner') }}"
                                        class="w-full bg-white border border-black/10 rounded-xl px-3 py-2 text-sm cursor-pointer">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">Départ</label>
-                                <input type="text" id="bkp-checkout" readonly placeholder="Sélectionner"
+                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">{{ __('Départ') }}</label>
+                                <input type="text" id="bkp-checkout" readonly placeholder="{{ __('Sélectionner') }}"
                                        class="w-full bg-white border border-black/10 rounded-xl px-3 py-2 text-sm cursor-pointer">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-2.5 mb-4">
                             <div>
-                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">Chambres</label>
+                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">{{ __('Chambres') }}</label>
                                 <div class="flex items-center bg-white border border-black/10 rounded-xl overflow-hidden">
                                     <button type="button" class="bkp-step w-9 h-9 text-[#8a7f6b] hover:text-[#c25e0a]" data-target="bkp-rooms" data-step="-1">−</button>
                                     <span id="bkp-rooms" class="flex-1 text-center text-sm font-semibold" data-value="1">1</span>
@@ -478,7 +698,7 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">Voyageurs</label>
+                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">{{ __('Voyageurs') }}</label>
                                 <div class="flex items-center bg-white border border-black/10 rounded-xl overflow-hidden">
                                     <button type="button" class="bkp-step w-9 h-9 text-[#8a7f6b] hover:text-[#c25e0a]" data-target="bkp-guests" data-step="-1">−</button>
                                     <span id="bkp-guests" class="flex-1 text-center text-sm font-semibold" data-value="2">2</span>
@@ -492,54 +712,89 @@
                                 <span id="bkp-nights-label"></span>
                                 <span id="bkp-total" class="text-[#1c1915] font-medium"></span>
                             </div>
+                            <div id="bkp-discount-row" class="hidden flex items-center justify-between text-[#31621c] font-semibold">
+                                <span id="bkp-discount-label"></span>
+                                <span id="bkp-discount"></span>
+                            </div>
+                            <div id="bkp-promo-row" class="hidden flex items-center justify-between text-[#31621c] font-semibold">
+                                <span id="bkp-promo-label"></span>
+                                <span id="bkp-promo"></span>
+                            </div>
+                            <p id="bkp-variable" class="hidden text-xs text-[#8a7f6b]">{{ __('Tarif variable selon les dates (week-end, saison).') }}</p>
                             <div class="flex items-center justify-between pt-1.5 mt-1.5 border-t border-orange-400/20">
-                                <span class="text-[#3d372c]">Acompte à payer maintenant</span>
+                                <span class="text-[#3d372c]">{{ __('Acompte à payer maintenant') }}</span>
                                 <span id="bkp-deposit" class="text-[#c25e0a] font-bold"></span>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 gap-2.5 mb-3">
-                            <input type="text" id="bkp-full-name" placeholder="Nom complet" value="{{ $canBook ? auth()->user()->full_name : '' }}" {{ $canBook ? 'readonly' : '' }} class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ $canBook ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
-                            <input type="tel" id="bkp-phone" placeholder="Téléphone" value="{{ $canBook ? auth()->user()->phone : '' }}" {{ $canBook && auth()->user()->phone ? 'readonly' : '' }} class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ $canBook && auth()->user()->phone ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
-                            <input type="email" id="bkp-email" placeholder="Email" value="{{ $canBook ? auth()->user()->email : '' }}" {{ $canBook ? 'readonly' : '' }} class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ $canBook ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
+                            <input type="text" id="bkp-full-name" placeholder="{{ __('Nom complet') }}" value="{{ auth()->user()?->full_name }}" {{ auth()->check() ? 'readonly' : '' }} autocomplete="name" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ auth()->check() ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
+                            <input type="tel" id="bkp-phone" placeholder="{{ __('Téléphone') }}" value="{{ auth()->user()?->phone }}" {{ auth()->user()?->phone ? 'readonly' : '' }} autocomplete="tel" inputmode="tel" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ auth()->user()?->phone ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
+                            <input type="email" id="bkp-email" placeholder="{{ __('Email') }}" value="{{ auth()->user()?->email }}" {{ auth()->check() ? 'readonly' : '' }} autocomplete="email" inputmode="email" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ auth()->check() ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
+                            @unless($canBook)
+                                <p class="bkx-note"><i class="fas fa-circle-info" aria-hidden="true"></i>{{ auth()->check() ? __('Un code de confirmation sera envoyé à votre adresse avant le paiement.') : __('Pas encore de compte ? Il est créé pour vous : un code de confirmation sera envoyé à cette adresse avant le paiement.') }}</p>
+                            @endunless
+                            @if($accommodation->provider_id && \App\Models\ProviderPromoCode::where('provider_id', $accommodation->provider_id)->where('is_active', true)->exists())
+                                <div>
+                                    <input type="text" id="bkp-promo-code" maxlength="30" autocapitalize="characters" placeholder="{{ __('Code promo (facultatif)') }}" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm uppercase placeholder:normal-case placeholder:text-[#a89f8f]">
+                                    <p id="bkp-promo-error" class="hidden mt-1 text-xs text-red-700"></p>
+                                </div>
+                            @endif
                         </div>
 
                         @if($canBook)
                         <div class="mb-3">
-                            <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1.5">Moyen de paiement</label>
+                            <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1.5">{{ __('Moyen de paiement') }}</label>
                             <div class="grid grid-cols-2 gap-2">
                                 <button type="button" id="bkp-pay-cinetpay" data-method="cinetpay"
                                         class="bkp-pay-method is-active text-left rounded-xl border-2 border-black/8 bg-white px-3 py-2.5">
-                                    <span class="block text-[#1c1915] text-xs font-bold"><i class="fas fa-mobile-screen mr-1"></i>CinetPay</span>
-                                    <span class="block text-[#8a7f6b] text-[10px] mt-0.5">Mobile Money / Carte</span>
+                                    <span class="block text-[#1c1915] text-xs font-bold"><i class="fas fa-mobile-screen mr-1"></i>{{ __('CinetPay') }}</span>
+                                    <span class="block text-[#8a7f6b] text-[10px] mt-0.5">{{ __('Mobile Money / Carte') }}</span>
                                 </button>
                                 <button type="button" id="bkp-pay-wallet" data-method="wallet"
                                         class="bkp-pay-method text-left rounded-xl border-2 border-black/8 bg-white px-3 py-2.5">
-                                    <span class="block text-[#1c1915] text-xs font-bold"><i class="fas fa-wallet mr-1"></i>Mon solde Wallet</span>
-                                    <span class="block text-[#8a7f6b] text-[10px] mt-0.5">{{ number_format($walletBalanceXof, 0, ',', ' ') }} XOF disponible</span>
+                                    <span class="block text-[#1c1915] text-xs font-bold"><i class="fas fa-wallet mr-1"></i>{{ __('Mon solde Wallet') }}</span>
+                                    <span class="block text-[#8a7f6b] text-[10px] mt-0.5">{{ number_format($walletBalanceXof, 0, ',', ' ') }} {{ __('FCFA disponible') }}</span>
                                 </button>
                             </div>
                         </div>
                         @endif
 
-                        <div id="bkp-error" class="hidden mb-3 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs"></div>
+                        <div id="bkp-error" class="hidden mb-3 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs" role="alert"></div>
+
+                        @unless($canBook)
+                        <div id="bkx" class="bkx" hidden>
+                            @csrf
+                            <p class="bkx-title"><i class="fas fa-envelope-open-text" aria-hidden="true"></i>{{ __('Confirmez votre e-mail') }}</p>
+                            <p class="bkx-text">{{ __('Code à 6 chiffres envoyé à') }} <b data-bkx-email></b>. {{ __('Valable 10 minutes.') }}</p>
+                            <label for="bkx-code" class="sr-only">{{ __('Code de confirmation') }}</label>
+                            <input id="bkx-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="14" placeholder="••••••" class="bkx-input">
+                            <p class="bkx-err" data-bkx-err role="alert"></p>
+                            <div class="bkx-actions">
+                                <button type="button" class="bkx-ok" data-bkx-verify>{{ __('Confirmer et payer') }}</button>
+                                <button type="button" class="bkx-link" data-bkx-resend>{{ __('Renvoyer le code') }}</button>
+                                <button type="button" class="bkx-link" data-bkx-edit>{{ __('Modifier l\'e-mail') }}</button>
+                            </div>
+                            <p class="bkx-hint">{{ __('Pensez à regarder dans les courriers indésirables.') }}</p>
+                        </div>
+                        @endunless
 
                         <button type="button" id="bkp-submit" disabled
                                 class="btn-primary btn-shine flex items-center justify-center gap-2.5 w-full px-5 py-4 rounded-2xl font-extrabold text-[15px] disabled:opacity-50 disabled:pointer-events-none">
                             <i class="fas fa-lock text-sm"></i>
-                            <span id="bkp-submit-label">Sélectionnez une chambre</span>
+                            <span id="bkp-submit-label">{{ __('Sélectionnez une chambre') }}</span>
                         </button>
-                        <p class="text-center text-xs text-[#a89f8f] py-1 mt-2">Paiement sécurisé via CinetPay · solde réglé sur place</p>
+                        <p class="text-center text-xs text-[#a89f8f] py-1 mt-2">{{ __('Paiement sécurisé via CinetPay · solde réglé sur place') }}</p>
                         </div>
                     </div>
                     @elseif($accommodation->provider && ($accommodation->provider->reserve_url || $accommodation->provider->website))
                     <div class="booking-card rounded-3xl p-5">
-                        <h2 class="font-serif text-xl font-bold mb-1">Contacter cet établissement</h2>
-                        <p class="text-[#8a7f6b] text-xs mb-4">Réservation directement auprès du prestataire.</p>
+                        <h2 class="font-serif text-xl font-bold mb-1">{{ __('Contacter cet établissement') }}</h2>
+                        <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Réservation directement auprès du prestataire.') }}</p>
                         <a href="{{ $accommodation->provider->reserve_url ?: $accommodation->provider->website }}"
                            target="_blank" rel="noopener noreferrer"
                            class="btn-primary btn-shine flex items-center justify-between w-full px-5 py-4 rounded-2xl font-extrabold text-[15px] group">
-                            <span class="flex items-center gap-2.5"><i class="fas fa-hotel text-sm"></i> Effectuer une réservation</span>
+                            <span class="flex items-center gap-2.5"><i class="fas fa-hotel text-sm"></i> {{ __('Effectuer une réservation') }}</span>
                             <i class="fas fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
                         </a>
                     </div>
@@ -550,15 +805,11 @@
 
         @if($related->isNotEmpty())
         <section class="mt-16 reveal">
-            <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">Dans la même ville</p>
-            <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-6">Autres hébergements</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <p class="hx-kicker">{{ __('Dans la même ville') }}</p>
+            <h2 class="hx-h2">{{ __('Autres hébergements') }}</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach($related as $r)
-                <a href="{{ route('accommodations.show', $r->slug) }}" class="related-tile rounded-2xl p-4">
-                    <p class="text-[#c25e0a] text-[11px] uppercase tracking-[0.16em] font-bold">{{ $r->type_label }}</p>
-                    <p class="font-semibold mt-1.5 leading-snug">{{ $r->name }}</p>
-                    <p class="text-[#8a7f6b] text-sm mt-1.5"><i class="fas fa-location-dot text-[#d4630a]/60 mr-1"></i>{{ $r->city?->name }}</p>
-                </a>
+                    @include('partials.home-sector-card', ['it' => \App\Support\HomeSectorShowcase::card($r, 'hotels')])
                 @endforeach
             </div>
         </section>
@@ -568,11 +819,11 @@
     @if(!empty($accommodation->room_types))
     <div class="mobile-cta-bar fixed bottom-0 inset-x-0 z-40 lg:hidden px-4 py-3 flex items-center gap-3">
         <div class="flex-1 min-w-0">
-            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">À partir de</p>
-            <p class="font-bold text-sm truncate">{{ number_format((int) ($cheapestRoom ?? 0), 0, ',', ' ') }} XOF<span class="text-[#8a7f6b] font-normal text-xs">/nuit</span></p>
+            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">{{ __('À partir de') }}</p>
+            <p class="font-bold text-sm truncate">{{ number_format((int) ($cheapestRoom ?? 0), 0, ',', ' ') }} {{ __('FCFA') }}<span class="text-[#8a7f6b] font-normal text-xs">{{ __('/nuit') }}</span></p>
         </div>
         <a href="{{ route('accommodations.rooms', $accommodation->slug) }}" class="btn-primary btn-shine shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-xs">
-            <i class="fas fa-bed"></i> Réserver
+            <i class="fas fa-bed"></i> {{ __('Réserver') }}
         </a>
     </div>
     @endif
@@ -587,6 +838,7 @@
     <div class="pb-20 lg:pb-0">
 @include('partials.homepage-footer')
     </div>
+@include('partials.place-card-script')
 @include('partials.image-protection')
 <script>
 function openLightbox(url) {
@@ -617,9 +869,11 @@ function setHeroPhoto(url) {
 
     if (empty) empty.classList.add('hidden');
     if (img) {
+        // Le srcset généré pour la première photo prendrait le pas sur le nouveau src : on le retire.
+        img.removeAttribute('srcset');
+        img.removeAttribute('sizes');
         img.src = url;
         img.classList.remove('hidden');
-        img.setAttribute('onclick', "openLightbox('" + url + "')");
     }
     document.getElementById('hero-zoom-hint')?.classList.remove('hidden');
 }
@@ -660,22 +914,45 @@ function setHeroVideo(embedUrl, directUrl) {
 
     let heroIndex = 0;
 
-    window.showHeroItem = function (i) {
-        heroIndex = ((i % items.length) + items.length) % items.length;
+    const counter = document.getElementById('hero-index');
+    const thumbs = Array.from(document.querySelectorAll('.hx-gal__thumb'));
+    let autoplay = true;
+
+    function render() {
         const item = items[heroIndex];
         if (item.type === 'video') {
             setHeroVideo(item.embedUrl, item.url);
         } else {
             setHeroPhoto(item.url);
         }
+        if (counter) counter.textContent = heroIndex + 1;
+        thumbs.forEach(function (t) {
+            const on = Number(t.dataset.heroIndex) === heroIndex;
+            t.classList.toggle('is-active', on);
+            t.setAttribute('aria-current', on ? 'true' : 'false');
+            if (on) t.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        });
+    }
+
+    // Choix du visiteur : arrête le défilement automatique.
+    window.showHeroItem = function (i, fromTimer) {
+        if (!fromTimer) autoplay = false;
+        heroIndex = ((i % items.length) + items.length) % items.length;
+        render();
     };
 
     window.heroSlide = function (dir) {
         window.showHeroItem(heroIndex + dir);
     };
 
+    // Clavier : flèches gauche / droite quand la galerie a le focus.
+    document.querySelector('.hx-gal')?.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); window.heroSlide(-1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); window.heroSlide(1); }
+    });
+
     setInterval(function () {
-        window.showHeroItem(heroIndex + 1);
+        if (autoplay && !document.hidden) window.showHeroItem(heroIndex + 1, true);
     }, 5000);
 })();
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
@@ -688,6 +965,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
     const depositPercent = parseFloat(module.dataset.depositPercent || '30');
     let selectedRoom = null;
     let paymentMethod = 'cinetpay';
+    window.tivCanBook = {{ $canBook ?? false ? 'true' : 'false' }};
     let blockedRanges = []; // périodes déjà réservées pour la chambre sélectionnée
     let availabilityToken = 0; // ignore les réponses obsolètes si l'utilisateur change vite de chambre
 
@@ -763,7 +1041,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
                     // Sécurité en plus du calendrier lui-même (qui empêche déjà de
                     // sélectionner à travers une date désactivée) : si malgré tout la
                     // période chevauche une réservation, on refuse et on réinitialise.
-                    errorBox.textContent = "Cette période n'est plus disponible pour cette chambre. Merci de choisir d'autres dates.";
+                    errorBox.textContent = {{ \Illuminate\Support\Js::from(__('Cette période n\'est plus disponible pour cette chambre. Merci de choisir d\'autres dates.')) }};
                     errorBox.classList.remove('hidden');
                     picker.clear();
                     checkin.value = '';
@@ -820,7 +1098,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
             blockedRanges = [];
             picker.set('disable', []);
             setDatesEnabled(false);
-            datesHintText.textContent = 'Chargement des disponibilités...';
+            datesHintText.textContent = {{ \Illuminate\Support\Js::from(__('Chargement des disponibilités...')) }};
             datesHint.classList.remove('hidden');
             datesLegend.classList.add('hidden');
             datesWrap.classList.add('bkp-date-loading');
@@ -843,12 +1121,12 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
                         // (arrivée le même jour) : on désactive donc jusqu'à la veille du départ.
                         picker.set('disable', blockedRanges.map((r) => ({ from: r.check_in, to: addDays(r.check_out, -1) })));
                         datesHintText.textContent = blockedRanges.length
-                            ? 'Voici les jours disponibles pour cette chambre : les dates déjà réservées sont grisées et barrées ci-dessous.'
-                            : 'Voici les jours disponibles pour cette chambre : toutes les dates sont libres.';
+                            ? {{ \Illuminate\Support\Js::from(__('Voici les jours disponibles pour cette chambre : les dates déjà réservées sont grisées et barrées ci-dessous.')) }}
+                            : {{ \Illuminate\Support\Js::from(__('Voici les jours disponibles pour cette chambre : toutes les dates sont libres.')) }};
                         datesLegend.classList.remove('hidden');
                         datesLegend.classList.add('flex');
                     } else {
-                        datesHintText.textContent = 'Disponibilités indisponibles pour le moment — vérification faite à la réservation.';
+                        datesHintText.textContent = {{ \Illuminate\Support\Js::from(__('Disponibilités indisponibles pour le moment — vérification faite à la réservation.')) }};
                     }
                     // Le calendrier s'ouvre automatiquement après la sélection d'une chambre.
                     picker.open();
@@ -857,7 +1135,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
                     if (myToken !== availabilityToken) return;
                     datesWrap.classList.remove('bkp-date-loading');
                     setDatesEnabled(true);
-                    datesHintText.textContent = 'Disponibilités indisponibles pour le moment — vérification faite à la réservation.';
+                    datesHintText.textContent = {{ \Illuminate\Support\Js::from(__('Disponibilités indisponibles pour le moment — vérification faite à la réservation.')) }};
                     picker.open();
                 });
         });
@@ -884,7 +1162,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
 
     function recompute() {
         if (!selectedRoom) {
-            submitLabel.textContent = 'Sélectionnez une chambre';
+            submitLabel.textContent = {{ \Illuminate\Support\Js::from(__('Sélectionnez une chambre')) }};
             submitBtn.disabled = true;
             breakdown.classList.add('hidden');
             return;
@@ -892,7 +1170,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
         const nights = nightsBetween(checkin.dataset.iso, checkout.dataset.iso);
         const rooms = parseInt(document.getElementById('bkp-rooms').dataset.value || '1', 10);
         if (nights <= 0) {
-            submitLabel.textContent = 'Choisissez vos dates';
+            submitLabel.textContent = {{ \Illuminate\Support\Js::from(__('Choisissez vos dates')) }};
             submitBtn.disabled = true;
             breakdown.classList.add('hidden');
             return;
@@ -901,12 +1179,49 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
         const deposit = Math.round(total * depositPercent / 100);
         document.getElementById('bkp-nights-label').textContent =
             nights + ' nuit' + (nights > 1 ? 's' : '') + ' × ' + rooms + ' chambre' + (rooms > 1 ? 's' : '');
-        document.getElementById('bkp-total').textContent = total.toLocaleString('fr-FR') + ' XOF';
-        document.getElementById('bkp-deposit').textContent = deposit.toLocaleString('fr-FR') + ' XOF';
+        document.getElementById('bkp-total').textContent = total.toLocaleString('fr-FR') + ' FCFA';
+        document.getElementById('bkp-deposit').textContent = deposit.toLocaleString('fr-FR') + ' FCFA';
         breakdown.classList.remove('hidden');
-        submitLabel.textContent = "Réserver et payer l'acompte (" + deposit.toLocaleString('fr-FR') + ' XOF)';
+        submitLabel.textContent = {{ \Illuminate\Support\Js::from(__('Réserver et payer l\'acompte (')) }} + deposit.toLocaleString('fr-FR') + ' FCFA)';
         submitBtn.disabled = false;
+        refreshQuote(rooms);
     }
+
+    // Devis serveur (saisons, week-end, remises) : il remplace le calcul local, qui ne sert que d'affichage immédiat.
+    let quoteCtrl = null;
+    async function refreshQuote(rooms) {
+        if (!selectedRoom || !checkin.dataset.iso || !checkout.dataset.iso) return;
+        quoteCtrl?.abort(); quoteCtrl = new AbortController();
+        const q = new URLSearchParams({ accommodation_id: {{ (int) $accommodation->id }}, check_in: checkin.dataset.iso, check_out: checkout.dataset.iso, rooms_count: rooms });
+        if (selectedRoom.id) q.set('room_id', selectedRoom.id); else q.set('room_name', selectedRoom.name);
+        const promoInput = document.getElementById('bkp-promo-code');
+        if (promoInput?.value.trim()) q.set('promo_code', promoInput.value.trim());
+        try {
+            const r = await fetch({{ \Illuminate\Support\Js::from(route('reservations.quote')) }} + '?' + q, { headers: { Accept: 'application/json' }, signal: quoteCtrl.signal });
+            const d = await r.json();
+            if (!d.success) return;
+            document.getElementById('bkp-total').textContent = d.subtotal.toLocaleString('fr-FR') + ' FCFA';
+            const row = document.getElementById('bkp-discount-row');
+            row.classList.toggle('hidden', !d.discount_xof);
+            if (d.discount_xof) {
+                document.getElementById('bkp-discount-label').textContent = d.discount_label;
+                document.getElementById('bkp-discount').textContent = '− ' + d.discount_xof.toLocaleString('fr-FR') + ' FCFA';
+            }
+            const promoRow = document.getElementById('bkp-promo-row');
+            promoRow.classList.toggle('hidden', !d.promo_discount_xof);
+            if (d.promo_discount_xof) {
+                document.getElementById('bkp-promo-label').textContent = {{ \Illuminate\Support\Js::from(__('Code promo')) }} + ' (' + d.promo_label + ')';
+                document.getElementById('bkp-promo').textContent = '− ' + d.promo_discount_xof.toLocaleString('fr-FR') + ' FCFA';
+            }
+            const promoError = document.getElementById('bkp-promo-error');
+            if (promoError) { promoError.textContent = d.promo_error || ''; promoError.classList.toggle('hidden', !d.promo_error); }
+            document.getElementById('bkp-variable').classList.toggle('hidden', !d.variable);
+            document.getElementById('bkp-deposit').textContent = d.deposit.toLocaleString('fr-FR') + ' FCFA';
+            submitLabel.textContent = {{ \Illuminate\Support\Js::from(__('Réserver et payer l\'acompte (')) }} + d.deposit.toLocaleString('fr-FR') + ' FCFA)';
+        } catch (e) { /* calcul local conservé */ }
+    }
+
+    document.getElementById('bkp-promo-code')?.addEventListener('change', () => recompute());
 
     if (submitBtn) {
         submitBtn.addEventListener('click', async () => {
@@ -915,13 +1230,14 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
             const email = document.getElementById('bkp-email').value.trim();
             const phone = document.getElementById('bkp-phone').value.trim();
             if (!fullName || !email) {
-                errorBox.textContent = 'Merci de renseigner votre nom complet et votre email.';
+                errorBox.textContent = {{ \Illuminate\Support\Js::from(__('Merci de renseigner votre nom complet et votre email.')) }};
                 errorBox.classList.remove('hidden');
                 return;
             }
+            if (!window.tivCanBook) { window.tivExpressStart?.(fullName, email, phone); return; }
             const originalLabel = submitLabel.textContent;
             submitBtn.disabled = true;
-            submitLabel.textContent = 'Traitement en cours...';
+            submitLabel.textContent = {{ \Illuminate\Support\Js::from(__('Traitement en cours...')) }};
             try {
                 const res = await fetch('{{ route("reservations.payment.initiate") }}', {
                     method: 'POST',
@@ -943,6 +1259,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
                         email: email,
                         phone: phone,
                         payment_method: paymentMethod,
+                        promo_code: document.getElementById('bkp-promo-code')?.value.trim() || null,
                     }),
                 });
                 const data = await res.json();
@@ -950,10 +1267,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
                     window.location.href = data.redirect_url;
                     return;
                 }
-                errorBox.textContent = data.message || 'Une erreur est survenue, merci de réessayer.';
+                errorBox.textContent = data.message || {{ \Illuminate\Support\Js::from(__('Une erreur est survenue, merci de réessayer.')) }};
                 errorBox.classList.remove('hidden');
             } catch (e) {
-                errorBox.textContent = 'Erreur réseau, merci de réessayer.';
+                errorBox.textContent = {{ \Illuminate\Support\Js::from(__('Erreur réseau, merci de réessayer.')) }};
                 errorBox.classList.remove('hidden');
             } finally {
                 submitBtn.disabled = false;
@@ -1002,5 +1319,83 @@ function reserveThisRoom(roomName) {
     items.forEach(el => io.observe(el));
 })();
 </script>
+@unless($canBook ?? false)
+<script>
+// ── Compte express : code envoyé par e-mail, saisi dans le module, puis paiement enchaîné ──
+(function () {
+    var box = document.getElementById('bkx');
+    if (!box) return;
+    var codeIn = document.getElementById('bkx-code'), errEl = box.querySelector('[data-bkx-err]'), emailEl = box.querySelector('[data-bkx-email]');
+    var okBtn = box.querySelector('[data-bkx-verify]'), resendBtn = box.querySelector('[data-bkx-resend]'), editBtn = box.querySelector('[data-bkx-edit]');
+    var submitBtn = document.getElementById('bkp-submit'), mainErr = document.getElementById('bkp-error');
+    var urls = {{ \Illuminate\Support\Js::from(['start' => route('account.express.start'), 'verify' => route('account.express.verify')]) }};
+    var txt = {{ \Illuminate\Support\Js::from(['net' => __('Erreur réseau, merci de réessayer.'), 'wait' => __('Renvoyer dans :s s'), 'resend' => __('Renvoyer le code'), 'sending' => __('Envoi du code…'), 'checking' => __('Vérification…'), 'ok' => __('Confirmer et payer'), 'digits' => __('Le code contient 6 chiffres.')]) }};
+    var last = null, timer = null;
+
+    function token() { return document.querySelector('meta[name="csrf-token"]')?.content || box.querySelector('input[name="_token"]')?.value || ''; }
+    async function post(url, body) {
+        var r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': token() }, body: JSON.stringify(body) });
+        var d = {}; try { d = await r.json(); } catch (e) {}
+        if (!r.ok && !d.message && d.errors) d.message = Object.values(d.errors)[0][0];
+        return { ok: r.ok, data: d };
+    }
+    function showErr(el, m) { el.textContent = m || ''; if (el === mainErr) el.classList.toggle('hidden', !m); }
+    function cooldown() {
+        var s = 30; resendBtn.disabled = true;
+        clearInterval(timer);
+        timer = setInterval(function () { s--; resendBtn.textContent = s > 0 ? txt.wait.replace(':s', s) : txt.resend; if (s <= 0) { clearInterval(timer); resendBtn.disabled = false; } }, 1000);
+        resendBtn.textContent = txt.wait.replace(':s', s);
+    }
+
+    window.tivExpressStart = async function (fullName, email, phone) {
+        last = { full_name: fullName, email: email, phone: phone, website: '' };
+        showErr(mainErr, ''); showErr(errEl, '');
+        submitBtn.disabled = true;
+        var label = document.getElementById('bkp-submit-label'), before = label.textContent;
+        label.textContent = txt.sending;
+        try {
+            var res = await post(urls.start, last);
+            if (res.data.status === 'ready') { window.tivCanBook = true; submitBtn.disabled = false; label.textContent = before; submitBtn.click(); return; }
+            if (!res.ok) { showErr(mainErr, res.data.message || txt.net); return; }
+            emailEl.textContent = res.data.email || email;
+            box.hidden = false; submitBtn.style.display = "none";
+            codeIn.value = ''; codeIn.focus();
+            cooldown();
+        } catch (e) { showErr(mainErr, txt.net); }
+        finally { submitBtn.disabled = false; label.textContent = before; }
+    };
+
+    async function verify() {
+        var code = codeIn.value.replace(/\D/g, '');
+        if (code.length !== 6) { showErr(errEl, txt.digits); codeIn.focus(); return; }
+        okBtn.disabled = true; okBtn.textContent = txt.checking; showErr(errEl, '');
+        try {
+            var res = await post(urls.verify, { code: code });
+            if (!res.ok) { showErr(errEl, res.data.message || txt.net); codeIn.select(); return; }
+            // Session renouvelée à la connexion : on reprend le nouveau jeton avant de payer.
+            var meta = document.querySelector('meta[name="csrf-token"]'); if (meta && res.data.csrf) meta.setAttribute('content', res.data.csrf);
+            window.tivCanBook = true;
+            ['bkp-full-name', 'bkp-email'].forEach(function (id) { var el = document.getElementById(id); if (el) el.readOnly = true; });
+            box.hidden = true; submitBtn.style.display = "";
+            document.querySelectorAll('.bkx-note').forEach(function (n) { n.remove(); });
+            submitBtn.click();
+        } catch (e) { showErr(errEl, txt.net); }
+        finally { okBtn.disabled = false; okBtn.textContent = txt.ok; }
+    }
+
+    codeIn.addEventListener('input', function () {
+        codeIn.value = codeIn.value.replace(/\D/g, '').slice(0, 6);
+        if (codeIn.value.length === 6) verify();
+    });
+    codeIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); verify(); } });
+    okBtn.addEventListener('click', verify);
+    resendBtn.addEventListener('click', function () { if (last) window.tivExpressStart(last.full_name, last.email, last.phone); });
+    editBtn.addEventListener('click', function () {
+        box.hidden = true; submitBtn.style.display = "";
+        var em = document.getElementById('bkp-email'); if (em && !em.readOnly) { em.focus(); em.select(); }
+    });
+})();
+</script>
+@endunless
 </body>
 </html>

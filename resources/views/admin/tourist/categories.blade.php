@@ -100,9 +100,14 @@
                     <i class="fas fa-cloud-arrow-up text-lg text-slate-600 group-hover:text-orange-400/70 mb-1 transition"></i>
                     <span class="text-slate-500 text-[11px] group-hover:text-slate-300 transition">JPG, PNG, WebP — 5 Mo max</span>
                     <input type="file" name="hero_image_file" id="cat_hero_image_file" accept="image/jpeg,image/png,image/webp" class="hidden"
-                           onchange="const r=new FileReader();r.onload=e=>{document.getElementById('cat_hero_preview').src=e.target.result;document.getElementById('cat_hero_preview').classList.remove('hidden');};r.readAsDataURL(this.files[0])">
+                           onchange="catPreview('hero', this)">
                 </label>
-                <img id="cat_hero_preview" src="" class="mt-2 w-full h-24 object-cover rounded-lg border border-slate-700 hidden">
+                <div id="cat_hero_box" class="mt-2 hidden">
+                    <img id="cat_hero_preview" src="" class="w-full h-24 object-cover rounded-lg border border-slate-700">
+                    <button type="button" onclick="catRemoveImage('hero')" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose-500/40 text-rose-300 hover:bg-rose-500/10 text-xs font-semibold transition"><i class="fas fa-trash-can"></i> Supprimer l'image</button>
+                </div>
+                <p id="cat_hero_removed" class="mt-2 hidden text-xs text-amber-300"><i class="fas fa-circle-info mr-1"></i>L'image sera supprimée à l'enregistrement. <button type="button" onclick="catUndoRemove('hero')" class="underline">Annuler</button></p>
+                <input type="hidden" name="remove_hero_image" id="cat_remove_hero" value="0">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -121,14 +126,19 @@
             <div>
                 <label class="block text-xs text-slate-400 mb-2">Icône en image <span class="text-slate-600">(remplace l'icône FontAwesome si définie)</span></label>
                 <div class="flex items-center gap-3">
-                    <img id="cat_icon_preview" src="" class="w-12 h-12 object-cover rounded-lg border border-slate-700 hidden shrink-0">
+                    <div id="cat_icon_box" class="hidden shrink-0 text-center">
+                        <img id="cat_icon_preview" src="" class="w-12 h-12 object-cover rounded-lg border border-slate-700">
+                        <button type="button" onclick="catRemoveImage('icon')" class="mt-1 text-[11px] text-rose-300 hover:underline" title="Supprimer l'icône image"><i class="fas fa-trash-can"></i> Retirer</button>
+                    </div>
                     <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-orange-500/50 rounded-xl p-3 cursor-pointer transition group">
                         <i class="fas fa-cloud-arrow-up text-lg text-slate-600 group-hover:text-orange-400/70 mb-1 transition"></i>
                         <span class="text-slate-500 text-[11px] group-hover:text-slate-300 transition">JPG, PNG, WebP — 5 Mo max</span>
                         <input type="file" name="icon_image_file" id="cat_icon_image_file" accept="image/jpeg,image/png,image/webp" class="hidden"
-                               onchange="const r=new FileReader();r.onload=e=>{document.getElementById('cat_icon_preview').src=e.target.result;document.getElementById('cat_icon_preview').classList.remove('hidden');};r.readAsDataURL(this.files[0])">
+                               onchange="catPreview('icon', this)">
                     </label>
                 </div>
+                <p id="cat_icon_removed" class="mt-2 hidden text-xs text-amber-300"><i class="fas fa-circle-info mr-1"></i>L'icône image sera supprimée à l'enregistrement. <button type="button" onclick="catUndoRemove('icon')" class="underline">Annuler</button></p>
+                <input type="hidden" name="remove_icon_image" id="cat_remove_icon" value="0">
             </div>
 
             <div>
@@ -162,6 +172,41 @@
 
 @push('scripts')
 <script>
+// Images de la catégorie (bandeau, icône) : aperçu, suppression à l'enregistrement, annulation.
+function catSetImage(kind, url) {
+    const box = document.getElementById('cat_' + kind + '_box'), img = document.getElementById('cat_' + kind + '_preview');
+    img.src = url || '';
+    box.classList.toggle('hidden', !url);
+    document.getElementById('cat_remove_' + kind).value = '0';
+    document.getElementById('cat_' + kind + '_removed').classList.add('hidden');
+}
+function catPreview(kind, input) {
+    if (!input.files[0]) return;
+    const r = new FileReader();
+    r.onload = e => {
+        const box = document.getElementById('cat_' + kind + '_box');
+        document.getElementById('cat_' + kind + '_preview').src = e.target.result;
+        box.classList.remove('hidden');
+        document.getElementById('cat_remove_' + kind).value = '0';
+        document.getElementById('cat_' + kind + '_removed').classList.add('hidden');
+    };
+    r.readAsDataURL(input.files[0]);
+}
+function catRemoveImage(kind) {
+    const box = document.getElementById('cat_' + kind + '_box');
+    box.dataset.prev = document.getElementById('cat_' + kind + '_preview').src;
+    box.classList.add('hidden');
+    document.getElementById('cat_remove_' + kind).value = '1';
+    document.getElementById('cat_' + kind + '_removed').classList.remove('hidden');
+    const file = document.getElementById('cat_' + kind + '_image_file');
+    if (file) file.value = '';
+}
+function catUndoRemove(kind) {
+    const box = document.getElementById('cat_' + kind + '_box');
+    document.getElementById('cat_remove_' + kind).value = '0';
+    document.getElementById('cat_' + kind + '_removed').classList.add('hidden');
+    if (box.dataset.prev) box.classList.remove('hidden');
+}
 const catStoreUrl   = "{{ route('admin.tourist.categories.store') }}";
 const catUpdateBase = "{{ url('admin/tourisme/categories') }}";
 
@@ -180,22 +225,8 @@ function openCatModal(cat = null) {
         document.getElementById('cat_description').value = cat.description || '';
         document.getElementById('cat_sort_order').value  = cat.sort_order || 0;
         document.getElementById('cat_is_active').checked = cat.is_active == 1;
-        const preview = document.getElementById('cat_hero_preview');
-        if (cat.hero_image_url) {
-            preview.src = cat.hero_image_url;
-            preview.classList.remove('hidden');
-        } else {
-            preview.src = '';
-            preview.classList.add('hidden');
-        }
-        const iconPreview = document.getElementById('cat_icon_preview');
-        if (cat.icon_image_url) {
-            iconPreview.src = cat.icon_image_url;
-            iconPreview.classList.remove('hidden');
-        } else {
-            iconPreview.src = '';
-            iconPreview.classList.add('hidden');
-        }
+        catSetImage('hero', cat.hero_image_url);
+        catSetImage('icon', cat.icon_image_url);
     } else {
         title.textContent = 'Nouvelle catégorie';
         form.action = catStoreUrl;
@@ -203,12 +234,8 @@ function openCatModal(cat = null) {
         form.reset();
         document.getElementById('cat_is_active').checked = true;
         document.getElementById('cat_color').value = '#f2790f';
-        const preview = document.getElementById('cat_hero_preview');
-        preview.src = '';
-        preview.classList.add('hidden');
-        const iconPreview = document.getElementById('cat_icon_preview');
-        iconPreview.src = '';
-        iconPreview.classList.add('hidden');
+        catSetImage('hero', null);
+        catSetImage('icon', null);
     }
     const modal = document.getElementById('catModal');
     modal.classList.remove('hidden');

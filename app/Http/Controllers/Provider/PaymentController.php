@@ -42,7 +42,7 @@ class PaymentController extends Controller
             'customer_phone.required'     => 'Le numéro de téléphone est requis.',
         ]);
 
-        $provider = Provider::where('user_id', Auth::id())->firstOrFail();
+        $provider = Provider::forUserQuery(Auth::id())->firstOrFail();
         $plan     = SubscriptionPlan::findOrFail($data['plan_id']);
         $amount   = $data['billing_cycle'] === 'yearly'
             ? (float) $plan->price_yearly
@@ -220,7 +220,7 @@ class PaymentController extends Controller
         PaymentLifecycleService $lifecycle,
         SubscriptionService $subscriptionService
     ): JsonResponse {
-        $providerId = Provider::where('user_id', Auth::id())->value('id');
+        $providerId = Provider::forUserQuery(Auth::id())->value('id');
 
         if ((int) $payment->provider_id !== (int) $providerId) {
             return response()->json(['error' => 'Accès refusé'], 403);

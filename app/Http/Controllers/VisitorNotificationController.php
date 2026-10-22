@@ -19,6 +19,6 @@ class VisitorNotificationController extends Controller
     {
         Auth::user()->unreadNotifications->markAsRead();
 
-        return back()->with('success', 'Toutes les notifications ont été marquées comme lues.');
+        return back()->with('success', __('Toutes les notifications ont été marquées comme lues.'));
     }
 }
