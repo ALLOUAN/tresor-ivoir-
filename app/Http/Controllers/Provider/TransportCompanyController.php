@@ -31,10 +31,7 @@ class TransportCompanyController extends Controller
     /** Une entreprise de transport ne peut être gérée que par un prestataire de la catégorie "transports". */
     private function assertTransportCompanyCategory(Provider $provider): void
     {
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-
-        abort_unless($rootSlug === 'transports', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Transports & Mobilité.');
+        abort_unless($provider->hasSector('transports'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Transports & Mobilité.');
     }
 
     /* ── Vue d'ensemble ──────────────────────────────────────────────────── */

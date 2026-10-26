@@ -11,38 +11,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
     </style>
     @include('partials.detail-theme')
     @include('partials.booking-page-theme')
     @include('partials.offer-page-theme')
     <style>
         .lx-date { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
-        .lx-date button { flex: none; width: 58px; padding: 8px 0; border-radius: 14px; border: 1.5px solid #ece5d6; background: #fff; text-align: center; line-height: 1.1; cursor: pointer; }
-        .lx-date button small { display: block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: #8a7f6b; }
-        .lx-date button b { display: block; font-size: 17px; color: #1d1a16; }
-        .lx-date button.is-active { border-color: #b9500a; background: #b9500a; } .lx-date button.is-active * { color: #fff; }
-        .lx-date button:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .lx-date button { flex: none; width: 58px; padding: 8px 0; border-radius: 14px; border: 1.5px solid #D8E9E0; background: #fff; text-align: center; line-height: 1.1; cursor: pointer; }
+        .lx-date button small { display: block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: #557466; }
+        .lx-date button b { display: block; font-size: 17px; color: #0E3B2A; }
+        .lx-date button.is-active { border-color: #EB6E00; background: #EB6E00; } .lx-date button.is-active * { color: #fff; }
+        .lx-date button:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
         .lx-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 6px; }
-        .lx-slot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 8px 4px; border-radius: 12px; border: 1.5px solid #ece5d6; background: #fff; cursor: pointer; }
-        .lx-slot strong { font-size: 14px; font-weight: 800; color: #1d1a16; } .lx-slot small { font-size: 10.5px; font-weight: 600; color: #1b6b3a; }
-        .lx-slot em { position: absolute; top: -7px; right: -4px; padding: 0 5px; border-radius: 999px; font-size: 9.5px; font-style: normal; font-weight: 800; background: #febf48; color: #3d2b00; }
-        .lx-slot em.is-up { background: #f4efe4; color: #5c5548; }
-        .lx-slot.is-full { background: #f1eee8; border-style: dashed; } .lx-slot.is-full strong { color: #a39c8e; text-decoration: line-through; } .lx-slot.is-full small { color: #a3341f; }
+        .lx-slot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 8px 4px; border-radius: 12px; border: 1.5px solid #D8E9E0; background: #fff; cursor: pointer; }
+        .lx-slot strong { font-size: 14px; font-weight: 800; color: #0E3B2A; } .lx-slot small { font-size: 10.5px; font-weight: 600; color: #00874F; }
+        .lx-slot em { position: absolute; top: -7px; right: -4px; padding: 0 5px; border-radius: 999px; font-size: 9.5px; font-style: normal; font-weight: 800; background: #EB6E00; color: #0E3B2A; }
+        .lx-slot em.is-up { background: #F3F8F5; color: #24503D; }
+        .lx-slot.is-full { background: #F3F8F5; border-style: dashed; } .lx-slot.is-full strong { color: #8AA99B; text-decoration: line-through; } .lx-slot.is-full small { color: #a3341f; }
         .lx-slot.is-past { opacity: .45; cursor: not-allowed; }
-        .lx-slot.is-active { border-color: #b9500a; background: #b9500a; } .lx-slot.is-active * { color: #fff !important; }
-        .lx-slot:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .lx-slot.is-active { border-color: #EB6E00; background: #EB6E00; } .lx-slot.is-active * { color: #fff !important; }
+        .lx-slot:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
         .lx-cond { display: flex; flex-wrap: wrap; gap: 6px; }
         .lx-pk { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
-        .lx-pk a, .lx-pass { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: 20px; background: #fff; border: 1px solid #ece5d6; color: inherit; }
-        .lx-pk a:hover { border-color: #ef7c2b; }
-        .lx-pk__icon { width: 40px; height: 40px; border-radius: 12px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; }
-        .lx-wait { margin-top: 10px; padding: 12px 14px; border-radius: 16px; background: #fff8e6; border: 1px solid rgba(254,191,72,.6); font-size: 13px; color: #5c4a12; }
+        .lx-pk a, .lx-pass { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: 20px; background: #fff; border: 1px solid #D8E9E0; color: inherit; }
+        .lx-pk a:hover { border-color: #EB6E00; }
+        .lx-pk__icon { width: 40px; height: 40px; border-radius: 12px; background: #F3F8F5; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; }
+        .lx-wait { margin-top: 10px; padding: 12px 14px; border-radius: 16px; background: #F3F8F5; border: 1px solid rgba(235,110,0,.6); font-size: 13px; color: #B85600; }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="dx text-[#1c1915]">
+<body class="dx text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -138,11 +138,11 @@
                     <p class="hx-kicker">{{ __('Avant de réserver') }}</p>
                     <h2 class="tp-h2">{{ __('Conditions de participation') }}</h2>
                     <div class="tp-incl">
-                        @if($conds)<div class="tp-box"><h3>{{ __('Conditions') }}</h3><ul class="tp-list">@foreach($conds as $c)<li><x-icon name="danger-circle" class="text-[#b9500a]" />{{ $c }}</li>@endforeach</ul></div>@endif
-                        @if($bring)<div class="tp-box"><h3>{{ __('À prévoir') }}</h3><ul class="tp-list">@foreach($bring as $c)<li><i class="fas fa-check text-[#1b6b3a]" aria-hidden="true"></i>{{ $c }}</li>@endforeach</ul></div>@endif
+                        @if($conds)<div class="tp-box"><h3>{{ __('Conditions') }}</h3><ul class="tp-list">@foreach($conds as $c)<li><x-icon name="danger-circle" class="text-[#EB6E00]" />{{ $c }}</li>@endforeach</ul></div>@endif
+                        @if($bring)<div class="tp-box"><h3>{{ __('À prévoir') }}</h3><ul class="tp-list">@foreach($bring as $c)<li><i class="fas fa-check text-[#00874F]" aria-hidden="true"></i>{{ $c }}</li>@endforeach</ul></div>@endif
                     </div>
                     @if($activity->requires_waiver)
-                        <details class="tp-box mt-3"><summary class="cursor-pointer font-bold text-sm"><i class="fas fa-file-signature text-[#b9500a] mr-1.5" aria-hidden="true"></i>{{ __('Décharge de responsabilité à accepter en réservant') }}</summary><p class="hx-text text-sm mt-2">{{ $activity->waiver_text }}</p></details>
+                        <details class="tp-box mt-3"><summary class="cursor-pointer font-bold text-sm"><i class="fas fa-file-signature text-[#EB6E00] mr-1.5" aria-hidden="true"></i>{{ __('Décharge de responsabilité à accepter en réservant') }}</summary><p class="hx-text text-sm mt-2">{{ $activity->waiver_text }}</p></details>
                     @endif
                 </section>
             @endif
@@ -156,7 +156,7 @@
                             <a href="{{ route('leisure-package.show', $p->slug) }}">
                                 <span class="lx-pk__icon"><i class="fas {{ \App\Models\LeisurePackage::KIND_ICONS[$p->kind] ?? 'fa-star' }}" aria-hidden="true"></i></span>
                                 <strong class="text-[15px]">{{ $p->name }}</strong>
-                                <span class="text-xs text-[#6b6458]">{{ $p->kindLabel() }} · {{ __(':n participants inclus', ['n' => $p->included_participants]) }}</span>
+                                <span class="text-xs text-[#557466]">{{ $p->kindLabel() }} · {{ __(':n participants inclus', ['n' => $p->included_participants]) }}</span>
                                 <span class="font-extrabold">{{ __('dès') }} {{ $fmt((int) $p->weekday_price_xof) }}</span>
                                 @if($p->deposit_xof)<span class="tp-badge is-ok self-start">{{ __('Acompte :a pour bloquer la date', ['a' => $fmt($p->deposit_xof)]) }}</span>@endif
                             </a>
@@ -174,19 +174,19 @@
                             <div class="lx-pass">
                                 <span class="lx-pk__icon"><x-icon name="user-id" /></span>
                                 <strong class="text-[15px]">{{ $p->name }}</strong>
-                                <span class="text-xs text-[#6b6458]">{{ $p->summary() }}</span>
-                                @if($p->description)<span class="text-xs text-[#4a443a]">{{ $p->description }}</span>@endif
+                                <span class="text-xs text-[#557466]">{{ $p->summary() }}</span>
+                                @if($p->description)<span class="text-xs text-[#24503D]">{{ $p->description }}</span>@endif
                                 <span class="font-extrabold">{{ $fmt((int) $p->price_xof) }}</span>
                                 @if($user?->role === 'visitor')
                                     <form method="POST" action="{{ route('leisure-pass.buy', $p) }}" class="flex flex-wrap gap-1.5 mt-1">
                                         @csrf
-                                        <button name="payment_method" value="cinetpay" class="text-xs font-bold rounded-full bg-[#b9500a] text-white px-3 py-2">{{ __('Acheter') }}</button>
-                                        <button name="payment_method" value="wallet" class="text-xs font-bold rounded-full border border-[#ece5d6] px-3 py-2">{{ __('Avec mon solde') }}</button>
+                                        <button name="payment_method" value="cinetpay" class="text-xs font-bold rounded-full bg-[#EB6E00] text-white px-3 py-2">{{ __('Acheter') }}</button>
+                                        <button name="payment_method" value="wallet" class="text-xs font-bold rounded-full border border-[#D8E9E0] px-3 py-2">{{ __('Avec mon solde') }}</button>
                                     </form>
                                 @elseif(! $user)
-                                    <a href="{{ route('login', ['redirect' => request()->getRequestUri()]) }}" class="text-xs font-bold text-[#9a4308]">{{ __('Se connecter pour acheter') }}</a>
+                                    <a href="{{ route('login', ['redirect' => request()->getRequestUri()]) }}" class="text-xs font-bold text-[#B85600]">{{ __('Se connecter pour acheter') }}</a>
                                 @endif
-                                <span class="text-[11px] text-[#8a7f6b]">{{ __('Nominative, non remboursable, non cessible.') }}</span>
+                                <span class="text-[11px] text-[#557466]">{{ __('Nominative, non remboursable, non cessible.') }}</span>
                             </div>
                         @endforeach
                     </div>
@@ -201,7 +201,7 @@
                         @foreach($others as $o)
                             <a href="{{ route('activity.show', $o->slug) }}" class="dx-offer">
                                 <span class="dx-offer__media">@if($o->images[0] ?? null)<img src="{{ $o->images[0] }}" alt="" loading="lazy" class="w-full h-full object-cover">@else<x-icon name="masks" />@endif</span>
-                                <span class="dx-offer__body"><span class="dx-offer__name">{{ $o->name }}</span>@if($o->duration_minutes)<span class="text-xs text-[#6b6458]">{{ $o->duration_minutes }} min</span>@endif</span>
+                                <span class="dx-offer__body"><span class="dx-offer__name">{{ $o->name }}</span>@if($o->duration_minutes)<span class="text-xs text-[#557466]">{{ $o->duration_minutes }} min</span>@endif</span>
                                 <span class="dx-offer__side"><span class="dx-offer__price font-bold">{{ $fmt($o->fromPrice()) }}</span><span class="dx-offer__ask"><i class="fas fa-arrow-right" aria-hidden="true"></i></span></span>
                             </a>
                         @endforeach
@@ -258,7 +258,7 @@
                             <span class="tp-label">{{ __('Options') }}</span>
                             @foreach($addons as $i => $a)
                                 <label class="tp-extra"><input type="checkbox" name="addons[]" value="{{ $i }}" @checked(in_array($i, old('addons', []))) data-addon>
-                                    <span>{{ $a['label'] }}</span><span class="font-bold whitespace-nowrap">+ {{ $fmt($a['price_xof']) }} <small class="font-medium text-[#6b6458]">{{ $a['per'] === 'booking' ? __('/ réservation') : __('/ pers.') }}</small></span></label>
+                                    <span>{{ $a['label'] }}</span><span class="font-bold whitespace-nowrap">+ {{ $fmt($a['price_xof']) }} <small class="font-medium text-[#557466]">{{ $a['per'] === 'booking' ? __('/ réservation') : __('/ pers.') }}</small></span></label>
                             @endforeach
                         @endif
 
@@ -283,13 +283,13 @@
                         @if($errors->leisure->any())<p class="tp-err">{{ $errors->leisure->first() }}</p>@endif
                         <p class="tp-err hidden" id="lx-err"></p>
                         <button type="submit" class="tp-submit" id="lx-submit"><x-icon name="ticket" class="mr-1.5" /><span id="lx-submit-label">{{ __('Réserver') }}</span></button>
-                        @if($activity->cancellationLabel())<p class="tp-note"><x-icon name="restart" class="text-[#1b6b3a] mr-1" />{{ $activity->cancellationLabel() }}.</p>@endif
+                        @if($activity->cancellationLabel())<p class="tp-note"><x-icon name="restart" class="text-[#00874F] mr-1" />{{ $activity->cancellationLabel() }}.</p>@endif
                     </form>
                     <form method="POST" action="{{ route('activity.waitlist', $activity->slug) }}" id="lx-wait-form" class="lx-wait hidden">
                         @csrf
                         <input type="hidden" name="date"><input type="hidden" name="time"><input type="hidden" name="participants">
                         <p class="m-0 mb-2"><i class="fas fa-bell mr-1" aria-hidden="true"></i><span id="lx-wait-text"></span></p>
-                        <button type="submit" class="text-xs font-bold rounded-full bg-[#1d1a16] text-white px-4 py-2">{{ __('M\'inscrire sur la liste d\'attente') }}</button>
+                        <button type="submit" class="text-xs font-bold rounded-full bg-[#0E3B2A] text-white px-4 py-2">{{ __('M\'inscrire sur la liste d\'attente') }}</button>
                     </form>
                 @endif
                 </div>

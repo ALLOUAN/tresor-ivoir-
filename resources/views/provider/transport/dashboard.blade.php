@@ -13,11 +13,11 @@
 @section('content')
 
 <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
-    <div class="bg-gradient-to-br from-emerald-900/40 to-green-900 border border-emerald-500/30 rounded-xl p-4">
+    <div class="bg-emerald-900/40 border border-emerald-500/30 rounded-xl p-4">
         <p class="text-emerald-300/80 text-xs font-medium">Offres disponibles</p>
         <p class="text-emerald-200 text-2xl font-bold mt-1">{{ number_format($offerCounts['available']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-orange-900/40 to-green-900 border border-orange-500/30 rounded-xl p-4">
+    <div class="bg-orange-900/40 border border-orange-500/30 rounded-xl p-4">
         <p class="text-orange-300/80 text-xs font-medium">Offres indisponibles</p>
         <p class="text-orange-200 text-2xl font-bold mt-1">{{ number_format($offerCounts['unavailable']) }}</p>
     </div>

@@ -42,7 +42,7 @@
 </div>
 
 @if($stats['simulated'] > 0)
-    <p class="mb-6 text-sm rounded-lg border px-4 py-3" style="background:#fdf7e7;border-color:#f0e2b8;color:#6b4e0e">
+    <p class="mb-6 text-sm rounded-lg border px-4 py-3" style="background:#F3F8F5;border-color:#F7C396;color:#B85600">
         <i class="fas fa-flask mr-2"></i>{{ $stats['simulated'] }} consultations sont <strong>simulées</strong> (commande <code>ai:seed-simulated</code>) pour démontrer le filtrage collaboratif.
         Elles faussent les résultats ci-dessous : à retirer avec <code>php artisan ai:seed-simulated --fresh --actors=0</code> une fois l'usage réel suffisant.
     </p>
@@ -97,7 +97,7 @@
                 @foreach($planner['scenarios'] as $sc)
                     <tr class="border-b border-slate-800/60 text-slate-300 align-top">
                         <td class="py-2.5 pr-4 font-medium text-white">{{ $sc['name'] }}
-                            @foreach($sc['warnings'] as $w)<p class="text-xs font-normal mt-0.5" style="color:#8a6a1c">{{ \Illuminate\Support\Str::limit($w, 90) }}</p>@endforeach
+                            @foreach($sc['warnings'] as $w)<p class="text-xs font-normal mt-0.5" style="color:#B85600">{{ \Illuminate\Support\Str::limit($w, 90) }}</p>@endforeach
                         </td>
                         <td class="py-2.5 pr-4">{!! $sc['days_ok'] ? '<span class="text-emerald-400">respectée</span>' : '<span class="text-red-400">écart</span>' !!}</td>
                         <td class="py-2.5 pr-4">{!! $sc['budget_ok'] ? '<span class="text-emerald-400">respecté</span>' : '<span class="text-red-400">dépassé</span>' !!}</td>
@@ -226,7 +226,7 @@
         <p class="text-slate-400 text-sm">Aucun prestataire n'a encore 56 jours de mesures : le site compte désormais les vues des fiches chaque jour, l'évaluation apparaîtra avec le temps (ou en démonstration : <code>php artisan ai:seed-analytics</code>).</p>
     @else
         @if($analytics['simulated_share'] > 0)
-            <p class="mb-4 text-xs rounded-lg px-3 py-2" style="background:#fdf7e7;border:1px solid #f0e2b8;color:#6b4e0e"><i class="fas fa-flask mr-1"></i>L'historique est simulé à {{ round($analytics['simulated_share'] * 100) }} % : ce test vérifie le fonctionnement de la chaîne de prévision, il ne mesure pas la précision qu'on obtiendra sur de vrais visiteurs.</p>
+            <p class="mb-4 text-xs rounded-lg px-3 py-2" style="background:#F3F8F5;border:1px solid #F7C396;color:#B85600"><i class="fas fa-flask mr-1"></i>L'historique est simulé à {{ round($analytics['simulated_share'] * 100) }} % : ce test vérifie le fonctionnement de la chaîne de prévision, il ne mesure pas la précision qu'on obtiendra sur de vrais visiteurs.</p>
         @endif
         <div class="overflow-x-auto"><table class="w-full text-sm">
             <thead><tr class="text-left text-slate-500 text-xs uppercase tracking-wide border-b border-slate-800"><th class="py-2 pr-4">Modèle</th><th class="py-2 pr-4">MAE</th><th class="py-2 pr-4">MAPE</th><th class="py-2">WAPE</th></tr></thead>

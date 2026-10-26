@@ -5,17 +5,17 @@
     <title>Certificat d'authenticité {{ $order->certificateNumber() }}</title>
     <style>
         @page { margin: 14mm; }
-        body { font-family: DejaVu Serif, Georgia, serif; color: #1c1915; margin: 0; }
-        .frame { border: 3px double #b8892b; padding: 14mm 16mm; height: 150mm; position: relative; }
-        .kicker { font-family: DejaVu Sans, Arial, sans-serif; letter-spacing: 4px; font-size: 10pt; color: #b8892b; text-transform: uppercase; text-align: center; }
+        body { font-family: DejaVu Serif, Georgia, serif; color: #0E3B2A; margin: 0; }
+        .frame { border: 3px double #EB6E00; padding: 14mm 16mm; height: 150mm; position: relative; }
+        .kicker { font-family: DejaVu Sans, Arial, sans-serif; letter-spacing: 4px; font-size: 10pt; color: #EB6E00; text-transform: uppercase; text-align: center; }
         h1 { text-align: center; font-size: 26pt; margin: 4mm 0 8mm; }
         table { width: 100%; border-collapse: collapse; }
         td { vertical-align: top; }
-        .label { font-family: DejaVu Sans, Arial, sans-serif; font-size: 8.5pt; color: #8a7f6b; text-transform: uppercase; letter-spacing: 1px; }
+        .label { font-family: DejaVu Sans, Arial, sans-serif; font-size: 8.5pt; color: #557466; text-transform: uppercase; letter-spacing: 1px; }
         .value { font-size: 13pt; margin-bottom: 5mm; }
         .title { font-size: 18pt; font-weight: bold; margin-bottom: 5mm; }
-        .foot { position: absolute; left: 16mm; right: 16mm; bottom: 10mm; font-family: DejaVu Sans, Arial, sans-serif; font-size: 8.5pt; color: #5c5548; }
-        .sign { border-top: 1px solid #1c1915; width: 60mm; padding-top: 2mm; font-family: DejaVu Sans, Arial, sans-serif; font-size: 9pt; text-align: center; }
+        .foot { position: absolute; left: 16mm; right: 16mm; bottom: 10mm; font-family: DejaVu Sans, Arial, sans-serif; font-size: 8.5pt; color: #24503D; }
+        .sign { border-top: 1px solid #0E3B2A; width: 60mm; padding-top: 2mm; font-family: DejaVu Sans, Arial, sans-serif; font-size: 9pt; text-align: center; }
     </style>
 </head>
 <body>

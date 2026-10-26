@@ -1,6 +1,12 @@
 @php
     $checkoutLayout = request()->routeIs('subscriptions.checkout') ? 'layouts.public-checkout' : 'layouts.app';
     $isPublicCheckout = request()->routeIs('subscriptions.checkout');
+    // Achat de plusieurs secteurs : un forfait par secteur, un seul paiement (montant = somme).
+    $bundleItems = ($bundleItems ?? collect())->isNotEmpty() ? $bundleItems : collect([['plan' => $plan, 'sector' => null]]);
+    $bundleSector = $bundleSector ?? null;
+    $bundleAvec = \App\Support\PlanBundle::encode($bundleItems->slice(1));
+    $bundleMonthly = \App\Support\PlanBundle::total($bundleItems, 'monthly');
+    $bundleYearly = \App\Support\PlanBundle::total($bundleItems, 'yearly');
 @endphp
 @extends($checkoutLayout)
 
@@ -11,64 +17,64 @@
 @if($isPublicCheckout)
     @php
         $u = auth()->user();
-        $monthlyPrice = (float) $plan->price_monthly;
-        $yearlyPrice = (float) $plan->price_yearly;
+        $monthlyPrice = $bundleMonthly;
+        $yearlyPrice = $bundleYearly;
     @endphp
     <style>
         :root {
-            --ti-gold: #e8862a;
-            --ti-gold-soft: rgba(217, 178, 76, 0.18);
-            --ti-sunset: #f2790f;
-            --ti-palm: #2f7a3f;
-            --ti-lagoon: #2c8da6;
+            --ti-gold: #EB6E00;
+            --ti-gold-soft: rgba(235,110,0, 0.18);
+            --ti-sunset: #EB6E00;
+            --ti-palm: #00874F;
+            --ti-lagoon: #00874F;
         }
         .checkout-glass {
-            background:#e9e5d9;
-            border: 1px solid #d6cfba;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+            background:#D8E9E0;
+            border: 1px solid #8AA99B;
+            box-shadow: 0 12px 32px rgba(14,59,42,0.06);
         }
         .checkout-title-icon {
-            box-shadow: 0 0 0 1px var(--ti-gold-soft), 0 8px 22px rgba(240,138,36,0.12);
+            box-shadow: 0 0 0 1px var(--ti-gold-soft), 0 8px 22px rgba(235,110,0,0.12);
         }
         .checkout-input {
-            background-color:#e9e5d9 !important;
-            color: #1c1915 !important;
-            border-color: #c2b89e !important;
+            background-color:#D8E9E0 !important;
+            color: #0E3B2A !important;
+            border-color: #8AA99B !important;
             transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
         }
         .checkout-input::placeholder {
-            color: #665f52 !important;
+            color: #557466 !important;
         }
         .checkout-input:focus {
-            box-shadow: 0 0 0 3px rgba(44,141,166,0.15);
+            box-shadow: 0 0 0 3px rgba(0,135,79,0.15);
             transform: translateY(-1px);
         }
         .checkout-input:-webkit-autofill,
         .checkout-input:-webkit-autofill:hover,
         .checkout-input:-webkit-autofill:focus {
-            -webkit-text-fill-color: #1c1915 !important;
+            -webkit-text-fill-color: #0E3B2A !important;
             box-shadow: 0 0 0px 1000px #ffffff inset !important;
             transition: background-color 9999s ease-out 0s;
         }
         select.checkout-input option {
-            background:#e9e5d9;
-            color: #1c1915;
+            background:#D8E9E0;
+            color: #0E3B2A;
         }
         .checkout-submit {
             background: var(--ti-sunset);
-            color: #16140f;
-            box-shadow: 0 10px 28px rgba(240,138,36,0.22);
+            color: #0E3B2A;
+            box-shadow: 0 10px 28px rgba(235,110,0,0.22);
         }
         .checkout-submit:hover {
             filter: saturate(1.08) brightness(1.03);
         }
         .checkout-badge-premium {
-            border-color: rgba(217,178,76,0.35);
-            background: rgba(229, 158, 56, 0.12);
-            color: #1c1915;
+            border-color: rgba(235,110,0,0.35);
+            background: rgba(235,110,0, 0.12);
+            color: #0E3B2A;
         }
         .checkout-total {
-            color: #a54a0b;
+            color: #B85600;
         }
     </style>
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 items-start">
@@ -86,17 +92,17 @@
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cycle-option cursor-pointer">
                                 <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
-                                <div class="cycle-card rounded-xl border-2 border-[#e8862a] bg-[#e8862a]/10 p-3 text-center transition">
+                                <div class="cycle-card rounded-xl border-2 border-[#EB6E00] bg-[#EB6E00]/10 p-3 text-center transition">
                                     <p class="text-sm font-bold text-white">{{ __('Mensuel') }}</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-[#a54a0b]">{{ number_format($monthlyPrice, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-[#B85600]">{{ number_format($monthlyPrice, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                     <p class="text-xs text-gray-500">{{ __('/ mois') }}</p>
                                 </div>
                             </label>
                             <label class="cycle-option cursor-pointer">
                                 <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
-                                <div class="cycle-card rounded-xl border border-white/10 bg-dark-900 p-3 text-center transition hover:border-[#f2790f]/40">
+                                <div class="cycle-card rounded-xl border border-white/10 bg-dark-900 p-3 text-center transition hover:border-[#EB6E00]/40">
                                     <p class="text-sm font-bold text-white">{{ __('Annuel') }}</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-[#a54a0b]">{{ number_format($yearlyPrice, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-[#B85600]">{{ number_format($yearlyPrice, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                     <p class="text-xs text-gray-500">{{ __('/ an') }}</p>
                                 </div>
                             </label>
@@ -109,9 +115,9 @@
                             @foreach($channels as $ch)
                                 <label class="channel-option cursor-pointer">
                                     <input type="radio" name="channel" value="{{ $ch['code'] }}" class="sr-only" {{ $loop->first ? 'checked' : '' }}>
-                                    <div class="channel-card rounded-xl border p-2.5 transition {{ $loop->first ? 'border-[#e8862a] bg-[#e8862a]/10' : 'border-white/10 bg-dark-900' }}">
+                                    <div class="channel-card rounded-xl border p-2.5 transition {{ $loop->first ? 'border-[#EB6E00] bg-[#EB6E00]/10' : 'border-white/10 bg-dark-900' }}">
                                         <div class="flex items-center gap-2">
-                                            <i class="fas {{ $ch['icon'] }} w-4 shrink-0 text-center text-xs text-[#f2790f]"></i>
+                                            <i class="fas {{ $ch['icon'] }} w-4 shrink-0 text-center text-xs text-[#EB6E00]"></i>
                                             <div class="min-w-0">
                                                 <p class="text-xs font-semibold leading-tight text-white">{{ $ch['label'] }}</p>
                                                 <p class="truncate text-[10px] text-gray-500">{{ $ch['desc'] }}</p>
@@ -128,12 +134,12 @@
                             <div>
                                 <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Prénom') }} <span class="text-red-400">*</span></label>
                                 <input type="text" id="customer_name" value="{{ e($u->first_name) }}" placeholder="{{ __('Prénom') }}"
-                                       class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#2c8da6]/60 focus:outline-none">
+                                       class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#00874F]/60 focus:outline-none">
                             </div>
                             <div>
                                 <label class="mb-1.5 block text-sm font-semibold text-gray-200">{{ __('Nom') }} <span class="text-red-400">*</span></label>
                                 <input type="text" id="customer_surname" value="{{ e($u->last_name) }}" placeholder="{{ __('Nom') }}"
-                                       class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#2c8da6]/60 focus:outline-none">
+                                       class="checkout-input w-full rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#00874F]/60 focus:outline-none">
                             </div>
                         </div>
                         <div>
@@ -146,7 +152,7 @@
                             <div class="flex">
                                 <span class="inline-flex shrink-0 items-center gap-1.5 rounded-l-xl border border-r-0 border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-gray-300">🇨🇮 +225</span>
                                 <input type="tel" id="customer_phone" value="{{ old('billing_phone', $u->phone ? preg_replace('/^\+225/', '', $u->phone) : '') }}" placeholder="07 08 75 85 00"
-                                       class="checkout-input min-w-0 flex-1 rounded-r-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#2c8da6]/60 focus:outline-none">
+                                       class="checkout-input min-w-0 flex-1 rounded-r-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-[#00874F]/60 focus:outline-none">
                             </div>
                             <p class="mt-1 text-xs text-gray-500">{{ __('Format : 0707267572 ou 07 07 26 75 72') }}</p>
                         </div>
@@ -154,7 +160,7 @@
 
                     <div>
                         <label class="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-200">
-                            <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#e8862a]/15 text-[#a54a0b]"><i class="fas fa-wallet"></i></span>
+                            <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#EB6E00]/15 text-[#B85600]"><i class="fas fa-wallet"></i></span>
                             {{ __('Moyen de paiement') }}
                         </label>
                         <p class="mb-2 text-xs text-gray-500">{{ __('Sélectionnez le canal utilisé pour le paiement en ligne.') }}</p>
@@ -165,16 +171,16 @@
                         <div class="flex gap-2">
                             <input type="text" id="promo-input" placeholder="{{ __('EX : IVOIRE20') }}"
                                    class="checkout-input flex-1 rounded-xl border border-white/10 bg-dark-900 px-3 py-2.5 text-sm uppercase tracking-wider text-white placeholder:normal-case placeholder:text-gray-600 focus:border-gold-500/50 focus:outline-none">
-                            <button type="button" id="promo-btn" class="rounded-xl bg-[#2f7a3f]/20 px-4 py-2.5 text-sm font-medium text-emerald-200 transition hover:bg-[#2f7a3f]/30">{{ __('Appliquer') }}</button>
+                            <button type="button" id="promo-btn" class="rounded-xl bg-[#00874F]/20 px-4 py-2.5 text-sm font-medium text-emerald-200 transition hover:bg-[#00874F]/30">{{ __('Appliquer') }}</button>
                         </div>
                         <p id="promo-message" class="mt-1.5 hidden text-xs"></p>
                     </div>
 
                     <label class="flex cursor-pointer items-start gap-3 select-none">
-                        <input type="checkbox" id="cgu-check" class="mt-1 h-4 w-4 shrink-0 rounded border-white/20 bg-dark-900 text-[#2f7a3f] focus:ring-[#2f7a3f]/50">
+                        <input type="checkbox" id="cgu-check" class="mt-1 h-4 w-4 shrink-0 rounded border-white/20 bg-dark-900 text-[#00874F] focus:ring-[#00874F]/50">
                         <span class="text-sm leading-relaxed text-gray-400">
-                            {{ __('J\'accepte les') }} <a href="#" class="font-medium text-[#a54a0b] underline hover:text-[#a3450a]">{{ __('conditions générales') }}</a>
-                            {{ __('et la') }} <a href="#" class="font-medium text-[#a54a0b] underline hover:text-[#a3450a]">{{ __('politique de confidentialité') }}</a>.
+                            {{ __('J\'accepte les') }} <a href="#" class="font-medium text-[#B85600] underline hover:text-[#B85600]">{{ __('conditions générales') }}</a>
+                            {{ __('et la') }} <a href="#" class="font-medium text-[#B85600] underline hover:text-[#B85600]">{{ __('politique de confidentialité') }}</a>.
                         </span>
                     </label>
 
@@ -195,6 +201,7 @@
                 <form method="POST" action="{{ route('subscriptions.process-offline', $plan) }}" class="checkout-glass space-y-6 rounded-2xl p-5 sm:p-6">
                     @csrf
                     <input type="hidden" name="gateway" value="cinetpay">
+                    <input type="hidden" name="sector" value="{{ $bundleSector }}"><input type="hidden" name="avec" value="{{ $bundleAvec }}">
 
                     <div class="flex items-center gap-2 text-white font-bold text-lg">
                         <span class="checkout-title-icon inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500/15 text-gold-400"><i class="fas fa-users"></i></span>
@@ -331,17 +338,20 @@
                     <div class="flex items-center gap-3">
                         <span class="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white/15 text-lg"><i class="fas fa-box"></i></span>
                         <div>
-                            <p class="text-sm font-semibold text-[#a54a0b]">{{ __('Forfait') }}</p>
-                            <p class="text-lg font-bold leading-tight">{{ $plan->localized('name') }}</p>
+                            <p class="text-sm font-semibold text-[#B85600]">{{ $bundleItems->count() > 1 ? __(':n secteurs', ['n' => $bundleItems->count()]) : __('Forfait') }}</p>
+                            <p class="text-lg font-bold leading-tight">{{ $bundleItems->count() > 1 ? __('Abonnement multi-secteurs') : $plan->localized('name') }}</p>
                         </div>
                     </div>
                 </div>
 
                 <dl class="space-y-2 text-sm">
-                    <div class="flex justify-between gap-4 text-gray-400">
-                        <dt>{{ __('Abonnement') }}</dt>
-                        <dd class="font-medium text-white">{{ $plan->localized('name') }}</dd>
-                    </div>
+                    @foreach($bundleItems as $bi)
+                        @php $bp = $bi['plan']; @endphp
+                        <div class="flex justify-between gap-4 text-gray-400">
+                            <dt>{{ ($bi['sector'] ?? $bp->providerCategory)?->localized('name') ?? __('Abonnement') }}</dt>
+                            <dd class="font-medium text-white text-right">{{ $bp->localized('name') }}<br><span class="bundle-line text-xs text-gray-500" data-m="{{ (float) $bp->price_monthly }}" data-y="{{ (float) $bp->price_yearly }}">{{ number_format((float) $bp->price_monthly, 0, ',', ' ') }} {{ __('FCFA') }}</span></dd>
+                        </div>
+                    @endforeach
                     <div class="flex justify-between gap-4 text-gray-400">
                         <dt>{{ __('Durée') }}</dt>
                         <dd id="recap-duration" class="font-medium text-white">{{ __('30 jours') }}</dd>
@@ -361,9 +371,9 @@
                 </dl>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#2f7a3f]/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-[#2f7a3f]/35"><i class="fas fa-shield-halved"></i> {{ __('SSL') }}</span>
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#2c8da6]/15 px-2.5 py-1 text-[11px] font-semibold text-green-200 ring-1 ring-[#2c8da6]/35"><i class="fas fa-lock"></i> {{ __('Chiffré') }}</span>
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#f2790f]/12 px-2.5 py-1 text-[11px] font-semibold text-[#a54a0b] ring-1 ring-[#e8862a]/40"><i class="fas fa-circle-check"></i> {{ __('CynetPay') }}</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#00874F]/15 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-[#00874F]/35"><i class="fas fa-shield-halved"></i> {{ __('SSL') }}</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#00874F]/15 px-2.5 py-1 text-[11px] font-semibold text-green-200 ring-1 ring-[#00874F]/35"><i class="fas fa-lock"></i> {{ __('Chiffré') }}</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#EB6E00]/12 px-2.5 py-1 text-[11px] font-semibold text-[#B85600] ring-1 ring-[#EB6E00]/40"><i class="fas fa-circle-check"></i> {{ __('CynetPay') }}</span>
                 </div>
             </div>
         </aside>
@@ -391,7 +401,7 @@
                             <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
                             <div class="cycle-card rounded-lg border border-orange-500 bg-orange-500/8 p-3 text-center transition hover:border-orange-500/70">
                                 <p class="text-sm font-bold text-white">{{ __('Mensuel') }}</p>
-                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format($bundleMonthly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 <p class="text-xs text-slate-500">{{ __('/ mois') }}</p>
                             </div>
                         </label>
@@ -399,7 +409,7 @@
                             <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
                             <div class="cycle-card rounded-lg border border-slate-700 p-3 text-center transition hover:border-orange-500/50">
                                 <p class="text-sm font-bold text-white">{{ __('Annuel') }}</p>
-                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format($bundleYearly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 <p class="text-xs text-slate-500">{{ __('/ an') }}</p>
                             </div>
                         </label>
@@ -499,6 +509,7 @@
 
             <form method="POST" action="{{ route('subscriptions.process-offline', $plan) }}" class="space-y-5 rounded-xl border border-slate-800 bg-green-900 p-5">
                 @csrf
+                <input type="hidden" name="sector" value="{{ $bundleSector }}"><input type="hidden" name="avec" value="{{ $bundleAvec }}">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="mb-1.5 block text-xs font-medium text-slate-300">{{ __('Prénom') }} <span class="text-red-400">*</span></label>
@@ -527,7 +538,7 @@
                             <input type="radio" name="billing_cycle" value="monthly" class="sr-only" checked>
                             <div class="cycle-card rounded-lg border border-orange-500 bg-orange-500/8 p-3 text-center transition">
                                 <p class="text-sm font-bold text-white">{{ __('Mensuel') }}</p>
-                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_monthly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format($bundleMonthly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 <p class="text-xs text-slate-500">{{ __('/ mois') }}</p>
                             </div>
                         </label>
@@ -535,7 +546,7 @@
                             <input type="radio" name="billing_cycle" value="yearly" class="sr-only">
                             <div class="cycle-card rounded-lg border border-slate-700 p-3 text-center transition hover:border-orange-500/50">
                                 <p class="text-sm font-bold text-white">{{ __('Annuel') }}</p>
-                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format((float) $plan->price_yearly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                <p class="mt-0.5 font-semibold text-orange-400">{{ number_format($bundleYearly, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 <p class="text-xs text-slate-500">{{ __('/ an') }}</p>
                             </div>
                         </label>
@@ -594,8 +605,10 @@
 (function () {
     const isPublicCheckout = @json($isPublicCheckout);
     const planId      = {{ $plan->id }};
-    const priceM      = {{ (float) $plan->price_monthly }};
-    const priceY      = {{ (float) $plan->price_yearly }};
+    const priceM      = {{ $bundleMonthly }};
+    const priceY      = {{ $bundleYearly }};
+    const bundleSector = @json($bundleSector);
+    const bundleAvec   = @json($bundleAvec);
     const validateUrl = '{{ route('provider.billing.promo.validate') }}';
     const csrfEl = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfEl ? csrfEl.content : '';
@@ -640,6 +653,7 @@
         if (els.base) els.base.textContent = fmt(base);
         if (els.total) els.total.textContent = fmt(total);
         if (els.duration) els.duration.textContent = currentCycle === 'yearly' ? '12 mois' : '30 jours';
+        document.querySelectorAll('.bundle-line').forEach(function (el) { el.textContent = fmt(Number(currentCycle === 'yearly' ? el.dataset.y : el.dataset.m)); });
 
         const payLabel = document.getElementById('public-pay-btn-label');
         if (payLabel && !cynetConfigured && isPublicCheckout) {
@@ -659,7 +673,7 @@
             if (promoMsg)   promoMsg.classList.add('hidden');
             if (els.discountRow) els.discountRow.classList.add('hidden');
             document.querySelectorAll('.cycle-card').forEach(c => {
-                c.classList.remove('border-2', 'border-[#1a7a3f]', 'bg-emerald-50/50', 'border-gold-500', 'bg-gold-500/10', 'border-[#e8862a]', 'bg-[#e8862a]/10', 'border-orange-500', 'bg-orange-500/8');
+                c.classList.remove('border-2', 'border-[#00874F]', 'bg-emerald-50/50', 'border-gold-500', 'bg-gold-500/10', 'border-[#EB6E00]', 'bg-[#EB6E00]/10', 'border-orange-500', 'bg-orange-500/8');
                 c.classList.add('border');
                 if (isPublicCheckout) {
                     c.classList.add('border-white/10', 'bg-dark-900');
@@ -673,7 +687,7 @@
             if (card) {
                 if (isPublicCheckout) {
                     card.classList.remove('border', 'border-white/10', 'bg-dark-900');
-                    card.classList.add('border-2', 'border-[#e8862a]', 'bg-[#e8862a]/10');
+                    card.classList.add('border-2', 'border-[#EB6E00]', 'bg-[#EB6E00]/10');
                 } else {
                     card.classList.remove('border-slate-700');
                     card.classList.add('border-orange-500', 'bg-orange-500/8');
@@ -686,7 +700,7 @@
             const card = radio.closest('.cycle-option') && radio.closest('.cycle-option').querySelector('.cycle-card');
             if (card) {
                 if (isPublicCheckout) {
-                    card.classList.add('border-2', 'border-[#e8862a]', 'bg-[#e8862a]/10');
+                    card.classList.add('border-2', 'border-[#EB6E00]', 'bg-[#EB6E00]/10');
                 } else {
                     card.classList.add('border-orange-500', 'bg-orange-500/8');
                     card.classList.remove('border-slate-700');
@@ -699,7 +713,7 @@
         radio.addEventListener('change', () => {
             currentChannel = radio.value;
             document.querySelectorAll('.channel-card').forEach(c => {
-                c.classList.remove('border-[#4A90D9]', 'bg-green-50/60', 'border-gold-500', 'bg-gold-500/10', 'border-[#e8862a]', 'bg-[#e8862a]/10', 'border-orange-500', 'bg-orange-500/8');
+                c.classList.remove('border-[#4A90D9]', 'bg-green-50/60', 'border-gold-500', 'bg-gold-500/10', 'border-[#EB6E00]', 'bg-[#EB6E00]/10', 'border-orange-500', 'bg-orange-500/8');
                 if (isPublicCheckout) {
                     c.classList.add('border-white/10', 'bg-dark-900');
                     c.classList.remove('border-slate-200', 'border-slate-700');
@@ -712,7 +726,7 @@
             if (chCard) {
                 if (isPublicCheckout) {
                     chCard.classList.remove('border-white/10', 'bg-dark-900');
-                    chCard.classList.add('border-[#e8862a]', 'bg-[#e8862a]/10');
+                    chCard.classList.add('border-[#EB6E00]', 'bg-[#EB6E00]/10');
                 } else {
                     chCard.classList.remove('border-slate-700');
                     chCard.classList.add('border-orange-500', 'bg-orange-500/8');
@@ -827,6 +841,8 @@
                         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
                         body: JSON.stringify({
                             plan_id:          planId,
+                            sector:           bundleSector || undefined,
+                            extras:           bundleAvec || undefined,
                             billing_cycle:    currentCycle,
                             channel:          currentChannel,
                             customer_name:    name,

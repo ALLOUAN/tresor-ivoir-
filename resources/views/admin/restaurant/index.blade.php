@@ -94,7 +94,7 @@
                         <i class="fas fa-utensils text-slate-700 text-3xl"></i>
                     </div>
                 @endif
-                <div class="absolute inset-0 bg-linear-to-t from-green-900/80 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-green-900/40"></div>
 
                 <div class="absolute top-2.5 right-2.5 flex flex-col items-end gap-1">
                     @if(!$restaurant->is_active)

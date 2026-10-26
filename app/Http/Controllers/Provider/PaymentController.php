@@ -10,6 +10,7 @@ use App\Models\SubscriptionPlan;
 use App\Services\CinetPayService;
 use App\Services\PaymentLifecycleService;
 use App\Services\SubscriptionService;
+use App\Support\PlanBundle;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,6 +34,9 @@ class PaymentController extends Controller
             'customer_surname' => ['required', 'string', 'max:100'],
             'customer_email'   => ['required', 'email', 'max:255'],
             'customer_phone'   => ['required', 'string', 'max:20'],
+            // Achat multi-secteurs : secteur du forfait principal et secteurs supplémentaires « slug:idForfait,… ».
+            'sector'           => ['nullable', 'string', 'max:80'],
+            'extras'           => ['nullable', 'string', 'max:400'],
         ], [
             'plan_id.exists'              => 'Forfait introuvable.',
             'channel.in'                  => 'Canal de paiement invalide.',
@@ -44,15 +48,19 @@ class PaymentController extends Controller
 
         $provider = Provider::forUserQuery(Auth::id())->firstOrFail();
         $plan     = SubscriptionPlan::findOrFail($data['plan_id']);
-        $amount   = $data['billing_cycle'] === 'yearly'
-            ? (float) $plan->price_yearly
-            : (float) $plan->price_monthly;
+        // Plusieurs secteurs en un seul paiement : un abonnement par secteur, montant = somme des forfaits.
+        $items    = PlanBundle::items($plan, $data['sector'] ?? null, $data['extras'] ?? null);
+        $amount   = PlanBundle::total($items, $data['billing_cycle']);
 
         // Plan gratuit → abonnement immédiat sans passerelle
         if ($amount <= 0) {
-            $subscriptionService->createSubscription(
-                $provider, $plan, $data['billing_cycle'], 'free', 'FREE-' . strtoupper(Str::random(8))
-            );
+            $main = null;
+            foreach ($items as $item) {
+                $sub = $subscriptionService->createSubscription(
+                    $provider, $item['plan'], $data['billing_cycle'], 'free', 'FREE-' . strtoupper(Str::random(8)), $main, $item['sector']
+                );
+                $main ??= $sub;
+            }
 
             return response()->json([
                 'success'      => true,
@@ -64,7 +72,7 @@ class PaymentController extends Controller
 
         $result = $cinetPay->initPayment([
             'amount'              => $amount,
-            'designation'         => 'Abonnement ' . strtoupper($plan->code) . ' — ' . config('app.name'),
+            'designation'         => 'Abonnement ' . $items->map(fn ($i) => strtoupper($i['plan']->code).($i['sector'] ? ' '.$i['sector']->slug : ''))->implode(' + ') . ' — ' . config('app.name'),
             'client_first_name'   => $data['customer_name'],
             'client_last_name'    => $data['customer_surname'],
             'client_email'        => $data['customer_email'],
@@ -86,16 +94,24 @@ class PaymentController extends Controller
 
         $months = $data['billing_cycle'] === 'yearly' ? 12 : 1;
 
-        $subscription = Subscription::create([
-            'provider_id'    => $provider->id,
-            'plan_id'        => $plan->id,
-            'status'         => 'pending',
-            'billing_cycle'  => $data['billing_cycle'],
-            'payment_method' => 'cinetpay',
-            'starts_at'      => now(),
-            'ends_at'        => now()->addMonths($months),
-            'auto_renew'     => true,
-        ]);
+        // Un abonnement par secteur, en attente : le principal porte le paiement, les autres lui sont reliés
+        // et sont activés avec lui une fois le paiement confirmé.
+        $subscription = null;
+        foreach ($items as $item) {
+            $sub = Subscription::create([
+                'provider_id'        => $provider->id,
+                'plan_id'            => $item['plan']->id,
+                'sector_category_id' => $subscriptionService->resolveSector($provider, $item['plan'], $item['sector'])?->id,
+                'status'             => 'pending',
+                'billing_cycle'      => $data['billing_cycle'],
+                'payment_method'     => 'cinetpay',
+                'starts_at'          => now(),
+                'ends_at'            => now()->addMonths($months),
+                'auto_renew'         => true,
+                'bundle_parent_id'   => $subscription?->id,
+            ]);
+            $subscription ??= $sub;
+        }
 
         $payment = Payment::create([
             'subscription_id' => $subscription->id,
@@ -112,6 +128,7 @@ class PaymentController extends Controller
                 'payment_token' => $result['payment_token'] ?? null,
                 'notify_token'  => $result['notify_token'] ?? null,
                 'plan_code'     => $plan->code,
+                'bundle'        => $items->map(fn ($i) => ['plan' => $i['plan']->code, 'sector' => $i['sector']?->slug])->values()->all(),
             ],
         ]);
 

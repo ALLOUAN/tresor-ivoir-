@@ -64,7 +64,7 @@
 
         @php $fld = 'bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100'; @endphp
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-sm">
-            <div><p class="text-slate-500 text-xs">Remise</p><p class="text-slate-200">{{ $order->deliveryLabel() ?? 'Non précisée' }}@if($order->delivery_fee_xof) · {{ number_format($order->delivery_fee_xof, 0, ',', ' ') }} XOF@endif</p>
+            <div><p class="text-slate-500 text-xs">Remise</p><p class="text-slate-200">{{ $order->deliveryLabel() ?? 'Non précisée' }}@if($order->delivery_fee_xof) · {{ number_format($order->delivery_fee_xof, 0, ',', ' ') }}&nbsp;XOF @endif</p>
                 @if($order->delivery_address)<p class="text-slate-400 text-xs">{{ $order->delivery_address }}{{ $order->delivery_city ? ', '.$order->delivery_city : '' }}</p>@endif
                 @if($order->insurance_xof)<p class="text-emerald-300 text-xs"><i class="fas fa-shield-halved mr-1"></i>Assurance transport souscrite ({{ number_format($order->insurance_xof, 0, ',', ' ') }} XOF)</p>@endif</div>
             @if($order->edition_label)<div><p class="text-slate-500 text-xs">Édition</p><p class="text-slate-200">{{ $order->edition_label }}@if($order->edition_number) — exemplaire {{ $order->edition_number }}/{{ $order->edition_size }}@endif</p></div>@endif

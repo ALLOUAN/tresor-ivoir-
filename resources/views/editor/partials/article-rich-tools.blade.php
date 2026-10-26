@@ -155,7 +155,7 @@
             + '<iframe class="w-full min-h-[320px] rounded-lg border border-slate-800 bg-green-950" sandbox="" referrerpolicy="no-referrer" title="Aperçu contenu"></iframe>';
         const iframe = body.querySelector('iframe');
         if (iframe) {
-            iframe.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;padding:1rem;background:#e9e5d9;color:#1c1915;line-height:1.65;} a{color:#a54a0b;}</style><div class="c">' + html + '</div>';
+            iframe.srcdoc = '<!DOCTYPE html><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;padding:1rem;background:#D8E9E0;color:#0E3B2A;line-height:1.65;} a{color:#B85600;}</style><div class="c">' + html + '</div>';
         }
         modal.classList.remove('hidden');
         modal.classList.add('flex');

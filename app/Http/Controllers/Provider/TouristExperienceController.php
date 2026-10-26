@@ -31,10 +31,7 @@ class TouristExperienceController extends Controller
     /** Un site touristique ne peut être géré que par un prestataire de la catégorie "sites-touristiques". */
     private function assertTouristExperienceCategory(Provider $provider): void
     {
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-
-        abort_unless($rootSlug === 'sites-touristiques', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Sites Touristiques.');
+        abort_unless($provider->hasSector('sites-touristiques'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Sites Touristiques.');
     }
 
     /* ── Vue d'ensemble ──────────────────────────────────────────────────── */

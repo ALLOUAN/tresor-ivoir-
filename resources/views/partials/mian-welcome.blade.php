@@ -21,44 +21,44 @@
     <div class="mw-backdrop" data-mw-close></div>
     <style>
         /* Fenêtre « Astuces de Mian » : panneau vert à motifs BD + éventail de couvertures, texte et actions à droite. Aplats. */
-        .mw { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; padding: 16px; font-family: 'Inter', sans-serif; }
+        .mw { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; padding: 16px; font-family: 'Montserrat', sans-serif; }
         .mw[hidden] { display: none; }
-        .mw-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 18, .55); }
-        .mw-card { position: relative; width: 100%; max-width: 780px; max-height: 92vh; overflow-y: auto; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); border-radius: 28px; background: #fff; color: #1d1a16; animation: mw-in .28s ease-out; }
+        .mw-backdrop { position: absolute; inset: 0; background: rgba(14,59,42, .55); }
+        .mw-card { position: relative; width: 100%; max-width: 780px; max-height: 92vh; overflow-y: auto; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); border-radius: 28px; background: #fff; color: #0E3B2A; animation: mw-in .28s ease-out; }
         @keyframes mw-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
-        .mw-art { position: relative; overflow: hidden; min-height: 340px; background: #123a25; }
+        .mw-art { position: relative; overflow: hidden; min-height: 340px; background: #00874F; }
         .mw-art .ivm-g { opacity: .14 !important; }
-        .mw-art .ivm-g > * { stroke: #f6c38f !important; }
+        .mw-art .ivm-g > * { stroke: #F7C396 !important; }
         .mw-fan { position: absolute; inset: 0; z-index: 1; }
-        .mw-fan a { position: absolute; top: 50%; left: 50%; width: 46%; aspect-ratio: 3 / 4; border-radius: 14px; overflow: hidden; background: #e9e1d2; border: 4px solid #fff; transition: transform .25s ease; }
+        .mw-fan a { position: absolute; top: 50%; left: 50%; width: 46%; aspect-ratio: 3 / 4; border-radius: 14px; overflow: hidden; background: #D8E9E0; border: 4px solid #fff; transition: transform .25s ease; }
         .mw-fan a img { width: 100%; height: 100%; object-fit: cover; }
         .mw-fan a:nth-child(1) { transform: translate(-50%, -54%) rotate(-2deg); z-index: 3; }
         .mw-fan a:nth-child(2) { transform: translate(-98%, -44%) rotate(-12deg); z-index: 2; }
         .mw-fan a:nth-child(3) { transform: translate(-2%, -44%) rotate(11deg); z-index: 1; }
         .mw-fan a:nth-child(1):hover { transform: translate(-50%, -58%) rotate(0); }
         .mw-fan a:only-child { width: 52%; }
-        .mw-new { position: absolute; left: 16px; top: 16px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #b9500a; color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+        .mw-new { position: absolute; left: 16px; top: 16px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #EB6E00; color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
         .mw-body { display: flex; flex-direction: column; padding: 30px 30px 26px; }
-        .mw-close { position: absolute; right: 14px; top: 14px; z-index: 3; width: 40px; height: 40px; border-radius: 999px; border: 1px solid #e6dccb; background: #fff; color: #3a2f22; font-size: 20px; line-height: 1; cursor: pointer; }
-        .mw-close:hover { border-color: #b9500a; color: #9a4308; }
-        .mw-kick { margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #b9500a; }
-        .mw-title { margin: 8px 40px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(26px, 3.2vw, 34px); font-weight: 700; line-height: 1.08; color: #1d1a16; }
-        .mw-title em { font-style: normal; color: #b9500a; }
-        .mw-text { margin: 12px 0 0; font-size: 15.5px; line-height: 1.6; color: #4a443a; }
+        .mw-close { position: absolute; right: 14px; top: 14px; z-index: 3; width: 40px; height: 40px; border-radius: 999px; border: 1px solid #D8E9E0; background: #fff; color: #0E3B2A; font-size: 20px; line-height: 1; cursor: pointer; }
+        .mw-close:hover { border-color: #EB6E00; color: #B85600; }
+        .mw-kick { margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #EB6E00; }
+        .mw-title { margin: 8px 40px 0 0; font-family: 'Montserrat', serif; font-size: clamp(26px, 3.2vw, 34px); font-weight: 700; line-height: 1.08; color: #0E3B2A; }
+        .mw-title em { font-style: normal; color: #EB6E00; }
+        .mw-text { margin: 12px 0 0; font-size: 15.5px; line-height: 1.6; color: #24503D; }
         .mw-cats { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 0; padding: 0; list-style: none; }
         .mw-cats li { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; }
-        .mw-cats li:nth-child(1) { background: rgba(74,138,42,.12); color: #3d7322; }
-        .mw-cats li:nth-child(2) { background: rgba(201,138,12,.14); color: #8a5e05; }
-        .mw-cats li:nth-child(3) { background: rgba(31,128,121,.12); color: #1a6b65; }
+        .mw-cats li:nth-child(1) { background: rgba(0,135,79,.12); color: #00874F; }
+        .mw-cats li:nth-child(2) { background: rgba(235,110,0,.14); color: #B85600; }
+        .mw-cats li:nth-child(3) { background: rgba(0,135,79,.12); color: #00874F; }
         .mw-cats .ico { width: 14px; height: 14px; }
         .mw-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: auto; padding-top: 22px; }
-        .mw-go { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 50px; padding: 0 24px; border-radius: 999px; background: #b9500a; color: #fff; font-size: 15px; font-weight: 800; text-decoration: none; }
-        .mw-go:hover { background: #9a4308; }
+        .mw-go { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 50px; padding: 0 24px; border-radius: 999px; background: #EB6E00; color: #fff; font-size: 15px; font-weight: 800; text-decoration: none; }
+        .mw-go:hover { background: #B85600; }
         .mw-go .ico { width: 18px; height: 18px; }
-        .mw-later { height: 50px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: #6b6458; font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer; }
-        .mw-later:hover { background: #f6f3ec; color: #1d1a16; }
-        .mw-note { margin: 10px 0 0; font-size: 12px; color: #8a7f6b; }
-        .mw button:focus-visible, .mw a:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .mw-later { height: 50px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: #557466; font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+        .mw-later:hover { background: #F3F8F5; color: #0E3B2A; }
+        .mw-note { margin: 10px 0 0; font-size: 12px; color: #557466; }
+        .mw button:focus-visible, .mw a:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
         @media (max-width: 640px) {
             .mw { padding: 0; align-items: flex-end; }
             .mw-card { grid-template-columns: minmax(0, 1fr); max-height: 94vh; border-radius: 24px 24px 0 0; animation-name: mw-up; }

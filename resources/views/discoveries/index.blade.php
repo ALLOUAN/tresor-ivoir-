@@ -13,12 +13,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
         <style>
         * { box-sizing: border-box; }
-        .font-serif   { font-family: 'Playfair Display', Georgia, serif; }
-        .font-elegant { font-family: 'Cormorant Garamond', Georgia, serif; }
-        .font-plus    { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
+        .font-serif   { font-family: 'Montserrat', Georgia, serif; }
+        .font-elegant { font-family: 'Montserrat', Georgia, serif; }
+        .font-plus    { font-family: 'Montserrat', 'Montserrat', system-ui, sans-serif; }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background:#e9e5d9; }
-        ::-webkit-scrollbar-thumb { background: #f2790f; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background:#D8E9E0; }
+        ::-webkit-scrollbar-thumb { background: #EB6E00; border-radius: 3px; }
         .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
         .cat-card:hover .cat-img { transform: scale(1.06); }
@@ -30,7 +30,7 @@
             display: block;
             width: 52px;
             height: 2px;
-            background: #f68a26;
+            background: #EB6E00;
             margin-top: 10px;
         }
     </style>
@@ -42,14 +42,14 @@
 @include('partials.public-top-nav')
 
 {{-- ── HERO ──────────────────────────────────────────────────────────────── --}}
-<section class="relative pt-24 sm:pt-32 pb-16 sm:pb-20 overflow-hidden" style="background: #e9e5d9;">
+<section class="relative pt-24 sm:pt-32 pb-16 sm:pb-20 overflow-hidden" style="background: #D8E9E0;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="max-w-2xl">
             <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-3">{{ __('Explorer par thème') }}</p>
             <h1 class="font-serif text-4xl sm:text-5xl font-bold mb-5 leading-tight">
                 {{ __('Découvertes') }}
             </h1>
-            <p class="text-[#1c1915] font-elegant text-xl font-light leading-relaxed mb-8">
+            <p class="text-[#0E3B2A] font-elegant text-xl font-light leading-relaxed mb-8">
                 {{ __('Plongez dans la richesse et la diversité de la Côte d\'Ivoire à travers nos rubriques thématiques — patrimoine, culture, gastronomie, nature et art de vivre.') }}
             </p>
             <div class="flex flex-wrap gap-3">
@@ -100,7 +100,7 @@
                 $grad  = $defaultGrads[$i % count($defaultGrads)];
             @endphp
             <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}"
-               class="cat-card group relative overflow-hidden rounded-2xl border {{ $grad[1] }} bg-gradient-to-br {{ $grad[0] }} p-6 hover:border-gold-500/40 transition-all duration-300 reveal">
+               class="cat-card group relative overflow-hidden rounded-2xl border {{ $grad[1] }} {{ $grad[0] }} p-6 hover:border-gold-500/40 transition-all duration-300 reveal">
 
                 {{-- Icône --}}
                 <div class="w-14 h-14 rounded-xl bg-white/5 group-hover:bg-gold-500/15 flex items-center justify-center mb-5 transition-all duration-300">
@@ -147,7 +147,7 @@
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold gold-line">{{ __('Dernières publications') }}</h2>
             </div>
             <a href="{{ route('articles.index') }}"
-               class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gold-500/25 bg-dark-800/70 text-sm text-gold-300 hover:text-gold-200 hover:border-gold-400/50 hover:bg-[#ebe4d6] transition-all duration-300 font-semibold group hover:-translate-y-0.5">
+               class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gold-500/25 bg-dark-800/70 text-sm text-gold-300 hover:text-gold-200 hover:border-gold-400/50 hover:bg-[#D8E9E0] transition-all duration-300 font-semibold group hover:-translate-y-0.5">
                 <span>{{ __('Voir tout') }}</span>
                 <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
             </a>

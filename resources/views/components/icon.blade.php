@@ -15,4 +15,4 @@
     .ico > svg { width: 1.15em; height: 1.15em; display: block; flex: none; }
 </style>
 @endonce
-<i {{ $attributes->merge(['class' => 'ico']) }} aria-hidden="true">@if($iconBody)<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">{!! $iconBody !!}</svg>@endif</i>
+<i {{ $attributes->merge(['class' => 'ico', 'data-icon' => $name]) }} aria-hidden="true">@if($iconBody)<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">{!! $iconBody !!}</svg>@endif</i>

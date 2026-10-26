@@ -54,9 +54,9 @@
             </div>
             <div>
                 <label class="block text-xs text-slate-500 mb-1.5">Couleur</label>
-                <input type="text" name="color_hex" value="{{ old('color_hex', '#f2790f') }}" maxlength="7"
+                <input type="text" name="color_hex" value="{{ old('color_hex', '#EB6E00') }}" maxlength="7"
                     class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-slate-200 text-sm outline-none font-mono text-xs"
-                    placeholder="#f2790f">
+                    placeholder="#EB6E00">
             </div>
             <div>
                 <label class="block text-xs text-slate-500 mb-1.5">Icône (classe FA)</label>

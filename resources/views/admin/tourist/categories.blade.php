@@ -36,7 +36,7 @@
         <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 overflow-hidden"
-                    style="{{ $cat->color ? 'background:' . $cat->color . '22; color:' . $cat->color : 'background:#334155; color:#94a3b8' }}">
+                    style="{{ $cat->color ? 'background:' . $cat->color . '22; color:' . $cat->color : 'background:#24503D; color:#8AA99B' }}">
                     @if($cat->icon_image_url)
                         <img src="{{ $cat->icon_image_url }}" alt="" class="w-full h-full object-cover">
                     @else
@@ -118,7 +118,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Couleur</label>
-                    <input type="color" name="color" id="cat_color" value="#f2790f"
+                    <input type="color" name="color" id="cat_color" value="#EB6E00"
                         class="w-full h-9 bg-slate-800 border border-slate-700 rounded-lg px-2 cursor-pointer">
                 </div>
             </div>
@@ -221,7 +221,7 @@ function openCatModal(cat = null) {
         mf.innerHTML = '<input type="hidden" name="_method" value="PUT">';
         document.getElementById('cat_name').value        = cat.name || '';
         document.getElementById('cat_icon').value        = cat.icon || '';
-        document.getElementById('cat_color').value       = cat.color || '#f2790f';
+        document.getElementById('cat_color').value       = cat.color || '#EB6E00';
         document.getElementById('cat_description').value = cat.description || '';
         document.getElementById('cat_sort_order').value  = cat.sort_order || 0;
         document.getElementById('cat_is_active').checked = cat.is_active == 1;
@@ -233,7 +233,7 @@ function openCatModal(cat = null) {
         mf.innerHTML = '';
         form.reset();
         document.getElementById('cat_is_active').checked = true;
-        document.getElementById('cat_color').value = '#f2790f';
+        document.getElementById('cat_color').value = '#EB6E00';
         catSetImage('hero', null);
         catSetImage('icon', null);
     }

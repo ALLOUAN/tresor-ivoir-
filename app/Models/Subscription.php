@@ -8,9 +8,9 @@ use Illuminate\Support\Str;
 class Subscription extends Model
 {
     protected $fillable = [
-        'uuid', 'provider_id', 'plan_id', 'status', 'billing_cycle',
+        'uuid', 'provider_id', 'plan_id', 'sector_category_id', 'status', 'billing_cycle',
         'payment_method', 'starts_at', 'ends_at', 'auto_renew',
-        'cancelled_at', 'cancellation_reason', 'upgraded_from_id',
+        'cancelled_at', 'cancellation_reason', 'upgraded_from_id', 'bundle_parent_id',
         'last_edited_by_user_id', 'last_edited_at',
     ];
 
@@ -38,6 +38,12 @@ class Subscription extends Model
     public function plan()
     {
         return $this->belongsTo(SubscriptionPlan::class, 'plan_id');
+    }
+
+    /** Secteur couvert par l'abonnement (prestataire multi-secteurs). */
+    public function sector()
+    {
+        return $this->belongsTo(ProviderCategory::class, 'sector_category_id');
     }
 
     public function payments()

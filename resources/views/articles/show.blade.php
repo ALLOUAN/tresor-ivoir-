@@ -54,23 +54,23 @@
     @endif
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Playfair Display', serif; }
-        .prose-content { font-family: 'Lora', serif; font-size: 1.0625rem; line-height: 1.85; color: #44413a; }
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-serif { font-family: 'Montserrat', serif; }
+        .prose-content { font-family: 'Montserrat', serif; font-size: 1.0625rem; line-height: 1.85; color: #24503D; }
         .prose-content p { margin-bottom: 1.5rem; }
-        .prose-content h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #1c1915; margin: 2.5rem 0 1rem; }
-        .prose-content h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 600; color: #2d2a23; margin: 2rem 0 0.75rem; }
-        .prose-content blockquote { border-left: 3px solid #f2790f; padding-left: 1.25rem; margin: 2rem 0; color: #544f47; font-style: italic; }
+        .prose-content h2 { font-family: 'Montserrat', serif; font-size: 1.5rem; font-weight: 700; color: #0E3B2A; margin: 2.5rem 0 1rem; }
+        .prose-content h3 { font-family: 'Montserrat', serif; font-size: 1.2rem; font-weight: 600; color: #0E3B2A; margin: 2rem 0 0.75rem; }
+        .prose-content blockquote { border-left: 3px solid #EB6E00; padding-left: 1.25rem; margin: 2rem 0; color: #24503D; font-style: italic; }
         .prose-content ul { list-style: none; padding: 0; margin-bottom: 1.5rem; }
-        .prose-content ul li::before { content: '—'; color: #f2790f; margin-right: .6rem; }
-        .prose-content a { color: #a54a0b; text-decoration: underline; }
-        .prose-content strong { color: #1c1915; font-weight: 600; }
+        .prose-content ul li::before { content: '—'; color: #EB6E00; margin-right: .6rem; }
+        .prose-content a { color: #B85600; text-decoration: underline; }
+        .prose-content strong { color: #0E3B2A; font-weight: 600; }
     </style>
     @include('partials.prose-clean')
     @include('partials.article-header')
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="min-h-screen" style="background:#f6f3ed">
+<body class="min-h-screen" style="background:#F3F8F5">
     @include('partials.page-background')
 @include('partials.public-top-nav')
 @php
@@ -91,93 +91,113 @@
 <style>
     /* Article : lecture confortable (colonne de 720 px), sommaire et partage dans une colonne collante,
        barre de progression. Charte du site, aplats, ombre au survol seulement. */
-    .ar-progress { position: fixed; left: 0; top: 0; z-index: 60; height: 3px; width: 0; background: #b9500a; transition: width .1s linear; }
-    .ar { max-width: 1180px; margin: 0 auto; padding: 22px 20px 56px; color: #1d1a16; }
-    .ar-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: #6b6458; }
-    .ar-crumb a { color: #9a4308; font-weight: 600; text-decoration: none; }
+    .ar-progress { position: fixed; left: 0; top: 0; z-index: 60; height: 3px; width: 0; background: #EB6E00; transition: width .1s linear; }
+    .ar { max-width: 1180px; margin: 0 auto; padding: 22px 20px 56px; color: #0E3B2A; }
+    .ar-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: #557466; }
+    .ar-crumb a { color: #B85600; font-weight: 600; text-decoration: none; }
     .ar-crumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
-    .ar-crumb li:first-child a { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #e6dccb; font-weight: 700; }
-    .ar-crumb .sep { color: #c2b89e; }
+    .ar-crumb li:first-child a { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; font-weight: 700; }
+    .ar-crumb .sep { color: #8AA99B; }
     .ar-head { max-width: 860px; margin: 26px auto 0; text-align: center; }
     .ar-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-    .ar-badge { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #fdf4ec; color: #9a4308; font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; }
-    .ar-badge.is-green { background: #e7f3ec; color: #1b6b3a; }
-    .ar-badge.is-ghost { background: #fff; border: 1px solid #e6dccb; color: #6b6458; }
-    .ar-title { margin: 16px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(32px, 2.8vw + 18px, 58px); font-weight: 700; line-height: 1.08; letter-spacing: -.015em; color: #1d1a16; }
-    .ar-lead { margin: 16px auto 0; max-width: 720px; font-family: 'Playfair Display', serif; font-style: italic; font-size: 20px; line-height: 1.55; color: #4a443a; }
-    .ar-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 22px; margin: 22px 0 0; font-size: 14px; color: #4a443a; }
+    .ar-badge { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #F3F8F5; color: #B85600; font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; }
+    .ar-badge.is-green { background: #F3F8F5; color: #00874F; }
+    .ar-badge.is-ghost { background: #fff; border: 1px solid #D8E9E0; color: #557466; }
+    .ar-title { margin: 16px 0 0; font-family: 'Montserrat', serif; font-size: clamp(32px, 2.8vw + 18px, 58px); font-weight: 700; line-height: 1.08; letter-spacing: -.015em; color: #0E3B2A; }
+    .ar-lead { margin: 16px auto 0; max-width: 720px; font-family: 'Montserrat', serif; font-style: italic; font-size: 20px; line-height: 1.55; color: #24503D; }
+    .ar-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 22px; margin: 22px 0 0; font-size: 14px; color: #24503D; }
     .ar-meta > span { display: inline-flex; align-items: center; gap: 8px; }
-    .ar-avatar { width: 34px; height: 34px; border-radius: 999px; background: #1b6b3a; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-weight: 700; }
-    .ar-meta .ico { color: #b9500a; font-size: 17px; }
+    .ar-avatar { width: 34px; height: 34px; border-radius: 999px; background: #00874F; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Montserrat', serif; font-weight: 700; }
+    .ar-meta .ico { color: #EB6E00; font-size: 17px; }
+
+    /* En-tête éditorial (aligné à gauche) : rubrique en surtitre avec filet orange, chapeau à liseré,
+       barre auteur + repères de lecture entre deux filets. */
+    .ar-head { max-width: 960px; text-align: left; }
+    .ar-badges { justify-content: flex-start; align-items: center; }
+    .ar-badges > .ar-badge:first-child:not(.is-green):not(.is-ghost) { height: auto; padding: 0; background: none; border-radius: 0; color: #EB6E00; font-size: 12.5px; letter-spacing: .14em; }
+    .ar-badges > .ar-badge:first-child:not(.is-green):not(.is-ghost)::before { content: ''; width: 28px; height: 3px; border-radius: 3px; background: #EB6E00; margin-right: 6px; }
+    .ar-badges > .ar-badge:first-child:not(.is-green):not(.is-ghost):hover { color: #B85600; }
+    .ar-badge.is-green { height: 26px; font-size: 10.5px; }
+    .ar-title { margin-top: 14px; max-width: 22ch; font-size: clamp(34px, 3vw + 18px, 62px); line-height: 1.04; letter-spacing: -.02em; text-wrap: balance; }
+    .ar-lead { margin: 20px 0 0; max-width: 700px; padding-left: 18px; border-left: 4px solid #EB6E00; font-family: inherit; font-style: normal; font-size: 18.5px; line-height: 1.65; color: #24503D; }
+    .ar-meta { justify-content: space-between; gap: 14px 24px; margin-top: 26px; padding: 14px 0; border-top: 1px solid #D8E9E0; border-bottom: 1px solid #D8E9E0; }
+    .ar-by { display: inline-flex; align-items: center; gap: 12px; }
+    .ar-by .ar-avatar { width: 46px; height: 46px; font-size: 18px; box-shadow: 0 0 0 3px #fff, 0 0 0 4px #D8E9E0; }
+    .ar-by__txt { display: flex; flex-direction: column; line-height: 1.2; }
+    .ar-by__txt small { font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #557466; }
+    .ar-by__txt b { font-size: 15px; color: #0E3B2A; }
+    .ar-stats { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .ar-stats > span { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 13px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; font-size: 13px; font-weight: 600; color: #24503D; }
+    .ar-stats .ico { font-size: 15px; }
     .ar-contrib { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
-    .ar-contrib span { height: 26px; padding: 0 11px; border-radius: 999px; background: #fff; border: 1px solid #ece5d6; font-size: 12px; font-weight: 600; color: #3a2f22; display: inline-flex; align-items: center; }
-    .ar-cover { margin: 30px 0 0; border-radius: 28px; overflow: hidden; background: #e9e1d2; }
+    .ar-contrib span { height: 26px; padding: 0 11px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; font-size: 12px; font-weight: 600; color: #0E3B2A; display: inline-flex; align-items: center; }
+    .ar-cover { margin: 30px 0 0; border-radius: 28px; overflow: hidden; background: #D8E9E0; }
     .ar-cover img { display: block; width: 100%; height: clamp(260px, 50vw, 620px); object-fit: cover; }
-    .ar-cover figcaption { padding: 10px 16px; background: #fff; font-size: 13px; font-style: italic; color: #6b6458; text-align: center; }
+    .ar-cover figcaption { padding: 10px 16px; background: #fff; font-size: 13px; font-style: italic; color: #557466; text-align: center; }
 
     .ar-grid { display: grid; grid-template-columns: 220px minmax(0, 720px) 1fr; gap: 40px; margin-top: 40px; }
     .ar-side { position: sticky; top: 140px; align-self: start; display: flex; flex-direction: column; gap: 18px; }
-    .ar-side h3 { margin: 0 0 10px; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #8a7f6b; }
-    .ar-toc { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; border-left: 2px solid #ece5d6; }
-    .ar-toc a { display: block; padding: 6px 12px; margin-left: -2px; border-left: 2px solid transparent; font-size: 13.5px; line-height: 1.4; color: #4a443a; text-decoration: none; }
+    .ar-side h3 { margin: 0 0 10px; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #557466; }
+    .ar-toc { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; border-left: 2px solid #D8E9E0; }
+    .ar-toc a { display: block; padding: 6px 12px; margin-left: -2px; border-left: 2px solid transparent; font-size: 13.5px; line-height: 1.4; color: #24503D; text-decoration: none; }
     .ar-toc a.is-sub { padding-left: 24px; font-size: 13px; }
-    .ar-toc a:hover { color: #9a4308; }
-    .ar-toc a.is-on { border-left-color: #b9500a; color: #1d1a16; font-weight: 700; }
+    .ar-toc a:hover { color: #B85600; }
+    .ar-toc a.is-on { border-left-color: #EB6E00; color: #0E3B2A; font-weight: 700; }
     .ar-share { display: flex; flex-wrap: wrap; gap: 8px; }
-    .ar-share a, .ar-share button, .ar-fav { width: 42px; height: 42px; border-radius: 999px; border: 1px solid #e6dccb; background: #fff; color: #3a2f22; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; text-decoration: none; transition: border-color .15s ease, color .15s ease; }
-    .ar-share a:hover, .ar-share button:hover { border-color: #b9500a; color: #9a4308; }
-    .ar-fav { color: #b9500a; }
-    .ar-fav.is-on { background: #e7f3ec; border-color: #c4e2cf; color: #1b6b3a; }
+    .ar-share a, .ar-share button, .ar-fav { width: 42px; height: 42px; border-radius: 999px; border: 1px solid #D8E9E0; background: #fff; color: #0E3B2A; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; text-decoration: none; transition: border-color .15s ease, color .15s ease; }
+    .ar-share a:hover, .ar-share button:hover { border-color: #EB6E00; color: #B85600; }
+    .ar-fav { color: #EB6E00; }
+    .ar-fav.is-on { background: #F3F8F5; border-color: #D8E9E0; color: #00874F; }
     .ar-body { min-width: 0; }
     .ar-body .prose-content { font-size: 1.1rem; }
     .ar-body .prose-content h2, .ar-body .prose-content h3 { scroll-margin-top: 150px; }
 
-    .ar-block { margin-top: 40px; padding-top: 32px; border-top: 1px solid #e6dccb; }
-    .ar-block h2 { margin: 0 0 16px; font-family: 'Playfair Display', serif; font-size: 24px; color: #1d1a16; }
+    .ar-block { margin-top: 40px; padding-top: 32px; border-top: 1px solid #D8E9E0; }
+    .ar-block h2 { margin: 0 0 16px; font-family: 'Montserrat', serif; font-size: 24px; color: #0E3B2A; }
     .ar-block__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
     .ar-block__head h2 { margin: 0; }
-    .ar-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 18px; border-radius: 999px; border: 0; background: #b9500a; color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
-    .ar-btn:hover { background: #9a4308; color: #fff; }
+    .ar-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 18px; border-radius: 999px; border: 0; background: #EB6E00; color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .ar-btn:hover { background: #B85600; color: #fff; }
     .ar-gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-    .ar-gallery figure { position: relative; margin: 0; border-radius: 16px; overflow: hidden; background: #e9e1d2; aspect-ratio: 4 / 3; }
+    .ar-gallery figure { position: relative; margin: 0; border-radius: 16px; overflow: hidden; background: #D8E9E0; aspect-ratio: 4 / 3; }
     .ar-gallery img { width: 100%; height: 100%; object-fit: cover; }
-    .ar-gallery a { position: absolute; right: 8px; bottom: 8px; width: 36px; height: 36px; border-radius: 999px; background: #fff; color: #1d1a16; display: flex; align-items: center; justify-content: center; text-decoration: none; }
-    .ar-gallery a:hover { background: #b9500a; color: #fff; }
+    .ar-gallery a { position: absolute; right: 8px; bottom: 8px; width: 36px; height: 36px; border-radius: 999px; background: #fff; color: #0E3B2A; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+    .ar-gallery a:hover { background: #EB6E00; color: #fff; }
     .ar-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .ar-tags a { height: 34px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #ece5d6; color: #3a2f22; font-size: 13.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; }
-    .ar-tags a:hover { border-color: #b9500a; color: #9a4308; }
-    .ar-author { display: flex; gap: 16px; padding: 20px; border-radius: 24px; background: #fff; border: 1px solid #ece5d6; }
+    .ar-tags a { height: 34px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; color: #0E3B2A; font-size: 13.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; }
+    .ar-tags a:hover { border-color: #EB6E00; color: #B85600; }
+    .ar-author { display: flex; gap: 16px; padding: 20px; border-radius: 24px; background: #fff; border: 1px solid #D8E9E0; }
     .ar-author .ar-avatar { width: 56px; height: 56px; font-size: 22px; flex: none; }
-    .ar-author b { display: block; font-family: 'Playfair Display', serif; font-size: 19px; }
-    .ar-author small { display: block; margin-top: 2px; font-size: 12.5px; color: #8a7f6b; }
-    .ar-author p { margin: 8px 0 0; font-size: 14.5px; line-height: 1.6; color: #4a443a; }
+    .ar-author b { display: block; font-family: 'Montserrat', serif; font-size: 19px; }
+    .ar-author small { display: block; margin-top: 2px; font-size: 12.5px; color: #557466; }
+    .ar-author p { margin: 8px 0 0; font-size: 14.5px; line-height: 1.6; color: #24503D; }
 
     .ar-comments { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
-    .ar-comment { display: flex; gap: 12px; padding: 16px; border-radius: 20px; background: #fff; border: 1px solid #ece5d6; }
-    .ar-comment .ar-avatar { width: 40px; height: 40px; flex: none; background: #fdf4ec; color: #9a4308; }
+    .ar-comment { display: flex; gap: 12px; padding: 16px; border-radius: 20px; background: #fff; border: 1px solid #D8E9E0; }
+    .ar-comment .ar-avatar { width: 40px; height: 40px; flex: none; background: #F3F8F5; color: #B85600; }
     .ar-comment b { font-size: 14.5px; }
-    .ar-comment small { margin-left: 8px; font-size: 12.5px; color: #8a7f6b; }
-    .ar-comment p { margin: 6px 0 0; font-size: 14.5px; line-height: 1.6; color: #3a2f22; }
-    .ar-form { padding: 22px; border-radius: 24px; background: #fff; border: 1px solid #ece5d6; }
-    .ar-form h3 { margin: 0 0 14px; font-family: 'Playfair Display', serif; font-size: 20px; }
-    .ar-form label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: #1d1a16; }
-    .ar-input { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid #e6dccb; background: #fbf9f5; color: #1d1a16; font: inherit; font-size: 15px; outline: none; }
-    .ar-input:focus { border-color: #b9500a; background: #fff; }
-    .ar-note { margin: 6px 0 0; font-size: 12.5px; color: #8a7f6b; }
+    .ar-comment small { margin-left: 8px; font-size: 12.5px; color: #557466; }
+    .ar-comment p { margin: 6px 0 0; font-size: 14.5px; line-height: 1.6; color: #0E3B2A; }
+    .ar-form { padding: 22px; border-radius: 24px; background: #fff; border: 1px solid #D8E9E0; }
+    .ar-form h3 { margin: 0 0 14px; font-family: 'Montserrat', serif; font-size: 20px; }
+    .ar-form label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: #0E3B2A; }
+    .ar-input { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid #D8E9E0; background: #FFFFFF; color: #0E3B2A; font: inherit; font-size: 15px; outline: none; }
+    .ar-input:focus { border-color: #EB6E00; background: #fff; }
+    .ar-note { margin: 6px 0 0; font-size: 12.5px; color: #557466; }
     .ar-flash { display: flex; gap: 10px; padding: 12px 16px; margin-bottom: 18px; border-radius: 16px; font-size: 14px; }
-    .ar-flash.is-ok { background: #e7f3ec; color: #1b6b3a; }
+    .ar-flash.is-ok { background: #F3F8F5; color: #00874F; }
     .ar-flash.is-err { background: #fdecea; color: #b42318; }
 
     .ar-related { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .ar-rel { display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; }
-    .ar-rel:hover { border-color: #d8cdb8; box-shadow: 0 18px 32px -26px rgba(29,26,22,.5); }
-    .ar-rel__img { aspect-ratio: 16 / 10; background: #f3eee4; overflow: hidden; }
+    .ar-rel { display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; background: #fff; border: 1px solid #D8E9E0; color: inherit; text-decoration: none; transition: border-color .15s ease, box-shadow .2s ease; }
+    .ar-rel:hover { border-color: #8AA99B; box-shadow: 0 18px 32px -26px rgba(14,59,42,.5); }
+    .ar-rel__img { aspect-ratio: 16 / 10; background: #F3F8F5; overflow: hidden; }
     .ar-rel__img img { width: 100%; height: 100%; object-fit: cover; }
     .ar-rel__body { padding: 14px 16px 16px; }
-    .ar-rel__body small { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #b9500a; }
-    .ar-rel__body b { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 4px; font-family: 'Playfair Display', serif; font-size: 17px; line-height: 1.25; color: #1d1a16; }
-    .ar-rel__body span { display: block; margin-top: 6px; font-size: 12.5px; color: #6b6458; }
-    .ar a:focus-visible, .ar button:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+    .ar-rel__body small { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #EB6E00; }
+    .ar-rel__body b { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 4px; font-family: 'Montserrat', serif; font-size: 17px; line-height: 1.25; color: #0E3B2A; }
+    .ar-rel__body span { display: block; margin-top: 6px; font-size: 12.5px; color: #557466; }
+    .ar a:focus-visible, .ar button:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
 
     @media (max-width: 1100px) {
         .ar-grid { grid-template-columns: minmax(0, 720px); justify-content: center; }
@@ -186,8 +206,10 @@
     }
     @media (max-width: 640px) {
         .ar { padding: 16px 16px 40px; }
-        .ar-lead { font-size: 17px; }
-        .ar-meta { gap: 8px 14px; font-size: 13px; }
+        .ar-lead { font-size: 16.5px; padding-left: 14px; border-left-width: 3px; }
+        .ar-meta { flex-direction: column; align-items: flex-start; gap: 12px; font-size: 13px; }
+        .ar-stats { gap: 6px; }
+        .ar-stats > span { height: 30px; padding: 0 10px; font-size: 12px; }
         .ar-cover { border-radius: 20px; margin-left: -6px; margin-right: -6px; }
         .ar-gallery, .ar-related { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .ar-related { grid-template-columns: minmax(0, 1fr); }
@@ -222,10 +244,15 @@
         <h1 class="ar-title">{{ $article->localized('title') }}</h1>
         @if($article->excerpt_fr)<p class="ar-lead">{{ $article->localized('excerpt') }}</p>@endif
         <div class="ar-meta">
-            <span><span class="ar-avatar" aria-hidden="true">{{ $authorInitial }}</span>{{ $authorLabel }}</span>
-            @if($article->published_at)<span><x-icon name="calendar" />{{ $article->published_at->locale(app()->getLocale())->translatedFormat('d F Y') }}</span>@endif
-            @if($article->reading_time)<span><x-icon name="clock-circle" />{{ $article->reading_time }} {{ __('min de lecture') }}</span>@endif
-            <span><x-icon name="eye" />{{ number_format($article->views_count, 0, ',', ' ') }} {{ __('vues') }}</span>
+            <span class="ar-by">
+                <span class="ar-avatar" aria-hidden="true">{{ $authorInitial }}</span>
+                <span class="ar-by__txt"><small>{{ __('Par') }}</small><b>{{ $authorLabel }}</b></span>
+            </span>
+            <span class="ar-stats">
+                @if($article->published_at)<span><x-icon name="calendar" />{{ $article->published_at->locale(app()->getLocale())->translatedFormat('d F Y') }}</span>@endif
+                @if($article->reading_time)<span><x-icon name="clock-circle" />{{ $article->reading_time }} {{ __('min de lecture') }}</span>@endif
+                <span><x-icon name="eye" />{{ number_format($article->views_count, 0, ',', ' ') }} {{ __('vues') }}</span>
+            </span>
         </div>
         @if($contributors->isNotEmpty())
             <div class="ar-contrib" aria-label="{{ __('Contributeurs') }}">@foreach($contributors as $contributor)<span>{{ $contributor->full_name }}</span>@endforeach</div>
@@ -327,7 +354,7 @@
 
             {{-- Commentaires --}}
             <section class="ar-block" id="commentaires">
-                <h2>{{ __('Commentaires') }} @if($comments->isNotEmpty())<span style="font-family:Inter,sans-serif;font-size:15px;font-weight:600;color:#8a7f6b">({{ $comments->count() }})</span>@endif</h2>
+                <h2>{{ __('Commentaires') }} @if($comments->isNotEmpty())<span style="font-family:Montserrat,sans-serif;font-size:15px;font-weight:600;color:#557466">({{ $comments->count() }})</span>@endif</h2>
                 @if(session('comment_sent'))<p class="ar-flash is-ok"><i class="fas fa-circle-check mt-0.5"></i>{{ session('comment_sent') }}</p>@endif
                 @if($comments->isNotEmpty())
                     <div class="ar-comments">
@@ -351,14 +378,14 @@
                         @csrf
                         @guest
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div><label for="ar-name">{{ __('Nom') }} <span style="color:#b9500a">*</span></label><input id="ar-name" type="text" name="author_name" value="{{ old('author_name') }}" required class="ar-input" placeholder="{{ __('Votre nom') }}"></div>
-                                <div><label for="ar-mail">{{ __('E-mail') }} <span style="color:#b9500a">*</span></label><input id="ar-mail" type="email" name="author_email" value="{{ old('author_email') }}" required class="ar-input" placeholder="{{ __('Non publié') }}"></div>
+                                <div><label for="ar-name">{{ __('Nom') }} <span style="color:#EB6E00">*</span></label><input id="ar-name" type="text" name="author_name" value="{{ old('author_name') }}" required class="ar-input" placeholder="{{ __('Votre nom') }}"></div>
+                                <div><label for="ar-mail">{{ __('E-mail') }} <span style="color:#EB6E00">*</span></label><input id="ar-mail" type="email" name="author_email" value="{{ old('author_email') }}" required class="ar-input" placeholder="{{ __('Non publié') }}"></div>
                             </div>
                         @else
-                            <p class="ar-note">{{ __('Connecté en tant que') }} <b style="color:#9a4308">{{ auth()->user()->full_name }}</b></p>
+                            <p class="ar-note">{{ __('Connecté en tant que') }} <b style="color:#B85600">{{ auth()->user()->full_name }}</b></p>
                         @endguest
                         <div>
-                            <label for="ar-content">{{ __('Commentaire') }} <span style="color:#b9500a">*</span></label>
+                            <label for="ar-content">{{ __('Commentaire') }} <span style="color:#EB6E00">*</span></label>
                             <textarea id="ar-content" name="content" rows="4" required minlength="10" maxlength="2000" class="ar-input" style="resize:vertical" placeholder="{{ __('Partagez votre avis sur cet article…') }}">{{ old('content') }}</textarea>
                             <p class="ar-note">{{ __('Votre commentaire sera publié après modération.') }}</p>
                         </div>
@@ -421,7 +448,7 @@
     // Copier le lien
     document.querySelector('[data-ar-copy]')?.addEventListener('click', async e => {
         const b = e.currentTarget;
-        try { await navigator.clipboard.writeText(location.href.split('#')[0]); b.title = b.dataset.done; b.style.borderColor = '#1b6b3a'; b.style.color = '#1b6b3a'; } catch (err) {}
+        try { await navigator.clipboard.writeText(location.href.split('#')[0]); b.title = b.dataset.done; b.style.borderColor = '#00874F'; b.style.color = '#00874F'; } catch (err) {}
     });
 })();
 </script>

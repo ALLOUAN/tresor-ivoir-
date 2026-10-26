@@ -6,19 +6,19 @@
 @section('content')
 
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
-    <div class="bg-gradient-to-br from-green-900/40 to-green-900 border border-green-500/30 rounded-xl p-4">
+    <div class="bg-green-900/40 border border-green-500/30 rounded-xl p-4">
         <p class="text-green-300/80 text-xs font-medium">Total</p>
         <p class="text-white text-2xl font-bold mt-1">{{ number_format($stats['total']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-rose-900/40 to-green-900 border border-rose-500/30 rounded-xl p-4">
+    <div class="bg-rose-900/40 border border-rose-500/30 rounded-xl p-4">
         <p class="text-rose-300/80 text-xs font-medium">Nouvelles</p>
         <p class="text-rose-200 text-2xl font-bold mt-1">{{ number_format($stats['new']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-emerald-900/40 to-green-900 border border-emerald-500/30 rounded-xl p-4">
+    <div class="bg-emerald-900/40 border border-emerald-500/30 rounded-xl p-4">
         <p class="text-emerald-300/80 text-xs font-medium">Confirmées</p>
         <p class="text-emerald-200 text-2xl font-bold mt-1">{{ number_format($stats['confirmed']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-slate-800/60 to-green-900 border border-slate-600/30 rounded-xl p-4">
+    <div class="bg-slate-800/60 border border-slate-600/30 rounded-xl p-4">
         <p class="text-slate-400 text-xs font-medium">Annulées</p>
         <p class="text-slate-300 text-2xl font-bold mt-1">{{ number_format($stats['cancelled']) }}</p>
     </div>

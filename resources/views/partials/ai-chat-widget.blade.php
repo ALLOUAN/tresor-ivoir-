@@ -1,54 +1,104 @@
-{{-- Assistant conversationnel (module IA) : bouton flottant + panneau de discussion. Aucun effet si l'IA ou l'assistant est coupé. --}}
+{{-- Assistant conversationnel (module IA) : bouton flottant + panneau de discussion. Aucun effet si l'IA ou l'assistant est coupé.
+     Design : pastille flottante vert forêt, en-tête à motifs discrets, bulles de messagerie, suggestions en lignes cliquables,
+     saisie en pilule. Aplats (aucun dégradé). Identifiants et script inchangés. --}}
 @if(config('ai.enabled', true) && config('ai.chat.enabled', true))
 <style>
-    .ti-chat-fab { position: fixed; right: 20px; bottom: 24px; z-index: 55; display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 18px 0 16px; border: 0; border-radius: 999px; background: #14532d; color: #fff; font: 600 14px/1 Inter, system-ui, sans-serif; cursor: pointer; box-shadow: 0 10px 24px rgb(20 83 45 / .35); }
-    .ti-chat-fab:hover { background: #1b6b3a; }
-    .ti-chat-fab i { font-size: 17px; color: #f0c987; }
-    .ti-chat-panel { position: fixed; right: 20px; bottom: 90px; z-index: 56; width: 380px; max-width: calc(100vw - 24px); height: 540px; max-height: calc(100vh - 120px); display: none; flex-direction: column; background: #fff; border: 1px solid #e8e1d3; border-radius: 16px; box-shadow: 0 20px 50px rgb(29 26 22 / .22); overflow: hidden; font-family: Inter, system-ui, sans-serif; }
-    .ti-chat-panel.is-open { display: flex; }
-    .ti-chat-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; background: #14532d; color: #fff; }
-    .ti-chat-head b { font-size: 15px; }
-    .ti-chat-head small { display: block; font-size: 11.5px; color: rgba(255,255,255,.75); margin-top: 1px; }
-    .ti-chat-head button { background: none; border: 0; color: #fff; font-size: 18px; cursor: pointer; padding: 4px 6px; }
-    .ti-chat-log { flex: 1; overflow-y: auto; padding: 14px; background: #faf8f3; display: flex; flex-direction: column; gap: 10px; }
-    .ti-msg { max-width: 88%; padding: 10px 12px; border-radius: 12px; font-size: 14px; line-height: 1.5; color: #1d1a16; word-wrap: break-word; }
-    .ti-msg--bot { align-self: flex-start; background: #fff; border: 1px solid #e8e1d3; border-top-left-radius: 4px; }
-    .ti-msg--me { align-self: flex-end; background: #1b6b3a; color: #fff; border-top-right-radius: 4px; }
-    .ti-msg sup a { color: #b9500a; font-weight: 700; text-decoration: none; padding: 0 1px; }
-    .ti-src { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ece4d4; font-size: 12.5px; }
-    .ti-src a { display: block; color: #b9500a; font-weight: 600; text-decoration: none; margin-top: 2px; }
-    .ti-src a:hover { text-decoration: underline; }
-    .ti-rate { margin-top: 6px; display: flex; gap: 6px; align-items: center; font-size: 12px; color: #6b6458; }
-    .ti-rate button { background: #fff; border: 1px solid #d8cdb8; border-radius: 8px; padding: 2px 8px; cursor: pointer; }
-    .ti-rate button:hover { background: #f3eee4; }
-    .ti-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .ti-chips button, .ti-contact { background: #fff; border: 1px solid #d8cdb8; color: #14532d; border-radius: 999px; padding: 5px 11px; font-size: 12.5px; cursor: pointer; }
-    .ti-chips button:hover, .ti-contact:hover { background: #eef6f0; }
-    .ti-chat-form { display: flex; gap: 8px; padding: 10px; border-top: 1px solid #e8e1d3; background: #fff; }
-    .ti-chat-form input { flex: 1; height: 42px; border: 1px solid #d8cdb8; border-radius: 10px; padding: 0 12px; font-size: 14px; color: #1d1a16; background: #fff; }
-    .ti-chat-form input:focus { outline: none; border-color: #b9500a; box-shadow: 0 0 0 3px rgb(185 80 10 / .18); }
-    .ti-chat-form button { width: 42px; height: 42px; border: 0; border-radius: 10px; background: #b9500a; color: #fff; cursor: pointer; }
-    .ti-chat-form button:disabled { opacity: .5; }
-    .ti-chat-note { padding: 0 12px 8px; background: #fff; font-size: 11px; color: #8a7f6b; }
+    /* ── Bouton flottant ── */
+    .ti-chat-fab { position: fixed; right: 20px; bottom: 24px; z-index: 55; display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 20px 0 7px; border: 0; border-radius: 999px; background: #00874F; color: #fff; font: 600 14px/1 Montserrat, system-ui, sans-serif; cursor: pointer; box-shadow: 0 14px 30px -12px rgb(0 135 79 / .55); transition: transform .2s ease, background .2s ease; }
+    .ti-chat-fab:hover { background: #00874F; transform: translateY(-2px); }
+    .ti-chat-fab:focus-visible { outline: 3px solid #EB6E00; outline-offset: 3px; }
+    .ti-chat-fab__avatar { position: relative; width: 40px; height: 40px; border-radius: 999px; background: #EB6E00; display: inline-flex; align-items: center; justify-content: center; }
+    .ti-chat-fab__avatar i { font-size: 16px; color: #fff; }
+    .ti-chat-fab__avatar::after { content: ''; position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 999px; background: #00874F; border: 2px solid #00874F; }
+    .ti-chat-fab[aria-expanded="true"] .ti-chat-fab__avatar i::before { content: '\f00d'; }
+
+    /* ── Panneau ── */
+    .ti-chat-panel { position: fixed; right: 20px; bottom: 92px; z-index: 56; width: 400px; max-width: calc(100vw - 24px); height: 600px; max-height: calc(100vh - 120px); display: none; flex-direction: column; background: #F3F8F5; border: 1px solid #D8E9E0; border-radius: 24px; box-shadow: 0 30px 70px -24px rgb(14 59 42 / .45); overflow: hidden; font-family: Montserrat, system-ui, sans-serif; }
+    .ti-chat-panel.is-open { display: flex; animation: ti-chat-in .22s ease-out; }
+    @keyframes ti-chat-in { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+
+    .ti-chat-head { position: relative; overflow: hidden; display: flex; align-items: center; gap: 12px; padding: 16px 16px 16px 18px; background: #00874F; color: #fff; }
+    .ti-chat-head > .ivm .ivm-g { opacity: .08 !important; }
+    .ti-chat-head > .ivm .ivm-g > * { stroke: #D8E9E0 !important; }
+    .ti-chat-head > :not(.ivm) { position: relative; z-index: 1; }
+    .ti-chat-head__avatar { position: relative; flex: none; width: 44px; height: 44px; border-radius: 14px; background: #EB6E00; display: inline-flex; align-items: center; justify-content: center; }
+    .ti-chat-head__avatar i { font-size: 18px; color: #fff; }
+    .ti-chat-head__txt { flex: 1; min-width: 0; }
+    .ti-chat-head b { display: block; font-family: 'Montserrat', Georgia, serif; font-size: 17px; font-weight: 700; line-height: 1.2; }
+    .ti-chat-head small { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 12px; color: rgba(255,255,255,.78); }
+    .ti-chat-head small::before { content: ''; width: 7px; height: 7px; border-radius: 999px; background: #00874F; }
+    .ti-chat-head button { flex: none; width: 36px; height: 36px; border: 0; border-radius: 999px; background: rgba(255,255,255,.12); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; transition: background .15s ease; }
+    .ti-chat-head button:hover { background: rgba(255,255,255,.22); }
+    .ti-chat-head button:focus-visible { outline: 2px solid #F7C396; outline-offset: 2px; }
+
+    /* ── Fil de discussion ── */
+    .ti-chat-log { flex: 1; overflow-y: auto; padding: 18px 16px; background: #F3F8F5; display: flex; flex-direction: column; gap: 12px; scrollbar-width: thin; }
+    .ti-msg { max-width: 86%; padding: 11px 14px; border-radius: 18px; font-size: 14px; line-height: 1.55; color: #0E3B2A; word-wrap: break-word; }
+    .ti-msg--bot { align-self: flex-start; background: #fff; border: 1px solid #D8E9E0; border-top-left-radius: 6px; }
+    .ti-msg--me { align-self: flex-end; background: #EB6E00; color: #fff; border-top-right-radius: 6px; }
+    .ti-msg sup a { color: #EB6E00; font-weight: 700; text-decoration: none; padding: 0 1px; }
+    .ti-src { margin-top: 10px; padding-top: 10px; border-top: 1px solid #F3F8F5; font-size: 12.5px; color: #557466; }
+    .ti-src a { display: flex; align-items: center; gap: 6px; margin-top: 6px; padding: 7px 10px; border-radius: 10px; background: #F3F8F5; color: #B85600; font-weight: 600; text-decoration: none; }
+    .ti-src a:hover { background: #F3F8F5; }
+    .ti-rate { margin-top: 10px; display: flex; gap: 6px; align-items: center; font-size: 12px; color: #557466; }
+    .ti-rate button { width: 32px; height: 28px; background: #fff; border: 1px solid #D8E9E0; border-radius: 999px; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+    .ti-rate button:hover { background: #F3F8F5; border-color: #EB6E00; }
+
+    /* Suggestions : lignes cliquables avec flèche */
+    .ti-chips { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+    .ti-chips button { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 10px 12px; border: 1px solid #D8E9E0; border-radius: 12px; background: #F3F8F5; color: #0E3B2A; font: 600 13px/1.3 Montserrat, system-ui, sans-serif; text-align: left; cursor: pointer; transition: border-color .15s ease, background .15s ease, color .15s ease; }
+    .ti-chips button::after { content: '\2192'; flex: none; color: #EB6E00; font-weight: 700; transition: transform .15s ease; }
+    .ti-chips button:hover { border-color: #EB6E00; background: #fff; color: #B85600; }
+    .ti-chips button:hover::after { transform: translateX(3px); }
+    .ti-contact { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border: 0; border-radius: 999px; background: #00874F; color: #fff; font: 600 12.5px/1 Montserrat, system-ui, sans-serif; cursor: pointer; }
+    .ti-contact:hover { background: #00874F; }
+
+    /* Indicateur « en train d'écrire » */
+    .ti-msg.is-typing { display: inline-flex; gap: 5px; padding: 14px 16px; }
+    .ti-msg.is-typing span { width: 7px; height: 7px; border-radius: 999px; background: #8AA99B; animation: ti-dot 1.1s infinite ease-in-out; }
+    .ti-msg.is-typing span:nth-child(2) { animation-delay: .15s; }
+    .ti-msg.is-typing span:nth-child(3) { animation-delay: .3s; }
+    @keyframes ti-dot { 0%, 80%, 100% { opacity: .35; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+
+    /* ── Saisie ── */
+    .ti-chat-form { display: flex; align-items: center; gap: 6px; margin: 0 12px; padding: 6px 6px 6px 16px; border: 1px solid #D8E9E0; border-radius: 999px; background: #fff; transition: border-color .15s ease, box-shadow .15s ease; }
+    .ti-chat-form:focus-within { border-color: #EB6E00; box-shadow: 0 0 0 4px rgb(235 110 0 / .12); }
+    .ti-chat-form input { flex: 1; min-width: 0; height: 40px; border: 0; padding: 0; font-size: 14px; color: #0E3B2A; background: transparent; }
+    .ti-chat-form input:focus { outline: none; }
+    #ti-chat-form #ti-chat-input { border: 0 !important; box-shadow: none !important; background: transparent !important; border-radius: 0 !important; padding: 0 !important; }
+    .ti-chat-form button { flex: none; width: 40px; height: 40px; border: 0; border-radius: 999px; background: #EB6E00; color: #fff; cursor: pointer; transition: background .15s ease, transform .15s ease; }
+    .ti-chat-form button:hover { background: #B85600; }
+    .ti-chat-form button:disabled { opacity: .45; cursor: default; }
+    .ti-chat-foot { padding: 10px 0 12px; background: #F3F8F5; border-top: 1px solid #D8E9E0; }
+    .ti-chat-note { margin: 8px 16px 0; font-size: 11px; line-height: 1.4; text-align: center; color: #557466; }
+
     @media (max-width: 767px) {
-        .ti-chat-fab { right: 14px; bottom: calc(86px + env(safe-area-inset-bottom)); height: 46px; padding: 0 14px; }
-        .ti-chat-fab span { display: none; }
+        .ti-chat-fab { right: 14px; bottom: calc(86px + env(safe-area-inset-bottom)); height: 50px; padding: 0 5px; }
+        .ti-chat-fab span:not(.ti-chat-fab__avatar) { display: none; }
         .ti-chat-panel { inset: 0; width: auto; max-width: none; height: auto; max-height: none; border-radius: 0; border: 0; }
+        .ti-chat-head { padding-top: calc(14px + env(safe-area-inset-top)); }
+        .ti-chat-foot { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+        .ti-msg { max-width: 90%; }
     }
+    @media (prefers-reduced-motion: reduce) { .ti-chat-panel.is-open, .ti-msg.is-typing span { animation: none; } .ti-chat-fab, .ti-chips button::after { transition: none; } }
     @media print { .ti-chat-fab, .ti-chat-panel { display: none !important; } }
 </style>
-<button type="button" id="ti-chat-fab" class="ti-chat-fab" aria-label="{{ __('Ouvrir l\'assistant') }}" aria-expanded="false" aria-controls="ti-chat-panel"><i class="fas fa-comments"></i><span>{{ __('Assistant') }}</span></button>
+<button type="button" id="ti-chat-fab" class="ti-chat-fab" aria-label="{{ __('Ouvrir l\'assistant') }}" aria-expanded="false" aria-controls="ti-chat-panel"><span class="ti-chat-fab__avatar" aria-hidden="true"><i class="fas fa-wand-magic-sparkles"></i></span><span>{{ __('Assistant') }}</span></button>
 <section id="ti-chat-panel" class="ti-chat-panel" role="dialog" aria-label="{{ __('Assistant Trésors d\'Ivoire') }}">
     <header class="ti-chat-head">
-        <div><b>{{ __('Assistant Trésors d\'Ivoire') }}</b><small>{{ __('Réponses tirées du contenu du site') }}</small></div>
+        @include('partials.ivorian-motifs', ['culture' => 'national', 'band' => false])
+        <span class="ti-chat-head__avatar" aria-hidden="true"><i class="fas fa-wand-magic-sparkles"></i></span>
+        <div class="ti-chat-head__txt"><b>{{ __('Assistant Trésors d\'Ivoire') }}</b><small>{{ __('Répond à partir du contenu du site') }}</small></div>
         <button type="button" id="ti-chat-close" aria-label="{{ __('Fermer') }}">&times;</button>
     </header>
     <div id="ti-chat-log" class="ti-chat-log" aria-live="polite"></div>
-    <form id="ti-chat-form" class="ti-chat-form" autocomplete="off">
-        <input id="ti-chat-input" type="text" maxlength="{{ (int) config('ai.chat.max_question', 300) }}" placeholder="{{ __('Votre question…') }}" aria-label="{{ __('Votre question') }}">
-        <button type="submit" aria-label="{{ __('Envoyer') }}"><i class="fas fa-paper-plane"></i></button>
-    </form>
-    <p class="ti-chat-note">{{ __('Assistant automatique : il cite ses sources et peut se tromper. Pour une demande personnelle, contactez l\'équipe.') }}</p>
+    <div class="ti-chat-foot">
+        <form id="ti-chat-form" class="ti-chat-form" autocomplete="off">
+            <input id="ti-chat-input" type="text" maxlength="{{ (int) config('ai.chat.max_question', 300) }}" placeholder="{{ __('Posez votre question…') }}" aria-label="{{ __('Votre question') }}">
+            <button type="submit" aria-label="{{ __('Envoyer') }}"><i class="fas fa-arrow-up"></i></button>
+        </form>
+        <p class="ti-chat-note">{{ __('Assistant automatique : il cite ses sources et peut se tromper. Pour une demande personnelle, contactez l\'équipe.') }}</p>
+    </div>
 </section>
 <script>
 (function () {
@@ -162,14 +212,14 @@
         if (!text) return;
         var me = bubble('me'); me.textContent = text; scroll();
         input.value = ''; var btn = form.querySelector('button'); btn.disabled = true;
-        var wait = bubble('bot'); wait.textContent = '…'; scroll();
+        var wait = bubble('bot'); wait.classList.add('is-typing'); wait.setAttribute('aria-label', 'Rédaction en cours'); for (var i = 0; i < 3; i++) wait.appendChild(document.createElement('span')); scroll();
         fetch(URL_ASK, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': TOKEN }, body: JSON.stringify(Object.assign({ message: text, history: history }, pos || {})) })
             .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
             .then(function (r) {
                 wait.remove(); render(r);
                 history.push({ role: 'user', text: text }); history.push({ role: 'assistant', text: r.answer.slice(0, 500) }); history = history.slice(-4); save();
             })
-            .catch(function () { wait.textContent = {{ \Illuminate\Support\Js::from(__('Service momentanément indisponible. Réessayez dans un instant.')) }}; })
+            .catch(function () { wait.classList.remove('is-typing'); wait.textContent = {{ \Illuminate\Support\Js::from(__('Service momentanément indisponible. Réessayez dans un instant.')) }}; })
             .then(function () { btn.disabled = false; input.focus(); });
     }
     form.addEventListener('submit', function (e) { e.preventDefault(); send(input.value); });

@@ -6,7 +6,7 @@
 --}}
 @php
     $cityImage = $city->thumbnail ?: $city->cover_image;
-    $cityPalette = [['#1b6b3a', 'diamond'], ['#327661', 'ring'], ['#b9500a', 'cross'], ['#8a6a1f', 'diamond'], ['#497318', 'ring']];
+    $cityPalette = [['#00874F', 'diamond'], ['#00874F', 'ring'], ['#EB6E00', 'cross'], ['#B85600', 'diamond'], ['#00874F', 'ring']];
     [$cityColor, $cityMotif] = $cityPalette[crc32($city->slug ?: $city->name) % count($cityPalette)];
     $cityPattern = 'cp-'.$city->id;
     $citySites = $city->sites_count > 0

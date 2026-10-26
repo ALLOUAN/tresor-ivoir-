@@ -1,12 +1,12 @@
 {{-- Summernote (lite) — éditeur riche partagé par les écrans articles et événements --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css">
 <style>
-    .note-editor.note-frame { border-radius: .75rem; border-color: #d6cfba; overflow: hidden; }
-    .note-editor.note-frame .note-toolbar { background: #f6f3ed; border-bottom-color: #d6cfba; }
+    .note-editor.note-frame { border-radius: .75rem; border-color: #8AA99B; overflow: hidden; }
+    .note-editor.note-frame .note-toolbar { background: #F3F8F5; border-bottom-color: #8AA99B; }
     .note-editor.fullscreen { z-index: 9999 !important; }
 
     /* Le reset de Tailwind aplatit titres, listes et citations : on les restaure dans la zone d'édition. */
-    .note-editable { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.65; color: #1c1915; background: #ffffff; }
+    .note-editable { font-family: 'Montserrat', sans-serif; font-size: 15px; line-height: 1.65; color: #0E3B2A; background: #ffffff; }
     .note-editable p { margin: 0 0 .75rem; }
     .note-editable h1, .note-editable h2, .note-editable h3,
     .note-editable h4, .note-editable h5, .note-editable h6 { font-weight: 700; line-height: 1.25; margin: 1rem 0 .5rem; }
@@ -19,13 +19,13 @@
     .note-editable ul { list-style: disc; padding-left: 1.5rem; margin: 0 0 .75rem; }
     .note-editable ol { list-style: decimal; padding-left: 1.5rem; margin: 0 0 .75rem; }
     .note-editable li { display: list-item; }
-    .note-editable blockquote { border-left: 4px solid #d6cfba; padding: .25rem 0 .25rem 1rem; margin: 0 0 .75rem; color: #544f47; }
-    .note-editable pre { background: #1c1915; color: #f6f3ed; padding: .75rem 1rem; border-radius: .5rem; overflow: auto; margin: 0 0 .75rem; }
-    .note-editable a { color: #a54a0b; text-decoration: underline; }
+    .note-editable blockquote { border-left: 4px solid #8AA99B; padding: .25rem 0 .25rem 1rem; margin: 0 0 .75rem; color: #24503D; }
+    .note-editable pre { background: #0E3B2A; color: #F3F8F5; padding: .75rem 1rem; border-radius: .5rem; overflow: auto; margin: 0 0 .75rem; }
+    .note-editable a { color: #B85600; text-decoration: underline; }
     .note-editable img { max-width: 100%; height: auto; }
     .note-editable table { border-collapse: collapse; margin: 0 0 .75rem; }
     .note-editable td, .note-editable th { border: 1px solid #cbd5e1; padding: .35rem .6rem; }
-    .note-editable hr { border: 0; border-top: 1px solid #d6cfba; margin: 1rem 0; }
+    .note-editable hr { border: 0; border-top: 1px solid #8AA99B; margin: 1rem 0; }
 </style>
 @include('partials.lettrine-style')
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
@@ -35,13 +35,13 @@
 window.RichEditor = (function ($) {
     'use strict';
 
-    const FONT_NAMES = ['Arial', 'Georgia', 'Inter', 'Oswald', 'Times New Roman', 'Verdana'];
+    const FONT_NAMES = ['Arial', 'Georgia', 'Montserrat', 'Montserrat', 'Times New Roman', 'Verdana'];
 
     /** Bouton « Lettrine » : ajoute / retire la lettrine et le filet sur le paragraphe où se trouve le curseur. */
     function lettrineButton(context) {
         const ui = $.summernote.ui;
         return ui.button({
-            contents: '<span style="font-family:Oswald,Impact,sans-serif;font-weight:700;color:#e11d2a;font-size:15px;line-height:1">L</span> Lettrine',
+            contents: '<span style="font-family:Montserrat,Impact,sans-serif;font-weight:700;color:#e11d2a;font-size:15px;line-height:1">L</span> Lettrine',
             tooltip: 'Lettrine et filet rouge sur le paragraphe en cours (cliquer à nouveau pour retirer)',
             click: function () {
                 const editable = context.layoutInfo.editable[0];

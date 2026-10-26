@@ -20,15 +20,15 @@
 <style>
     .ai-reco-bg { position: relative; isolation: isolate; background-size: cover; background-position: center; background-repeat: no-repeat; background-image: var(--reco-bg); }
     /* Voile clair et uni : garde le titre et la carte lisibles sur n'importe quelle photo. */
-    .ai-reco-bg::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(246,243,237,.78); }
+    .ai-reco-bg::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(243,248,245,.7); }
 </style>
 @endif
-<section class="py-10 sm:py-12 {{ $__bgUrl ? 'ai-reco-bg' : '' }}" @if($__bgUrl) style="--reco-bg: url('{{ $__bgUrl }}');" @endif aria-label="{{ __('Recommandations personnalisées') }}">
+<section class="ai-reco-strip py-10 sm:py-12 {{ $__bgUrl ? 'ai-reco-bg' : '' }}" @if($__bgUrl) style="--reco-bg: url('{{ $__bgUrl }}');" @endif aria-label="{{ __('Recommandations personnalisées') }}">
     <div class="ai-strip">
         <div class="ai-strip__head">
-            <div>
-                <p class="ai-kicker">{{ $__data['cold'] ? __('Sélection du moment') : __('Pour vous') }}</p>
-                <h2 class="ai-h2">{{ $heading ?? ($__data['cold'] ? __('À découvrir en Côte d\'Ivoire') : __('Recommandé pour vous')) }}</h2>
+            <div class="sec-head">
+                <p class="sec-kicker">{{ $__data['cold'] ? __('Sélection du moment') : __('Pour vous') }}</p>
+                <h2 class="sec-title">{!! \Illuminate\Support\Str::of(e($heading ?? ($__data['cold'] ? __('À découvrir en Côte d\'Ivoire') : __('Recommandé pour vous'))))->replaceMatches('/(\S+)$/u', '<em>$1</em>') !!}</h2>
             </div>
             <a href="{{ route('ai.for-you') }}" class="ai-link text-sm">
                 {{ $__data['cold'] ? __('Personnaliser mes suggestions') : __('Voir toutes mes suggestions') }} <i class="fas fa-arrow-right text-xs"></i>

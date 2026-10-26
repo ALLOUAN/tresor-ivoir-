@@ -11,22 +11,22 @@
     @if($offer->mode === 'chauffeur')<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">@endif
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .tx-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: #f1ece2; }
-        .tx-seg label { position: relative; text-align: center; padding: 9px 6px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; color: #5c5548; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .tx-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: #F3F8F5; }
+        .tx-seg label { position: relative; text-align: center; padding: 9px 6px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; color: #24503D; }
         .tx-seg input { position: absolute; opacity: 0; }
-        .tx-seg label:has(input:checked) { background: #fff; color: #9a4308; box-shadow: 0 2px 8px rgba(29,26,22,.12); }
-        .tx-seg label:has(input:focus-visible) { outline: 3px solid #ef7c2b; }
-        .tx-map { height: 260px; border-radius: 16px; border: 1px solid #ece5d6; z-index: 0; }
-        .tx-trip { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 10px 12px; margin-top: 6px; border: 1.5px solid #ece5d6; border-radius: 14px; background: #fff; cursor: pointer; font-size: 13px; }
-        .tx-trip:has(input:checked) { border-color: #b9500a; background: #fdf4ec; }
+        .tx-seg label:has(input:checked) { background: #fff; color: #B85600; box-shadow: 0 2px 8px rgba(14,59,42,.12); }
+        .tx-seg label:has(input:focus-visible) { outline: 3px solid #EB6E00; }
+        .tx-map { height: 260px; border-radius: 16px; border: 1px solid #D8E9E0; z-index: 0; }
+        .tx-trip { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 10px 12px; margin-top: 6px; border: 1.5px solid #D8E9E0; border-radius: 14px; background: #fff; cursor: pointer; font-size: 13px; }
+        .tx-trip:has(input:checked) { border-color: #EB6E00; background: #F3F8F5; }
         .tx-trip input { position: absolute; opacity: 0; }
         .tx-trip.is-full { opacity: .5; cursor: not-allowed; }
-        .tx-bus { display: grid; gap: 6px; padding: 12px; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; }
-        .tx-seat { height: 38px; border-radius: 10px 10px 6px 6px; border: 1.5px solid #cfe5d6; background: #eef7f1; color: #1b6b3a; font-size: 12px; font-weight: 800; cursor: pointer; }
-        .tx-seat:disabled { background: #ece8e1; border-color: #ddd6c9; color: #a39c8e; cursor: not-allowed; }
-        .tx-seat.is-on { background: #b9500a; border-color: #b9500a; color: #fff; }
-        .tx-seat:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 1px; }
+        .tx-bus { display: grid; gap: 6px; padding: 12px; border-radius: 18px; background: #fff; border: 1px solid #D8E9E0; }
+        .tx-seat { height: 38px; border-radius: 10px 10px 6px 6px; border: 1.5px solid #D8E9E0; background: #F3F8F5; color: #00874F; font-size: 12px; font-weight: 800; cursor: pointer; }
+        .tx-seat:disabled { background: #F3F8F5; border-color: #D8E9E0; color: #8AA99B; cursor: not-allowed; }
+        .tx-seat.is-on { background: #EB6E00; border-color: #EB6E00; color: #fff; }
+        .tx-seat:focus-visible { outline: 3px solid #EB6E00; outline-offset: 1px; }
         .tx-aisle { visibility: hidden; }
     </style>
     @include('partials.detail-theme')
@@ -34,7 +34,7 @@
     @include('partials.offer-page-theme')
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="dx text-[#1c1915]">
+<body class="dx text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 @php
@@ -142,7 +142,7 @@
                 <section class="ox-sec" id="autres">
                     <p class="hx-kicker">{{ $company?->name }}</p>
                     <h2 class="tp-h2">{{ __('Autres offres') }}</h2>
-                    <div class="dx-offers">@foreach($others as $o)<a href="{{ $o->slug ? route('transport-offer.show', $o->slug) : '#' }}" class="dx-offer"><span class="dx-offer__media"><i class="fas {{ \App\Models\TransportOffer::MODE_ICONS[$o->mode] ?? 'fa-car-side' }}" aria-hidden="true"></i></span><span class="dx-offer__body"><span class="dx-offer__name">{{ $o->name }}</span><span class="text-xs text-[#6b6458]">{{ $o->modeLabel() }}</span></span><span class="dx-offer__side"><span class="dx-offer__price font-bold">{{ $fmt($o->fromPrice()) }}</span><span class="dx-offer__ask"><i class="fas fa-arrow-right" aria-hidden="true"></i></span></span></a>@endforeach</div>
+                    <div class="dx-offers">@foreach($others as $o)<a href="{{ $o->slug ? route('transport-offer.show', $o->slug) : '#' }}" class="dx-offer"><span class="dx-offer__media"><i class="fas {{ \App\Models\TransportOffer::MODE_ICONS[$o->mode] ?? 'fa-car-side' }}" aria-hidden="true"></i></span><span class="dx-offer__body"><span class="dx-offer__name">{{ $o->name }}</span><span class="text-xs text-[#557466]">{{ $o->modeLabel() }}</span></span><span class="dx-offer__side"><span class="dx-offer__price font-bold">{{ $fmt($o->fromPrice()) }}</span><span class="dx-offer__ask"><i class="fas fa-arrow-right" aria-hidden="true"></i></span></span></a>@endforeach</div>
                 </section>
             @endif
         </div>
@@ -180,7 +180,7 @@
                             <input id="tx-start" type="datetime-local" name="starts_at" required min="{{ $min }}" value="{{ old('starts_at', $def) }}" class="tp-input">
                             <div id="tx-flight-wrap"><label for="tx-flight" class="tp-label">{{ __('Numéro de vol') }}</label>
                                 <input id="tx-flight" name="flight_number" maxlength="12" value="{{ old('flight_number') }}" class="tp-input uppercase" placeholder="AF702"></div>
-                            <label class="tp-extra mt-3"><input type="checkbox" name="round_trip" value="1" id="tx-rt" @checked(old('round_trip'))><span>{{ __('Aller-retour') }}@if($offer->round_trip_discount_percent) <small class="text-[#1b6b3a] font-bold">−{{ $offer->round_trip_discount_percent }} %</small>@endif</span><span></span></label>
+                            <label class="tp-extra mt-3"><input type="checkbox" name="round_trip" value="1" id="tx-rt" @checked(old('round_trip'))><span>{{ __('Aller-retour') }}@if($offer->round_trip_discount_percent) <small class="text-[#00874F] font-bold">−{{ $offer->round_trip_discount_percent }} %</small>@endif</span><span></span></label>
                             <div id="tx-return" hidden><label for="tx-ret" class="tp-label">{{ __('Retour le') }}</label><input id="tx-ret" type="datetime-local" name="return_at" min="{{ $min }}" value="{{ old('return_at') }}" class="tp-input"></div>
                         @elseif($offer->mode === 'chauffeur')
                             <div class="tx-seg" role="radiogroup" aria-label="{{ __('Formule') }}">
@@ -189,7 +189,7 @@
                                 @if($offer->full_day_xof)<label><input type="radio" name="package" value="full_day" @checked(old('package') === 'full_day')>{{ __('Journée') }}</label>@endif
                             </div>
                             <div id="tx-map-wrap">
-                                <p class="tp-note">{{ __('Touchez la carte : 1er point = départ, 2e point = arrivée.') }} <button type="button" id="tx-map-reset" class="font-bold text-[#9a4308]">{{ __('Recommencer') }}</button></p>
+                                <p class="tp-note">{{ __('Touchez la carte : 1er point = départ, 2e point = arrivée.') }} <button type="button" id="tx-map-reset" class="font-bold text-[#B85600]">{{ __('Recommencer') }}</button></p>
                                 <div id="tx-map" class="tx-map" role="application" aria-label="{{ __('Carte : choisissez le départ puis l\'arrivée') }}"></div>
                                 <input type="hidden" name="pickup_lat" value="{{ old('pickup_lat') }}"><input type="hidden" name="pickup_lng" value="{{ old('pickup_lng') }}">
                                 <input type="hidden" name="dropoff_lat" value="{{ old('dropoff_lat') }}"><input type="hidden" name="dropoff_lng" value="{{ old('dropoff_lng') }}">
@@ -207,7 +207,7 @@
                             @forelse($trips as $t)
                                 @php $left = $t->seatsLeft(); @endphp
                                 <label class="tx-trip relative {{ $left < 1 ? 'is-full' : '' }}"><input type="radio" name="trip_id" value="{{ $t->id }}" @disabled($left < 1) @checked(old('trip_id', $loop->first ? $t->id : null) == $t->id)>
-                                    <span><b>{{ ucfirst($t->departs_at->timezone('Africa/Abidjan')->locale(app()->getLocale())->isoFormat('ddd D MMM · HH:mm')) }}</b><br><small class="text-[#6b6458]">{{ $left < 1 ? __('Complet') : trans_choice(':count place libre|:count places libres', $left) }}</small></span>
+                                    <span><b>{{ ucfirst($t->departs_at->timezone('Africa/Abidjan')->locale(app()->getLocale())->isoFormat('ddd D MMM · HH:mm')) }}</b><br><small class="text-[#557466]">{{ $left < 1 ? __('Complet') : trans_choice(':count place libre|:count places libres', $left) }}</small></span>
                                     <b>{{ $fmt($t->price()) }}</b></label>
                             @empty
                                 <p class="tp-note">{{ __('Aucun départ programmé pour le moment.') }}</p>
@@ -215,7 +215,7 @@
                             </div>
                             <span class="tp-label">{{ __('Vos sièges') }}</span>
                             <div class="tx-bus" id="tx-bus" data-url="{{ route('transport-offer.seats', [$offer->slug, '__T__']) }}" role="group" aria-label="{{ __('Plan des sièges') }}"></div>
-                            <p class="tp-note"><span class="inline-block w-3 h-3 rounded bg-[#eef7f1] border border-[#cfe5d6] align-middle"></span> {{ __('libre') }} · <span class="inline-block w-3 h-3 rounded bg-[#ece8e1] align-middle"></span> {{ __('pris') }} · <span class="inline-block w-3 h-3 rounded bg-[#b9500a] align-middle"></span> {{ __('votre choix') }}</p>
+                            <p class="tp-note"><span class="inline-block w-3 h-3 rounded bg-[#F3F8F5] border border-[#D8E9E0] align-middle"></span> {{ __('libre') }} · <span class="inline-block w-3 h-3 rounded bg-[#F3F8F5] align-middle"></span> {{ __('pris') }} · <span class="inline-block w-3 h-3 rounded bg-[#EB6E00] align-middle"></span> {{ __('votre choix') }}</p>
                             <div id="tx-seat-inputs"></div>
                         @endif
 
@@ -227,7 +227,7 @@
                         @endif
                         @if($extras)
                             <span class="tp-label">{{ __('Options') }}</span>
-                            @foreach($extras as $i => $e)<label class="tp-extra"><input type="checkbox" name="extras[]" value="{{ $i }}" @checked(in_array($i, old('extras', [])))><span>{{ $e['label'] }}</span><span class="font-bold whitespace-nowrap">+ {{ $fmt($e['price_xof']) }} <small class="font-medium text-[#6b6458]">{{ $perLabel[$e['per']] }}</small></span></label>@endforeach
+                            @foreach($extras as $i => $e)<label class="tp-extra"><input type="checkbox" name="extras[]" value="{{ $i }}" @checked(in_array($i, old('extras', [])))><span>{{ $e['label'] }}</span><span class="font-bold whitespace-nowrap">+ {{ $fmt($e['price_xof']) }} <small class="font-medium text-[#557466]">{{ $perLabel[$e['per']] }}</small></span></label>@endforeach
                         @endif
                         <label for="tx-phone" class="tp-label">{{ __('Téléphone (joignable le jour J)') }}</label><input id="tx-phone" type="tel" name="phone" required maxlength="30" value="{{ old('phone', $user->phone) }}" class="tp-input">
                         <label for="tx-msg" class="tp-label">{{ __('Précisions pour le chauffeur') }}</label><textarea id="tx-msg" name="message" rows="2" maxlength="1000" class="tp-input">{{ old('message') }}</textarea>
@@ -240,7 +240,7 @@
                         @if($errors->transport->any())<p class="tp-err">{{ $errors->transport->first() }}</p>@endif
                         <p class="tp-err hidden" id="tx-err"></p>
                         <button type="submit" class="tp-submit" id="tx-submit"><i class="fas fa-lock mr-1.5" aria-hidden="true"></i><span id="tx-label">{{ __('Réserver') }}</span></button>
-                        @if($offer->cancellationLabel())<p class="tp-note"><x-icon name="restart" class="text-[#1b6b3a] mr-1" />{{ $offer->cancellationLabel() }}.</p>@endif
+                        @if($offer->cancellationLabel())<p class="tp-note"><x-icon name="restart" class="text-[#00874F] mr-1" />{{ $offer->cancellationLabel() }}.</p>@endif
                     </form>
                 @endif
                 </div>
@@ -332,7 +332,7 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(map);
         const f = n => form.querySelector('[name=' + n + ']');
         let a = null, b = null, line = null;
-        const draw = () => { if (line) map.removeLayer(line); if (a && b) line = L.polyline([a.getLatLng(), b.getLatLng()], { color: '#b9500a', dashArray: '6 6' }).addTo(map); };
+        const draw = () => { if (line) map.removeLayer(line); if (a && b) line = L.polyline([a.getLatLng(), b.getLatLng()], { color: '#EB6E00', dashArray: '6 6' }).addTo(map); };
         const set = (m, p) => { f(p + '_lat').value = m.getLatLng().lat.toFixed(6); f(p + '_lng').value = m.getLatLng().lng.toFixed(6); draw(); refresh(); };
         if (f('pickup_lat').value) { a = L.marker([+f('pickup_lat').value, +f('pickup_lng').value], { draggable: true }).addTo(map).on('dragend', () => set(a, 'pickup')); }
         if (f('dropoff_lat').value) { b = L.marker([+f('dropoff_lat').value, +f('dropoff_lng').value], { draggable: true }).addTo(map).on('dragend', () => set(b, 'dropoff')); draw(); }

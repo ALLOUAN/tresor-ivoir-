@@ -20,7 +20,7 @@
 @endif
 
 <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
-    <div class="px-5 py-4 bg-gradient-to-r from-green-700 via-green-600 to-green-600">
+    <div class="px-5 py-4 bg-green-700">
         <h2 class="text-white font-semibold text-lg tracking-tight">Image de fond — section « Événements »</h2>
         <p class="text-green-100/80 text-xs mt-0.5">Cette image s'affiche automatiquement en fond de la section « Événements à venir » sur la page d'accueil.</p>
     </div>

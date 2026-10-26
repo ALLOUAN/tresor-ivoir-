@@ -11,6 +11,7 @@ use App\Services\CinetPayService;
 use App\Services\PaymentLifecycleService;
 use App\Services\SubscriptionPlanCatalog;
 use App\Services\SubscriptionService;
+use App\Support\PlanBundle;
 use App\Support\ProviderProfileBootstrap;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -45,9 +46,22 @@ class PublicSubscriptionController extends Controller
         // (au lieu de laisser les forfaits masqués tant que le visiteur ne clique pas).
         $selectedCategorySlug = (string) $request->query('categorie', $rootCategories->first()?->slug ?? '');
 
+        // Plusieurs secteurs (?secteurs=hotels,restaurants) : un forfait par secteur, total calculé sur la page.
+        $validSlugs = $rootCategories->pluck('slug')->all();
+        $selectedSlugs = array_values(array_intersect(
+            array_unique(array_filter(explode(',', (string) $request->query('secteurs', $selectedCategorySlug)))),
+            $validSlugs
+        ));
+
+        // Prestataire connecté : ses secteurs actuels sont signalés (« Votre secteur »).
+        $user = Auth::user();
+        $ownedSectors = $user?->role === 'provider'
+            ? (\App\Models\Provider::forUser($user->id)?->sectorSlugs() ?? [])
+            : [];
+
         return view('public.plans', compact(
             'rootCategories', 'plansByCategory', 'showMonthly', 'showYearly',
-            'yearlySavingsLabel', 'selectedCategorySlug'
+            'yearlySavingsLabel', 'selectedCategorySlug', 'selectedSlugs', 'ownedSectors'
         ));
     }
 
@@ -59,10 +73,14 @@ class PublicSubscriptionController extends Controller
     {
         abort_unless($plan->is_active, 404);
 
+        // Secteurs supplémentaires achetés avec ce forfait (?avec=slug:id,…), un forfait par secteur.
+        $avec = PlanBundle::encode(PlanBundle::extras($plan, $request->query('categorie'), $request->query('avec')));
+
         if (! Auth::check()) {
             return redirect()
                 ->route('register', array_filter([
                     'plan' => $plan->id,
+                    'avec' => $avec ?: null,
                     'role' => 'provider',
                     'categorie' => $request->query('categorie'),
                 ]))
@@ -79,8 +97,9 @@ class PublicSubscriptionController extends Controller
 
         if (! $user->hasVerifiedEmail()) {
             session([
-                'url.intended' => route('subscriptions.checkout', $plan),
+                'url.intended' => route('subscriptions.checkout', array_filter(['plan' => $plan, 'categorie' => $request->query('categorie'), 'avec' => $avec ?: null])),
                 'post_email_verification_subscription_plan_id' => $plan->id,
+                'post_email_verification_subscription_extra_ids' => $avec,
             ]);
 
             return redirect()
@@ -98,8 +117,11 @@ class PublicSubscriptionController extends Controller
 
         $cinetPayConfigured = $cinetPay->isConfigured();
         $channels = $cinetPay->getAvailableChannels();
+        // Tous les secteurs de l'achat (forfait principal d'abord) : récapitulatif et montant total.
+        $bundleItems = PlanBundle::items($plan, $request->query('categorie'), $request->query('avec'));
+        $bundleSector = $bundleItems->first()['sector']?->slug;
 
-        return view('billing.checkout', compact('plan', 'provider', 'cinetPayConfigured', 'channels'));
+        return view('billing.checkout', compact('plan', 'provider', 'cinetPayConfigured', 'channels', 'bundleItems', 'bundleSector', 'avec'));
     }
 
     /**
@@ -126,7 +148,7 @@ class PublicSubscriptionController extends Controller
             abort(403);
         }
 
-        $categorySlug = $plan->providerCategory?->slug ?? $request->query('categorie');
+        $categorySlug = $plan->providerCategory?->slug ?? ($request->input('sector') ?: $request->query('categorie'));
         $provider = ProviderProfileBootstrap::ensure($user, $categorySlug);
         if (! $provider) {
             return redirect()
@@ -135,6 +157,8 @@ class PublicSubscriptionController extends Controller
         }
 
         $data = $request->validate([
+            'sector' => ['nullable', 'string', 'max:80'],
+            'avec' => ['nullable', 'string', 'max:400'],
             'billing_cycle' => ['required', 'in:monthly,yearly'],
             'method' => ['required', 'in:orange_money,mtn_momo,wave,moov_money,card,paypal'],
             'first_name' => ['required', 'string', 'max:100'],
@@ -149,9 +173,8 @@ class PublicSubscriptionController extends Controller
             'accept_cgu.accepted' => 'Vous devez accepter les conditions générales et la politique de confidentialité.',
         ]);
 
-        $amount = $data['billing_cycle'] === 'yearly'
-            ? (float) $plan->price_yearly
-            : (float) $plan->price_monthly;
+        $items = PlanBundle::items($plan, $data['sector'] ?? $request->query('categorie'), $data['avec'] ?? null);
+        $amount = PlanBundle::total($items, $data['billing_cycle']);
 
         $phone = isset($data['billing_phone']) ? trim((string) $data['billing_phone']) : null;
         if ($phone !== null && $phone !== '') {
@@ -189,15 +212,23 @@ class PublicSubscriptionController extends Controller
             $subscriptionService,
             $lifecycle,
             $request,
-            $phone
+            $phone,
+            $items
         ) {
-            $subscription = $subscriptionService->createSubscription(
-                $provider,
-                $plan,
-                $data['billing_cycle'],
-                $data['method'],
-                $txn
-            );
+            // Un abonnement par secteur ; le premier porte le paiement, les autres lui sont reliés.
+            $subscription = null;
+            foreach ($items as $item) {
+                $sub = $subscriptionService->createSubscription(
+                    $provider,
+                    $item['plan'],
+                    $data['billing_cycle'],
+                    $data['method'],
+                    $txn,
+                    $subscription,
+                    $item['sector']
+                );
+                $subscription ??= $sub;
+            }
 
             $payment = Payment::create([
                 'subscription_id' => $subscription->id,
@@ -215,6 +246,7 @@ class PublicSubscriptionController extends Controller
                     'billing_phone' => $phone,
                     'billing_address' => $data['billing_address'] ?? null,
                     'billing_city' => $data['billing_city'] ?? null,
+                    'bundle' => $items->map(fn ($i) => ['plan' => $i['plan']->code, 'sector' => $i['sector']?->slug])->values()->all(),
                 ],
             ]);
 

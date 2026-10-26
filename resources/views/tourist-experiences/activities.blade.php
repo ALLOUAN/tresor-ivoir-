@@ -8,14 +8,14 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
     </style>
     @include('partials.detail-theme')
     @include('partials.catalog-theme')
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="dx text-[#1c1915]">
+<body class="dx text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 

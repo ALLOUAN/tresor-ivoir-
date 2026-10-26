@@ -9,37 +9,37 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-serif { font-family: 'Montserrat', serif; }
         .search-form-shell {
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 1rem;
             padding: 0.5rem;
-            background: rgba(233, 229, 217, 0.72);
+            background: rgba(216,233,224, 0.72);
             backdrop-filter: blur(8px);
         }
         .search-input {
             transition: border-color .2s ease, box-shadow .2s ease;
         }
         .search-input:focus {
-            box-shadow: 0 0 0 3px rgba(242, 121, 15,0.14);
+            box-shadow: 0 0 0 3px rgba(235,110,0,0.14);
         }
         .result-card {
             transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
         }
         .result-card:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(0,0,0,0.22);
+            box-shadow: 0 10px 22px rgba(14,59,42,0.22);
         }
         html:not(.dark) .search-form-shell {
-            background:#e9e5d9;
-            border-color: rgba(0,0,0,0.08);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+            background:#D8E9E0;
+            border-color: rgba(14,59,42,0.08);
+            box-shadow: 0 10px 24px rgba(14,59,42,0.06);
         }
         html:not(.dark) .result-card {
-            border-color: rgba(0,0,0,0.08) !important;
-            background:#e9e5d9 !important;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border-color: rgba(14,59,42,0.08) !important;
+            background:#D8E9E0 !important;
+            box-shadow: 0 8px 20px rgba(14,59,42,0.05);
         }
         /* Image de fond configurable (back-office) de la page de recherche. */
         .search-bg {

@@ -10,20 +10,20 @@
         :root { color-scheme: light; }
         * { box-sizing: border-box; }
         body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px;
-               background: #f6f3ed; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1c1915; }
-        .card { width: 100%; max-width: 420px; background: #fff; border: 1px solid #e8e1d3; border-radius: 18px; padding: 32px 28px;
-                box-shadow: 0 20px 50px rgb(29 26 22 / .10); }
-        .icon { width: 52px; height: 52px; border-radius: 14px; background: #31621c; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+               background: #F3F8F5; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #0E3B2A; }
+        .card { width: 100%; max-width: 420px; background: #fff; border: 1px solid #D8E9E0; border-radius: 18px; padding: 32px 28px;
+                box-shadow: 0 20px 50px rgb(14 59 42 / .10); }
+        .icon { width: 52px; height: 52px; border-radius: 14px; background: #00874F; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         h1 { font-size: 22px; margin: 18px 0 6px; }
-        p { margin: 0; color: #6b6255; font-size: 14px; line-height: 1.55; }
+        p { margin: 0; color: #557466; font-size: 14px; line-height: 1.55; }
         .code { width: 100%; margin-top: 22px; padding: 14px; font-size: 28px; letter-spacing: 10px; text-align: center; font-weight: 700;
-                border: 1px solid #d9d0bf; border-radius: 12px; outline: none; }
-        .code:focus { border-color: #31621c; box-shadow: 0 0 0 3px rgb(49 98 28 / .15); }
-        .btn { width: 100%; margin-top: 14px; padding: 14px; border: 0; border-radius: 12px; background: #ef7c2b; color: #fff; font-weight: 700; font-size: 15px; cursor: pointer; }
-        .btn:hover { background: #d96a1c; }
-        .link { background: none; border: 0; color: #31621c; font-weight: 600; cursor: pointer; font-size: 13px; padding: 0; }
+                border: 1px solid #D8E9E0; border-radius: 12px; outline: none; }
+        .code:focus { border-color: #00874F; box-shadow: 0 0 0 3px rgb(0 135 79 / .15); }
+        .btn { width: 100%; margin-top: 14px; padding: 14px; border: 0; border-radius: 12px; background: #EB6E00; color: #fff; font-weight: 700; font-size: 15px; cursor: pointer; }
+        .btn:hover { background: #EB6E00; }
+        .link { background: none; border: 0; color: #00874F; font-weight: 600; cursor: pointer; font-size: 13px; padding: 0; }
         .error { margin-top: 14px; padding: 10px 12px; border-radius: 10px; background: #fdecec; color: #a12b2b; font-size: 13px; }
-        .ok { margin-top: 14px; padding: 10px 12px; border-radius: 10px; background: #eaf3e4; color: #31621c; font-size: 13px; }
+        .ok { margin-top: 14px; padding: 10px 12px; border-radius: 10px; background: #F3F8F5; color: #00874F; font-size: 13px; }
         .row { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; gap: 12px; flex-wrap: wrap; }
     </style>
 </head>

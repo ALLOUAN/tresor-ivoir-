@@ -391,6 +391,13 @@ Route::post('/mediatheque/videos/{video}/vue', [\App\Http\Controllers\VideoContr
 Route::post('/mediatheque/videos/{video}/jaime', [\App\Http\Controllers\VideoController::class, 'like'])->middleware('throttle:30,1')->name('videos.like');
 Route::post('/mediatheque/videos/{video}/partage', [\App\Http\Controllers\VideoController::class, 'share'])->middleware('throttle:30,1')->name('videos.share');
 Route::post('/mediatheque/videos/{video}/clic', [\App\Http\Controllers\VideoController::class, 'click'])->middleware('throttle:60,1')->name('videos.click');
+// « Cinéma d'Ivoire » (Médiathèque) — films documentaires et de fiction.
+Route::get('/cinema-d-ivoire', [\App\Http\Controllers\FilmController::class, 'index'])->name('films.index');
+Route::get('/cinema-d-ivoire/proposer', [\App\Http\Controllers\FilmController::class, 'create'])->name('films.submit');
+Route::post('/cinema-d-ivoire/proposer', [\App\Http\Controllers\FilmController::class, 'store'])->middleware('throttle:5,10')->name('films.submit.store');
+Route::get('/cinema-d-ivoire/{kindSlug}', [\App\Http\Controllers\FilmController::class, 'index'])->whereIn('kindSlug', ['documentaires', 'fictions'])->name('films.kind');
+Route::get('/cinema-d-ivoire/film/{film}', [\App\Http\Controllers\FilmController::class, 'show'])->name('films.show');
+Route::get('/cinema-d-ivoire/film/{film}/regarder', [\App\Http\Controllers\FilmController::class, 'watch'])->middleware('throttle:60,1')->name('films.watch');
 // « Les Astuces de Mian » — bandes dessinées (planches en images).
 Route::get('/astuces-de-mian', [\App\Http\Controllers\ComicController::class, 'index'])->name('comics.index');
 Route::get('/astuces-de-mian/{comic}', [\App\Http\Controllers\ComicController::class, 'show'])->name('comics.show');
@@ -617,7 +624,11 @@ Route::get('/ia/recherche', [SmartSearchController::class, 'json'])->middleware(
 Route::post('/ia/assistant', [ChatAssistantController::class, 'ask'])->middleware('throttle:20,1')->name('ai.chat.ask');
 Route::post('/ia/assistant/avis', [ChatAssistantController::class, 'feedback'])->middleware('throttle:30,1')->name('ai.chat.feedback');
 Route::middleware(['auth', 'role:admin,editor,provider'])->group(function () {
-    Route::post('/ia/redaction', [WritingAssistantController::class, 'run'])->middleware('throttle:15,1')->name('ai.writing.run');
+    // « Mon compte » du back-office (menu utilisateur de la barre du haut).
+    Route::get('/espace/mon-compte', [\App\Http\Controllers\AccountController::class, 'edit'])->name('account.edit');
+    Route::put('/espace/mon-compte', [\App\Http\Controllers\AccountController::class, 'updateProfile'])->middleware('throttle:10,1')->name('account.profile.update');
+    Route::put('/espace/mon-compte/mot-de-passe', [\App\Http\Controllers\AccountController::class, 'updatePassword'])->middleware('throttle:6,1')->name('account.password.update');
+    Route::post('/ia/redaction',[WritingAssistantController::class, 'run'])->middleware('throttle:15,1')->name('ai.writing.run');
     Route::post('/ia/redaction/{log}/appliquee', [WritingAssistantController::class, 'applied'])->whereNumber('log')->name('ai.writing.applied');
 });
 Route::get('/mon-sejour', [TripPlannerController::class, 'create'])->name('trip.create');
@@ -844,8 +855,17 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/audience', [AdminDashboardController::class, 'audience'])->name('dashboard.audience');
+        // « Cinéma d'Ivoire » — films
+        Route::get('/cinema', [\App\Http\Controllers\Admin\FilmManagementController::class, 'index'])->name('films.index');
+        Route::get('/cinema/creer', [\App\Http\Controllers\Admin\FilmManagementController::class, 'create'])->name('films.create');
+        Route::post('/cinema', [\App\Http\Controllers\Admin\FilmManagementController::class, 'store'])->name('films.store');
+        Route::get('/cinema/{film:id}/modifier', [\App\Http\Controllers\Admin\FilmManagementController::class, 'edit'])->name('films.edit');
+        Route::put('/cinema/{film:id}', [\App\Http\Controllers\Admin\FilmManagementController::class, 'update'])->name('films.update');
+        Route::patch('/cinema/{film:id}/statut', [\App\Http\Controllers\Admin\FilmManagementController::class, 'status'])->name('films.status');
+        Route::delete('/cinema/{film:id}', [\App\Http\Controllers\Admin\FilmManagementController::class, 'destroy'])->name('films.destroy');
         // « Les Astuces de Mian » — bandes dessinées
-        Route::get('/astuces-de-mian', [\App\Http\Controllers\Admin\ComicManagementController::class, 'index'])->name('comics.index');
+        Route::get('/astuces-de-mian',[\App\Http\Controllers\Admin\ComicManagementController::class, 'index'])->name('comics.index');
         Route::get('/astuces-de-mian/creer', [\App\Http\Controllers\Admin\ComicManagementController::class, 'create'])->name('comics.create');
         Route::post('/astuces-de-mian', [\App\Http\Controllers\Admin\ComicManagementController::class, 'store'])->name('comics.store');
         Route::get('/astuces-de-mian/{comic}/modifier', [\App\Http\Controllers\Admin\ComicManagementController::class, 'edit'])->name('comics.edit');
@@ -1317,8 +1337,17 @@ Route::middleware(['auth', 'role:admin', LogAdminActions::class])
         Route::patch('/prestations/items/{item}/toggle', [PrestationManagementController::class, 'toggleItem'])->name('prestations.items.toggle');
         Route::delete('/prestations/items/{item}', [PrestationManagementController::class, 'destroyItem'])->name('prestations.items.destroy');
 
+        // ── Bannières publicitaires (page d'accueil) ───────────────────────
+        Route::get('/bannieres-accueil', [\App\Http\Controllers\Admin\HomePromoBannerController::class, 'index'])->name('home-banners.index');
+        Route::get('/bannieres-accueil/creer', [\App\Http\Controllers\Admin\HomePromoBannerController::class, 'create'])->name('home-banners.create');
+        Route::post('/bannieres-accueil', [\App\Http\Controllers\Admin\HomePromoBannerController::class, 'store'])->name('home-banners.store');
+        Route::get('/bannieres-accueil/{banner}/modifier', [\App\Http\Controllers\Admin\HomePromoBannerController::class, 'edit'])->name('home-banners.edit');
+        Route::put('/bannieres-accueil/{banner}', [\App\Http\Controllers\Admin\HomePromoBannerController::class, 'update'])->name('home-banners.update');
+        Route::patch('/bannieres-accueil/{banner}/toggle', [\App\Http\Controllers\Admin\HomePromoBannerController::class, 'toggle'])->name('home-banners.toggle');
+        Route::delete('/bannieres-accueil/{banner}', [\App\Http\Controllers\Admin\HomePromoBannerController::class, 'destroy'])->name('home-banners.destroy');
+
         // ── Bulles interactives (page d'accueil) ───────────────────────────
-        Route::get('/bulles-accueil', [HomepageBubbleManagementController::class, 'index'])->name('homepage-bubbles.index');
+        Route::get('/bulles-accueil',[HomepageBubbleManagementController::class, 'index'])->name('homepage-bubbles.index');
         Route::post('/bulles-accueil', [HomepageBubbleManagementController::class, 'store'])->name('homepage-bubbles.store');
         Route::put('/bulles-accueil/{bubble}', [HomepageBubbleManagementController::class, 'update'])->name('homepage-bubbles.update');
         Route::patch('/bulles-accueil/{bubble}/toggle', [HomepageBubbleManagementController::class, 'toggle'])->name('homepage-bubbles.toggle');

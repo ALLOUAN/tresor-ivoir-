@@ -13,41 +13,47 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
         @stack('styles')
     <style>
-        html:not(.dark) body                    { background-color:#e9e5d9!important; color:#1c1915!important; }
-        html:not(.dark) .text-white             { color:#1c1915!important; }
-        html:not(.dark) .text-slate-100         { color:#1c1915!important; }
-        html:not(.dark) .text-slate-200         { color:#2d2a23!important; }
-        html:not(.dark) .text-slate-300         { color:#44413a!important; }
-        html:not(.dark) .text-slate-400         { color:#544f47!important; }
-        html:not(.dark) .text-slate-500         { color:#665f52!important; }
-        html:not(.dark) .text-slate-600         { color:#5c574e!important; }
-        html:not(.dark) .bg-green-900           { background-color:#e9e5d9!important; }
-        html:not(.dark) .bg-slate-800           { background-color:#e9e5d9!important; }
-        html:not(.dark) .bg-slate-700           { background-color:#d6cfba!important; }
-        html:not(.dark) .border-slate-800       { border-color:#d6cfba!important; }
-        html:not(.dark) .border-slate-700       { border-color:#c2b89e!important; }
-        html:not(.dark) .divide-slate-800>*+*   { border-color:#d6cfba!important; }
-        html:not(.dark) .border-white\/10       { border-color:rgba(0,0,0,.1)!important; }
-        html:not(.dark) .border-white\/6        { border-color:rgba(0,0,0,.06)!important; }
-        html:not(.dark) .bg-white\/2            { background-color:rgba(0,0,0,.02)!important; }
-        html:not(.dark) .bg-white\/4            { background-color:rgba(0,0,0,.04)!important; }
+        html:not(.dark) body                    { background-color:#D8E9E0!important; color:#0E3B2A!important; }
+        html:not(.dark) .text-white             { color:#0E3B2A!important; }
+        html:not(.dark) .text-slate-100         { color:#0E3B2A!important; }
+        html:not(.dark) .text-slate-200         { color:#0E3B2A!important; }
+        html:not(.dark) .text-slate-300         { color:#24503D!important; }
+        html:not(.dark) .text-slate-400         { color:#24503D!important; }
+        html:not(.dark) .text-slate-500         { color:#557466!important; }
+        html:not(.dark) .text-slate-600         { color:#24503D!important; }
+        html:not(.dark) .bg-green-900           { background-color:#D8E9E0!important; }
+        html:not(.dark) .bg-slate-800           { background-color:#D8E9E0!important; }
+        html:not(.dark) .bg-slate-700           { background-color:#8AA99B!important; }
+        html:not(.dark) .border-slate-800       { border-color:#8AA99B!important; }
+        html:not(.dark) .border-slate-700       { border-color:#8AA99B!important; }
+        html:not(.dark) .divide-slate-800>*+*   { border-color:#8AA99B!important; }
+        html:not(.dark) .border-white\/10       { border-color:rgba(14,59,42,.1)!important; }
+        html:not(.dark) .border-white\/6        { border-color:rgba(14,59,42,.06)!important; }
+        html:not(.dark) .bg-white\/2            { background-color:rgba(14,59,42,.02)!important; }
+        html:not(.dark) .bg-white\/4            { background-color:rgba(14,59,42,.04)!important; }
         /* Page-title bar */
-        html:not(.dark) .page-title-bar         { border-bottom-color:rgba(0,0,0,.07)!important; background-color:rgba(0,0,0,.015)!important; }
+        html:not(.dark) .page-title-bar         { border-bottom-color:rgba(14,59,42,.07)!important; background-color:rgba(14,59,42,.015)!important; }
         /* Flash messages */
-        html:not(.dark) .bg-emerald-900\/30     { background-color:rgba(209,250,229,.6)!important; border-color:rgba(16,185,129,.3)!important; }
+        html:not(.dark) .bg-emerald-900\/30     { background-color:rgba(216,233,224,.6)!important; border-color:rgba(0,135,79,.3)!important; }
         html:not(.dark) .bg-rose-900\/30        { background-color:rgba(255,228,230,.6)!important; border-color:rgba(244,63,94,.3)!important; }
         /* Welcome banner on visitor dashboard */
-        html:not(.dark) .from-orange-900\/30     { --tw-gradient-from:rgba(254,243,199,.7)!important; }
+        html:not(.dark) .from-orange-900\/30     { --tw-gradient-from:rgba(253,239,227,.7)!important; }
         html:not(.dark) .to-green-900           { --tw-gradient-to:#ffffff!important; }
         /* Hover states on cards */
-        html:not(.dark) .hover\:border-orange-600\/50:hover { border-color:rgba(224, 110, 14,.35)!important; }
+        html:not(.dark) .hover\:border-orange-600\/50:hover { border-color:rgba(235,110,0,.35)!important; }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-a2d53ae5.css') }}?v={{ @filemtime(public_path('css/tw-a2d53ae5.css')) }}">
     @include('partials.visitor-skin')
 </head>
-<body class="min-h-screen flex flex-col font-sans" style="background:#f6f3ed">
+<body class="min-h-screen flex flex-col font-sans" style="background:#F3F8F5">
 
-    @include('partials.public-top-nav')
+    {{-- Espace client : barre dédiée, sans la barre orange, le menu du site ni le Flash info. --}}
+    @include('partials.visitor-bar')
+
+    {{-- Barre latérale (ordinateur) / panneau coulissant (mobile) + colonne de contenu --}}
+    <div class="vs-shell">
+    @include('partials.visitor-sidebar')
+    <div class="vs-main">
 
     {{-- En-tête de page : fil d'Ariane + titre (motifs discrets) --}}
     @hasSection('page-title')
@@ -81,9 +87,16 @@
         @yield('content')
     </main>
 
+    </div>{{-- /.vs-main --}}
+    </div>{{-- /.vs-shell --}}
+
     @include('partials.homepage-footer')
 
     @include('partials.image-protection')
+    {{-- Repris de partials.public-top-nav (qui n'est plus inclus ici) : assistant, thème clair, charte commune. --}}
+    @include('partials.ai-chat-widget')
+    @include('partials.theme-light-bridge')
+    @include('partials.ui-kit')
     @stack('scripts')
 </body>
 </html>

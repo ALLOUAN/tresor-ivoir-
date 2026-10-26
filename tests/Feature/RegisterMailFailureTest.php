@@ -39,7 +39,7 @@ class RegisterMailFailureTest extends TestCase
             'first_name' => 'Awa', 'last_name' => 'Koné', 'email' => 'awa@exemple.ci',
             'password' => 'MotDePasse123!', 'password_confirmation' => 'MotDePasse123!',
             'role' => 'visitor', 'terms' => '1',
-        ])->assertRedirect(route('home'))->assertSessionHas('mail_warning');
+        ])->assertRedirect(route('verification.notice'))->assertSessionHas('mail_warning');
 
         $user = User::firstWhere('email', 'awa@exemple.ci');
         $this->assertNotNull($user);

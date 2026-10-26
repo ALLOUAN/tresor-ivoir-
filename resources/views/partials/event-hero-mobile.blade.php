@@ -7,14 +7,14 @@
     @media (max-width: 640px) {
         /* L'image s'affiche en entier en haut (4:3), sans texte par-dessus ; le titre, les infos et les
            boutons passent dessous sur un bandeau sombre : l'affiche reste visible et le texte lisible. */
-        .hero-cinematic { height: auto !important; min-height: 0 !important; display: block; background: #14130f; }
+        .hero-cinematic { height: auto !important; min-height: 0 !important; display: block; background: #0E3B2A; }
         .hero-cinematic > img, .hero-cinematic > .hero-fallback {
             position: relative !important; inset: auto !important; display: block;
             width: 100% !important; height: auto !important; aspect-ratio: 4 / 3; object-fit: cover; transform: none !important;
         }
         .hero-cinematic:hover > img { transform: none !important; }
         .hero-cinematic .hero-scrim { display: none; }
-        .hero-cinematic .back-pill { top: 14px; left: 14px; background: rgba(20,19,15,.62) !important; }
+        .hero-cinematic .back-pill { top: 14px; left: 14px; background: rgba(14,59,42,.62) !important; }
         .hero-cinematic .hero-content { position: relative !important; inset: auto !important; padding-top: 1.4rem; min-height: 0; }
         .hero-cinematic .hero-inner { padding-bottom: 5.2rem; }
         .hero-cinematic h1 { font-size: clamp(2rem, 9.2vw, 2.7rem); line-height: 1.06; overflow-wrap: anywhere; }

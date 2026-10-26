@@ -65,7 +65,7 @@
     </div>
     <div>
         <label for="{{ $prefix }}color_hex" class="block text-xs text-slate-400 mb-1">Couleur</label>
-        <input type="color" name="color_hex" id="{{ $prefix }}color_hex" value="#f2790f"
+        <input type="color" name="color_hex" id="{{ $prefix }}color_hex" value="#EB6E00"
                class="w-full h-[38px] bg-slate-800 border border-slate-700 rounded-lg px-1 py-1 outline-none cursor-pointer">
     </div>
     <div>

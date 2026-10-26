@@ -28,9 +28,7 @@ class TransportOpsController extends Controller
     {
         $provider = Provider::forUserQuery(Auth::id())->first();
         abort_unless($provider, 404, 'Aucune fiche prestataire trouvée.');
-        $category = $provider->category;
-        $root = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-        abort_unless($root === 'transports', 403, 'Réservé aux prestataires Transports & Mobilité.');
+        abort_unless($provider->hasSector('transports'), 403, 'Réservé aux prestataires Transports & Mobilité.');
 
         return $provider;
     }

@@ -31,31 +31,31 @@
 </style>
 
 @if($errors->any())
-    <div class="mb-4 rounded-xl border border-rose-500/40 bg-linear-to-r from-rose-500/15 to-rose-500/5 px-4 py-3 text-sm text-rose-200 shadow-lg shadow-rose-900/20">
+    <div class="mb-4 rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-3 text-sm text-rose-200 shadow-lg shadow-rose-900/20">
         {{ $errors->first() }}
     </div>
 @endif
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-    <div class="premium-shimmer-card bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-slate-700/70 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-500/70 hover:shadow-2xl hover:shadow-green-900/40">
+    <div class="premium-shimmer-card bg-green-900 border border-slate-700/70 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-500/70 hover:shadow-2xl hover:shadow-green-900/40">
         <p class="text-slate-500 text-xs uppercase tracking-wider">Tous</p>
         <p class="text-white text-2xl font-bold mt-1">{{ number_format($counts['all']) }}</p>
     </div>
-    <div class="premium-shimmer-card bg-linear-to-br from-orange-900/25 via-green-900 to-green-950 border border-orange-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-400/40 hover:shadow-2xl hover:shadow-orange-900/30">
+    <div class="premium-shimmer-card bg-orange-900/25 border border-orange-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-400/40 hover:shadow-2xl hover:shadow-orange-900/30">
         <p class="text-orange-200/70 text-xs uppercase tracking-wider">En attente</p>
         <p class="text-orange-300 text-2xl font-bold mt-1">{{ number_format($counts['pending']) }}</p>
     </div>
-    <div class="premium-shimmer-card bg-linear-to-br from-emerald-900/20 via-green-900 to-green-950 border border-emerald-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:shadow-2xl hover:shadow-emerald-900/30">
+    <div class="premium-shimmer-card bg-emerald-900/20 border border-emerald-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:shadow-2xl hover:shadow-emerald-900/30">
         <p class="text-emerald-200/70 text-xs uppercase tracking-wider">Approuvés</p>
         <p class="text-emerald-300 text-2xl font-bold mt-1">{{ number_format($counts['approved']) }}</p>
     </div>
-    <div class="premium-shimmer-card bg-linear-to-br from-rose-900/20 via-green-900 to-green-950 border border-rose-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-rose-400/40 hover:shadow-2xl hover:shadow-rose-900/30">
+    <div class="premium-shimmer-card bg-rose-900/20 border border-rose-500/25 rounded-2xl p-4 shadow-xl shadow-green-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-rose-400/40 hover:shadow-2xl hover:shadow-rose-900/30">
         <p class="text-rose-200/70 text-xs uppercase tracking-wider">Rejetés</p>
         <p class="text-rose-300 text-2xl font-bold mt-1">{{ number_format($counts['rejected']) }}</p>
     </div>
 </div>
 
-<div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-slate-700/70 rounded-2xl overflow-hidden shadow-xl shadow-green-950/25 divide-y divide-slate-800/80">
+<div class="bg-green-900 border border-slate-700/70 rounded-2xl overflow-hidden shadow-xl shadow-green-950/25 divide-y divide-slate-800/80">
     @forelse($reviews as $review)
         <div class="px-5 py-5 transition-all duration-300 hover:bg-slate-800/20">
             <div class="flex items-start justify-between gap-3">
@@ -125,7 +125,7 @@
                                   placeholder="Répondre à cet avis..."
                                   class="w-full max-w-2xl bg-slate-800/90 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/35 focus:border-orange-500/40">{{ old('reply_text') }}</textarea>
                         <div class="flex flex-wrap items-center gap-2">
-                            <button class="inline-flex items-center gap-1.5 bg-linear-to-r from-orange-500 to-orange-500 hover:from-orange-400 hover:to-orange-400 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg shadow-orange-900/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-900/40">
+                            <button class="inline-flex items-center gap-1.5 bg-orange-500 hover:bg-orange-400 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg shadow-orange-900/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-orange-900/40">
                                 <i class="fas fa-paper-plane"></i>
                                 Répondre
                             </button>

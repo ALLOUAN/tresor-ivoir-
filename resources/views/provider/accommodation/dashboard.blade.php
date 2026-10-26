@@ -20,19 +20,19 @@
 @endif
 
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
-    <div class="bg-gradient-to-br from-emerald-900/40 to-green-900 border border-emerald-500/30 rounded-xl p-4">
+    <div class="bg-emerald-900/40 border border-emerald-500/30 rounded-xl p-4">
         <p class="text-emerald-300/80 text-xs font-medium">Types de chambres</p>
         <p class="text-emerald-200 text-2xl font-bold mt-1">{{ number_format($roomCount) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-orange-900/40 to-green-900 border border-orange-500/30 rounded-xl p-4">
+    <div class="bg-orange-900/40 border border-orange-500/30 rounded-xl p-4">
         <p class="text-orange-300/80 text-xs font-medium">Photos en galerie</p>
         <p class="text-orange-200 text-2xl font-bold mt-1">{{ number_format($photoCount) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-blue-900/40 to-green-900 border border-blue-500/30 rounded-xl p-4">
+    <div class="bg-blue-900/40 border border-blue-500/30 rounded-xl p-4">
         <p class="text-blue-300/80 text-xs font-medium">Publication</p>
         <p class="text-blue-200 text-2xl font-bold mt-1">{{ ($accommodation?->is_active ?? false) ? 'Actif' : 'Inactif' }}</p>
     </div>
-    <div class="bg-gradient-to-br from-green-900/40 to-green-900 border border-green-500/30 rounded-xl p-4">
+    <div class="bg-green-900/40 border border-green-500/30 rounded-xl p-4">
         <p class="text-green-300/80 text-xs font-medium">Liens de réservation</p>
         <p class="text-white text-2xl font-bold mt-1">{{ number_format(count($accommodation?->booking_links ?? [])) }}</p>
     </div>

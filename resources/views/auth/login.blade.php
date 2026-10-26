@@ -13,21 +13,21 @@
     <style>
         /* Image de fond configurable (back-office) de la page de connexion. */
         .login-bg {
-            background-image: linear-gradient(rgba(6, 25, 17, 0.8), rgba(6, 25, 17, 0.8)), var(--login-bg-image, none);
+            background-image: linear-gradient(rgba(0,107,63, 0.8), rgba(0,107,63, 0.8)), var(--login-bg-image, none);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }
 
-        .login-shell { background: #ffffff; border: 1px solid #e8e1d3; box-shadow: 0 20px 50px rgb(29 26 22 / .10); }
+        .login-shell { background: #ffffff; border: 1px solid #D8E9E0; box-shadow: 0 20px 50px rgb(14 59 42 / .10); }
 
         /* Panneau de marque : vert forêt, texte clair (couleurs en CSS : le pont de thème
            clair réécrit les utilitaires text-white). */
-        .login-aside { background: #14532d; color: #ffffff; position: relative; }
+        .login-aside { background: #00874F; color: #ffffff; position: relative; }
         .login-aside::after { /* filet or discret en haut du panneau */
-            content: ''; position: absolute; left: 40px; top: 0; width: 56px; height: 3px; background: #b8892b;
+            content: ''; position: absolute; left: 40px; top: 0; width: 56px; height: 3px; background: #EB6E00;
         }
-        .login-aside__kicker { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #f0c987; }
+        .login-aside__kicker { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #F7C396; }
         .login-aside__title { margin-top: 14px; font-family: var(--font-serif); font-size: 40px; line-height: 1.1; font-weight: 700; color: #ffffff; }
         .login-aside__lead { margin-top: 14px; max-width: 26rem; font-size: 15px; line-height: 1.65; color: rgba(255,255,255,.82); }
         .login-aside__list { margin-top: 30px; display: grid; gap: 14px; }
@@ -35,41 +35,41 @@
         .login-aside__list i {
             flex-shrink: 0; width: 30px; height: 30px; border-radius: 8px;
             display: inline-flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,.1); color: #f0c987; font-size: 12px;
+            background: rgba(255,255,255,.1); color: #F7C396; font-size: 12px;
         }
         .login-aside__list span { padding-top: 5px; }
         .login-aside__note { margin-top: 32px; font-size: 12.5px; color: rgba(255,255,255,.7); }
-        .login-aside__note i { margin-right: 6px; color: #f0c987; }
+        .login-aside__note i { margin-right: 6px; color: #F7C396; }
 
         /* Formulaire */
-        .login-back { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #6b6458; }
-        .login-back:hover { color: #b9500a; }
-        .login-title { margin-top: 22px; font-family: var(--font-serif); font-size: 30px; font-weight: 700; color: #1d1a16; }
-        .login-subtitle { margin-top: 4px; margin-bottom: 26px; font-size: 14px; color: #6b6458; }
-        .login-label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #1d1a16; }
+        .login-back { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #557466; }
+        .login-back:hover { color: #EB6E00; }
+        .login-title { margin-top: 22px; font-family: var(--font-serif); font-size: 30px; font-weight: 700; color: #0E3B2A; }
+        .login-subtitle { margin-top: 4px; margin-bottom: 26px; font-size: 14px; color: #557466; }
+        .login-label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #0E3B2A; }
         html:not(.dark) .login-input {
             width: 100%; height: 46px;
             padding: 0 14px 0 42px;
             background: #ffffff !important;
-            border: 1px solid #d8cdb8 !important;
+            border: 1px solid #8AA99B !important;
             border-radius: 10px;
-            font-size: 15px; color: #1d1a16 !important;
+            font-size: 15px; color: #0E3B2A !important;
             transition: border-color .15s ease, box-shadow .15s ease;
         }
-        html:not(.dark) .login-input:hover { border-color: #c4b79c !important; }
-        html:not(.dark) .login-input:focus { outline: none; border-color: #b9500a !important; box-shadow: 0 0 0 3px rgb(185 80 10 / .2) !important; }
+        html:not(.dark) .login-input:hover { border-color: #EB6E00 !important; }
+        html:not(.dark) .login-input:focus { outline: none; border-color: #EB6E00 !important; box-shadow: 0 0 0 3px rgb(235 110 0 / .2) !important; }
         html:not(.dark) .login-input.is-invalid { border-color: #c0362c !important; }
-        .login-input-icon { position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; color: #8f8778; font-size: 13px; pointer-events: none; }
+        .login-input-icon { position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; color: #557466; font-size: 13px; pointer-events: none; }
         .login-eye {
             position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
             width: 36px; height: 36px; border-radius: 8px;
             display: inline-flex; align-items: center; justify-content: center;
-            color: #6b6458; font-size: 14px;
+            color: #557466; font-size: 14px;
         }
-        .login-eye:hover { background: #f3eee4; color: #1d1a16; }
-        .login-check { width: 17px; height: 17px; accent-color: #b9500a; }
-        .login-link { color: #b9500a; }
-        .login-link:hover { color: #9a4308; text-decoration: underline; text-underline-offset: 3px; }
+        .login-eye:hover { background: #F3F8F5; color: #0E3B2A; }
+        .login-check { width: 17px; height: 17px; accent-color: #EB6E00; }
+        .login-link { color: #EB6E00; }
+        .login-link:hover { color: #B85600; text-decoration: underline; text-underline-offset: 3px; }
         .login-submit {
             width: 100%; height: 48px; border-radius: 10px;
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -77,15 +77,15 @@
         }
         .login-alert { margin-bottom: 18px; padding: 12px 14px; border-radius: 10px; border: 1px solid; border-left-width: 4px; display: flex; gap: 10px; font-size: 14px; }
         .login-alert--error { background: #fdeceb; border-color: #f5c2bd; border-left-color: #c0362c; color: #8a241c; }
-        .login-alert--success { background: #eef6f0; border-color: #d9ecdf; border-left-color: #1b6b3a; color: #14532d; }
+        .login-alert--success { background: #F3F8F5; border-color: #D8E9E0; border-left-color: #00874F; color: #00874F; }
         .login-signup {
-            margin-top: 28px; padding-top: 22px; border-top: 1px solid #e8e1d3;
+            margin-top: 28px; padding-top: 22px; border-top: 1px solid #D8E9E0;
             display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px;
-            font-size: 14px; color: #6b6458;
+            font-size: 14px; color: #557466;
         }
 
         /* Avec l'image de fond d'admin (voile sombre), le cadre ressort sur la photo. */
-        .login-bg .login-shell { box-shadow: 0 24px 60px rgb(0 0 0 / .35); }
+        .login-bg .login-shell { box-shadow: 0 24px 60px rgb(14 59 42 / .35); }
 
         /* Motifs ivoiriens : trame autour de la carte (fond crème), filigrane écru dans le panneau vert */
         .login-stage > .ivm .ivm-g { opacity: .24 !important; }
@@ -93,8 +93,8 @@
         .login-aside { overflow: hidden; }
         .login-aside > :not(.ivm) { position: relative; z-index: 1; }
         .login-aside .ivm-g { opacity: .05 !important; }
-        .login-aside .ivm-g > * { stroke: #f6c38f !important; }
-        .login-aside .ivm-g > circle[fill] { fill: #f6c38f !important; }
+        .login-aside .ivm-g > * { stroke: #F7C396 !important; }
+        .login-aside .ivm-g > circle[fill] { fill: #F7C396 !important; }
         @media (max-width: 1023px) {
             .login-shell { max-width: 30rem; }
         }
@@ -213,7 +213,7 @@
                 {{-- Remember me --}}
                 <label for="remember" class="inline-flex items-center gap-2.5 cursor-pointer select-none">
                     <input id="remember" name="remember" type="checkbox" class="login-check">
-                    <span class="text-sm" style="color:#4a443a">{{ __('Se souvenir de moi') }}</span>
+                    <span class="text-sm" style="color:#24503D">{{ __('Se souvenir de moi') }}</span>
                 </label>
 
                 {{-- Submit --}}

@@ -158,7 +158,7 @@
 
 {{-- Modal Créer / Modifier Ville --}}
 <div id="cityModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-green-950/70 backdrop-blur-sm" onclick="closeCityModal()"></div>
+    <div class="absolute inset-0 bg-green-950/40 backdrop-blur-sm" onclick="closeCityModal()"></div>
     <div class="relative bg-green-900 border border-slate-700 rounded-2xl p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
         <h3 id="cityModalTitle" class="text-white font-semibold mb-5">Nouvelle ville</h3>
         <form id="cityForm" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -240,7 +240,7 @@
                 {{-- Aperçu bannière --}}
                 <div id="city_banner_preview" class="hidden mt-2 w-full h-36 rounded-xl overflow-hidden border border-slate-700 relative bg-slate-800">
                     <img id="city_banner_img" src="" alt="Aperçu bannière" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-linear-to-t from-green-950/70 to-transparent flex items-end p-3">
+                    <div class="absolute inset-0 bg-green-950/40 flex items-end p-3">
                         <span id="city_banner_name_preview" class="text-white font-serif text-lg font-bold drop-shadow"></span>
                     </div>
                     <button type="button" onclick="clearCityBanner()"
@@ -253,6 +253,50 @@
                     <i class="fas fa-image"></i> Aucune image sélectionnée
                 </div>
             </div>
+
+            {{-- ── BANNIÈRES SUPPLÉMENTAIRES (diaporama du haut de la page ville) ── --}}
+            <div class="md:col-span-2 cb-wrap">
+                <div class="flex items-center justify-between mb-2 gap-3">
+                    <label class="text-xs text-slate-400">
+                        <i class="fas fa-images text-orange-400/70 mr-1"></i>
+                        Bannières supplémentaires <span class="text-slate-600">(diaporama après la bannière principale — {{ \App\Models\TouristCity::MAX_BANNERS }} max.)</span>
+                    </label>
+                    <span class="cb-count" id="cb_count">0 / {{ \App\Models\TouristCity::MAX_BANNERS }}</span>
+                </div>
+
+                {{-- Bannières déjà enregistrées (retirer = ne plus envoyer dans banners_keep[]) --}}
+                <div class="cb-grid" id="cb_existing"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                    <label class="cb-drop">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                        <span><b>Ajouter des images</b><small>Plusieurs fichiers à la fois — JPG, PNG, WebP, 5 Mo max chacun</small></span>
+                        <input type="file" name="banner_files[]" id="cb_files" multiple accept="image/jpeg,image/png,image/webp,image/jpg" class="hidden" onchange="cityBannersPreviewFiles(this)">
+                    </label>
+                    <div>
+                        <textarea name="banner_urls" id="cb_urls" rows="3" placeholder="Ou collez des URL d'images, une par ligne"
+                            class="w-full bg-slate-800 border border-slate-700 focus:border-orange-500/40 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none transition"></textarea>
+                    </div>
+                </div>
+                <div class="cb-grid mt-2" id="cb_new"></div>
+            </div>
+            <style>
+                .cb-count { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #F3F8F5; color: #B85600; }
+                .cb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+                .cb-grid:empty { display: none; }
+                .cb-item { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid #D8E9E0; background: #F3F8F5; }
+                .cb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+                .cb-item.is-new { outline: 2px dashed #EB6E00; outline-offset: -2px; }
+                .cb-item__n { position: absolute; left: 6px; top: 6px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: rgba(0,135,79,.85); color: #fff; font-size: 10.5px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+                .cb-item__rm { position: absolute; right: 6px; top: 6px; width: 24px; height: 24px; border: 0; border-radius: 999px; background: rgba(14,59,42,.7); color: #fff; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+                .cb-item__rm:hover { background: #b42318; }
+                .cb-drop { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 2px dashed #8AA99B; border-radius: 12px; cursor: pointer; transition: border-color .15s ease, background .15s ease; }
+                .cb-drop:hover { border-color: #EB6E00; background: #FFFFFF; }
+                .cb-drop i { font-size: 20px; color: #EB6E00; }
+                .cb-drop span { display: flex; flex-direction: column; line-height: 1.3; }
+                .cb-drop b { font-size: 13px; color: #0E3B2A; }
+                .cb-drop small { font-size: 11px; color: #557466; }
+            </style>
 
             {{-- ── MINIATURE ────────────────────────────────────────── --}}
             <div class="md:col-span-2">
@@ -509,6 +553,52 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ── Ouvrir / fermer modal ──────────────────────────────────────────────────
+// ── Bannières supplémentaires (diaporama) ─────────────────────────────────
+const CITY_MAX_BANNERS = {{ \App\Models\TouristCity::MAX_BANNERS }};
+function cityBannerTile(url, n, isNew, onRemove) {
+    const item = document.createElement('div');
+    item.className = 'cb-item' + (isNew ? ' is-new' : '');
+    const img = document.createElement('img'); img.src = url; img.alt = ''; img.loading = 'lazy';
+    const num = document.createElement('span'); num.className = 'cb-item__n'; num.textContent = n;
+    item.append(img, num);
+    if (onRemove) {
+        const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'cb-item__rm'; rm.title = 'Retirer cette bannière';
+        rm.innerHTML = '<i class="fas fa-xmark"></i>';
+        rm.addEventListener('click', onRemove);
+        item.appendChild(rm);
+    }
+    return item;
+}
+function cityBannersCount() {
+    const kept = document.querySelectorAll('#cb_existing input[name="banners_keep[]"]').length;
+    const files = (document.getElementById('cb_files').files || []).length;
+    document.getElementById('cb_count').textContent = (kept + files) + ' / ' + CITY_MAX_BANNERS;
+}
+function cityBannersRender(list) {
+    const box = document.getElementById('cb_existing');
+    box.replaceChildren();
+    list.forEach((url, i) => {
+        const tile = cityBannerTile(url, i + 2, false, () => { tile.remove(); cityBannersRenumber(); cityBannersCount(); });
+        const keep = document.createElement('input'); keep.type = 'hidden'; keep.name = 'banners_keep[]'; keep.value = url;
+        tile.appendChild(keep);
+        box.appendChild(tile);
+    });
+    document.getElementById('cb_files').value = '';
+    document.getElementById('cb_urls').value = '';
+    document.getElementById('cb_new').replaceChildren();
+    cityBannersCount();
+}
+function cityBannersRenumber() {
+    document.querySelectorAll('#cb_existing .cb-item__n').forEach((el, i) => { el.textContent = i + 2; });
+}
+function cityBannersPreviewFiles(input) {
+    const box = document.getElementById('cb_new');
+    box.replaceChildren();
+    const start = document.querySelectorAll('#cb_existing .cb-item').length + 2;
+    Array.from(input.files || []).forEach((f, i) => box.appendChild(cityBannerTile(URL.createObjectURL(f), start + i, true, null)));
+    cityBannersCount();
+}
+
 function openCityModal(city = null) {
     const form  = document.getElementById('cityForm');
     const title = document.getElementById('cityModalTitle');
@@ -551,6 +641,7 @@ function openCityModal(city = null) {
         // Charger les aperçus si des URLs existent
         if (city.cover_image) previewCityBanner(city.cover_image);
         if (city.thumbnail)   previewCityThumb(city.thumbnail);
+        cityBannersRender(Array.isArray(city.banners) ? city.banners : []);
 
     } else {
         title.textContent = 'Nouvelle ville';
@@ -560,6 +651,7 @@ function openCityModal(city = null) {
         document.getElementById('city_is_active').checked = true;
         document.getElementById('city_sort_order').value  = 0;
         document.getElementById('city_website_link').style.display = 'none';
+        cityBannersRender([]);
     }
 
     const modal = document.getElementById('cityModal');

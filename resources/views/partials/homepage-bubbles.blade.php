@@ -12,13 +12,13 @@
         align-items: center;
         justify-content: center;
         color: #fff !important;
-        box-shadow: 0 8px 24px rgba(0,0,0,.35), 0 0 0 4px rgba(255,255,255,.12);
+        box-shadow: 0 8px 24px rgba(14,59,42,.35), 0 0 0 4px rgba(255,255,255,.12);
         animation: hp-bubble-float 4.5s ease-in-out infinite;
         transition: transform .25s ease, box-shadow .25s ease;
     }
     .hp-bubble:hover, .hp-bubble:focus-visible {
         transform: translate(-50%, -50%) scale(1.12);
-        box-shadow: 0 12px 32px rgba(0,0,0,.4), 0 0 0 5px rgba(255,255,255,.2);
+        box-shadow: 0 12px 32px rgba(14,59,42,.4), 0 0 0 5px rgba(255,255,255,.2);
     }
     .hp-bubble::after {
         content: '';
@@ -60,10 +60,10 @@
     /* Lightbox */
     #hp-bubble-modal { position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center; padding: 1rem; }
     #hp-bubble-modal.is-open { display: flex; }
-    #hp-bubble-modal .hp-modal-backdrop { position: absolute; inset: 0; background: rgba(6, 12, 8, .82); backdrop-filter: blur(4px); }
+    #hp-bubble-modal .hp-modal-backdrop { position: absolute; inset: 0; background: rgba(0,107,63, .82); backdrop-filter: blur(4px); }
     #hp-bubble-modal .hp-modal-panel {
         position: relative; width: 100%; max-width: 640px; max-height: 90vh;
-        background: #100d0a; border-radius: 20px; overflow: hidden;
+        background: #0E3B2A; border-radius: 20px; overflow: hidden;
         border: 1px solid rgba(255,255,255,.08);
         display: flex; flex-direction: column;
         animation: hp-modal-in .25s ease-out;
@@ -72,7 +72,7 @@
     #hp-bubble-modal .hp-modal-close {
         position: absolute; top: 12px; right: 12px; z-index: 5;
         width: 36px; height: 36px; border-radius: 9999px;
-        background: rgba(0,0,0,.55); color: #fff !important; border: 1px solid rgba(255,255,255,.15);
+        background: rgba(14,59,42,.55); color: #fff !important; border: 1px solid rgba(255,255,255,.15);
         display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     #hp-bubble-modal .hp-modal-image-wrap { position: relative; width: 100%; aspect-ratio: 4/3; background: #000; }
@@ -80,7 +80,7 @@
     #hp-bubble-modal .hp-modal-nav {
         position: absolute; top: 50%; transform: translateY(-50%);
         width: 38px; height: 38px; border-radius: 9999px;
-        background: rgba(0,0,0,.5); color: #fff !important; border: 1px solid rgba(255,255,255,.15);
+        background: rgba(14,59,42,.5); color: #fff !important; border: 1px solid rgba(255,255,255,.15);
         display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     #hp-bubble-modal .hp-modal-nav.prev { left: 10px; }
@@ -89,11 +89,11 @@
     #hp-bubble-modal .hp-modal-dot { width: 7px; height: 7px; border-radius: 9999px; background: rgba(255,255,255,.4); cursor: pointer; }
     #hp-bubble-modal .hp-modal-dot.is-active { background: #fff; }
     #hp-bubble-modal .hp-modal-body { padding: 1.25rem 1.5rem 1.5rem; color: #fff !important; }
-    #hp-bubble-modal .hp-modal-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-weight: 700; color: #fff !important; margin-bottom: .5rem; }
+    #hp-bubble-modal .hp-modal-title { font-family: 'Montserrat', Georgia, serif; font-size: 1.4rem; font-weight: 700; color: #fff !important; margin-bottom: .5rem; }
     #hp-bubble-modal .hp-modal-desc { color: rgba(255,255,255,.75) !important; font-size: .92rem; line-height: 1.6; }
     #hp-bubble-modal .hp-modal-link {
         display: inline-flex; align-items: center; gap: .5rem; margin-top: 1rem;
-        padding: .55rem 1.1rem; border-radius: 9999px; background: #f2790f; color: #000 !important;
+        padding: .55rem 1.1rem; border-radius: 9999px; background: #EB6E00; color: #000 !important;
         font-size: .85rem; font-weight: 600; text-decoration: none;
     }
 </style>
@@ -105,7 +105,7 @@
             $imagesJson = $images->map(fn ($img) => $img->image_url)->values()->toJson();
             $bgStyle = $bubble->color_hex
                 ? "background:{$bubble->color_hex};"
-                : 'background: #f2790f;';
+                : 'background: #EB6E00;';
         @endphp
         <button type="button"
             class="hp-bubble hp-bubble-{{ $bubble->size }}"

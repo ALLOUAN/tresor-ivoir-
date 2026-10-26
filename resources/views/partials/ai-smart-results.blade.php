@@ -18,9 +18,9 @@
 @if($__smart && ($__smart['results'] || $__smart['did_you_mean']))
 @include('partials.ai-styles')
 <section class="mb-12" aria-label="{{ __('Résultats intelligents') }}">
-    <div class="flex flex-wrap items-center gap-3 mb-4" style="border-bottom:1px solid #e8e1d3;padding-bottom:12px">
-        <i class="fas fa-wand-magic-sparkles" style="color:#b8892b"></i>
-        <h2 class="font-serif text-lg font-bold" style="color:#1d1a16">{{ __('Résultats intelligents') }}</h2>
+    <div class="flex flex-wrap items-center gap-3 mb-4" style="border-bottom:1px solid #D8E9E0;padding-bottom:12px">
+        <i class="fas fa-wand-magic-sparkles" style="color:#EB6E00"></i>
+        <h2 class="font-serif text-lg font-bold" style="color:#0E3B2A">{{ __('Résultats intelligents') }}</h2>
         <span class="ai-muted text-sm">
             @php $__i = $__smart['interpreted']; @endphp
             @if($__i['city']) à {{ $__i['city']['name'] }}@endif

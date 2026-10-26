@@ -9,18 +9,18 @@
     @include('partials.theme-light-bridge')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
         .lx-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 6px; }
-        .lx-slot { padding: 10px 4px; border-radius: 12px; border: 1.5px solid #ece5d6; background: #fff; font-weight: 800; cursor: pointer; }
-        .lx-slot:disabled { background: #f1eee8; color: #a39c8e; border-style: dashed; text-decoration: line-through; cursor: not-allowed; }
-        .lx-slot.is-active { background: #b9500a; border-color: #b9500a; color: #fff; }
-        .lx-slot:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .lx-slot { padding: 10px 4px; border-radius: 12px; border: 1.5px solid #D8E9E0; background: #fff; font-weight: 800; cursor: pointer; }
+        .lx-slot:disabled { background: #F3F8F5; color: #8AA99B; border-style: dashed; text-decoration: line-through; cursor: not-allowed; }
+        .lx-slot.is-active { background: #EB6E00; border-color: #EB6E00; color: #fff; }
+        .lx-slot:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
     </style>
     @include('partials.detail-theme')
     @include('partials.booking-page-theme')
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="dx text-[#1c1915]">
+<body class="dx text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 @php
@@ -35,8 +35,8 @@
             <div class="hx-pills"><span class="hx-pill"><i class="fas {{ \App\Models\LeisurePackage::KIND_ICONS[$package->kind] ?? 'fa-star' }}" aria-hidden="true"></i>{{ $package->kindLabel() }}</span></div>
             <h1 class="hx-title">{{ $package->name }}</h1>
             <p class="hx-meta">
-                <span><i class="fas fa-users text-[#b9500a] mr-1" aria-hidden="true"></i>{{ __(':n participants inclus', ['n' => $package->included_participants]) }}@if($package->extra_participant_xof) · {{ __('+ :a par participant en plus', ['a' => $fmt($package->extra_participant_xof)]) }}@endif</span>
-                <span><i class="fas fa-clock text-[#b9500a] mr-1" aria-hidden="true"></i>{{ intdiv($package->duration_minutes, 60) }} h{{ $package->duration_minutes % 60 ? ' '.($package->duration_minutes % 60) : '' }}</span>
+                <span><i class="fas fa-users text-[#EB6E00] mr-1" aria-hidden="true"></i>{{ __(':n participants inclus', ['n' => $package->included_participants]) }}@if($package->extra_participant_xof) · {{ __('+ :a par participant en plus', ['a' => $fmt($package->extra_participant_xof)]) }}@endif</span>
+                <span><i class="fas fa-clock text-[#EB6E00] mr-1" aria-hidden="true"></i>{{ intdiv($package->duration_minutes, 60) }} h{{ $package->duration_minutes % 60 ? ' '.($package->duration_minutes % 60) : '' }}</span>
             </p>
         </div>
     </header>
@@ -44,16 +44,16 @@
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-start">
         <div class="lg:col-span-3 space-y-8 min-w-0">
             @if($package->description)<p class="hx-text">{{ $package->description }}</p>@endif
-            @if($incl)<div class="tp-box"><h3 class="text-[#1b6b3a]">{{ __('La formule comprend') }}</h3><ul class="tp-list">@foreach($incl as $l)<li><i class="fas fa-check text-[#1b6b3a]" aria-hidden="true"></i>{{ $l }}</li>@endforeach</ul></div>@endif
+            @if($incl)<div class="tp-box"><h3 class="text-[#00874F]">{{ __('La formule comprend') }}</h3><ul class="tp-list">@foreach($incl as $l)<li><i class="fas fa-check text-[#00874F]" aria-hidden="true"></i>{{ $l }}</li>@endforeach</ul></div>@endif
             <div class="tp-incl">
                 <div class="tp-box"><h3>{{ __('Tarifs') }}</h3><ul class="tp-list">
-                    <li><i class="fas fa-calendar text-[#b9500a]" aria-hidden="true"></i>{{ __('Du lundi au vendredi : :a', ['a' => $fmt($package->weekday_price_xof)]) }}</li>
-                    @if($package->weekend_price_xof)<li><i class="fas fa-calendar-week text-[#b9500a]" aria-hidden="true"></i>{{ __('Samedi et dimanche : :a', ['a' => $fmt($package->weekend_price_xof)]) }}</li>@endif
-                    <li><i class="fas fa-users text-[#b9500a]" aria-hidden="true"></i>{{ __('De :min à :max participants', ['min' => $package->min_participants, 'max' => $package->max_participants ?: '∞']) }}</li>
+                    <li><i class="fas fa-calendar text-[#EB6E00]" aria-hidden="true"></i>{{ __('Du lundi au vendredi : :a', ['a' => $fmt($package->weekday_price_xof)]) }}</li>
+                    @if($package->weekend_price_xof)<li><i class="fas fa-calendar-week text-[#EB6E00]" aria-hidden="true"></i>{{ __('Samedi et dimanche : :a', ['a' => $fmt($package->weekend_price_xof)]) }}</li>@endif
+                    <li><i class="fas fa-users text-[#EB6E00]" aria-hidden="true"></i>{{ __('De :min à :max participants', ['min' => $package->min_participants, 'max' => $package->max_participants ?: '∞']) }}</li>
                 </ul></div>
                 <div class="tp-box"><h3>{{ __('Paiement et annulation') }}</h3><ul class="tp-list">
-                    <li><i class="fas fa-wallet text-[#b9500a]" aria-hidden="true"></i>{{ $package->deposit_xof ? __('Acompte de :a en ligne pour bloquer la date, solde sur place', ['a' => $fmt($package->deposit_xof)]) : __('Paiement intégral en ligne') }}</li>
-                    <li><i class="fas fa-rotate-left text-[#b9500a]" aria-hidden="true"></i>{{ __('Annulation gratuite jusqu\'à :d jours avant (remboursement sur votre solde)', ['d' => $package->free_cancellation_days]) }}</li>
+                    <li><i class="fas fa-wallet text-[#EB6E00]" aria-hidden="true"></i>{{ $package->deposit_xof ? __('Acompte de :a en ligne pour bloquer la date, solde sur place', ['a' => $fmt($package->deposit_xof)]) : __('Paiement intégral en ligne') }}</li>
+                    <li><i class="fas fa-rotate-left text-[#EB6E00]" aria-hidden="true"></i>{{ __('Annulation gratuite jusqu\'à :d jours avant (remboursement sur votre solde)', ['d' => $package->free_cancellation_days]) }}</li>
                 </ul></div>
             </div>
         </div>

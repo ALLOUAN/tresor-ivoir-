@@ -61,7 +61,8 @@ class LeisureMarketFeaturesTest extends TestCase
         ]);
         $this->client = User::factory()->create(['role' => 'visitor']);
         Wallet::forUser($this->client)->update(['balance_available_xof' => 500000]);
-        $this->date = Carbon::now('Africa/Abidjan')->next(Carbon::TUESDAY)->toDateString();
+        // Mardi à au moins 2 jours : le test ne dépend plus du jour où il tourne (fenêtre d'annulation gratuite).
+        $this->date = Carbon::now('Africa/Abidjan')->addDays(2)->next(Carbon::TUESDAY)->toDateString();
     }
 
     private function book(array $o = [], ?User $as = null)

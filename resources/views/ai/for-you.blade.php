@@ -24,7 +24,7 @@
 @endphp
 
 <main class="pb-16">
-    <section class="py-12 sm:py-14 text-center" style="background:#faf8f3">
+    <section class="py-12 sm:py-14 text-center" style="background:#FFFFFF">
         <div class="ai-wrap">
             <div class="ti-hero-card inline-block rounded-2xl px-6 py-8 sm:px-12 sm:py-10">
                 <p class="ai-kicker mb-3">{{ __('Personnalisé') }}</p>
@@ -46,11 +46,11 @@
         {{-- Questionnaire de démarrage (3 questions) --}}
         <details class="ai-card" {{ $hasProfile ? '' : 'open' }}>
             <summary class="cursor-pointer select-none px-5 py-4 flex items-center justify-between gap-3 list-none">
-                <span class="font-bold" style="color:#1d1a16"><i class="fas fa-sliders mr-2" style="color:#b9500a"></i>
+                <span class="font-bold" style="color:#0E3B2A"><i class="fas fa-sliders mr-2" style="color:#EB6E00"></i>
                     {{ $hasProfile ? __('Mes préférences') : __('Dites-nous ce que vous aimez (3 questions)') }}</span>
                 <span class="ai-link text-sm">{{ $hasProfile ? __('Modifier') : __('Répondre') }}</span>
             </summary>
-            <form method="POST" action="{{ route('ai.profile.save') }}" class="px-5 pb-5 space-y-6" style="border-top:1px solid #f0e9da">
+            <form method="POST" action="{{ route('ai.profile.save') }}" class="px-5 pb-5 space-y-6" style="border-top:1px solid #D8E9E0">
                 @csrf
                 <div class="pt-5">
                     <span class="ai-label">{{ __('1. Qu\'aimez-vous voyager ?') }} <span class="ai-muted font-normal">{{ __('(plusieurs choix possibles)') }}</span></span>
@@ -129,7 +129,7 @@
         {{-- Transparence et données --}}
         <section class="ai-card p-5 sm:p-6 grid gap-6 md:grid-cols-[1fr_auto] items-start">
             <div>
-                <h2 class="font-bold mb-2" style="color:#1d1a16"><i class="fas fa-shield-halved mr-2" style="color:#1b6b3a"></i>{{ __('Comment ça marche, et vos données') }}</h2>
+                <h2 class="font-bold mb-2" style="color:#0E3B2A"><i class="fas fa-shield-halved mr-2" style="color:#00874F"></i>{{ __('Comment ça marche, et vos données') }}</h2>
                 <p class="ai-muted text-sm leading-relaxed">
                     {{ __('Chaque suggestion est classée selon sa proximité avec vos goûts, sa qualité (notes, mise en avant, nouveauté), votre budget et, quand c\'est possible, les choix de visiteurs semblables à vous. Nous gardons une place pour les adresses encore peu connues. Nous enregistrons uniquement les fiches que vous consultez et vos préférences, sans lien avec votre identité si vous n\'êtes pas connecté ; le signal « Ne pas suivre » de votre navigateur est respecté.') }}
                 </p>

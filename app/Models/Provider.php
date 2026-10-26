@@ -28,9 +28,51 @@ class Provider extends Model
     /** Prestataire de la catégorie Art & Créations (accepte les commandes sur mesure). */
     public function isArtist(): bool
     {
-        $cat = $this->category;
+        return $this->hasSector('art-creations');
+    }
 
-        return ($cat?->parent_id ? $cat->parent?->slug : $cat?->slug) === 'art-creations';
+    /** Secteurs supplémentaires (le secteur principal reste category_id). */
+    public function sectors()
+    {
+        return $this->belongsToMany(ProviderCategory::class, 'provider_sectors', 'provider_id', 'category_id')->withTimestamps();
+    }
+
+    /**
+     * Slugs des secteurs (catégories racines) exercés : secteur principal d'abord, puis les secteurs ajoutés.
+     *
+     * @return list<string>
+     */
+    public function sectorSlugs(): array
+    {
+        $root = fn (?ProviderCategory $c) => $c?->parent_id ? $c->parent?->slug : $c?->slug;
+        $slugs = [$root($this->category)];
+        foreach ($this->sectors as $sector) {
+            $slugs[] = $root($sector);
+        }
+
+        return array_values(array_unique(array_filter($slugs)));
+    }
+
+    /** Le prestataire exerce-t-il dans l'un de ces secteurs (slug de catégorie racine) ? */
+    public function hasSector(string|array $slugs): bool
+    {
+        return (bool) array_intersect((array) $slugs, $this->sectorSlugs());
+    }
+
+    /** Ajoute un secteur (catégorie racine active) au prestataire, sans doublon avec le secteur principal. */
+    public function addSector(string $slug): bool
+    {
+        if ($this->hasSector($slug)) {
+            return false;
+        }
+        $category = ProviderCategory::where('slug', $slug)->whereNull('parent_id')->where('is_active', true)->first();
+        if (! $category) {
+            return false;
+        }
+        $this->sectors()->syncWithoutDetaching([$category->id]);
+        $this->unsetRelation('sectors');
+
+        return true;
     }
 
     /** Réponses rapides par défaut, proposées tant que l'établissement n'a pas écrit les siennes. */

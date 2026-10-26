@@ -9,7 +9,7 @@
 @php
     $mapsKey = config('services.google_maps.browser_key');
     $height = $height ?? '260px';
-    $accent = $accent ?? '#c25e0a';
+    $accent = $accent ?? '#EB6E00';
     $frameClass = $frameClass ?? 'bento-card rounded-2xl overflow-hidden mb-3';
 @endphp
 
@@ -24,11 +24,11 @@
          data-lat="{{ $lat }}" data-lng="{{ $lng }}" data-name="{{ $name }}" data-accent="{{ $accent }}"
          data-route-url="{{ route('directions.route', [$type, $slug]) }}">
         <div class="relative">
-            <div data-route-canvas class="w-full bg-[#f3efe6]" style="height:{{ $height }};"></div>
+            <div data-route-canvas class="w-full bg-[#F3F8F5]" style="height:{{ $height }};"></div>
 
             {{-- Bandeau de navigation, visible pendant le suivi --}}
             <div data-track-panel hidden
-                 class="absolute top-2 left-2 right-2 rounded-xl bg-[#1f1b16]/90 text-white px-3 py-2 text-xs shadow-lg backdrop-blur-sm">
+                 class="absolute top-2 left-2 right-2 rounded-xl bg-[#0E3B2A]/90 text-white px-3 py-2 text-xs shadow-lg backdrop-blur-sm">
                 <div class="flex items-center gap-3">
                     <i class="fas fa-location-arrow" style="color: {{ $accent }};"></i>
                     <div class="min-w-0">
@@ -39,7 +39,7 @@
             </div>
 
             <button type="button" data-track-recenter hidden
-                    class="absolute bottom-3 right-3 inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white text-[#1f1b16] text-xs font-bold shadow-lg">
+                    class="absolute bottom-3 right-3 inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white text-[#0E3B2A] text-xs font-bold shadow-lg">
                 <i class="fas fa-crosshairs"></i> {{ __('Recentrer') }}
             </button>
         </div>
@@ -60,16 +60,16 @@
                     class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1a73e8] text-white text-xs font-bold transition hover:opacity-90">
                 <i class="fas fa-location-arrow"></i> <span data-track-toggle-label>{{ __('Suivre mon déplacement') }}</span>
             </button>
-            <p data-route-status class="w-full sm:w-auto sm:ml-auto text-xs text-[#5c5548]" aria-live="polite"></p>
+            <p data-route-status class="w-full sm:w-auto sm:ml-auto text-xs text-[#24503D]" aria-live="polite"></p>
         </div>
     </div>
 
     @once
     <style>
-        [data-route-map] [data-route-mode][aria-pressed="true"] { background: #1f1b16; color: #fff; }
-        [data-route-map] [data-route-mode][aria-pressed="false"] { background: #fff; color: #3d372c; }
+        [data-route-map] [data-route-mode][aria-pressed="true"] { background: #0E3B2A; color: #fff; }
+        [data-route-map] [data-route-mode][aria-pressed="false"] { background: #fff; color: #24503D; }
         .ti-me { position: relative; width: 22px; height: 22px; }
-        .ti-me__dot { position: absolute; inset: 3px; border-radius: 50%; background: #1a73e8; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+        .ti-me__dot { position: absolute; inset: 3px; border-radius: 50%; background: #1a73e8; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(14,59,42,.4); }
         .ti-me__pulse { position: absolute; inset: -8px; border-radius: 50%; background: rgba(26,115,232,.25); animation: ti-pulse 2s ease-out infinite; }
         .ti-me__cone { position: absolute; left: 50%; top: -14px; width: 0; height: 0; margin-left: -7px;
                        border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 14px solid #1a73e8;
@@ -137,7 +137,7 @@
 
             new AdvancedMarkerElement({
                 map, position: dest, title: root.dataset.name,
-                content: new PinElement({ background: accent, borderColor: '#1f1b16', glyphColor: '#fff' }).element,
+                content: new PinElement({ background: accent, borderColor: '#0E3B2A', glyphColor: '#fff' }).element,
             });
 
             // ── État ───────────────────────────────────────────────────────
@@ -208,7 +208,7 @@
                 route = { path, cum, total: cum[cum.length - 1] || 1, duration_s: data.duration_s, url: data.google_maps_url };
 
                 travelled?.setMap(null); remaining?.setMap(null);
-                travelled = new Polyline({ map, path: [], strokeColor: '#9aa0a6', strokeOpacity: 0.8, strokeWeight: 5 });
+                travelled = new Polyline({ map, path: [], strokeColor: '#8AA99B', strokeOpacity: 0.8, strokeWeight: 5 });
                 remaining = new Polyline({ map, path, strokeColor: accent, strokeOpacity: 0.95, strokeWeight: 6 });
                 offRouteHits = 0;
                 return data;

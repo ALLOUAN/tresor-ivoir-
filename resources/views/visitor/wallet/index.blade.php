@@ -65,7 +65,7 @@
                         </thead>
                         <tbody class="divide-y divide-slate-800/80">
                             @forelse($transactions as $t)
-                                <tr class="hover:bg-[#f3eee4]">
+                                <tr class="hover:bg-[#F3F8F5]">
                                     <td class="px-5 py-3 text-slate-300">{{ $t->created_at?->format('d/m/Y H:i') }}</td>
                                     <td class="px-5 py-3 text-slate-200">{{ $t->labelForType() }}</td>
                                     <td class="px-5 py-3 text-slate-400 text-xs">{{ $t->reservation?->reference ?? '—' }}</td>

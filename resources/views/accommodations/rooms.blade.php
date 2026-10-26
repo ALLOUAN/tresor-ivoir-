@@ -8,105 +8,105 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
         /* Page « Chambres » : en-tête de l'hôtel, comparatif, cartes de chambres avec carrousel.
            Aplats uniquement, ombre au survol seulement. */
-        .ti-rooms-back { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 999px; background: #ffffff; border: 1px solid #ece5d6; color: #9a4308; font-size: 13px; font-weight: 700; transition: border-color .15s ease; }
-        .ti-rooms-back:hover { border-color: #ef7c2b; color: #9a4308; }
+        .ti-rooms-back { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 999px; background: #ffffff; border: 1px solid #D8E9E0; color: #B85600; font-size: 13px; font-weight: 700; transition: border-color .15s ease; }
+        .ti-rooms-back:hover { border-color: #EB6E00; color: #B85600; }
         .ti-rooms-back i { font-size: 11px; }
 
         /* En-tête */
         .rh { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px; align-items: center; margin: 20px 0 26px; }
-        .rh__img { width: 112px; height: 112px; border-radius: 26px; object-fit: cover; background: #f3eee4; }
+        .rh__img { width: 112px; height: 112px; border-radius: 26px; object-fit: cover; background: #F3F8F5; }
         .rh__img.is-icon[hidden] { display: none; }
-        .rh__img.is-icon { display: inline-flex; align-items: center; justify-content: center; color: #b9500a; font-size: 34px; background: #fdf4ec; }
-        .rh__kicker { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #b9500a; }
-        .rh__kicker span { color: #c98a0b; letter-spacing: 0; }
-        .rh__title { margin: 4px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(30px, 2.4vw + 18px, 46px); font-weight: 700; line-height: 1.08; letter-spacing: -.01em; color: #1d1a16; }
-        .rh__facts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 14px; color: #4a443a; }
+        .rh__img.is-icon { display: inline-flex; align-items: center; justify-content: center; color: #EB6E00; font-size: 34px; background: #F3F8F5; }
+        .rh__kicker { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #EB6E00; }
+        .rh__kicker span { color: #EB6E00; letter-spacing: 0; }
+        .rh__title { margin: 4px 0 0; font-family: 'Montserrat', serif; font-size: clamp(30px, 2.4vw + 18px, 46px); font-weight: 700; line-height: 1.08; letter-spacing: -.01em; color: #0E3B2A; }
+        .rh__facts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 14px; color: #24503D; }
         .rh__facts li { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; }
         .rh__facts li > i { flex: none; }
-        .rh__facts i { font-size: 13px; color: #8a7f6b; }
-        .rh__facts b { color: #1d1a16; }
-        .rh__facts .is-ok { color: #1b6b3a; font-weight: 600; } .rh__facts .is-ok i { color: #1b6b3a; }
+        .rh__facts i { font-size: 13px; color: #557466; }
+        .rh__facts b { color: #0E3B2A; }
+        .rh__facts .is-ok { color: #00874F; font-weight: 600; } .rh__facts .is-ok i { color: #00874F; }
 
         /* Comparatif */
-        .rc { margin: 0 0 28px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; overflow: hidden; }
-        .rc__title { margin: 0; padding: 16px 20px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #6b6458; border-bottom: 1px solid #f0eadf; }
+        .rc { margin: 0 0 28px; border-radius: 22px; background: #fff; border: 1px solid #D8E9E0; overflow: hidden; }
+        .rc__title { margin: 0; padding: 16px 20px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #557466; border-bottom: 1px solid #F3F8F5; }
         .rc table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .rc th { padding: 10px 20px; font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #8a7f6b; text-align: left; background: #faf7f1; }
-        .rc td { padding: 14px 20px; border-top: 1px solid #f0eadf; color: #3a352c; }
-        .rc td:first-child a { font-weight: 700; color: #1d1a16; text-decoration: none; }
-        .rc td:first-child a:hover { color: #9a4308; text-decoration: underline; text-underline-offset: 3px; }
-        .rc td.is-price { font-weight: 800; color: #1d1a16; white-space: nowrap; text-align: right; }
+        .rc th { padding: 10px 20px; font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #557466; text-align: left; background: #F3F8F5; }
+        .rc td { padding: 14px 20px; border-top: 1px solid #F3F8F5; color: #24503D; }
+        .rc td:first-child a { font-weight: 700; color: #0E3B2A; text-decoration: none; }
+        .rc td:first-child a:hover { color: #B85600; text-decoration: underline; text-underline-offset: 3px; }
+        .rc td.is-price { font-weight: 800; color: #0E3B2A; white-space: nowrap; text-align: right; }
         .rc th.is-price { text-align: right; }
-        .rc tr.is-best td.is-price { color: #1b6b3a; }
+        .rc tr.is-best td.is-price { color: #00874F; }
 
         /* Chambres */
         .ti-rooms-list { display: flex; flex-direction: column; gap: 22px; }
-        .rr { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); background: #ffffff; border: 1px solid #ece5d6; border-radius: 26px; overflow: hidden; scroll-margin-top: 100px; transition: border-color .2s ease, box-shadow .25s ease; }
-        .rr:hover { border-color: #d8cdb8; box-shadow: 0 26px 50px -36px rgba(29,26,22,.5); }
-        .rr__media { position: relative; min-height: 340px; background: #f3eee4; }
+        .rr { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); background: #ffffff; border: 1px solid #D8E9E0; border-radius: 26px; overflow: hidden; scroll-margin-top: 100px; transition: border-color .2s ease, box-shadow .25s ease; }
+        .rr:hover { border-color: #8AA99B; box-shadow: 0 26px 50px -36px rgba(14,59,42,.5); }
+        .rr__media { position: relative; min-height: 340px; background: #F3F8F5; }
         .rr__track { position: absolute; inset: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
         .rr__track::-webkit-scrollbar { display: none; }
         .rr__slide { flex: 0 0 100%; scroll-snap-align: start; position: relative; padding: 0; border: 0; background: none; cursor: zoom-in; }
         .rr__slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-        .rr__nav { position: absolute; top: 50%; z-index: 2; width: 40px; height: 40px; margin-top: -20px; border: 0; border-radius: 999px; background: #fff; color: #1d1a16; font-size: 13px; cursor: pointer; opacity: 0; transition: opacity .2s ease, background .15s ease; }
+        .rr__nav { position: absolute; top: 50%; z-index: 2; width: 40px; height: 40px; margin-top: -20px; border: 0; border-radius: 999px; background: #fff; color: #0E3B2A; font-size: 13px; cursor: pointer; opacity: 0; transition: opacity .2s ease, background .15s ease; }
         .rr__nav.is-prev { left: 14px; } .rr__nav.is-next { right: 14px; }
         .rr:hover .rr__nav, .rr__nav:focus-visible { opacity: 1; }
-        .rr__nav:hover { background: #1d1a16; color: #fff; }
+        .rr__nav:hover { background: #0E3B2A; color: #fff; }
         .rr__dots { position: absolute; left: 0; right: 0; bottom: 14px; z-index: 2; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
         .rr__dots span { width: 7px; height: 7px; border-radius: 999px; background: rgba(255,255,255,.55); transition: width .2s ease, background .2s ease; }
         .rr__dots span.is-on { width: 20px; background: #fff; }
-        .rr__count { position: absolute; left: 14px; top: 14px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; background: rgba(29,26,22,.72); color: #fff; font-size: 12px; font-weight: 700; }
-        .rr__empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #8a7f6b; font-size: 13px; }
-        .rr__empty i { width: 60px; height: 60px; border-radius: 999px; background: #fff; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; }
+        .rr__count { position: absolute; left: 14px; top: 14px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; background: rgba(14,59,42,.72); color: #fff; font-size: 12px; font-weight: 700; }
+        .rr__empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #557466; font-size: 13px; }
+        .rr__empty i { width: 60px; height: 60px; border-radius: 999px; background: #fff; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; }
 
         .rr__body { display: flex; flex-direction: column; gap: 14px; padding: 24px 26px 22px; min-width: 0; }
         .rr__head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 12px; }
-        .rr__name { margin: 0; font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; line-height: 1.15; color: #1d1a16; }
+        .rr__name { margin: 0; font-family: 'Montserrat', serif; font-size: 26px; font-weight: 700; line-height: 1.15; color: #0E3B2A; }
         .rr__badges { display: flex; flex-wrap: wrap; gap: 6px; }
-        .rr__badges span { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: #fff3d6; color: #7a5300; font-size: 12px; font-weight: 700; }
-        .rr__specs { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; list-style: none; font-size: 14px; color: #3a352c; }
+        .rr__badges span { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: #F3F8F5; color: #B85600; font-size: 12px; font-weight: 700; }
+        .rr__specs { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; list-style: none; font-size: 14px; color: #24503D; }
         .rr__specs li { display: inline-flex; align-items: center; gap: 8px; }
-        .rr__specs i { color: #8a7f6b; font-size: 13px; }
-        .rr__text { margin: 0; font-size: 14.5px; line-height: 1.65; color: #4a443a; }
+        .rr__specs i { color: #557466; font-size: 13px; }
+        .rr__text { margin: 0; font-size: 14.5px; line-height: 1.65; color: #24503D; }
         .rr__amen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; margin: 0; padding: 0; list-style: none; }
-        .rr__amen li { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #3a352c; min-width: 0; }
-        .rr__amen i { flex: none; width: 30px; height: 30px; border-radius: 9px; background: #f6f3ec; color: #1d1a16; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
-        .rr__cond { display: flex; gap: 8px; margin: 0; padding: 10px 12px; border-radius: 14px; background: #faf6ee; color: #6b6458; font-size: 12.5px; line-height: 1.5; }
-        .rr__cond i { margin-top: 2px; color: #8a6a1f; }
-        .rr__foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px; margin-top: auto; padding-top: 16px; border-top: 1px solid #ece5d6; }
+        .rr__amen li { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #24503D; min-width: 0; }
+        .rr__amen i { flex: none; width: 30px; height: 30px; border-radius: 9px; background: #F3F8F5; color: #0E3B2A; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+        .rr__cond { display: flex; gap: 8px; margin: 0; padding: 10px 12px; border-radius: 14px; background: #F3F8F5; color: #557466; font-size: 12.5px; line-height: 1.5; }
+        .rr__cond i { margin-top: 2px; color: #B85600; }
+        .rr__foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px; margin-top: auto; padding-top: 16px; border-top: 1px solid #D8E9E0; }
         .rr__price { margin: 0; line-height: 1.15; }
-        .rr__price small { display: block; margin-bottom: 4px; font-size: 12px; color: #6b6458; }
-        .rr__price strong { font-size: 26px; font-weight: 800; color: #1d1a16; letter-spacing: -.01em; }
-        .rr__price em { font-style: normal; font-size: 13px; color: #6b6458; }
-        .rr__weekend { display: block; margin-top: 5px; font-size: 12.5px; color: #6b6458; }
-        .rr__free { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 12.5px; font-weight: 600; color: #1b6b3a; }
-        .rr__cta { display: inline-flex; align-items: center; gap: 10px; height: 50px; padding: 0 8px 0 22px; border-radius: 999px; background: #b9500a; color: #fff; font-size: 14.5px; font-weight: 700; text-decoration: none; transition: background .15s ease; }
-        .rr__cta:hover { background: #9a4308; color: #fff; }
-        .rr__cta span { width: 36px; height: 36px; border-radius: 999px; background: #fff; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
-        .rr__cta.is-line { background: #fff; color: #1d1a16; border: 1.5px solid #e3dccb; }
-        .rr__cta.is-line span { background: #f6f3ec; color: #1d1a16; }
-        .rr__cta.is-line:hover { border-color: #b9500a; color: #9a4308; }
-        .rr button:focus-visible, .rr a:focus-visible, .rc a:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .rr__price small { display: block; margin-bottom: 4px; font-size: 12px; color: #557466; }
+        .rr__price strong { font-size: 26px; font-weight: 800; color: #0E3B2A; letter-spacing: -.01em; }
+        .rr__price em { font-style: normal; font-size: 13px; color: #557466; }
+        .rr__weekend { display: block; margin-top: 5px; font-size: 12.5px; color: #557466; }
+        .rr__free { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 12.5px; font-weight: 600; color: #00874F; }
+        .rr__cta { display: inline-flex; align-items: center; gap: 10px; height: 50px; padding: 0 8px 0 22px; border-radius: 999px; background: #EB6E00; color: #fff; font-size: 14.5px; font-weight: 700; text-decoration: none; transition: background .15s ease; }
+        .rr__cta:hover { background: #B85600; color: #fff; }
+        .rr__cta span { width: 36px; height: 36px; border-radius: 999px; background: #fff; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
+        .rr__cta.is-line { background: #fff; color: #0E3B2A; border: 1.5px solid #D8E9E0; }
+        .rr__cta.is-line span { background: #F3F8F5; color: #0E3B2A; }
+        .rr__cta.is-line:hover { border-color: #EB6E00; color: #B85600; }
+        .rr button:focus-visible, .rr a:focus-visible, .rc a:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
 
-        .ti-room-empty { padding: 56px 20px; text-align: center; background: #ffffff; border: 1px dashed #d8cdb8; border-radius: 30px; color: #6b6458; }
-        .ti-room-empty span { width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 999px; background: #fdf4ec; color: #b9500a; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .ti-room-empty { padding: 56px 20px; text-align: center; background: #ffffff; border: 1px dashed #8AA99B; border-radius: 30px; color: #557466; }
+        .ti-room-empty span { width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 999px; background: #F3F8F5; color: #EB6E00; display: flex; align-items: center; justify-content: center; font-size: 24px; }
 
         /* Visionneuse */
         .rl__nav { position: absolute; top: 50%; width: 48px; height: 48px; margin-top: -24px; border: 0; border-radius: 999px; background: rgba(255,255,255,.14); color: #fff; font-size: 16px; cursor: pointer; }
-        .rl__nav:hover { background: #b9500a; }
+        .rl__nav:hover { background: #EB6E00; }
         .rl__nav.is-prev { left: 16px; } .rl__nav.is-next { right: 16px; }
         .rl__count { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.14); color: #fff; font-size: 13px; font-weight: 700; }
 
         /* Icônes Solar « Bold Duotone » (x-icon) : couleur de marque, second ton à 50 %. */
         .ti-rooms-back i { font-size: 15px; }
         .rh__img.is-icon i { font-size: 40px; }
-        .rh__facts i { font-size: 16px; color: #b9500a; }
-        .rr__specs i { font-size: 18px; color: #b9500a; }
-        .rr__amen i { width: 38px; height: 38px; border-radius: 12px; background: #fdf4ec; color: #b9500a; font-size: 18px; }
+        .rh__facts i { font-size: 16px; color: #EB6E00; }
+        .rr__specs i { font-size: 18px; color: #EB6E00; }
+        .rr__amen i { width: 38px; height: 38px; border-radius: 12px; background: #F3F8F5; color: #EB6E00; font-size: 18px; }
         .rr__badges i { font-size: 13px; }
         .rr__count i { font-size: 15px; }
         .rr__nav { font-size: 17px; }
@@ -133,12 +133,12 @@
         }
         @media (prefers-reduced-motion: reduce) { .rr, .rr__dots span { transition: none; } .rr__track { scroll-behavior: auto; } }
     
-        .rr__nav:hover { background: #b9500a; color: #fff; }
-        .rr__cta.is-line { border-color: #b9500a; color: #9a4308; } .rr__cta.is-line span { background: #b9500a; color: #fff; } .rr__cta.is-line:hover { background: #fdf4ec; }
+        .rr__nav:hover { background: #EB6E00; color: #fff; }
+        .rr__cta.is-line { border-color: #EB6E00; color: #B85600; } .rr__cta.is-line span { background: #EB6E00; color: #fff; } .rr__cta.is-line:hover { background: #F3F8F5; }
 </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="text-[#1c1915]">
+<body class="text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -309,7 +309,7 @@
         @endif
     </div>
 
-    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0a0907]/96 items-center justify-center p-4" onclick="closeLightbox()">
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0E3B2A]/96 items-center justify-center p-4" onclick="closeLightbox()">
         <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()" aria-label="{{ __('Fermer') }}">
             <i class="fas fa-xmark"></i>
         </button>

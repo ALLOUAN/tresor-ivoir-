@@ -5,7 +5,7 @@
 
 @php
     $fmt = fn ($n) => number_format((float) $n, 0, ',', ' ');
-    $impactStyle = ['high' => ['Priorité haute', '#fdeceb', '#c0362c'], 'medium' => ['Priorité moyenne', '#fdf3d6', '#9a6a00'], 'low' => ['Plus tard', '#eef6f0', '#1b6b3a']];
+    $impactStyle = ['high' => ['Priorité haute', '#fdeceb', '#c0362c'], 'medium' => ['Priorité moyenne', '#F3F8F5', '#B85600'], 'low' => ['Plus tard', '#F3F8F5', '#00874F']];
 @endphp
 
 @section('content')
@@ -68,7 +68,7 @@
             <p class="text-slate-400 text-sm mt-3"><i class="fas fa-hourglass-half mr-2 text-orange-400"></i>{{ $f['message'] }}</p>
         @else
             @if($f['simulated_share'] > 0)
-                <p class="text-xs mt-2 rounded-lg px-3 py-2" style="background:#fdf7e7;border:1px solid #f0e2b8;color:#6b4e0e"><i class="fas fa-flask mr-1"></i>{{ round($f['simulated_share'] * 100) }} % de l'historique est simulé (démonstration) : la prévision illustre le fonctionnement, pas votre fréquentation réelle.</p>
+                <p class="text-xs mt-2 rounded-lg px-3 py-2" style="background:#F3F8F5;border:1px solid #F7C396;color:#B85600"><i class="fas fa-flask mr-1"></i>{{ round($f['simulated_share'] * 100) }} % de l'historique est simulé (démonstration) : la prévision illustre le fonctionnement, pas votre fréquentation réelle.</p>
             @endif
             @php
                 $hist = array_values($report['recent'] ?? []);
@@ -86,17 +86,17 @@
                 $bandBot = collect($show)->map(fn ($r, $i) => [$i, $r])->reverse()->map(fn ($t) => round($x($off + $t[0]), 1).','.round($y($t[1]['lo']), 1))->implode(' ');
             @endphp
             <svg viewBox="0 0 {{ $W }} {{ $H }}" class="w-full mt-3" role="img" aria-label="Vues quotidiennes : historique et prévision">
-                <line x1="{{ $padL }}" y1="{{ $y(0) }}" x2="{{ $W - 6 }}" y2="{{ $y(0) }}" stroke="#cfc5ae" stroke-width="1"/>
-                <line x1="{{ $padL }}" y1="{{ $y($max / 2) }}" x2="{{ $W - 6 }}" y2="{{ $y($max / 2) }}" stroke="#e8e1d3" stroke-width="1" stroke-dasharray="3 4"/>
-                <text x="4" y="{{ $y($max) + 10 }}" font-size="11" fill="#6b6458">{{ round($max) }}</text>
-                <text x="4" y="{{ $y($max / 2) + 4 }}" font-size="11" fill="#6b6458">{{ round($max / 2) }}</text>
-                <line x1="{{ $x($off - 0.5) }}" y1="{{ $padT }}" x2="{{ $x($off - 0.5) }}" y2="{{ $H - $padB }}" stroke="#b9500a" stroke-width="1" stroke-dasharray="4 4"/>
-                <text x="{{ $x($off - 0.5) + 6 }}" y="{{ $padT + 10 }}" font-size="11" fill="#b9500a">aujourd'hui</text>
-                <polygon points="{{ $bandTop }} {{ $bandBot }}" fill="#b9500a" opacity=".16"/>
-                <polyline points="{{ $histPts }}" fill="none" stroke="#1b6b3a" stroke-width="2"/>
-                <polyline points="{{ $fcPts }}" fill="none" stroke="#b9500a" stroke-width="2" stroke-dasharray="6 4"/>
+                <line x1="{{ $padL }}" y1="{{ $y(0) }}" x2="{{ $W - 6 }}" y2="{{ $y(0) }}" stroke="#F7C396" stroke-width="1"/>
+                <line x1="{{ $padL }}" y1="{{ $y($max / 2) }}" x2="{{ $W - 6 }}" y2="{{ $y($max / 2) }}" stroke="#D8E9E0" stroke-width="1" stroke-dasharray="3 4"/>
+                <text x="4" y="{{ $y($max) + 10 }}" font-size="11" fill="#557466">{{ round($max) }}</text>
+                <text x="4" y="{{ $y($max / 2) + 4 }}" font-size="11" fill="#557466">{{ round($max / 2) }}</text>
+                <line x1="{{ $x($off - 0.5) }}" y1="{{ $padT }}" x2="{{ $x($off - 0.5) }}" y2="{{ $H - $padB }}" stroke="#EB6E00" stroke-width="1" stroke-dasharray="4 4"/>
+                <text x="{{ $x($off - 0.5) + 6 }}" y="{{ $padT + 10 }}" font-size="11" fill="#EB6E00">aujourd'hui</text>
+                <polygon points="{{ $bandTop }} {{ $bandBot }}" fill="#EB6E00" opacity=".16"/>
+                <polyline points="{{ $histPts }}" fill="none" stroke="#00874F" stroke-width="2"/>
+                <polyline points="{{ $fcPts }}" fill="none" stroke="#EB6E00" stroke-width="2" stroke-dasharray="6 4"/>
             </svg>
-            <p class="text-xs text-slate-500 mt-1"><span style="color:#1b6b3a">▬</span> vues réelles · <span style="color:#b9500a">- - -</span> prévision, avec sa fourchette à 80 % (zone orange)</p>
+            <p class="text-xs text-slate-500 mt-1"><span style="color:#00874F">▬</span> vues réelles · <span style="color:#EB6E00">- - -</span> prévision, avec sa fourchette à 80 % (zone orange)</p>
 
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
                 <div class="rounded-lg bg-slate-800/60 border border-slate-700/80 p-3">

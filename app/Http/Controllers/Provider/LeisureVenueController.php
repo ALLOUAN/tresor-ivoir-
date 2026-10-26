@@ -31,10 +31,7 @@ class LeisureVenueController extends Controller
     /** Un établissement Loisirs & Culture ne peut être géré que par un prestataire de cette catégorie. */
     private function assertLeisureCategory(Provider $provider): void
     {
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-
-        abort_unless($rootSlug === 'loisirs-culture', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Loisirs & Culture.');
+        abort_unless($provider->hasSector('loisirs-culture'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Loisirs & Culture.');
     }
 
     /* ── Vue d'ensemble ──────────────────────────────────────────────────── */

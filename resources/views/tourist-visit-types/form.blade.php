@@ -286,10 +286,10 @@
 
 <style>
     /* Icône choisie : orange plein (le thème admin force les fonds ardoise). */
-    .vt-icon__box { width: 44px; height: 44px; border-radius: 10px; border: 1.5px solid #e8e1d3; background: #fff; color: #9a4308; display: flex; align-items: center; justify-content: center; transition: background .15s ease, border-color .15s ease; }
-    .vt-icon:hover .vt-icon__box { border-color: #ef7c2b; }
-    .vt-icon input:checked + span { background: #b9500a !important; border-color: #b9500a !important; color: #fff !important; }
-    .vt-icon input:focus-visible + span { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+    .vt-icon__box { width: 44px; height: 44px; border-radius: 10px; border: 1.5px solid #D8E9E0; background: #fff; color: #B85600; display: flex; align-items: center; justify-content: center; transition: background .15s ease, border-color .15s ease; }
+    .vt-icon:hover .vt-icon__box { border-color: #EB6E00; }
+    .vt-icon input:checked + span { background: #EB6E00 !important; border-color: #EB6E00 !important; color: #fff !important; }
+    .vt-icon input:focus-visible + span { outline: 3px solid #EB6E00; outline-offset: 2px; }
 </style>
 <script>
 (function () {

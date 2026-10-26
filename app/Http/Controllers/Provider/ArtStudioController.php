@@ -24,8 +24,7 @@ class ArtStudioController extends Controller
     {
         $provider = Provider::forUserQuery(Auth::id())->first();
         abort_unless($provider, 404, 'Aucune fiche prestataire trouvée.');
-        $root = $provider->category?->parent_id ? $provider->category->parent?->slug : $provider->category?->slug;
-        abort_unless($root === 'art-creations', 403, 'Réservé aux artistes (Art & Créations).');
+        abort_unless($provider->hasSector('art-creations'), 403, 'Réservé aux artistes (Art & Créations).');
 
         return $provider;
     }

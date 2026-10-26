@@ -32,7 +32,7 @@ $planCode = strtolower($subscription->plan->code ?? 'bronze');
 $bannerColors = ['gold'=>'from-orange-700/40 to-orange-900/20 border-orange-600/40','silver'=>'from-slate-500/30 to-slate-700/20 border-slate-500/40','bronze'=>'from-orange-900/30 to-slate-800/20 border-orange-800/40'];
 $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
 @endphp
-<div class="bg-gradient-to-r from-orange-900/30 to-orange-800/10 border border-orange-700/30 rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+<div class="ti-card rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-4">
         <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center shrink-0">
             <i class="fas fa-gem text-orange-400 text-2xl"></i>
@@ -52,7 +52,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
     </a>
 </div>
 @else
-<div class="bg-gradient-to-r from-orange-900/30 to-orange-800/10 border border-orange-700/30 rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+<div class="ti-card rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-4">
         <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center shrink-0">
             <i class="fas fa-gem text-orange-400 text-2xl"></i>
@@ -68,6 +68,10 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
     </a>
 </div>
 @endif
+
+@unless(\App\Http\Middleware\ProviderStaffGate::isStaff(auth()->id()))
+    @include('provider.partials.sectors', ['provider' => $provider])
+@endunless
 
 {{-- ── Stats ───────────────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
@@ -262,14 +266,14 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
     function palette() {
         const dark = isDarkMode();
         return {
-            surface: dark ? '#e9e5d9' : '#e9e5d9',
+            surface: dark ? '#D8E9E0' : '#D8E9E0',
             ring: dark ? 'rgba(255, 255, 255,0.9)' : 'rgba(255,255,255,0.9)',
-            legend: dark ? '#cbd5e1' : '#44413a',
-            tick: dark ? '#94a3b8' : '#544f47',
-            grid: dark ? 'rgba(148,163,184,0.14)' : 'rgba(28,25,21,0.08)',
-            tooltipTitle: dark ? '#f8fafc' : '#1c1915',
-            tooltipBody: dark ? '#cbd5e1' : '#44413a',
-            tooltipBorder: dark ? 'rgba(148,163,184,0.25)' : 'rgba(28,25,21,0.14)',
+            legend: dark ? '#cbd5e1' : '#24503D',
+            tick: dark ? '#8AA99B' : '#24503D',
+            grid: dark ? 'rgba(138,169,155,0.14)' : 'rgba(14,59,42,0.08)',
+            tooltipTitle: dark ? '#FFFFFF' : '#0E3B2A',
+            tooltipBody: dark ? '#cbd5e1' : '#24503D',
+            tooltipBorder: dark ? 'rgba(138,169,155,0.25)' : 'rgba(14,59,42,0.14)',
         };
     }
 
@@ -295,7 +299,7 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
                 labels: ['Vues', 'Clics téléphone', 'Clics site web'],
                 datasets: [{
                     data: interactionsData,
-                    backgroundColor: ['#ef7c2b', '#31621c', '#327661'],
+                    backgroundColor: ['#EB6E00', '#00874F', '#00874F'],
                     borderColor: p.ring,
                     borderWidth: 3,
                     hoverOffset: 8,
@@ -316,8 +320,8 @@ $bc = $bannerColors[$planCode] ?? $bannerColors['bronze'];
         });
 
         const overviewCtx = overviewEl.getContext('2d');
-        const gradBlue = '#31621c';   // vert forêt (interactions)
-        const gradAmber = '#ef7c2b';  // orange soleil (avis)
+        const gradBlue = '#00874F';   // vert forêt (interactions)
+        const gradAmber = '#EB6E00';  // orange soleil (avis)
 
         overviewChart?.destroy();
         overviewChart = new Chart(overviewEl, {

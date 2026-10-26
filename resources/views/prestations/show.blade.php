@@ -9,121 +9,121 @@
     @include('partials.theme-light-bridge')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1d1a16; }
-        .font-serif { font-family: 'Playfair Display', Georgia, serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', Georgia, serif; }
         /* Page « Nos prestations » (offre B2B), charte du site : crème, vert forêt, orange, Playfair.
            Aplats, ombre au survol seulement, motifs ivoiriens discrets. */
         .pr-wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
-        .pr-label { margin: 0 0 8px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #b9500a; }
-        .pr-h2 { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(26px, 1.6vw + 18px, 40px); font-weight: 700; line-height: 1.1; color: #1d1a16; }
-        .pr-sub { margin: 12px 0 0; max-width: 620px; font-size: 16px; line-height: 1.65; color: #4a443a; }
+        .pr-label { margin: 0 0 8px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #EB6E00; }
+        .pr-h2 { margin: 0; font-family: 'Montserrat', serif; font-size: clamp(26px, 1.6vw + 18px, 40px); font-weight: 700; line-height: 1.1; color: #0E3B2A; }
+        .pr-sub { margin: 12px 0 0; max-width: 620px; font-size: 16px; line-height: 1.65; color: #24503D; }
         .pr-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 30px; margin-bottom: 30px; }
         .pr-sec { padding: 72px 0; }
         .pr-btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 52px; padding: 0 22px; border-radius: 999px; font-size: 15px; font-weight: 700; text-decoration: none; border: 0; cursor: pointer; white-space: nowrap; transition: background .15s ease, border-color .15s ease, color .15s ease; }
         .pr-btn .ico { font-size: 19px; }
-        .pr-btn.is-main { background: #b9500a; color: #fff; }
-        .pr-btn.is-main:hover { background: #9a4308; color: #fff; }
-        .pr-btn.is-line { background: #fff; color: #9a4308; border: 1.5px solid #b9500a; }
-        .pr-btn.is-line:hover { background: #fdf4ec; }
-        .pr-btn.is-white { background: #fff; color: #123a25; }
-        .pr-btn.is-white:hover { background: #fdf4ec; color: #123a25; }
+        .pr-btn.is-main { background: #EB6E00; color: #fff; }
+        .pr-btn.is-main:hover { background: #B85600; color: #fff; }
+        .pr-btn.is-line { background: #fff; color: #B85600; border: 1.5px solid #EB6E00; }
+        .pr-btn.is-line:hover { background: #F3F8F5; }
+        .pr-btn.is-white { background: #fff; color: #00874F; }
+        .pr-btn.is-white:hover { background: #F3F8F5; color: #00874F; }
         .pr-btn.is-ghost { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.5); }
         .pr-btn.is-ghost:hover { border-color: #fff; background: rgba(255,255,255,.08); }
-        .pr-btn:focus-visible, .pr-card:focus-within, .prestation-banner-dot:focus-visible, .prestation-banner-arrow:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .pr-btn:focus-visible, .pr-card:focus-within, .prestation-banner-dot:focus-visible, .prestation-banner-arrow:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
 
         /* Héros */
-        .pr-hero { position: relative; overflow: hidden; background: #f3ead8; border-bottom: 1px solid #e3d5bb; }
+        .pr-hero { position: relative; overflow: hidden; background: #D8E9E0; border-bottom: 1px solid #D8E9E0; }
         .pr-hero__in { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 40px; align-items: center; padding: 56px 20px 64px; max-width: 1180px; margin: 0 auto; }
-        .pr-hero__txt { padding: 28px 30px; border-radius: 28px; background: #f6efe1; border: 1px solid #e3d5bb; }
-        .pr-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid #e3d5bb; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #9a4308; }
+        .pr-hero__txt { padding: 28px 30px; border-radius: 28px; background: #F3F8F5; border: 1px solid #D8E9E0; }
+        .pr-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #B85600; }
         .pr-kicker .ico { font-size: 15px; }
-        .pr-title { margin: 16px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(36px, 3vw + 18px, 62px); font-weight: 700; line-height: 1.03; letter-spacing: -.015em; color: #1d1a16; }
-        .pr-title em { font-style: italic; color: #b9500a; }
-        .pr-lead { margin: 16px 0 0; font-size: 17px; line-height: 1.65; color: #3a352c; }
+        .pr-title { margin: 16px 0 0; font-family: 'Montserrat', serif; font-size: clamp(36px, 3vw + 18px, 62px); font-weight: 700; line-height: 1.03; letter-spacing: -.015em; color: #0E3B2A; }
+        .pr-title em { font-style: italic; color: #EB6E00; }
+        .pr-lead { margin: 16px 0 0; font-size: 17px; line-height: 1.65; color: #24503D; }
         .pr-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
-        .pr-trust { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 20px 0 0; padding: 0; list-style: none; font-size: 13.5px; color: #4a443a; }
+        .pr-trust { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 20px 0 0; padding: 0; list-style: none; font-size: 13.5px; color: #24503D; }
         .pr-trust li { display: inline-flex; align-items: center; gap: 7px; }
-        .pr-trust .ico { color: #1b6b3a; font-size: 17px; }
+        .pr-trust .ico { color: #00874F; font-size: 17px; }
 
         /* Visuel : bannières administrées (carrousel conservé) */
         .pr-visual { position: relative; }
-        .prestation-cover-frame { position: relative; aspect-ratio: 4 / 3; border-radius: 28px; overflow: hidden; background: #1c1310; border: 1px solid #e3d5bb; }
+        .prestation-cover-frame { position: relative; aspect-ratio: 4 / 3; border-radius: 28px; overflow: hidden; background: #0E3B2A; border: 1px solid #D8E9E0; }
         .prestation-banner-slide { position: absolute; inset: 0; }
         .prestation-banner-slide img { width: 100%; height: 100%; object-fit: cover; }
-        .pr-slide-card { position: absolute; left: 14px; right: 14px; bottom: 14px; padding: 16px 18px; border-radius: 20px; background: #fff; color: #1d1a16; }
-        .pr-slide-card small { display: block; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #b9500a; }
-        .pr-slide-card b { display: block; margin-top: 4px; font-family: 'Playfair Display', serif; font-size: 21px; line-height: 1.2; }
-        .pr-slide-card p { margin: 6px 0 0; font-size: 14px; line-height: 1.5; color: #4a443a; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .pr-slide-card a { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 13.5px; font-weight: 700; color: #9a4308; text-decoration: none; }
+        .pr-slide-card { position: absolute; left: 14px; right: 14px; bottom: 14px; padding: 16px 18px; border-radius: 20px; background: #fff; color: #0E3B2A; }
+        .pr-slide-card small { display: block; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #EB6E00; }
+        .pr-slide-card b { display: block; margin-top: 4px; font-family: 'Montserrat', serif; font-size: 21px; line-height: 1.2; }
+        .pr-slide-card p { margin: 6px 0 0; font-size: 14px; line-height: 1.5; color: #24503D; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .pr-slide-card a { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 13.5px; font-weight: 700; color: #B85600; text-decoration: none; }
         .pr-slide-card a:hover { text-decoration: underline; text-underline-offset: 3px; }
         .pr-carousel-ui { position: absolute; top: 14px; right: 14px; display: flex; align-items: center; gap: 8px; z-index: 5; }
         .prestation-banner-dots { display: flex; gap: 6px; padding: 8px 10px; border-radius: 999px; background: #fff; }
-        .prestation-banner-dot { width: 8px; height: 8px; padding: 0; border-radius: 999px; border: 0; background: #e3d5bb; cursor: pointer; transition: width .25s ease, background .25s ease; }
-        .prestation-banner-dot.is-active { width: 22px; background: #b9500a; }
-        .prestation-banner-arrow { width: 36px; height: 36px; border-radius: 999px; border: 0; background: #fff; color: #9a4308; font-size: 18px; font-weight: 700; cursor: pointer; }
-        .prestation-banner-arrow:hover { background: #fdf4ec; }
-        .pr-visual--empty { aspect-ratio: 4 / 3; border-radius: 28px; background: #123a25; color: #fff; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 18px; }
+        .prestation-banner-dot { width: 8px; height: 8px; padding: 0; border-radius: 999px; border: 0; background: #D8E9E0; cursor: pointer; transition: width .25s ease, background .25s ease; }
+        .prestation-banner-dot.is-active { width: 22px; background: #EB6E00; }
+        .prestation-banner-arrow { width: 36px; height: 36px; border-radius: 999px; border: 0; background: #fff; color: #B85600; font-size: 18px; font-weight: 700; cursor: pointer; }
+        .prestation-banner-arrow:hover { background: #F3F8F5; }
+        .pr-visual--empty { aspect-ratio: 4 / 3; border-radius: 28px; background: #00874F; color: #fff; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 18px; }
         .pr-visual--empty div { border-radius: 20px; background: rgba(255,255,255,.08); padding: 18px; display: flex; flex-direction: column; justify-content: flex-end; }
-        .pr-visual--empty .ico { font-size: 28px; color: #f6c38f; margin-bottom: auto; }
+        .pr-visual--empty .ico { font-size: 28px; color: #F7C396; margin-bottom: auto; }
         .pr-visual--empty b { font-size: 16px; }
 
         /* Chiffres */
         .pr-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: -34px; position: relative; z-index: 2; }
-        .pr-stat { padding: 20px 22px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
-        .pr-stat b { display: block; font-family: 'Playfair Display', serif; font-size: 38px; line-height: 1; color: #1d1a16; }
-        .pr-stat span { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: 13.5px; color: #6b6458; }
-        .pr-stat .ico { color: #b9500a; font-size: 16px; }
+        .pr-stat { padding: 20px 22px; border-radius: 22px; background: #fff; border: 1px solid #D8E9E0; }
+        .pr-stat b { display: block; font-family: 'Montserrat', serif; font-size: 38px; line-height: 1; color: #0E3B2A; }
+        .pr-stat span { display: flex; align-items: center; gap: 7px; margin-top: 8px; font-size: 13.5px; color: #557466; }
+        .pr-stat .ico { color: #EB6E00; font-size: 16px; }
 
         /* Prestations */
         .pr-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-        .pr-card { position: relative; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; transition: border-color .15s ease, box-shadow .2s ease; }
-        .pr-card:hover { border-color: #d8cdb8; box-shadow: 0 20px 38px -28px rgba(29,26,22,.55); }
-        .pr-card__img { aspect-ratio: 16 / 10; background: #f3eee4; overflow: hidden; }
+        .pr-card { position: relative; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; background: #fff; border: 1px solid #D8E9E0; transition: border-color .15s ease, box-shadow .2s ease; }
+        .pr-card:hover { border-color: #8AA99B; box-shadow: 0 20px 38px -28px rgba(14,59,42,.55); }
+        .pr-card__img { aspect-ratio: 16 / 10; background: #F3F8F5; overflow: hidden; }
         .pr-card__img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
         .pr-card:hover .pr-card__img img { transform: scale(1.04); }
         .pr-card__body { flex: 1; display: flex; flex-direction: column; padding: 22px; }
         .pr-card__top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .pr-card__ic { width: 48px; height: 48px; border-radius: 16px; background: #fdf4ec; color: #b9500a; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-        .pr-card__num { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #e3d5bb; }
-        .pr-card h3 { margin: 16px 0 0; font-family: 'Playfair Display', serif; font-size: 21px; line-height: 1.25; color: #1d1a16; }
-        .pr-card p { margin: 8px 0 0; font-size: 14.5px; line-height: 1.6; color: #4a443a; }
-        .pr-card__link { margin-top: auto; padding-top: 18px; display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; color: #9a4308; text-decoration: none; }
+        .pr-card__ic { width: 48px; height: 48px; border-radius: 16px; background: #F3F8F5; color: #EB6E00; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .pr-card__num { font-family: 'Montserrat', serif; font-size: 26px; font-weight: 700; color: #D8E9E0; }
+        .pr-card h3 { margin: 16px 0 0; font-family: 'Montserrat', serif; font-size: 21px; line-height: 1.25; color: #0E3B2A; }
+        .pr-card p { margin: 8px 0 0; font-size: 14.5px; line-height: 1.6; color: #24503D; }
+        .pr-card__link { margin-top: auto; padding-top: 18px; display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; color: #B85600; text-decoration: none; }
         .pr-card__link::after { content: ''; position: absolute; inset: 0; }
         .pr-card__link:hover { text-decoration: underline; text-underline-offset: 3px; }
-        .pr-empty { padding: 34px; border-radius: 24px; background: #fff; border: 1px dashed #d8cdb8; text-align: center; color: #6b6458; }
+        .pr-empty { padding: 34px; border-radius: 24px; background: #fff; border: 1px dashed #8AA99B; text-align: center; color: #557466; }
 
         /* Méthode */
         .pr-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; counter-reset: st; }
-        .pr-step { position: relative; padding: 24px 22px; border-radius: 24px; background: #fff; border: 1px solid #ece5d6; }
-        .pr-step b.n { display: flex; width: 40px; height: 40px; border-radius: 999px; background: #1b6b3a; color: #fff; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; }
-        .pr-step h3 { margin: 16px 0 0; font-size: 17px; font-weight: 800; color: #1d1a16; }
-        .pr-step p { margin: 6px 0 0; font-size: 14px; line-height: 1.6; color: #4a443a; }
-        .pr-step small { display: inline-flex; margin-top: 12px; padding: 4px 10px; border-radius: 999px; background: #f6f3ed; font-size: 12px; font-weight: 700; color: #6b6458; }
+        .pr-step { position: relative; padding: 24px 22px; border-radius: 24px; background: #fff; border: 1px solid #D8E9E0; }
+        .pr-step b.n { display: flex; width: 40px; height: 40px; border-radius: 999px; background: #00874F; color: #fff; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; }
+        .pr-step h3 { margin: 16px 0 0; font-size: 17px; font-weight: 800; color: #0E3B2A; }
+        .pr-step p { margin: 6px 0 0; font-size: 14px; line-height: 1.6; color: #24503D; }
+        .pr-step small { display: inline-flex; margin-top: 12px; padding: 4px 10px; border-radius: 999px; background: #F3F8F5; font-size: 12px; font-weight: 700; color: #557466; }
 
         /* Atouts */
         .pr-pillars { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; }
-        .pr-pillar-main { padding: 32px; border-radius: 28px; background: #123a25; color: #fff; display: flex; flex-direction: column; justify-content: space-between; gap: 22px; }
-        .pr-pillar-main h3 { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.2vw + 18px, 32px); line-height: 1.15; }
-        .pr-pillar-main p { margin: 10px 0 0; font-size: 15.5px; line-height: 1.65; color: #cfe6d7; }
+        .pr-pillar-main { padding: 32px; border-radius: 28px; background: #00874F; color: #fff; display: flex; flex-direction: column; justify-content: space-between; gap: 22px; }
+        .pr-pillar-main h3 { margin: 0; font-family: 'Montserrat', serif; font-size: clamp(24px, 1.2vw + 18px, 32px); line-height: 1.15; }
+        .pr-pillar-main p { margin: 10px 0 0; font-size: 15.5px; line-height: 1.65; color: #D8E9E0; }
         .pr-pillar-main ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; }
         .pr-pillar-main li { display: flex; align-items: center; gap: 10px; }
-        .pr-pillar-main li .ico { color: #f6c38f; font-size: 18px; }
+        .pr-pillar-main li .ico { color: #F7C396; font-size: 18px; }
         .pr-pillar-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-        .pr-pillar { padding: 22px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
-        .pr-pillar .ico { width: 44px; height: 44px; border-radius: 14px; background: #fdf4ec; color: #b9500a; justify-content: center; font-size: 21px; }
-        .pr-pillar b { display: block; margin-top: 14px; font-size: 16px; color: #1d1a16; }
-        .pr-pillar span { display: block; margin-top: 5px; font-size: 13.5px; line-height: 1.55; color: #4a443a; }
+        .pr-pillar { padding: 22px; border-radius: 22px; background: #fff; border: 1px solid #D8E9E0; }
+        .pr-pillar .ico { width: 44px; height: 44px; border-radius: 14px; background: #F3F8F5; color: #EB6E00; justify-content: center; font-size: 21px; }
+        .pr-pillar b { display: block; margin-top: 14px; font-size: 16px; color: #0E3B2A; }
+        .pr-pillar span { display: block; margin-top: 5px; font-size: 13.5px; line-height: 1.55; color: #24503D; }
 
         /* Vidéo & catalogue */
-        .pr-video { border-radius: 28px; overflow: hidden; aspect-ratio: 16 / 9; background: #000; border: 1px solid #ece5d6; }
+        .pr-video { border-radius: 28px; overflow: hidden; aspect-ratio: 16 / 9; background: #000; border: 1px solid #D8E9E0; }
         .pr-video iframe, .pr-video video { width: 100%; height: 100%; border: 0; display: block; }
-        .df-catalog-frame { border: 1px solid #ece5d6; border-radius: 24px; background: #fff; min-height: 420px; }
+        .df-catalog-frame { border: 1px solid #D8E9E0; border-radius: 24px; background: #fff; min-height: 420px; }
         .pr-catalog-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
 
         /* Appel final */
-        .pr-cta { position: relative; overflow: hidden; border-radius: 32px; background: #123a25; color: #fff; padding: 44px 40px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; }
-        .pr-cta h2 { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(26px, 1.6vw + 18px, 40px); line-height: 1.12; }
-        .pr-cta p { margin: 10px 0 0; max-width: 560px; font-size: 16px; line-height: 1.6; color: #cfe6d7; }
+        .pr-cta { position: relative; overflow: hidden; border-radius: 32px; background: #00874F; color: #fff; padding: 44px 40px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; }
+        .pr-cta h2 { margin: 0; font-family: 'Montserrat', serif; font-size: clamp(26px, 1.6vw + 18px, 40px); line-height: 1.12; }
+        .pr-cta p { margin: 10px 0 0; max-width: 560px; font-size: 16px; line-height: 1.6; color: #D8E9E0; }
         .pr-cta__actions { display: flex; flex-wrap: wrap; gap: 10px; }
         .pr-cta__in { position: relative; z-index: 1; }
 
@@ -145,16 +145,16 @@
         @media (max-width: 1023px) { .pr-hero__in { grid-template-columns: minmax(0, 1fr); padding: 26px 20px 52px; } }
         @media (max-width: 640px) { .pr-hero__in { padding: 20px 16px 50px; } .pr-hero__txt { padding: 18px 16px; } .pr-title { font-size: clamp(26px, 7vw, 32px); } .pr-lead { font-size: 14.5px; } .prestation-cover-frame, .pr-visual--empty { aspect-ratio: 4 / 3.2; } }
         /* Chiffres aux couleurs du logo : coucher de soleil, palmier, lagune, anneau doré */
-        .pr-stat { --c: #c2560d; --t: #fdf0e1; position: relative; overflow: hidden; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 14px; align-items: center; padding: 20px 20px 18px; background: var(--t); border: 1.5px solid #e6cf98; }
+        .pr-stat { --c: #EB6E00; --t: #F3F8F5; position: relative; overflow: hidden; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 14px; align-items: center; padding: 20px 20px 18px; background: var(--t); border: 1.5px solid #F7C396; }
         .pr-stat::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--c); }
-        .pr-stat.is-sun { --c: #d9650f; --t: #fdf0e1; }
-        .pr-stat.is-palm { --c: #4a8a2a; --t: #eef5e4; }
-        .pr-stat.is-lagoon { --c: #1f8079; --t: #e3f3f1; }
-        .pr-stat.is-gold { --c: #b0861c; --t: #fbf3dc; }
+        .pr-stat.is-sun { --c: #EB6E00; --t: #F3F8F5; }
+        .pr-stat.is-palm { --c: #00874F; --t: #F3F8F5; }
+        .pr-stat.is-lagoon { --c: #00874F; --t: #F3F8F5; }
+        .pr-stat.is-gold { --c: #EB6E00; --t: #F3F8F5; }
         .pr-stat__ic { grid-row: 1 / span 2; width: 52px; height: 52px; border-radius: 16px; background: var(--c); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
         .pr-stat__ic .ico { color: #fff; }
         .pr-stat b { color: var(--c); font-size: 36px; }
-        .pr-stat > span:last-child { margin-top: 4px; font-size: 13.5px; font-weight: 600; color: #3a2f22; }
+        .pr-stat > span:last-child { margin-top: 4px; font-size: 13.5px; font-weight: 600; color: #0E3B2A; }
         @media (max-width: 640px) { .pr-stat { grid-template-columns: minmax(0, 1fr); padding: 16px; } .pr-stat__ic { grid-row: auto; width: 40px; height: 40px; border-radius: 12px; font-size: 19px; margin-bottom: 10px; } .pr-stat b { font-size: 28px; } }
         .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
         .reveal.visible { opacity: 1; transform: none; }
@@ -329,7 +329,7 @@
         <div class="pr-pillars">
             <div class="pr-pillar-main reveal">
                 <div>
-                    <p class="pr-label" style="color:#f6c38f">{{ __('Pourquoi Trésors d\'Ivoire') }}</p>
+                    <p class="pr-label" style="color:#F7C396">{{ __('Pourquoi Trésors d\'Ivoire') }}</p>
                     <h3>{{ __('Un magazine, un annuaire et une plateforme de réservation, réunis') }}</h3>
                     <p>{{ __('Vos clients découvrent votre établissement dans un contenu éditorial, le retrouvent sur la carte et réservent sans quitter le site.') }}</p>
                 </div>
@@ -390,12 +390,12 @@
                 <div id="pdf-flipbook" data-pdf-url="{{ $settings->catalog_file_url }}"></div>
             </div>
             <div id="pdf-flipbook-loading" class="df-catalog-frame flex flex-col items-center justify-center gap-3 py-16">
-                <i class="fas fa-circle-notch fa-spin text-3xl" style="color:#b9500a"></i>
-                <p class="text-sm" style="color:#6b6458">{{ __('Chargement du feuilletage…') }}</p>
+                <i class="fas fa-circle-notch fa-spin text-3xl" style="color:#EB6E00"></i>
+                <p class="text-sm" style="color:#557466">{{ __('Chargement du feuilletage…') }}</p>
             </div>
             <div id="pdf-flipbook-fallback" class="df-catalog-frame hidden flex-col items-center justify-center gap-4 py-16 text-center px-6">
-                <x-icon name="book" class="text-4xl" style="color:#b9500a" />
-                <p class="max-w-md" style="color:#4a443a">{{ __('Le feuilletage interactif n\'a pas pu se charger. Le catalogue reste disponible en téléchargement.') }}</p>
+                <x-icon name="book" class="text-4xl" style="color:#EB6E00" />
+                <p class="max-w-md" style="color:#24503D">{{ __('Le feuilletage interactif n\'a pas pu se charger. Le catalogue reste disponible en téléchargement.') }}</p>
                 <a href="{{ $settings->catalog_file_url }}" target="_blank" rel="noopener" class="pr-btn is-main"><x-icon name="book" />{{ __('Ouvrir le catalogue (PDF)') }}</a>
             </div>
         </div>

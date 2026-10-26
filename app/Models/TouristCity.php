@@ -12,11 +12,14 @@ class TouristCity extends Model
 
     protected $fillable = [
         'name', 'slug', 'district', 'region_administrative',
-        'description', 'thumbnail', 'cover_image',
+        'description', 'thumbnail', 'cover_image', 'banners',
         'latitude', 'longitude', 'website',
         'is_featured', 'is_active', 'sort_order',
         'sources',
     ];
+
+    /** Nombre maximal de bannières supplémentaires (diaporama) par ville. */
+    public const MAX_BANNERS = 10;
 
     protected function casts(): array
     {
@@ -25,8 +28,27 @@ class TouristCity extends Model
             'longitude'   => 'float',
             'is_featured' => 'boolean',
             'sources' => 'array',
+            'banners'     => 'array',
             'is_active'   => 'boolean',
         ];
+    }
+
+    /**
+     * Images du haut de la page ville, dans l'ordre d'affichage : la bannière principale puis les bannières
+     * supplémentaires (sans doublon). À défaut, la miniature.
+     *
+     * @return list<string>
+     */
+    public function bannerList(): array
+    {
+        $list = collect([$this->cover_image])->merge($this->banners ?? [])
+            ->filter(fn ($u) => is_string($u) && trim($u) !== '')
+            ->map(fn ($u) => trim($u))
+            ->unique()
+            ->values()
+            ->all();
+
+        return $list ?: array_values(array_filter([$this->thumbnail]));
     }
 
     public function sites(): HasMany

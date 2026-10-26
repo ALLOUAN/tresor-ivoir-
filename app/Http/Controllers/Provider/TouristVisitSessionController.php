@@ -20,9 +20,7 @@ class TouristVisitSessionController extends Controller
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
 
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-        abort_unless($rootSlug === 'sites-touristiques', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Sites Touristiques.');
+        abort_unless($provider->hasSector('sites-touristiques'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Sites Touristiques.');
 
         return $provider;
     }

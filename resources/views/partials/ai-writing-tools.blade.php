@@ -70,7 +70,7 @@
         var head = document.createElement('p'); head.className = 'text-xs text-slate-500 mb-2';
         head.textContent = (res.engine === 'anthropic' ? 'Proposé par un modèle de langage' : 'Proposé par extraction du texte') + ' — à relire avant d\'appliquer.';
         box.appendChild(head);
-        (res.warnings || []).forEach(function (w) { var p = document.createElement('p'); p.className = 'text-xs mb-1'; p.style.color = '#fbbf24'; p.textContent = '⚠ ' + w; box.appendChild(p); });
+        (res.warnings || []).forEach(function (w) { var p = document.createElement('p'); p.className = 'text-xs mb-1'; p.style.color = '#EB6E00'; p.textContent = '⚠ ' + w; box.appendChild(p); });
         var r = res.result || {};
         if (action.action === 'titles') {
             (r.titles || []).forEach(function (t, i) { box.appendChild(row('Proposition ' + (i + 1), t, action.apply.titles, res.log_id, false)); });

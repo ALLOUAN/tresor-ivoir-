@@ -7,7 +7,7 @@
 <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden">
     <style>
         .conversation-row {
-            border-left: 4px solid rgba(100, 116, 139, 0.6);
+            border-left: 4px solid rgba(85,116,102, 0.6);
             transition: all .25s ease;
         }
         .conversation-row:hover {
@@ -24,12 +24,12 @@
         /* États des conversations : aplats teintés (pas de dégradé), pastilles à texte foncé lisible */
         .conversation-type-urgent { border-left-color: #c8324f; background: #fdebed; }
         .conversation-type-urgent .conversation-type-pill { background: #fbd3da; color: #a4223a; border: 1px solid #f0b4c0; }
-        .conversation-type-unread { border-left-color: #ef7c2b; background: #fff1df; }
-        .conversation-type-unread .conversation-type-pill { background: #fde5c8; color: #8f3d06; border: 1px solid #f2b27a; }
-        .conversation-type-closed { border-left-color: #8d8654; background: #f2efe3; }
-        .conversation-type-closed .conversation-type-pill { background: #e6e1cc; color: #5d5733; border: 1px solid #d6cfaa; }
-        .conversation-type-standard { border-left-color: #497318; background: #e7f1dd; }
-        .conversation-type-standard .conversation-type-pill { background: #dcebd0; color: #264d15; border: 1px solid #b7d3a4; }
+        .conversation-type-unread { border-left-color: #EB6E00; background: #F3F8F5; }
+        .conversation-type-unread .conversation-type-pill { background: #FDEFE3; color: #B85600; border: 1px solid #F7C396; }
+        .conversation-type-closed { border-left-color: #EB6E00; background: #F3F8F5; }
+        .conversation-type-closed .conversation-type-pill { background: #D8E9E0; color: #B85600; border: 1px solid #F7C396; }
+        .conversation-type-standard { border-left-color: #00874F; background: #F3F8F5; }
+        .conversation-type-standard .conversation-type-pill { background: #D8E9E0; color: #00874F; border: 1px solid #DFF0E7; }
     </style>
     <div class="px-5 py-4 border-b border-slate-800">
         <h2 class="text-white font-semibold">Conversations prestataires</h2>

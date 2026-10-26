@@ -22,13 +22,13 @@
         }
     </style>
 </head>
-<body style="margin:0; padding:0; background:#f6f3ed; -webkit-text-size-adjust:100%;">
+<body style="margin:0; padding:0; background:#F3F8F5; -webkit-text-size-adjust:100%;">
     {{-- Aperçu affiché dans la liste des e-mails --}}
-    <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#f6f3ed;">
+    <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#F3F8F5;">
         {{ __('Votre code : :code — valable :n minutes.', ['code' => $code, 'n' => $minutes]) }}&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;
     </div>
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f6f3ed;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F3F8F5;">
         <tr>
             <td align="center" style="padding:28px 12px 36px;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
@@ -41,7 +41,7 @@
                                     @if($logo)
                                         <td style="padding-right:10px;"><img src="{{ $logo }}" width="44" height="44" alt="" style="display:block; width:44px; height:44px; border-radius:22px; border:0;"></td>
                                     @endif
-                                    <td style="font-family:Georgia,'Times New Roman',serif; font-size:20px; font-weight:bold; color:#1d1a16;">{{ $site }}</td>
+                                    <td style="font-family:Georgia,'Times New Roman',serif; font-size:20px; font-weight:bold; color:#0E3B2A;">{{ $site }}</td>
                                 </tr>
                             </table>
                         </td>
@@ -49,24 +49,24 @@
 
                     {{-- Carte --}}
                     <tr>
-                        <td style="background:#ffffff; border:1px solid #e8e1d3; border-radius:24px; overflow:hidden;">
+                        <td style="background:#ffffff; border:1px solid #D8E9E0; border-radius:24px; overflow:hidden;">
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 
                                 {{-- En-tête vert --}}
                                 <tr>
-                                    <td class="tiv-pad" align="center" style="background:#123a25; border-radius:24px 24px 0 0; padding:30px 36px 26px;">
-                                        <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:bold; letter-spacing:2px; text-transform:uppercase; color:#f6c38f;">{{ __('Vérification de votre e-mail') }}</p>
+                                    <td class="tiv-pad" align="center" style="background:#00874F; border-radius:24px 24px 0 0; padding:30px 36px 26px;">
+                                        <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:bold; letter-spacing:2px; text-transform:uppercase; color:#F7C396;">{{ __('Vérification de votre e-mail') }}</p>
                                         <h1 class="tiv-h1" style="margin:12px 0 0; font-family:Georgia,'Times New Roman',serif; font-size:28px; line-height:1.2; font-weight:bold; color:#ffffff;">
                                             {{ __('Bonjour :name,', ['name' => $name ?: __('et bienvenue')]) }}
                                         </h1>
-                                        <p style="margin:10px 0 0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:1.55; color:#cfe6d7;">{{ __('Plus qu\'une étape pour activer votre compte :site.', ['site' => $site]) }}</p>
+                                        <p style="margin:10px 0 0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:1.55; color:#D8E9E0;">{{ __('Plus qu\'une étape pour activer votre compte :site.', ['site' => $site]) }}</p>
                                     </td>
                                 </tr>
                                 {{-- Lisière kita (aplats de couleurs) --}}
                                 <tr>
                                     <td style="font-size:0; line-height:0;">
                                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-                                            @foreach(['#d9650f', '#e0a12e', '#1b6b3a', '#f3ead8', '#1f8079', '#d9650f', '#e0a12e', '#1b6b3a', '#f3ead8', '#1f8079'] as $kc)
+                                            @foreach(['#EB6E00', '#EB6E00', '#00874F', '#D8E9E0', '#00874F', '#EB6E00', '#EB6E00', '#00874F', '#D8E9E0', '#00874F'] as $kc)
                                                 <td height="6" style="height:6px; background:{{ $kc }}; font-size:0; line-height:0;">&nbsp;</td>
                                             @endforeach
                                         </tr></table>
@@ -76,12 +76,12 @@
                                 {{-- Code --}}
                                 <tr>
                                     <td class="tiv-pad" style="padding:30px 36px 8px; font-family:Arial,Helvetica,sans-serif;">
-                                        <p style="margin:0; text-align:center; font-size:15px; line-height:1.55; color:#4a443a;">{{ __('Saisissez ce code sur la page de vérification :') }}</p>
+                                        <p style="margin:0; text-align:center; font-size:15px; line-height:1.55; color:#24503D;">{{ __('Saisissez ce code sur la page de vérification :') }}</p>
                                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;">
                                             <tr>
-                                                <td align="center" style="background:#fdf4ec; border:1.5px dashed #e8b98d; border-radius:18px; padding:22px 10px;">
-                                                    <p class="tiv-code" style="margin:0; font-family:'Courier New',Courier,monospace; font-size:40px; line-height:1; font-weight:bold; letter-spacing:10px; color:#9a4308;">{{ $spaced }}</p>
-                                                    <p style="margin:12px 0 0; font-size:13px; color:#8a7f6b;">{{ __('Valable :n minutes', ['n' => $minutes]) }}</p>
+                                                <td align="center" style="background:#F3F8F5; border:1.5px dashed #F7C396; border-radius:18px; padding:22px 10px;">
+                                                    <p class="tiv-code" style="margin:0; font-family:'Courier New',Courier,monospace; font-size:40px; line-height:1; font-weight:bold; letter-spacing:10px; color:#B85600;">{{ $spaced }}</p>
+                                                    <p style="margin:12px 0 0; font-size:13px; color:#557466;">{{ __('Valable :n minutes', ['n' => $minutes]) }}</p>
                                                 </td>
                                             </tr>
                                         </table>
@@ -93,7 +93,7 @@
                                     <td align="center" class="tiv-pad" style="padding:22px 36px 8px;">
                                         <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                                             <tr>
-                                                <td align="center" bgcolor="#b9500a" style="border-radius:999px;">
+                                                <td align="center" bgcolor="#EB6E00" style="border-radius:999px;">
                                                     <a href="{{ $verifyUrl }}" target="_blank" style="display:inline-block; padding:15px 30px; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none; border-radius:999px;">{{ __('Ouvrir la page de vérification') }}</a>
                                                 </td>
                                             </tr>
@@ -106,8 +106,8 @@
                                     <td class="tiv-pad" style="padding:22px 36px 30px; font-family:Arial,Helvetica,sans-serif;">
                                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                             <tr>
-                                                <td style="background:#fbf9f5; border:1px solid #ece5d6; border-radius:16px; padding:14px 16px; font-size:13.5px; line-height:1.55; color:#4a443a;">
-                                                    <strong style="color:#1d1a16;">{{ __('Pour votre sécurité') }}</strong><br>
+                                                <td style="background:#FFFFFF; border:1px solid #D8E9E0; border-radius:16px; padding:14px 16px; font-size:13.5px; line-height:1.55; color:#24503D;">
+                                                    <strong style="color:#0E3B2A;">{{ __('Pour votre sécurité') }}</strong><br>
                                                     {{ __('Ne communiquez jamais ce code : notre équipe ne vous le demandera pas.') }}
                                                     {{ __('Si vous n\'êtes pas à l\'origine de cette inscription, ignorez simplement cet e-mail.') }}
                                                 </td>
@@ -121,12 +121,12 @@
 
                     {{-- Pied --}}
                     <tr>
-                        <td align="center" style="padding:22px 20px 0; font-family:Arial,Helvetica,sans-serif; font-size:12.5px; line-height:1.6; color:#8a7f6b;">
-                            <strong style="color:#4a443a;">{{ $site }}</strong>@if(! empty($branding['site_slogan'])) · {{ $branding['site_slogan'] }}@endif<br>
-                            @if($phone){{ $phone }}@endif @if($phone && $mail) · @endif @if($mail)<a href="mailto:{{ $mail }}" style="color:#9a4308; text-decoration:none;">{{ $mail }}</a>@endif
+                        <td align="center" style="padding:22px 20px 0; font-family:Arial,Helvetica,sans-serif; font-size:12.5px; line-height:1.6; color:#557466;">
+                            <strong style="color:#24503D;">{{ $site }}</strong>@if(! empty($branding['site_slogan'])) · {{ $branding['site_slogan'] }}@endif<br>
+                            @if($phone){{ $phone }}@endif @if($phone && $mail) · @endif @if($mail)<a href="mailto:{{ $mail }}" style="color:#B85600; text-decoration:none;">{{ $mail }}</a>@endif
                             @if($phone || $mail)<br>@endif
-                            <a href="{{ url('/') }}" style="color:#9a4308; text-decoration:none;">{{ preg_replace('#^https?://#', '', rtrim(url('/'), '/')) }}</a><br>
-                            <span style="color:#a89e8b;">{{ __('E-mail automatique envoyé suite à la création de votre compte.') }}</span>
+                            <a href="{{ url('/') }}" style="color:#B85600; text-decoration:none;">{{ preg_replace('#^https?://#', '', rtrim(url('/'), '/')) }}</a><br>
+                            <span style="color:#8AA99B;">{{ __('E-mail automatique envoyé suite à la création de votre compte.') }}</span>
                         </td>
                     </tr>
                 </table>

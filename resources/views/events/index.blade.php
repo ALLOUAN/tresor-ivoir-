@@ -8,8 +8,8 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-serif { font-family: 'Montserrat', serif; }
         .events-shell {
             position: relative;
             isolation: isolate;
@@ -26,7 +26,7 @@
         }
         .events-hero {
             background-image:
-                linear-gradient(rgba(19, 19, 17, 0.9), rgba(19, 19, 17, 0.9)),
+                linear-gradient(rgba(14,59,42, 0.9), rgba(14,59,42, 0.9)),
                 linear-gradient(transparent, transparent);
             background-size: auto, auto;
             background-position: 0 0, 0 0;
@@ -43,43 +43,43 @@
         }
         .events-filter-panel {
             border: 1px solid rgba(255,255,255,0.09);
-            background: rgba(17,17,14,0.75);
+            background: rgba(14,59,42,0.75);
             backdrop-filter: blur(12px);
-            box-shadow: 0 15px 45px rgba(0,0,0,0.32);
+            box-shadow: 0 15px 45px rgba(14,59,42,0.32);
         }
         .events-input {
             border: 1px solid rgba(255,255,255,0.10);
-            background: rgba(233, 229, 217, 0.86);
+            background: rgba(216,233,224, 0.86);
             transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
         }
         .events-input:focus {
             outline: none;
-            border-color: rgba(242, 121, 15,0.5);
-            box-shadow: 0 0 0 3px rgba(242, 121, 15,0.14);
-            background: rgba(34,34,28,0.95);
+            border-color: rgba(235,110,0,0.5);
+            box-shadow: 0 0 0 3px rgba(235,110,0,0.14);
+            background: rgba(14,59,42,0.95);
         }
         .event-card {
             border: 1px solid rgba(255,255,255,0.07);
-            background: rgba(135, 135, 134, 0.96);
-            box-shadow: 0 12px 36px rgba(0,0,0,0.3);
+            background: rgba(85,116,102, 0.96);
+            box-shadow: 0 12px 36px rgba(14,59,42,0.3);
             transition: transform .3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color .25s ease, box-shadow .3s ease;
         }
         .event-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(242, 121, 15,0.45);
-            box-shadow: 0 18px 48px rgba(0,0,0,0.4), 0 0 20px rgba(242, 121, 15,0.14);
+            border-color: rgba(235,110,0,0.45);
+            box-shadow: 0 18px 48px rgba(14,59,42,0.4), 0 0 20px rgba(235,110,0,0.14);
         }
         .event-cover {
             position: relative;
             overflow: hidden;
             border-bottom: 1px solid rgba(255,255,255,0.07);
-            background: #12120f;
+            background: #0E3B2A;
         }
         .event-cover::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.28);
+            background: rgba(14,59,42, 0.28);
             pointer-events: none;
         }
         .event-cover img {
@@ -89,7 +89,7 @@
             transform: scale(1.06);
         }
         .event-cover-missing {
-            background: rgba(56,56,46,0.85);
+            background: rgba(36,80,61,0.85);
         }
         .event-cta-row {
             display: flex;
@@ -111,13 +111,13 @@
             min-height: 2rem;
             padding: 0.38rem 0.7rem;
             border-radius: 0.7rem;
-            border: 1px solid rgba(242, 121, 15,0.35);
-            background: rgba(242, 121, 15,0.16);
-            color: #f8d79a;
+            border: 1px solid rgba(235,110,0,0.35);
+            background: rgba(235,110,0,0.16);
+            color: #F7C396;
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.02em;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(14,59,42,0.25);
             animation: pricePulseSoft 2.7s ease-in-out infinite;
         }
         .event-ticket-btn-modern {
@@ -131,19 +131,19 @@
             border-radius: 0.65rem;
             font-size: 11px;
             font-weight: 800;
-            color: #1b1408;
-            background: #f2790f;
-            box-shadow: 0 10px 20px rgba(242, 121, 15,0.28);
+            color: #0E3B2A;
+            background: #EB6E00;
+            box-shadow: 0 10px 20px rgba(235,110,0,0.28);
             transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
         }
         .event-ticket-btn-modern:hover {
             transform: translateY(-1px);
             filter: brightness(1.03);
-            box-shadow: 0 14px 24px rgba(242, 121, 15,0.35);
+            box-shadow: 0 14px 24px rgba(235,110,0,0.35);
         }
         .group:hover .event-cta-row {
-            border-color: rgba(242, 121, 15,0.35);
-            box-shadow: 0 10px 22px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
+            border-color: rgba(235,110,0,0.35);
+            box-shadow: 0 10px 22px rgba(14,59,42,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
             transform: translateY(-1px);
         }
         @keyframes ctaRowIn {
@@ -151,12 +151,12 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
         @keyframes pricePulseSoft {
-            0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25); }
-            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(242, 121, 15,0.22); }
+            0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(14,59,42,0.25); }
+            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(235,110,0,0.22); }
         }
         html:not(.dark) .events-hero {
             background-image:
-                linear-gradient(rgba(251, 249, 245, 0.97), rgba(251, 249, 245, 0.97)),
+                linear-gradient(rgba(255,255,255, 0.97), rgba(255,255,255, 0.97)),
                 linear-gradient(transparent, transparent);
             background-size: auto, auto;
             background-position: 0 0, 0 0;
@@ -169,44 +169,44 @@
             background-repeat: no-repeat;
         }
         html:not(.dark) .events-filter-panel {
-            border-color: rgba(0,0,0,0.1);
-            background: rgba(233, 229, 217, 0.94);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+            border-color: rgba(14,59,42,0.1);
+            background: rgba(216,233,224, 0.94);
+            box-shadow: 0 10px 24px rgba(14,59,42,0.06);
         }
         html:not(.dark) .events-input {
-            border-color: rgba(0,0,0,0.12);
-            background:#e9e5d9;
-            color: #1c1915;
+            border-color: rgba(14,59,42,0.12);
+            background:#D8E9E0;
+            color: #0E3B2A;
         }
-        html:not(.dark) .events-input::placeholder { color:#5c574e; }
+        html:not(.dark) .events-input::placeholder { color:#24503D; }
         html:not(.dark) .event-card {
-            border-color: rgba(0,0,0,0.1);
-            background: #f1ede3;
-            box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+            border-color: rgba(14,59,42,0.1);
+            background: #F3F8F5;
+            box-shadow: 0 10px 24px rgba(14,59,42,0.06);
         }
         html:not(.dark) .event-card:hover {
-            border-color: rgba(194, 94, 10,0.35);
-            box-shadow: 0 14px 28px rgba(194, 94, 10,0.14);
+            border-color: rgba(235,110,0,0.35);
+            box-shadow: 0 14px 28px rgba(235,110,0,0.14);
         }
         html:not(.dark) .event-cover {
-            border-bottom-color: rgba(0,0,0,0.08);
-            background:#e9e5d9;
+            border-bottom-color: rgba(14,59,42,0.08);
+            background:#D8E9E0;
         }
         html:not(.dark) .event-cover::after {
             background: rgba(255, 255, 255, 0.39);
         }
         html:not(.dark) .event-cover-missing {
-            background: rgba(235,229,218,0.95);
+            background: rgba(216,233,224,0.95);
         }
         html:not(.dark) .event-cta-row {
-            border-color: rgba(0,0,0,0.08);
-            background: rgba(252, 250, 246, 0.94);
+            border-color: rgba(14,59,42,0.08);
+            background: rgba(255,255,255, 0.94);
         }
         html:not(.dark) .event-price-badge-modern {
-            border-color: rgba(194, 94, 10,0.28);
+            border-color: rgba(235,110,0,0.28);
             background: rgba(255,255,255,0.92);
-            color: #7a3c08;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(194, 94, 10,0.14);
+            color: #B85600;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(235,110,0,0.14);
         }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">

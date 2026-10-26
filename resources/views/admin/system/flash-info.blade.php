@@ -29,7 +29,7 @@
 @endphp
 
 <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20 mb-6">
-    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-green-700 via-green-600 to-green-600">
+    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-green-700">
         <div>
             <h2 class="text-white font-semibold text-lg tracking-tight">Bandeau flash info</h2>
             <p class="text-green-100/80 text-xs mt-0.5">Message d'annonce affiché juste sous l'en-tête, sur tout le site public.</p>
@@ -131,7 +131,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeCreateFlashModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Ajouter un message flash info</h2>
                 <button type="button" onclick="closeCreateFlashModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -152,7 +152,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeEditFlashModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Modifier le message</h2>
                 <button type="button" onclick="closeEditFlashModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>

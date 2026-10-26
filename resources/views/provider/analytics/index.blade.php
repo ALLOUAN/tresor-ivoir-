@@ -80,7 +80,7 @@
     @endphp
 
     @foreach($kpis as $kpi)
-    <div class="premium-shimmer-card bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-slate-700/70 rounded-xl p-4 shadow-lg shadow-green-950/20">
+    <div class="premium-shimmer-card bg-green-900 border border-slate-700/70 rounded-xl p-4 shadow-lg shadow-green-950/20">
         <div class="flex items-start justify-between mb-3">
             <div class="{{ $kpi['bg'] }} w-10 h-10 rounded-xl flex items-center justify-center border border-white/5">
                 <i class="fas {{ $kpi['icon'] }} {{ $kpi['color'] }} text-sm"></i>
@@ -105,7 +105,7 @@
 @if(count($chartDates) > 0)
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
     {{-- Views chart --}}
-    <div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-green-500/20 rounded-xl p-5 shadow-lg shadow-green-900/20">
+    <div class="bg-green-900 border border-green-500/20 rounded-xl p-5 shadow-lg shadow-green-900/20">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-white font-semibold text-sm">Vues de la fiche</h3>
             <span class="text-[10px] px-2 py-1 rounded-full bg-green-500/15 text-green-300 border border-green-400/20">Tendance</span>
@@ -113,7 +113,7 @@
         <canvas id="chartViews" height="180"></canvas>
     </div>
     {{-- Clicks chart --}}
-    <div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-orange-500/20 rounded-xl p-5 shadow-lg shadow-orange-900/20">
+    <div class="bg-green-900 border border-orange-500/20 rounded-xl p-5 shadow-lg shadow-orange-900/20">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-white font-semibold text-sm">Clics (téléphone + site + itinéraire)</h3>
             <span class="text-[10px] px-2 py-1 rounded-full bg-orange-500/15 text-orange-300 border border-orange-400/20">Performance</span>
@@ -122,7 +122,7 @@
     </div>
 </div>
 @else
-<div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-slate-700/70 rounded-xl p-10 text-center mb-8 shadow-lg shadow-green-950/20">
+<div class="bg-green-900 border border-slate-700/70 rounded-xl p-10 text-center mb-8 shadow-lg shadow-green-950/20">
     <div class="mx-auto w-14 h-14 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center mb-4">
         <i class="fas fa-chart-line text-slate-500 text-2xl"></i>
     </div>
@@ -133,7 +133,7 @@
 
 {{-- Clicks breakdown --}}
 @if($totals['clicks_phone'] + $totals['clicks_website'] + $totals['clicks_direction'] > 0)
-<div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-green-500/20 rounded-xl p-5 shadow-lg shadow-green-900/20">
+<div class="bg-green-900 border border-green-500/20 rounded-xl p-5 shadow-lg shadow-green-900/20">
     <div class="flex items-center justify-between mb-4">
         <h3 class="text-white font-semibold text-sm">Répartition des clics</h3>
         <span class="text-[10px] px-2 py-1 rounded-full bg-green-500/15 text-green-300 border border-green-400/20">Doughnut</span>
@@ -167,7 +167,7 @@
 @endif
 
 @if(($totals['clicks_phone'] + $totals['clicks_website'] + $totals['clicks_direction']) === 0)
-<div class="bg-linear-to-br from-green-900 via-green-900 to-green-950 border border-slate-700/70 rounded-xl p-5 shadow-lg shadow-green-950/20">
+<div class="bg-green-900 border border-slate-700/70 rounded-xl p-5 shadow-lg shadow-green-950/20">
     <div class="flex items-center justify-between mb-4">
         <h3 class="text-white font-semibold text-sm">Répartition des clics</h3>
         <span class="text-[10px] px-2 py-1 rounded-full bg-slate-700/70 text-slate-300 border border-slate-600">Doughnut</span>
@@ -195,14 +195,14 @@ function isDarkMode() {
 function palette() {
     const dark = isDarkMode();
     return {
-        surface: dark ? '#e9e5d9' : '#e9e5d9',
+        surface: dark ? '#D8E9E0' : '#D8E9E0',
         ring: dark ? 'rgba(255, 255, 255,0.9)' : 'rgba(255,255,255,0.9)',
-        tick: dark ? '#94a3b8' : '#544f47',
-        gridX: dark ? 'rgba(255, 255, 255,0.35)' : 'rgba(28,25,21,0.08)',
-        gridY: dark ? 'rgba(148,163,184,0.14)' : 'rgba(28,25,21,0.08)',
-        tooltipTitle: dark ? '#f8fafc' : '#1c1915',
-        tooltipBody: dark ? '#cbd5e1' : '#44413a',
-        tooltipBorder: dark ? 'rgba(148,163,184,0.25)' : 'rgba(28,25,21,0.14)',
+        tick: dark ? '#8AA99B' : '#24503D',
+        gridX: dark ? 'rgba(255, 255, 255,0.35)' : 'rgba(14,59,42,0.08)',
+        gridY: dark ? 'rgba(138,169,155,0.14)' : 'rgba(14,59,42,0.08)',
+        tooltipTitle: dark ? '#FFFFFF' : '#0E3B2A',
+        tooltipBody: dark ? '#cbd5e1' : '#24503D',
+        tooltipBorder: dark ? 'rgba(138,169,155,0.25)' : 'rgba(14,59,42,0.14)',
     };
 }
 
@@ -255,7 +255,7 @@ function buildAnalyticsCharts() {
     const defaults = chartDefaults(p);
 
     const viewsCtx = viewsCanvas.getContext('2d');
-    const viewsGradient = 'rgba(49,98,28,0.14)';   // aplat (pas de dégradé)
+    const viewsGradient = 'rgba(0,135,79,0.14)';   // aplat (pas de dégradé)
 
     viewsChart?.destroy();
     viewsChart = new Chart(viewsCanvas, {
@@ -264,12 +264,12 @@ function buildAnalyticsCharts() {
             labels,
             datasets: [{
                 data: viewsData,
-                borderColor: '#31621c',
+                borderColor: '#00874F',
                 backgroundColor: viewsGradient,
                 borderWidth: 2.5,
                 pointRadius: 0,
                 pointHoverRadius: 4,
-                pointBackgroundColor: '#31621c',
+                pointBackgroundColor: '#00874F',
                 pointHoverBorderWidth: 2,
                 pointHoverBorderColor: p.surface,
                 fill: true,
@@ -280,7 +280,7 @@ function buildAnalyticsCharts() {
     });
 
     const clicksCtx = clicksCanvas.getContext('2d');
-    const barGradient = '#ef7c2b';   // aplat (pas de dégradé)
+    const barGradient = '#EB6E00';   // aplat (pas de dégradé)
 
     clicksChart?.destroy();
     clicksChart = new Chart(clicksCanvas, {
@@ -293,7 +293,7 @@ function buildAnalyticsCharts() {
                 borderRadius: 8,
                 borderSkipped: false,
                 maxBarThickness: 28,
-                hoverBackgroundColor: '#f48e30',
+                hoverBackgroundColor: '#EB6E00',
             }]
         },
         options: {
@@ -314,9 +314,9 @@ function buildAnalyticsCharts() {
                 datasets: [{
                     data: doughnutData,
                     backgroundColor: [
-                        '#31621c',
-                        '#327661',
-                        '#ef7c2b',
+                        '#00874F',
+                        '#00874F',
+                        '#EB6E00',
                     ],
                     borderColor: p.ring,
                     borderWidth: 3,

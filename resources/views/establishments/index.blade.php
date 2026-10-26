@@ -8,30 +8,30 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
         .hero-establishments {
             background:
                 linear-gradient(transparent, transparent),
-                linear-gradient(#1c1912, #1c1912);
+                linear-gradient(#0E3B2A, #0E3B2A);
         }
         .home-provider-card-bg { transition: transform .6s ease; }
         .group:hover .home-provider-card-bg { transform: scale(1.06); }
 
         [data-est-panel][hidden] { display: none !important; }
         .est-tab { cursor: pointer; }
-        .est-tab.is-active { background: rgba(242, 121, 15, .12); border-color: rgba(242, 121, 15, .35); }
-        .est-tab.is-active .est-tab-icon { background: rgba(242, 121, 15, .18); color: #f2790f; }
-        .est-tab.is-active .est-tab-label { color: #a3450a !important; }
+        .est-tab.is-active { background: rgba(235,110,0, .12); border-color: rgba(235,110,0, .35); }
+        .est-tab.is-active .est-tab-icon { background: rgba(235,110,0, .18); color: #EB6E00; }
+        .est-tab.is-active .est-tab-label { color: #B85600 !important; }
 
         /* Bandeau d'en-tête sur fond papier (partials.ui-kit) : texte sombre lisible. */
-        html:not(.dark) .hero-establishments .text-white { color: #1d1a16 !important; }
-        html:not(.dark) .hero-establishments .text-white\/70 { color: #4a443a !important; }
-        html:not(.dark) .hero-establishments .text-orange-300 { color: #b9500a !important; }
+        html:not(.dark) .hero-establishments .text-white { color: #0E3B2A !important; }
+        html:not(.dark) .hero-establishments .text-white\/70 { color: #24503D !important; }
+        html:not(.dark) .hero-establishments .text-orange-300 { color: #EB6E00 !important; }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="text-[#1c1915]">
+<body class="text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -53,7 +53,7 @@
                     role="tab" id="est-tab-all" aria-selected="true" aria-controls="est-panel-all" data-est-tab="all">
                 <span class="est-tab-icon w-7 h-7 rounded-lg bg-black/[0.04] flex items-center justify-center"><i class="fas fa-border-all text-xs"></i></span>
                 <span class="est-tab-label">{{ __('Tous') }}</span>
-                <span class="text-[#8a7f6b] text-xs font-bold">{{ $totalCount }}</span>
+                <span class="text-[#557466] text-xs font-bold">{{ $totalCount }}</span>
             </button>
             @foreach($sectors as $sector)
             @php $count = ($showcase[$sector->slug]['items'] ?? collect())->count(); @endphp
@@ -62,7 +62,7 @@
                     role="tab" id="est-tab-{{ $sector->slug }}" aria-selected="false" aria-controls="est-panel-{{ $sector->slug }}" data-est-tab="{{ $sector->slug }}">
                 <span class="est-tab-icon w-7 h-7 rounded-lg bg-black/[0.04] flex items-center justify-center"><i class="fas {{ $showcase[$sector->slug]['items']->first()['icon'] ?? 'fa-store' }} text-xs"></i></span>
                 <span class="est-tab-label">{{ $sector->localized('name') }}</span>
-                <span class="text-[#8a7f6b] text-xs font-bold">{{ $count }}</span>
+                <span class="text-[#557466] text-xs font-bold">{{ $count }}</span>
             </button>
             @endif
             @endforeach
@@ -76,7 +76,7 @@
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="font-serif text-xl sm:text-2xl font-bold">{{ $sector->localized('name') }}</h2>
-                        <a href="{{ $showcase[$sector->slug]['index_url'] }}" class="text-[#c25e0a] hover:text-[#a24d08] text-sm font-semibold inline-flex items-center gap-1.5 transition">
+                        <a href="{{ $showcase[$sector->slug]['index_url'] }}" class="text-[#EB6E00] hover:text-[#B85600] text-sm font-semibold inline-flex items-center gap-1.5 transition">
                             {{ __('Voir tout') }} <i class="fas fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
@@ -88,8 +88,8 @@
                 </div>
             @empty
             <div class="text-center py-16 rounded-2xl border border-dashed border-black/10 bg-white/60">
-                <i class="fas fa-store-slash text-3xl mb-3 block text-[#c9bfa8]"></i>
-                <p class="text-[#8a7f6b]">{{ __('Aucun établissement disponible pour le moment.') }}</p>
+                <i class="fas fa-store-slash text-3xl mb-3 block text-[#8AA99B]"></i>
+                <p class="text-[#557466]">{{ __('Aucun établissement disponible pour le moment.') }}</p>
             </div>
             @endforelse
         </div>
@@ -104,7 +104,7 @@
                         @include('partials.home-sector-card', ['it' => $it])
                     @endforeach
                 </div>
-                <a href="{{ $showcase[$sector->slug]['index_url'] }}" class="mt-6 inline-flex items-center gap-2 text-[#c25e0a] hover:text-[#a24d08] text-sm font-semibold transition">
+                <a href="{{ $showcase[$sector->slug]['index_url'] }}" class="mt-6 inline-flex items-center gap-2 text-[#EB6E00] hover:text-[#B85600] text-sm font-semibold transition">
                     {{ __('Voir tout :') }} {{ $sector->localized('name') }} <i class="fas fa-arrow-right text-xs"></i>
                 </a>
             </div>

@@ -11,69 +11,69 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
         /* Champs et boutons du module d'achat */
-        .field-input { width: 100%; background: #fff; border: 1.5px solid #e6dfd1; border-radius: 12px; padding: 11px 13px; font-size: 14px; color: #1c1915; }
-        .field-input:focus { outline: none; border-color: #ef7c2b; box-shadow: 0 0 0 3px rgba(239,124,43,.16); }
-        .btn-primary { background: #b9500a; color: #fff; font-weight: 700; }
-        .btn-primary:hover { background: #9a4308; }
+        .field-input { width: 100%; background: #fff; border: 1.5px solid #D8E9E0; border-radius: 12px; padding: 11px 13px; font-size: 14px; color: #0E3B2A; }
+        .field-input:focus { outline: none; border-color: #EB6E00; box-shadow: 0 0 0 3px rgba(235,110,0,.16); }
+        .btn-primary { background: #EB6E00; color: #fff; font-weight: 700; }
+        .btn-primary:hover { background: #B85600; }
 
         /* Galerie : l'œuvre n'est jamais recadrée (object-fit: contain sur un mur neutre). */
-        .aw-stage { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 3.4; padding: clamp(18px, 4vw, 48px); border-radius: 28px; background: #ebe5da; overflow: hidden; }
-        .aw-stage img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 16px 22px rgba(29,26,22,.32)); cursor: zoom-in; }
-        .aw-stage__btn { position: absolute; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; border: 0; background: rgba(255,255,255,.95); color: #1d1a16; font-size: 13px; font-weight: 700; box-shadow: 0 6px 18px rgba(29,26,22,.18); cursor: pointer; }
-        .aw-stage__btn:hover { background: #fff; color: #9a4308; }
-        .aw-stage__btn:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .aw-stage { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 3.4; padding: clamp(18px, 4vw, 48px); border-radius: 28px; background: #D8E9E0; overflow: hidden; }
+        .aw-stage img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 16px 22px rgba(14,59,42,.32)); cursor: zoom-in; }
+        .aw-stage__btn { position: absolute; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; border: 0; background: rgba(255,255,255,.95); color: #0E3B2A; font-size: 13px; font-weight: 700; box-shadow: 0 6px 18px rgba(14,59,42,.18); cursor: pointer; }
+        .aw-stage__btn:hover { background: #fff; color: #B85600; }
+        .aw-stage__btn:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
         .aw-stage__zoom { right: 16px; bottom: 16px; width: 40px; padding: 0; justify-content: center; }
         .aw-stage__count { left: 16px; bottom: 16px; height: 32px; cursor: default; font-weight: 600; }
         .aw-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 10px; }
-        .aw-thumb { aspect-ratio: 1; padding: 0; border: 2px solid transparent; border-radius: 14px; overflow: hidden; background: #ebe5da; cursor: pointer; }
+        .aw-thumb { aspect-ratio: 1; padding: 0; border: 2px solid transparent; border-radius: 14px; overflow: hidden; background: #D8E9E0; cursor: pointer; }
         .aw-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .aw-thumb.is-active { border-color: #b9500a; }
-        .aw-thumb:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .aw-thumb.is-active { border-color: #EB6E00; }
+        .aw-thumb:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
 
         /* Colonne d'achat */
         .aw-side { position: sticky; top: 92px; }
-        .aw-title { margin: 8px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(30px, 2.4vw + 14px, 44px); font-weight: 700; line-height: 1.08; letter-spacing: -.015em; }
-        .aw-artist { display: flex; align-items: center; gap: 10px; margin: 12px 0 0; color: #3d372c; font-size: 14px; }
-        .aw-artist img, .aw-artist__ph { width: 36px; height: 36px; flex: none; border-radius: 999px; object-fit: cover; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; }
-        .aw-artist a { font-weight: 700; color: #1d1a16; } .aw-artist a:hover { color: #9a4308; text-decoration: underline; }
-        .aw-price { margin: 16px 0 0; font-size: 28px; font-weight: 800; color: #1d1a16; }
-        .aw-price small { font-size: 13px; font-weight: 600; color: #6b6458; }
+        .aw-title { margin: 8px 0 0; font-family: 'Montserrat', serif; font-size: clamp(30px, 2.4vw + 14px, 44px); font-weight: 700; line-height: 1.08; letter-spacing: -.015em; }
+        .aw-artist { display: flex; align-items: center; gap: 10px; margin: 12px 0 0; color: #24503D; font-size: 14px; }
+        .aw-artist img, .aw-artist__ph { width: 36px; height: 36px; flex: none; border-radius: 999px; object-fit: cover; background: #F3F8F5; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; }
+        .aw-artist a { font-weight: 700; color: #0E3B2A; } .aw-artist a:hover { color: #B85600; text-decoration: underline; }
+        .aw-price { margin: 16px 0 0; font-size: 28px; font-weight: 800; color: #0E3B2A; }
+        .aw-price small { font-size: 13px; font-weight: 600; color: #557466; }
         .aw-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
-        .aw-facts li { padding: 10px 12px; border-radius: 14px; background: #fff; border: 1px solid #ece5d6; }
-        .aw-facts small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #8a7f6b; }
-        .aw-facts b { display: block; margin-top: 2px; font-size: 13.5px; color: #1d1a16; }
-        .aw-side #acheter { margin-top: 18px; border-radius: 22px; border-color: #ece5d6; box-shadow: 0 18px 44px -28px rgba(29,26,22,.35); }
+        .aw-facts li { padding: 10px 12px; border-radius: 14px; background: #fff; border: 1px solid #D8E9E0; }
+        .aw-facts small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #557466; }
+        .aw-facts b { display: block; margin-top: 2px; font-size: 13.5px; color: #0E3B2A; }
+        .aw-side #acheter { margin-top: 18px; border-radius: 22px; border-color: #D8E9E0; box-shadow: 0 18px 44px -28px rgba(14,59,42,.35); }
 
         /* Sections */
-        .aw-sec { padding-top: 36px; margin-top: 36px; border-top: 1px solid #e6dfd1; }
-        .aw-h2 { margin: 0 0 14px; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.2vw + 16px, 30px); font-weight: 700; }
-        .aw-kicker { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #b9500a; }
-        .aw-text { margin: 0; font-size: 16px; line-height: 1.75; color: #3d372c; white-space: pre-line; }
-        .aw-dl { margin: 0; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; overflow: hidden; }
-        .aw-dl > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; padding: 12px 16px; border-top: 1px solid #f1ebe0; font-size: 14px; }
+        .aw-sec { padding-top: 36px; margin-top: 36px; border-top: 1px solid #D8E9E0; }
+        .aw-h2 { margin: 0 0 14px; font-family: 'Montserrat', serif; font-size: clamp(24px, 1.2vw + 16px, 30px); font-weight: 700; }
+        .aw-kicker { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #EB6E00; }
+        .aw-text { margin: 0; font-size: 16px; line-height: 1.75; color: #24503D; white-space: pre-line; }
+        .aw-dl { margin: 0; border-radius: 18px; background: #fff; border: 1px solid #D8E9E0; overflow: hidden; }
+        .aw-dl > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; padding: 12px 16px; border-top: 1px solid #F3F8F5; font-size: 14px; }
         .aw-dl > div:first-child { border-top: 0; }
-        .aw-dl dt { color: #6b6458; } .aw-dl dd { margin: 0; color: #1d1a16; font-weight: 600; }
-        .aw-artist-card { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 18px; padding: 20px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
-        .aw-artist-card__photo { width: 96px; height: 96px; border-radius: 999px; object-fit: cover; background: #fdf4ec; color: #b9500a; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .aw-dl dt { color: #557466; } .aw-dl dd { margin: 0; color: #0E3B2A; font-weight: 600; }
+        .aw-artist-card { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 18px; padding: 20px; border-radius: 22px; background: #fff; border: 1px solid #D8E9E0; }
+        .aw-artist-card__photo { width: 96px; height: 96px; border-radius: 999px; object-fit: cover; background: #F3F8F5; color: #EB6E00; display: flex; align-items: center; justify-content: center; font-size: 30px; }
         .aw-btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px; font-size: 13px; font-weight: 700; }
-        .aw-btn--dark { background: #1d1a16; color: #fff; } .aw-btn--dark:hover { background: #000; }
-        .aw-btn--line { border: 1.5px solid #ddd5c5; color: #1d1a16; background: #fff; } .aw-btn--line:hover { border-color: #b9500a; color: #9a4308; }
-        .aw-btn:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .aw-btn--dark { background: #0E3B2A; color: #fff; } .aw-btn--dark:hover { background: #000; }
+        .aw-btn--line { border: 1.5px solid #D8E9E0; color: #0E3B2A; background: #fff; } .aw-btn--line:hover { border-color: #EB6E00; color: #B85600; }
+        .aw-btn:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
         .aw-ship { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-        .aw-ship > div { display: flex; gap: 12px; padding: 14px 16px; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; font-size: 14px; color: #3d372c; }
-        .aw-ship i { width: 36px; height: 36px; flex: none; border-radius: 12px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; }
-        .aw-ship b { display: block; color: #1d1a16; }
+        .aw-ship > div { display: flex; gap: 12px; padding: 14px 16px; border-radius: 18px; background: #fff; border: 1px solid #D8E9E0; font-size: 14px; color: #24503D; }
+        .aw-ship i { width: 36px; height: 36px; flex: none; border-radius: 12px; background: #F3F8F5; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; }
+        .aw-ship b { display: block; color: #0E3B2A; }
         .aw-more { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-        .aw-card { display: block; border-radius: 18px; overflow: hidden; background: #fff; border: 1px solid #ece5d6; transition: border-color .15s ease, box-shadow .15s ease; }
-        .aw-card:hover { border-color: #ddd0bb; box-shadow: 0 14px 30px -20px rgba(29,26,22,.45); }
-        .aw-card__img { aspect-ratio: 1; background: #ebe5da; display: flex; align-items: center; justify-content: center; padding: 14px; }
+        .aw-card { display: block; border-radius: 18px; overflow: hidden; background: #fff; border: 1px solid #D8E9E0; transition: border-color .15s ease, box-shadow .15s ease; }
+        .aw-card:hover { border-color: #D8E9E0; box-shadow: 0 14px 30px -20px rgba(14,59,42,.45); }
+        .aw-card__img { aspect-ratio: 1; background: #D8E9E0; display: flex; align-items: center; justify-content: center; padding: 14px; }
         .aw-card__img img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .aw-card__body { display: block; padding: 10px 12px 12px; }
-        .aw-card__body b { display: block; font-family: 'Playfair Display', serif; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .aw-card__body small { font-size: 13px; color: #6b6458; }
+        .aw-card__body b { display: block; font-family: 'Montserrat', serif; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .aw-card__body small { font-size: 13px; color: #557466; }
         .aw-flash { margin: 0 0 16px; padding: 12px 16px; border-radius: 14px; font-size: 14px; }
         @media (max-width: 1023px) { .aw-side { position: static; } .aw-more { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (max-width: 639px) {
@@ -88,7 +88,7 @@
     @include('partials.booking-page-theme')
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="dx text-[#1c1915]">
+<body class="dx text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 @php
@@ -120,7 +120,7 @@
                     <button type="button" class="aw-stage__btn aw-stage__zoom" id="aw-zoom" aria-label="{{ __('Agrandir la photo') }}"><i class="fas fa-expand" aria-hidden="true"></i></button>
                     @if($images->count() > 1)<span class="aw-stage__btn aw-stage__count"><i class="fas fa-images" aria-hidden="true"></i><span id="aw-count">1</span> / {{ $images->count() }}</span>@endif
                 @else
-                    <i class="fas fa-palette text-5xl text-[#b9500a]" aria-hidden="true"></i>
+                    <i class="fas fa-palette text-5xl text-[#EB6E00]" aria-hidden="true"></i>
                 @endif
             </div>
             @if($images->count() > 1)
@@ -137,13 +137,13 @@
             <div class="aw-side">
                 <div class="hx-pills mb-0">
                     @if($artwork->category)<span class="hx-pill"><i class="fas fa-palette" aria-hidden="true"></i>{{ $artwork->category->localized('name') }}</span>@endif
-                    @if($sold)<span class="hx-pill" style="background:#1d1a16;color:#fff">{{ __('Vendue') }}</span>@elseif($editions->isNotEmpty())<span class="hx-pill"><i class="fas fa-layer-group" aria-hidden="true"></i>{{ __('Éditions limitées') }}</span>@endif
+                    @if($sold)<span class="hx-pill" style="background:#0E3B2A;color:#fff">{{ __('Vendue') }}</span>@elseif($editions->isNotEmpty())<span class="hx-pill"><i class="fas fa-layer-group" aria-hidden="true"></i>{{ __('Éditions limitées') }}</span>@endif
                 </div>
                 <h1 class="aw-title">{{ $artwork->title }}</h1>
                 @if($profile)
                     <p class="aw-artist">
                         @if($profile->photo || $artwork->provider->logo_url)<img src="{{ $profile->photo ?: $artwork->provider->logo_url }}" alt="">@else<span class="aw-artist__ph"><i class="fas fa-palette" aria-hidden="true"></i></span>@endif
-                        <span>{{ __('Par') }} <a href="{{ route('artist.show', $profile->slug) }}">{{ $profile->display_name }}</a>@if($profile->city)<span class="text-[#8a7f6b]"> · {{ $profile->city }}</span>@endif</span>
+                        <span>{{ __('Par') }} <a href="{{ route('artist.show', $profile->slug) }}">{{ $profile->display_name }}</a>@if($profile->city)<span class="text-[#557466]"> · {{ $profile->city }}</span>@endif</span>
                     </p>
                 @endif
                 <p class="aw-price">{{ $fmt((int) $artwork->price_xof) }}@if($editions->isNotEmpty()) <small>· {{ __('tirages dès :a', ['a' => $fmt((int) $editions->min('price_xof'))]) }}</small>@endif</p>
@@ -187,7 +187,7 @@
             <h2 class="aw-h2">{{ __('Livraison et retours') }}</h2>
             <div class="aw-ship">
                 @foreach($delivery as $key => $opt)
-                    <div><i class="fas {{ $key === 'pickup' ? 'fa-store' : 'fa-truck' }}" aria-hidden="true"></i><span><b>{{ \Illuminate\Support\Str::before($opt['label'], ' — ') }}</b>{{ $opt['fee'] ? $fmt($opt['fee']) : __('Gratuit') }}@if($key === 'pickup' && $profile?->pickup_address)<br><small class="text-[#6b6458]">{{ $profile->pickup_address }}</small>@endif</span></div>
+                    <div><i class="fas {{ $key === 'pickup' ? 'fa-store' : 'fa-truck' }}" aria-hidden="true"></i><span><b>{{ \Illuminate\Support\Str::before($opt['label'], ' — ') }}</b>{{ $opt['fee'] ? $fmt($opt['fee']) : __('Gratuit') }}@if($key === 'pickup' && $profile?->pickup_address)<br><small class="text-[#557466]">{{ $profile->pickup_address }}</small>@endif</span></div>
                 @endforeach
                 <div><i class="fas fa-shield-halved" aria-hidden="true"></i><span><b>{{ __('Assurance transport') }}</b>{{ __(':p % de la valeur, en option', ['p' => rtrim(rtrim(number_format((float) ($profile?->insurance_percent ?? 2), 2, ',', ''), '0'), ',')]) }}</span></div>
                 @if($profile?->returns_accepted)
@@ -223,7 +223,7 @@
             <div class="aw-more">
                 @foreach($more as $w)
                     <a href="{{ route('art.show', $w->slug) }}" class="aw-card">
-                        <span class="aw-card__img">@if($w->images[0] ?? null)<img src="{{ $w->images[0] }}" alt="{{ $w->title }}" loading="lazy">@else<i class="fas fa-palette text-2xl text-[#b9500a]" aria-hidden="true"></i>@endif</span>
+                        <span class="aw-card__img">@if($w->images[0] ?? null)<img src="{{ $w->images[0] }}" alt="{{ $w->title }}" loading="lazy">@else<i class="fas fa-palette text-2xl text-[#EB6E00]" aria-hidden="true"></i>@endif</span>
                         <span class="aw-card__body"><b>{{ $w->title }}</b><small>{{ $w->status === \App\Models\Artwork::STATUS_SOLD ? __('Vendue') : $fmt((int) $w->price_xof) }}</small></span>
                     </a>
                 @endforeach

@@ -16,13 +16,13 @@
         * { box-sizing: border-box; }
 
         /* ── Typography ─────────────────────────────────────── */
-        .font-serif   { font-family: 'Playfair Display', Georgia, serif; }
-        .font-elegant { font-family: 'Cormorant Garamond', Georgia, serif; }
+        .font-serif   { font-family: 'Montserrat', Georgia, serif; }
+        .font-elegant { font-family: 'Montserrat', Georgia, serif; }
 
         /* ── Hero background ─────────────────────────────────── */
         .hero-bg {
             background-image:
-                linear-gradient(rgba(10, 9, 6, 0.74), rgba(10, 9, 6, 0.74)),
+                linear-gradient(rgba(14,59,42, 0.74), rgba(14,59,42, 0.74)),
                 url('/images/hero-bg.jpg');
             background-size: cover;
             background-position: center 30%;
@@ -46,8 +46,8 @@
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(rgba(242, 121, 15, 0.01), rgba(242, 121, 15, 0.01)),
-                linear-gradient(rgba(242, 121, 15, 0.01), rgba(242, 121, 15, 0.01));
+                linear-gradient(rgba(235,110,0, 0.01), rgba(235,110,0, 0.01)),
+                linear-gradient(rgba(235,110,0, 0.01), rgba(235,110,0, 0.01));
             pointer-events: none;
         }
         .hero-viewport { min-height: auto; }
@@ -75,7 +75,7 @@
         }
         #hero-bg-carousel img   { object-position: 52% 42%; }
         #hero-bg-carousel video { object-position: center center; }
-        #hero-bg-carousel .hero-bg-layer { background:#e9e5d9; }
+        #hero-bg-carousel .hero-bg-layer { background:#D8E9E0; }
         #hero .hero-editorial-content {
             display: block;
             flex: none;
@@ -134,8 +134,8 @@
 
         /* ── Scrollbar ───────────────────────────────────────── */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background:#e9e5d9; }
-        ::-webkit-scrollbar-thumb { background: #f2790f; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background:#D8E9E0; }
+        ::-webkit-scrollbar-thumb { background: #EB6E00; border-radius: 3px; }
 
         /* ── Gold line decoration ────────────────────────────── */
         .gold-line::after {
@@ -143,7 +143,7 @@
             display: block;
             width: 60px;
             height: 2px;
-            background: #f68a26;
+            background: #EB6E00;
             margin-top: 12px;
         }
         .gold-line-center::after { margin-left: auto; margin-right: auto; }
@@ -213,10 +213,10 @@
         .featured-title-line {
             flex: 1;
             height: 1px;
-            background: rgba(242, 121, 15, 0.23);
+            background: rgba(235,110,0, 0.23);
         }
         .featured-title-line.reverse {
-            background: rgba(242, 121, 15, 0.23);
+            background: rgba(235,110,0, 0.23);
         }
         .featured-title-badge {
             position: relative;
@@ -225,58 +225,107 @@
             gap: 0.6rem;
             padding: 0.55rem 1.2rem;
             border-radius: 9999px;
-            border: 1px solid rgba(242, 121, 15,0.38);
+            border: 1px solid rgba(235,110,0,0.38);
             background:
-                linear-gradient(rgba(249, 188, 135, 0.11), rgba(249, 188, 135, 0.11)),
+                linear-gradient(rgba(247,195,150, 0.11), rgba(247,195,150, 0.11)),
                 rgba(255, 255, 255,0.84);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.08);
+            box-shadow: 0 10px 24px rgba(14,59,42,0.26), inset 0 1px 0 rgba(255,255,255,0.08);
             backdrop-filter: blur(8px);
         }
         .featured-title-dot {
             width: 0.42rem;
             height: 0.42rem;
             border-radius: 9999px;
-            background: #f68a26;
-            box-shadow: 0 0 10px rgba(242, 121, 15,0.65);
+            background: #EB6E00;
+            box-shadow: 0 0 10px rgba(235,110,0,0.65);
         }
         .featured-title-text {
-            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-family: 'Montserrat', Georgia, serif;
             font-size: 0.75rem;
             font-weight: 700;
             letter-spacing: 0.25em;
             text-transform: uppercase;
-            color: #fdbe7b;
+            color: #F7C396;
         }
 
         /* Section Annuaire : onglets « secteur » (le pont de thème clair réécrit les
            couleurs de texte, l'état actif est donc fixé explicitement ici). */
         [data-annuaire-panel][hidden] { display: none !important; }
         .annuaire-tab { width: 100%; cursor: pointer; }
-        .annuaire-tab.is-active { background: #f3eee4; }
-        .annuaire-tab.is-active .annuaire-tab-icon { border-color: #d8cdb8; background: #ffffff; }
-        .annuaire-tab.is-active .annuaire-tab-label { color: #1d1a16 !important; }
-        .annuaire-tab.is-active .annuaire-tab-chevron { opacity: 1; transform: none; color: #b9500a; }
+        .annuaire-tab.is-active { background: #F3F8F5; }
+        .annuaire-tab.is-active .annuaire-tab-icon { border-color: #8AA99B; background: #ffffff; }
+        .annuaire-tab.is-active .annuaire-tab-label { color: #0E3B2A !important; }
+        .annuaire-tab.is-active .annuaire-tab-chevron { opacity: 1; transform: none; color: #EB6E00; }
         /* Secteurs aux couleurs du logo (coucher de soleil, soleil, palmier, lagune, anneau doré, mer, brun du texte) */
-        .annuaire-tab { --c: #7a4a2a; --t: #f5ede3; }
-        .annuaire-tab[data-annuaire-tab="hotels"] { --c: #d9650f; --t: #fdf0e1; }
-        .annuaire-tab[data-annuaire-tab="restaurants"] { --c: #c98a0c; --t: #fdf5dc; }
-        .annuaire-tab[data-annuaire-tab="sites-touristiques"] { --c: #4a8a2a; --t: #eef5e4; }
-        .annuaire-tab[data-annuaire-tab="agences-voyages"] { --c: #1f8079; --t: #e3f3f1; }
-        .annuaire-tab[data-annuaire-tab="loisirs-culture"] { --c: #b0861c; --t: #fbf3dc; }
-        .annuaire-tab[data-annuaire-tab="transports"] { --c: #2c6e8f; --t: #e6f0f5; }
+        .annuaire-tab { --c: #B85600; --t: #F3F8F5; }
+        .annuaire-tab[data-annuaire-tab="hotels"] { --c: #EB6E00; --t: #F3F8F5; }
+        .annuaire-tab[data-annuaire-tab="restaurants"] { --c: #EB6E00; --t: #F3F8F5; }
+        .annuaire-tab[data-annuaire-tab="sites-touristiques"] { --c: #00874F; --t: #F3F8F5; }
+        .annuaire-tab[data-annuaire-tab="agences-voyages"] { --c: #00874F; --t: #F3F8F5; }
+        .annuaire-tab[data-annuaire-tab="loisirs-culture"] { --c: #EB6E00; --t: #F3F8F5; }
+        .annuaire-tab[data-annuaire-tab="transports"] { --c: #00874F; --t: #e6f0f5; }
         #annuaire-tabs .annuaire-tab .annuaire-tab-icon { width: 36px; height: 36px; border-radius: 12px; background: var(--t) !important; border: 1px solid color-mix(in srgb, var(--c) 22%, transparent) !important; transition: background .2s ease, border-color .2s ease; }
         #annuaire-tabs .annuaire-tab .annuaire-tab-icon i { color: var(--c) !important; font-size: 14px; }
         #annuaire-tabs .annuaire-tab:hover { background: var(--t) !important; }
-        #annuaire-tabs .annuaire-tab:hover .annuaire-tab-label { color: #1d1a16 !important; }
+        #annuaire-tabs .annuaire-tab:hover .annuaire-tab-label { color: #0E3B2A !important; }
         #annuaire-tabs .annuaire-tab:hover .annuaire-tab-chevron { color: var(--c) !important; }
         #annuaire-tabs .annuaire-tab.is-active { background: var(--t) !important; box-shadow: inset 3px 0 0 var(--c); }
         #annuaire-tabs .annuaire-tab.is-active .annuaire-tab-icon { background: var(--c) !important; border-color: var(--c) !important; }
         #annuaire-tabs .annuaire-tab.is-active .annuaire-tab-icon i { color: #fff !important; }
         #annuaire-tabs .annuaire-tab.is-active .annuaire-tab-chevron { color: var(--c) !important; }
-        #annuaire-tabs .annuaire-tab-label { color: #3a2f22 !important; }
-        #annuaireSearchInput { background: #fff !important; border: 1.5px solid #e6cf98 !important; color: #1d1a16 !important; }
-        #annuaireSearchInput:focus { border-color: #d9650f !important; box-shadow: 0 0 0 4px rgba(217,101,15,.12); }
-        #annuaireSearchWrap .fa-magnifying-glass { color: #d9650f !important; }
+        #annuaire-tabs .annuaire-tab-label { color: #0E3B2A !important; }
+        #annuaireSearchInput { background: #fff !important; border: 1.5px solid #F7C396 !important; color: #0E3B2A !important; }
+        #annuaireSearchInput:focus { border-color: #EB6E00 !important; box-shadow: 0 0 0 4px rgba(235,110,0,.12); }
+        #annuaireSearchWrap .fa-magnifying-glass { color: #EB6E00 !important; }
+        /* ── Annuaire : bloc d'accroche redessiné (charte « Le Joyau ») ──────────────
+           Bandeau vert + titre blanc, recherche flottante, secteurs en tuiles sur 2 colonnes,
+           secteur actif en orange plein, preuves de confiance, appel à l'action. Aplats, aucun dégradé. */
+        #annuaire .anx { border-radius: 28px; background: #fff; box-shadow: 0 24px 48px -32px rgba(14,59,42,.45); }
+        #annuaire .anx-head { position: relative; overflow: hidden; padding: 28px 28px 52px; border-radius: 28px 28px 0 0; background: #00874F; color: #fff; }
+        #annuaire .anx-head .ivm-g { opacity: .08 !important; }
+        #annuaire .anx-head .ivm-g > * { stroke: #fff !important; }
+        #annuaire .anx-head > :not(.ivm) { position: relative; z-index: 1; }
+        #annuaire .anx-kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.14); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #fff; }
+        #annuaire .anx-kicker i { color: #F7C396; }
+        #annuaire .anx-title { margin: 14px 0 0; font-size: clamp(26px, 2.4vw, 34px); font-weight: 800; line-height: 1.12; letter-spacing: -.015em; color: #fff !important; }
+        #annuaire .anx-title span { display: block; color: #F7C396; }
+        #annuaire .anx-lead { margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: #DFF0E7; }
+        #annuaire .anx-body { padding: 0 24px 26px; }
+        #annuaire #annuaireSearchWrap { position: relative; z-index: 5; margin: -28px 0 22px !important; }
+        #annuaire .anx-search { display: flex; align-items: center; gap: 8px; height: 58px; padding: 0 6px 0 18px; border-radius: 999px; background: #fff; border: 1.5px solid #D8E9E0; box-shadow: 0 14px 28px -18px rgba(14,59,42,.5); transition: border-color .15s ease, box-shadow .15s ease; }
+        #annuaire .anx-search:focus-within { border-color: #EB6E00; box-shadow: 0 0 0 4px rgba(235,110,0,.14); }
+        #annuaire .anx-search__pin { color: #00874F !important; font-size: 15px; }
+        #annuaire .anx-search input { flex: 1; min-width: 0; height: 100%; border: 0 !important; background: transparent !important; box-shadow: none !important; outline: none; padding: 0 !important; font-size: 14.5px; font-weight: 500; color: #0E3B2A !important; }
+        #annuaire .anx-search input::placeholder { color: #557466; }
+        #annuaire .anx-search__go { flex: none; width: 46px; height: 46px; border: 0; border-radius: 999px; background: #EB6E00; color: #fff; cursor: pointer; transition: background .15s ease; }
+        #annuaire .anx-search__go:hover { background: #B85600; }
+        #annuaire .anx-search__go i { color: #fff !important; }
+        #annuaire .anx-label { margin: 0 0 10px; font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #557466; }
+        #annuaire .anx-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; }
+        #annuaire .anx-tabs .annuaire-tab, #annuaire .anx-tabs > a { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 92px; padding: 14px !important; border-radius: 18px !important; border: 1.5px solid #D8E9E0; background: #fff !important; box-shadow: none !important; transition: border-color .15s ease, transform .15s ease, background .15s ease; }
+        #annuaire .anx-tabs > :first-child { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 0; }
+        #annuaire .anx-tabs .annuaire-tab:hover { border-color: var(--c); transform: translateY(-2px); }
+        #annuaire .anx-tabs .annuaire-tab-label { flex: none !important; font-size: 13.5px !important; font-weight: 700 !important; line-height: 1.25; letter-spacing: 0 !important; }
+        #annuaire .anx-tabs .annuaire-tab-chevron { display: none; }
+        #annuaire .anx-tabs .annuaire-tab.is-active { background: #EB6E00 !important; border-color: #EB6E00; }
+        #annuaire .anx-tabs .annuaire-tab.is-active .annuaire-tab-label { color: #fff !important; }
+        #annuaire .anx-tabs .annuaire-tab.is-active .annuaire-tab-icon { background: rgba(255,255,255,.2) !important; border-color: transparent !important; }
+        #annuaire .anx-trust { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 16px; padding: 0; list-style: none; font-size: 13px; font-weight: 600; color: #24503D; }
+        #annuaire .anx-trust li { display: inline-flex; align-items: center; gap: 7px; }
+        #annuaire .anx-trust i { color: #00874F; }
+        #annuaire .anx-trust li + li i { color: #EB6E00; }
+        #annuaire .anx-cta { display: flex; align-items: center; justify-content: center; gap: 10px; height: 54px; border-radius: 999px; background: #00874F; color: #fff !important; font-size: 15px; font-weight: 700; text-decoration: none; transition: background .15s ease; }
+        #annuaire .anx-cta:hover { background: #006B3F; }
+        #annuaire .anx-cta i { transition: transform .15s ease; }
+        #annuaire .anx-cta:hover i { transform: translateX(3px); }
+        @media (max-width: 640px) {
+            #annuaire .anx-head { padding: 22px 20px 46px; }
+            #annuaire .anx-body { padding: 0 16px 20px; }
+            #annuaire .anx-tabs .annuaire-tab, #annuaire .anx-tabs > a { min-height: 84px; padding: 12px !important; }
+        }
+        #annuaire .anx-tabs > :first-child { min-height: 0 !important; }
+        #annuaire .anx-trust li > i { width: auto !important; height: auto !important; margin: 0 !important; border: 0 !important; border-radius: 0 !important; background: none !important; font-size: 14px !important; }
+        @media (prefers-reduced-motion: reduce) { #annuaire .anx-tabs .annuaire-tab, #annuaire .anx-cta i { transition: none; } }
 
         @media (prefers-reduced-motion: reduce) {
             .social-icon-ultra,
@@ -291,57 +340,57 @@
         }
 
         /* ── Light mode: body & textes ──────────────────── */
-        html:not(.dark) body           { background-color:#e9e5d9!important; color:#1c1915!important; }
-        html:not(.dark) .text-white    { color:#1c1915!important; }
-        html:not(.dark) .text-gray-100 { color:#1c1915!important; }
-        html:not(.dark) .text-gray-200 { color:#2d2a23!important; }
-        html:not(.dark) .text-gray-300 { color:#44413a!important; }
-        html:not(.dark) .text-gray-400 { color:#544f47!important; }
-        html:not(.dark) .text-gray-500 { color:#665f52!important; }
-        html:not(.dark) .text-slate-400 { color:#544f47!important; }
-        html:not(.dark) .text-slate-500 { color:#665f52!important; }
+        html:not(.dark) body           { background-color:#D8E9E0!important; color:#0E3B2A!important; }
+        html:not(.dark) .text-white    { color:#0E3B2A!important; }
+        html:not(.dark) .text-gray-100 { color:#0E3B2A!important; }
+        html:not(.dark) .text-gray-200 { color:#0E3B2A!important; }
+        html:not(.dark) .text-gray-300 { color:#24503D!important; }
+        html:not(.dark) .text-gray-400 { color:#24503D!important; }
+        html:not(.dark) .text-gray-500 { color:#557466!important; }
+        html:not(.dark) .text-slate-400 { color:#24503D!important; }
+        html:not(.dark) .text-slate-500 { color:#557466!important; }
 
         /* ── Light mode: custom dark palette ────────────── */
-        html:not(.dark) .bg-dark-900  { background-color:#e9e5d9!important; }
-        html:not(.dark) .bg-dark-800  { background-color:#f0ece4!important; }
-        html:not(.dark) .bg-dark-700  { background-color:#d6cfba!important; }
+        html:not(.dark) .bg-dark-900  { background-color:#D8E9E0!important; }
+        html:not(.dark) .bg-dark-800  { background-color:#F3F8F5!important; }
+        html:not(.dark) .bg-dark-700  { background-color:#8AA99B!important; }
 
         /* ── Light mode: borders ────────────────────────── */
-        html:not(.dark) .border-white\/5           { border-color:rgba(0,0,0,0.05)!important; }
-        html:not(.dark) .border-white\/10          { border-color:rgba(0,0,0,0.08)!important; }
-        html:not(.dark) .border-white\/20          { border-color:rgba(0,0,0,0.12)!important; }
-        html:not(.dark) .border-white\/\[0\.07\]   { border-color:rgba(0,0,0,0.07)!important; }
-        html:not(.dark) .bg-white\/\[0\.04\]       { background-color:rgba(0,0,0,0.04)!important; }
+        html:not(.dark) .border-white\/5           { border-color:rgba(14,59,42,0.05)!important; }
+        html:not(.dark) .border-white\/10          { border-color:rgba(14,59,42,0.08)!important; }
+        html:not(.dark) .border-white\/20          { border-color:rgba(14,59,42,0.12)!important; }
+        html:not(.dark) .border-white\/\[0\.07\]   { border-color:rgba(14,59,42,0.07)!important; }
+        html:not(.dark) .bg-white\/\[0\.04\]       { background-color:rgba(14,59,42,0.04)!important; }
 
         /* ── Light mode: cartes & sections ─────────────── */
-        html:not(.dark) .bg-green-900    { background-color:#e9e5d9!important; }
-        html:not(.dark) .bg-slate-800    { background-color:#e9e5d9!important; }
-        html:not(.dark) .border-slate-800 { border-color:#d6cfba!important; }
+        html:not(.dark) .bg-green-900    { background-color:#D8E9E0!important; }
+        html:not(.dark) .bg-slate-800    { background-color:#D8E9E0!important; }
+        html:not(.dark) .border-slate-800 { border-color:#8AA99B!important; }
         html:not(.dark) .hero-bg-fallback {
-            background: #f8f4ec;
+            background: #F3F8F5;
         }
         html:not(.dark) .featured-title-line {
-            background: rgba(194, 94, 10, 0.2);
+            background: rgba(235,110,0, 0.2);
         }
         html:not(.dark) .featured-title-line.reverse {
-            background: rgba(194, 94, 10, 0.2);
+            background: rgba(235,110,0, 0.2);
         }
         html:not(.dark) .featured-title-badge {
-            border-color: rgba(194, 94, 10,0.35);
+            border-color: rgba(235,110,0,0.35);
             background:
-                linear-gradient(rgba(249, 188, 135, 0.5), rgba(249, 188, 135, 0.5)),
+                linear-gradient(rgba(247,195,150, 0.5), rgba(247,195,150, 0.5)),
                 rgba(255,255,255,0.92);
-            box-shadow: 0 10px 20px rgba(194, 94, 10,0.12), inset 0 1px 0 rgba(255,255,255,0.95);
+            box-shadow: 0 10px 20px rgba(235,110,0,0.12), inset 0 1px 0 rgba(255,255,255,0.95);
         }
-        html:not(.dark) .featured-title-text { color:#a3450a; }
-        html:not(.dark) .featured-title-dot { box-shadow: 0 0 8px rgba(194, 94, 10,0.45); }
+        html:not(.dark) .featured-title-text { color:#B85600; }
+        html:not(.dark) .featured-title-dot { box-shadow: 0 0 8px rgba(235,110,0,0.45); }
 
         .event-price-badge {
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(242, 121, 15,0.35);
-            background: rgba(249, 188, 135, 0.13);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.12);
+            border: 1px solid rgba(235,110,0,0.35);
+            background: rgba(247,195,150, 0.13);
+            box-shadow: 0 8px 20px rgba(14,59,42,0.22), inset 0 1px 0 rgba(255,255,255,0.12);
             animation: eventPricePulse 2.8s ease-in-out infinite;
         }
         .event-price-badge::after {
@@ -355,7 +404,7 @@
         }
         .group:hover .event-price-badge {
             transform: translateY(-1px) scale(1.02);
-            box-shadow: 0 12px 24px rgba(242, 121, 15,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
+            box-shadow: 0 12px 24px rgba(235,110,0,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
         }
         @keyframes eventPricePulse {
             0%, 100% { filter: brightness(1); }
@@ -366,9 +415,9 @@
             60%, 100% { transform: translateX(130%); }
         }
         html:not(.dark) .event-price-badge {
-            border-color: rgba(194, 94, 10,0.32);
-            background: rgba(249, 188, 135, 0.57);
-            color: #7a3c08;
+            border-color: rgba(235,110,0,0.32);
+            background: rgba(247,195,150, 0.57);
+            color: #B85600;
         }
 
         .event-cta-row {
@@ -391,13 +440,13 @@
             min-height: 2rem;
             padding: 0.38rem 0.7rem;
             border-radius: 0.7rem;
-            border: 1px solid rgba(242, 121, 15,0.35);
-            background: rgba(242, 121, 15,0.16);
-            color: #f8d79a;
+            border: 1px solid rgba(235,110,0,0.35);
+            background: rgba(235,110,0,0.16);
+            color: #F7C396;
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.02em;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(14,59,42,0.25);
             animation: pricePulseSoft 2.7s ease-in-out infinite;
         }
         .event-price-badge-modern i {
@@ -415,19 +464,19 @@
             border-radius: 0.65rem;
             font-size: 11px;
             font-weight: 800;
-            color: #1b1408;
-            background: #f2790f;
-            box-shadow: 0 10px 20px rgba(242, 121, 15,0.28);
+            color: #0E3B2A;
+            background: #EB6E00;
+            box-shadow: 0 10px 20px rgba(235,110,0,0.28);
             transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
         }
         .event-ticket-btn-modern:hover {
             transform: translateY(-1px);
             filter: brightness(1.03);
-            box-shadow: 0 14px 24px rgba(242, 121, 15,0.35);
+            box-shadow: 0 14px 24px rgba(235,110,0,0.35);
         }
         .group:hover .event-cta-row {
-            border-color: rgba(242, 121, 15,0.35);
-            box-shadow: 0 10px 22px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
+            border-color: rgba(235,110,0,0.35);
+            box-shadow: 0 10px 22px rgba(14,59,42,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
             transform: translateY(-1px);
         }
         .event-cta-ghost {
@@ -439,15 +488,15 @@
             border-radius: 0.65rem;
             font-size: 11px;
             font-weight: 700;
-            color: #f3f4f6;
+            color: #F3F8F5;
             border: 1px solid rgba(255,255,255,0.14);
-            background: rgba(233, 229, 217, 0.05);
+            background: rgba(216,233,224, 0.05);
             transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
         }
         .event-cta-ghost:hover {
             transform: translateY(-1px);
-            border-color: rgba(242, 121, 15,0.45);
-            background: rgba(242, 121, 15,0.14);
+            border-color: rgba(235,110,0,0.45);
+            background: rgba(235,110,0,0.14);
         }
         @keyframes ctaRowIn {
             0% {
@@ -460,23 +509,23 @@
             }
         }
         @keyframes pricePulseSoft {
-            0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.25); }
-            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(242, 121, 15,0.22); }
+            0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(14,59,42,0.25); }
+            50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 22px rgba(235,110,0,0.22); }
         }
         html:not(.dark) .event-cta-row {
-            border-color: rgba(0,0,0,0.08);
-            background: rgba(252, 250, 246, 0.94);
+            border-color: rgba(14,59,42,0.08);
+            background: rgba(255,255,255, 0.94);
         }
         html:not(.dark) .event-price-badge-modern {
-            border-color: rgba(194, 94, 10,0.28);
+            border-color: rgba(235,110,0,0.28);
             background: rgba(255,255,255,0.92);
-            color: #7a3c08;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(194, 94, 10,0.14);
+            color: #B85600;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 8px 16px rgba(235,110,0,0.14);
         }
         html:not(.dark) .event-cta-ghost {
             color: #1f2937;
-            border-color: rgba(0,0,0,0.12);
-            background: rgba(233, 229, 217, 0.85);
+            border-color: rgba(14,59,42,0.12);
+            background: rgba(216,233,224, 0.85);
         }
 
         /* ── Categories bar (chips) — repris du modèle de /articles ──────── */
@@ -506,16 +555,16 @@
             width: 0;
             height: 2px;
             border-radius: 2px;
-            background: #eb7d1c;
+            background: #EB6E00;
             transition: width .24s ease;
-            box-shadow: 0 0 10px rgba(242, 121, 15,0.45);
+            box-shadow: 0 0 10px rgba(235,110,0,0.45);
         }
         .category-chip:hover {
             transform: translateY(-1px);
             color: #ffffff;
-            border-color: rgba(242, 121, 15,0.3);
+            border-color: rgba(235,110,0,0.3);
             background: rgba(255, 255, 255, 0.07);
-            box-shadow: 0 0 14px rgba(242, 121, 15,0.14);
+            box-shadow: 0 0 14px rgba(235,110,0,0.14);
         }
         .category-chip:hover::before {
             transform: translateX(130%);
@@ -524,21 +573,21 @@
             width: 72%;
         }
         .category-chip.is-active {
-            border-color: rgba(242, 121, 15,0.52);
-            background: #f2790f;
-            color: #090705;
-            box-shadow: 0 8px 20px rgba(242, 121, 15,0.3);
+            border-color: rgba(235,110,0,0.52);
+            background: #EB6E00;
+            color: #0E3B2A;
+            box-shadow: 0 8px 20px rgba(235,110,0,0.3);
         }
         .category-chip.is-active::after {
             width: 76%;
-            background: rgba(9,7,5,0.8);
+            background: rgba(14,59,42,0.8);
             box-shadow: none;
         }
         .categories-strip {
             position: relative;
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 9999px;
-            background: rgba(8,8,7,0.38);
+            background: rgba(14,59,42,0.38);
             backdrop-filter: blur(10px) saturate(120%);
             padding: 0.45rem;
             scrollbar-width: none;
@@ -548,8 +597,47 @@
             display: none;
         }
         .categories-strip {
-            -webkit-mask-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65));
-                    mask-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65));
+            -webkit-mask-image: none;
+                    mask-image: none;
+        }
+
+        /* ── Rubriques de l'accueil : capsule blanche, pastille de couleur par rubrique, compteur en badge,
+              rubrique active en vert forêt. Prime sur les réglages génériques de partials.ui-kit. ── */
+        .hm-cats { --hm-forest: #00874F; --hm-line: #D8E9E0; }
+        .hm-cats .t0 { --dot: 235,110,0; } .hm-cats .t1 { --dot: 0,135,79; } .hm-cats .t2 { --dot: 235,110,0; }
+        .hm-cats .t3 { --dot: 0,135,79; } .hm-cats .t4 { --dot: 235,110,0; } .hm-cats .t5 { --dot: 184,86,0; }
+        html .hm-cats .categories-strip {
+            -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 44px), transparent 100%);
+                    mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 44px), transparent 100%);
+            padding: 6px; gap: 6px; border-radius: 999px;
+            background: rgba(255,255,255,.92) !important; border: 1px solid var(--hm-line) !important;
+            box-shadow: 0 14px 30px -24px rgba(14,59,42,.5) !important; backdrop-filter: blur(10px);
+        }
+        html .hm-cats .categories-strip.is-start { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent 100%); mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent 100%); }
+        html .hm-cats .categories-strip.is-end { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28px); mask-image: linear-gradient(90deg, transparent 0, #000 28px); }
+        html .hm-cats .categories-strip.is-start.is-end { -webkit-mask-image: none; mask-image: none; }
+        html .hm-cats .category-chip {
+            --dot: 0,135,79;
+            display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 14px;
+            border-radius: 999px; border: 1px solid transparent !important; background: transparent !important;
+            color: #24503D !important; font-size: 14px; font-weight: 600; letter-spacing: 0; white-space: nowrap;
+            box-shadow: none !important; transform: none !important; overflow: visible;
+            transition: background .18s ease, color .18s ease, border-color .18s ease;
+        }
+        html .hm-cats .category-chip::before, html .hm-cats .category-chip::after { display: none !important; }
+        html .hm-cats .category-chip:hover { background: #F3F8F5 !important; border-color: var(--hm-line) !important; color: #0E3B2A !important; }
+        html .hm-cats .category-chip:focus-visible { outline: 3px solid rgba(235,110,0,.45); outline-offset: 1px; }
+        .hm-cats__dot { width: 8px; height: 8px; flex: none; border-radius: 999px; background: rgb(var(--dot)); box-shadow: 0 0 0 3px rgba(var(--dot), .16); }
+        .hm-cats__ic { font-size: 12px; color: var(--hm-forest); }
+        .hm-cats__n { min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: rgba(var(--dot), .12); color: rgb(var(--dot)); font-size: 11.5px; font-weight: 800; }
+        html .hm-cats .category-chip.is-active { background: var(--hm-forest) !important; border-color: var(--hm-forest) !important; color: #fff !important; }
+        html .hm-cats .category-chip.is-active .hm-cats__ic { color: #fff !important; }
+        html .hm-cats .categories-nav-arrow { width: 36px; height: 36px; background: #fff !important; color: #B85600 !important; border: 1px solid var(--hm-line) !important; box-shadow: 0 8px 18px -10px rgba(14,59,42,.45) !important; }
+        html .hm-cats .categories-nav-arrow:hover { background: #EB6E00 !important; border-color: #EB6E00 !important; color: #fff !important; }
+        html .hm-cats .categories-nav-arrow--left { left: 4px; } html .hm-cats .categories-nav-arrow--right { right: 4px; }
+        @media (max-width: 640px) {
+            html .hm-cats .category-chip { height: 36px; padding: 0 12px 0 11px; font-size: 13px; gap: 7px; }
+            .hm-cats__n { min-width: 20px; height: 20px; font-size: 11px; }
         }
         .categories-nav-arrow {
             position: absolute;
@@ -559,46 +647,46 @@
             width: 34px; height: 34px;
             border-radius: 999px;
             display: inline-flex; align-items: center; justify-content: center;
-            background: rgba(28,25,21,0.9);
+            background: rgba(14,59,42,0.9);
             color: #fff;
             border: 1px solid rgba(255,255,255,0.16);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 18px rgba(14,59,42,0.4);
             cursor: pointer;
             font-size: 12px;
             transition: background .2s ease, transform .2s ease, opacity .2s ease;
         }
-        .categories-nav-arrow:hover { background: #f2790f; transform: translateY(-50%) scale(1.06); }
+        .categories-nav-arrow:hover { background: #EB6E00; transform: translateY(-50%) scale(1.06); }
         .categories-nav-arrow--left { left: -4px; }
         .categories-nav-arrow--right { right: -4px; }
         .categories-nav-arrow[hidden] { display: none; }
         html:not(.dark) .categories-strip {
-            border-color: rgba(0,0,0,0.1);
-            background: rgba(233, 229, 217, 0.92);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border-color: rgba(14,59,42,0.1);
+            background: rgba(216,233,224, 0.92);
+            box-shadow: 0 8px 20px rgba(14,59,42,0.05);
         }
         html:not(.dark) .categories-nav-arrow {
             background: rgba(255,255,255,0.96);
-            color: #1c1915;
-            border-color: rgba(0,0,0,0.1);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+            color: #0E3B2A;
+            border-color: rgba(14,59,42,0.1);
+            box-shadow: 0 8px 18px rgba(14,59,42,0.12);
         }
-        html:not(.dark) .categories-nav-arrow:hover { background: #f2790f; color: #fff; }
+        html:not(.dark) .categories-nav-arrow:hover { background: #EB6E00; color: #fff; }
         html:not(.dark) .category-chip {
-            border-color: rgba(0,0,0,0.12);
-            background: rgba(233, 229, 217, 0.9);
-            color: #2d2a23;
+            border-color: rgba(14,59,42,0.12);
+            background: rgba(216,233,224, 0.9);
+            color: #0E3B2A;
         }
         html:not(.dark) .category-chip:hover {
-            color: #1c1915;
-            border-color: rgba(194, 94, 10,0.35);
-            background: rgba(242, 121, 15,0.10);
-            box-shadow: 0 0 14px rgba(194, 94, 10,0.12);
+            color: #0E3B2A;
+            border-color: rgba(235,110,0,0.35);
+            background: rgba(235,110,0,0.10);
+            box-shadow: 0 0 14px rgba(235,110,0,0.12);
         }
         html:not(.dark) .category-chip.is-active {
-            border-color: rgba(194, 94, 10,0.45);
-            background: #f2790f;
-            color: #1c1915;
-            box-shadow: 0 8px 18px rgba(194, 94, 10,0.2);
+            border-color: rgba(235,110,0,0.45);
+            background: #EB6E00;
+            color: #0E3B2A;
+            box-shadow: 0 8px 18px rgba(235,110,0,0.2);
         }
 
     </style>
@@ -728,21 +816,21 @@
     {{-- Categories bar --}}
     <div class="relative z-10 border-t border-white/8 bg-dark-900/60 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
-            <div class="categories-nav relative">
+            <div class="categories-nav hm-cats relative">
                 <button type="button" class="categories-nav-arrow categories-nav-arrow--left" data-dir="-1" aria-label="{{ __('Catégories précédentes') }}" hidden>
                     <i class="fas fa-chevron-left"></i>
                 </button>
-                <div class="categories-strip flex items-center gap-2.5 overflow-x-auto scrollbar-none">
+                <div class="categories-strip flex items-center gap-2 overflow-x-auto scrollbar-none">
                     <a href="{{ route('articles.index') }}"
-                       class="category-chip {{ !request('categorie') && request()->routeIs('home') ? 'is-active' : '' }} shrink-0 px-5 py-2 rounded-full text-sm font-semibold">
-                        {{ __('Tous') }}
+                       class="category-chip {{ !request('categorie') && request()->routeIs('home') ? 'is-active' : '' }} shrink-0">
+                        <i class="fas fa-border-all hm-cats__ic" aria-hidden="true"></i>{{ __('Tous') }}
                     </a>
                     @foreach($homeCategories as $cat)
                     <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}"
-                       class="category-chip shrink-0 px-5 py-2 rounded-full text-sm font-semibold">
-                        {{ $cat->localized('name') }}
+                       class="category-chip shrink-0 t{{ $loop->index % 6 }}">
+                        <span class="hm-cats__dot" aria-hidden="true"></span>{{ $cat->localized('name') }}
                         @if($cat->articles_count > 0)
-                        <span class="ml-1 opacity-70">({{ $cat->articles_count }})</span>
+                        <span class="hm-cats__n" aria-label="{{ trans_choice(':count article|:count articles', $cat->articles_count) }}">{{ $cat->articles_count }}</span>
                         @endif
                     </a>
                     @endforeach
@@ -764,7 +852,7 @@
 {{-- ══════════════════════════════════════════════════════════
      SECTION: À LA UNE
 ══════════════════════════════════════════════════════════ --}}
-<section id="articles" class="py-16 sm:py-20 bg-dark-900 relative overflow-hidden"
+<section id="articles" class="pt-6 pb-14 sm:py-20 bg-dark-900 relative overflow-hidden"
     @if($articlesImage && $articlesImage->isVisible())
         style="--articles-bg-image: url('{{ $articlesImage->image_url }}');"
     @endif
@@ -773,7 +861,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
 
         {{-- ── En-tête centré style presse ── --}}
-        <div class="featured-title-wrap mb-10 sm:mb-12 reveal">
+        <div class="featured-title-wrap mb-6 sm:mb-12 reveal">
             <div class="featured-title-line"></div>
             <div class="featured-title-badge shrink-0">
                 <span class="featured-title-dot"></span>
@@ -888,7 +976,7 @@
                         </span>
                     </a>
                 @empty
-                    <p class="text-[#6b6458] text-sm py-4">{{ __('Aucun article supplémentaire.') }}</p>
+                    <p class="text-[#557466] text-sm py-4">{{ __('Aucun article supplémentaire.') }}</p>
                 @endforelse
                 <a href="{{ route('articles.index') }}" class="ti-outline-btn">
                     {{ __('Voir tous les articles') }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
@@ -925,31 +1013,25 @@
     <div class="section-watermark-bg"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-            <aside class="lg:col-span-5 reveal self-start lg:sticky lg:top-28 rounded-2xl border border-[#e8e1d3] bg-white shadow-[0_1px_2px_rgba(29,26,22,.06)] overflow-hidden">
+            <aside class="anx lg:col-span-5 reveal self-start lg:sticky lg:top-28">
+                {{-- En-tête : bandeau Vert Ivoire, titre blanc (charte « Le Joyau ») --}}
+                <div class="anx-head">
+                    @include('partials.ivorian-motifs', ['culture' => 'senoufo', 'band' => false])
+                    <p class="anx-kicker"><i class="fas fa-compass" aria-hidden="true"></i>{{ __('Annuaire des prestataires') }}</p>
+                    <h2 class="anx-title">{{ __('Les meilleures adresses') }} <span>{{ __('de Côte d\'Ivoire') }}</span></h2>
+                    <p class="anx-lead">{{ __('Hôtels, restaurants, guides touristiques, artisans… Découvrez notre sélection premium d\'établissements vérifiés et notés par notre équipe.') }}</p>
+                </div>
 
-                <div class="p-6 sm:p-8">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="w-10 h-10 shrink-0 rounded-lg bg-[#fdf4ec] flex items-center justify-center">
-                            <i class="fas fa-compass" style="color:#b9500a"></i>
-                        </div>
-                        <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant">{{ __('Annuaire des prestataires') }}</p>
-                    </div>
-
-                    <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4 leading-snug">
-                        {{ __('Les meilleures adresses') }}<br>{{ __('de Côte d\'Ivoire') }}
-                    </h2>
-                    <p class="text-[#1c1915] font-elegant text-xl font-light leading-relaxed mb-7">
-                        {{ __('Hôtels, restaurants, guides touristiques, artisans… Découvrez notre sélection premium d\'établissements vérifiés et notés par notre équipe.') }}
-                    </p>
-
+                <div class="anx-body">
                     {{-- Recherche d'adresses / établissements --}}
                     <div class="relative mb-6" id="annuaireSearchWrap">
                         <form method="GET" action="{{ route('providers.index') }}" role="search">
-                            <div class="relative">
-                                <i class="fas fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gold-400/70 text-sm"></i>
+                            <div class="anx-search">
+                                <i class="fas fa-location-dot anx-search__pin" aria-hidden="true"></i>
+                                <label for="annuaireSearchInput" class="sr-only">{{ __('Rechercher une adresse') }}</label>
                                 <input type="text" name="q" id="annuaireSearchInput" autocomplete="off"
-                                       placeholder="{{ __('Rechercher une adresse, un établissement, une ville…') }}"
-                                       class="w-full bg-dark-700/70 border border-white/10 focus:border-gold-400/50 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white placeholder:text-gray-500 outline-none transition">
+                                       placeholder="{{ __('Adresse, établissement, ville…') }}">
+                                <button type="submit" class="anx-search__go" aria-label="{{ __('Rechercher') }}"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></button>
                             </div>
                         </form>
                         <div id="annuaireSearchResults"
@@ -957,7 +1039,8 @@
                     </div>
 
                     {{-- Secteurs — onglets : la grille de droite affiche sur place les prestataires du secteur choisi --}}
-                    <nav class="flex flex-col gap-1.5 mb-7 border-t border-white/10 pt-5" id="annuaire-tabs" @if(($homeProviderCategories ?? collect())->isNotEmpty()) role="tablist" aria-label="{{ __('Secteurs de l\'annuaire') }}" @endif>
+                    <p class="anx-label">{{ __('Parcourir par secteur') }}</p>
+                    <nav class="anx-tabs" id="annuaire-tabs" @if(($homeProviderCategories ?? collect())->isNotEmpty()) role="tablist" aria-label="{{ __('Secteurs de l\'annuaire') }}" @endif>
                         @php
                             $sidebarCatIcons = ['hotels' => 'fa-bed', 'restaurants' => 'fa-utensils', 'sites-touristiques' => 'fa-mountain-sun', 'agences-voyages' => 'fa-plane-departure', 'loisirs-culture' => 'fa-masks-theater', 'transports' => 'fa-van-shuttle'];
                         @endphp
@@ -994,9 +1077,12 @@
                         @endif
                     </nav>
 
-                    <a href="{{ route('providers.index') }}"
-                       class="flex items-center justify-center gap-2.5 w-full px-6 py-3.5 rounded-xl btn-primary font-bold text-sm">
-                        <i class="fas fa-compass"></i> {{ __('Explorer l\'annuaire') }}
+                    <ul class="anx-trust">
+                        <li><i class="fas fa-circle-check" aria-hidden="true"></i>{{ __('Établissements vérifiés') }}</li>
+                        <li><i class="fas fa-star" aria-hidden="true"></i>{{ __('Notés par la rédaction') }}</li>
+                    </ul>
+                    <a href="{{ route('providers.index') }}" class="anx-cta">
+                        {{ __('Explorer l\'annuaire') }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     </a>
                 </div>
             </aside>
@@ -1020,7 +1106,7 @@
                         @endif
                     </div>
                     <a href="{{ route('establishments.index') }}"
-                       class="mt-5 inline-flex items-center gap-2 text-[#b9500a] hover:text-[#9a4308] text-sm font-semibold transition-colors">
+                       class="mt-5 inline-flex items-center gap-2 text-[#EB6E00] hover:text-[#B85600] text-sm font-semibold transition-colors">
                         {{ __('Voir tous nos établissements') }} <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
@@ -1058,6 +1144,9 @@
         </div>
     </div>
 </section>
+
+{{-- Bannière publicitaire (Administration › Bannières publicitaires) --}}
+@include('partials.home-promo-banner', ['placement' => 'after_annuaire'])
 
 <script>
 (function () {
@@ -1161,12 +1250,12 @@
 ══════════════════════════════════════════════════════════ --}}
 {{-- [COMMENTÉ] section #decouvertes --}}
 {{-- <section id="decouvertes" class="py-16 sm:py-24 bg-dark-800 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-5" style="background-color: rgba(242, 121, 15, 0.5); background-size: 20px 20px;"></div>
+    <div class="absolute inset-0 opacity-5" style="background-color: rgba(235,110,0, 0.5); background-size: 20px 20px;"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16 reveal">
             <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">Explorer par thème</p>
             <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4">Nos rubriques</h2>
-            <p class="text-[#1c1915] font-elegant text-xl font-light">Plongez dans la richesse et la diversité de la Côte d'Ivoire à travers nos sélections thématiques.</p>
+            <p class="text-[#0E3B2A] font-elegant text-xl font-light">Plongez dans la richesse et la diversité de la Côte d'Ivoire à travers nos sélections thématiques.</p>
         </div>
 
         @php
@@ -1191,7 +1280,7 @@
                 $catColor = $defaultCatColors[$i % count($defaultCatColors)];
             @endphp
             <a href="{{ route('articles.index', ['categorie' => $cat->slug]) }}"
-               class="group bg-linear-to-b {{ $catColor }} border rounded-2xl p-5 text-center hover:scale-105 transition-all duration-300 reveal">
+               class="group {{ $catColor }} border rounded-2xl p-5 text-center hover:scale-105 transition-all duration-300 reveal">
                 <div class="w-12 h-12 rounded-xl bg-white/5 group-hover:bg-gold-500/15 flex items-center justify-center mx-auto mb-3 transition">
                     <i class="fas {{ $catIcon }} text-gold-400 text-lg group-hover:scale-110 transition-transform"></i>
                 </div>
@@ -1206,7 +1295,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             @foreach([__('Patrimoine'),__('Art & Culture'),__('Nature'),__('Gastronomie'),__('Destinations'),__('Art de vivre')] as $i => $label)
             @php $colors = ['from-orange-900/40 to-orange-800/10 border-orange-700/20','from-rose-900/30 to-rose-800/10 border-rose-700/20','from-green-900/40 to-green-800/10 border-green-700/20','from-orange-900/30 to-orange-800/10 border-orange-700/20','from-green-900/30 to-green-800/10 border-green-700/20','from-green-900/30 to-green-800/10 border-green-700/20']; $icons = ['fa-landmark','fa-palette','fa-leaf','fa-utensils','fa-map-location-dot','fa-gem']; @endphp
-            <a href="{{ route('articles.index') }}" class="group bg-linear-to-b {{ $colors[$i] }} border rounded-2xl p-5 text-center hover:scale-105 transition-all duration-300 reveal">
+            <a href="{{ route('articles.index') }}" class="group {{ $colors[$i] }} border rounded-2xl p-5 text-center hover:scale-105 transition-all duration-300 reveal">
                 <div class="w-12 h-12 rounded-xl bg-white/5 group-hover:bg-gold-500/15 flex items-center justify-center mx-auto mb-3 transition">
                     <i class="fas {{ $icons[$i] }} text-gold-400 text-lg group-hover:scale-110 transition-transform"></i>
                 </div>
@@ -1250,8 +1339,8 @@
 }
 /* Pulsation dorée badge */
 @@keyframes rt2-pulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(242, 121, 15,.55); }
-    60%     { box-shadow: 0 0 0 8px rgba(242, 121, 15,0); }
+    0%,100% { box-shadow: 0 0 0 0 rgba(235,110,0,.55); }
+    60%     { box-shadow: 0 0 0 8px rgba(235,110,0,0); }
 }
 /* Ligne dorée animée (hero) */
 @@keyframes rt2-line {
@@ -1292,33 +1381,49 @@
 }
 #regions-touristiques .section-watermark-bg {
     background-image:
-        linear-gradient(rgba(250, 248, 243, 0.86), rgba(250, 248, 243, 0.86)), var(--regions-bg-image, none);
+        linear-gradient(rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), var(--regions-bg-image, none);
 }
 #annuaire .section-watermark-bg {
     background-image:
-        linear-gradient(rgba(250, 248, 243, 0.86), rgba(250, 248, 243, 0.86)), var(--annuaire-bg-image, none);
+        linear-gradient(rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), var(--annuaire-bg-image, none);
 }
 #cultures-ivoiriennes .section-watermark-bg {
     background-image:
-        linear-gradient(rgba(250, 248, 243, 0.86), rgba(250, 248, 243, 0.86)), var(--cultures-bg-image, none);
+        linear-gradient(rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), var(--cultures-bg-image, none);
 }
 /* Titre des cartes ethnies : posé sur un dégradé réellement sombre
    (from-green-950/85), non affecté par le pont de thème clair — couleur
    fixée en dur (text-white y était réécrit en noir par le pont, invisible). */
 #cultures-ivoiriennes .cti-title { color: #ffffff !important; }
-#cultures-ivoiriennes a.group:hover .cti-title { color: #fde3b8 !important; }
+#cultures-ivoiriennes a.group:hover .cti-title { color: #F7C396 !important; }
 #evenements .section-watermark-bg {
     background-image:
-        linear-gradient(rgba(250, 248, 243, 0.86), rgba(250, 248, 243, 0.86)), var(--evenements-bg-image, none);
+        linear-gradient(rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), var(--evenements-bg-image, none);
 }
 #partenaires .section-watermark-bg {
     background-image:
-        linear-gradient(rgba(250, 248, 243, 0.86), rgba(250, 248, 243, 0.86)), var(--partenaires-bg-image, none);
+        linear-gradient(rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), var(--partenaires-bg-image, none);
 }
 #articles .section-watermark-bg {
     background-image:
-        linear-gradient(rgba(250, 248, 243, 0.86), rgba(250, 248, 243, 0.86)), var(--articles-bg-image, none);
+        linear-gradient(rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), var(--articles-bg-image, none);
 }
+
+/* ── Panneaux colorés derrière les cartes (charte « Le Joyau ») ──────────────
+   Les sections gardent leur fond ; le bloc qui regroupe les cartes devient un panneau Vert Ivoire
+   aux coins arrondis, et les cartes restent blanches par-dessus (aplat, aucun dégradé). */
+html:not(.dark) #articles .max-w-7xl > .grid,
+html:not(.dark) #art-creations .max-w-7xl > .grid {
+    background-color: #00874F; border-radius: 28px; padding: 22px;
+}
+/* Couleurs variées d'une section à l'autre, toutes issues de la charte : Vert Ivoire, Orange Ivoire et leurs nuances foncées. */
+html:not(.dark) #art-creations .max-w-7xl > .grid { background-color: rgba(235, 110, 0, .18); } /* orange atténué */
+@media (max-width: 640px) {
+    html:not(.dark) #articles .max-w-7xl > .grid, html:not(.dark) #art-creations .max-w-7xl > .grid { border-radius: 20px; padding: 12px; }
+}
+/* Textes posés directement sur le panneau vert (état vide, mentions) : en blanc. */
+html:not(.dark) #art-creations .max-w-7xl > .grid > p { color: #fff !important; border-color: rgba(255,255,255,.45) !important; }
+
 
 /* ── Régions touristiques ───────────────────────────────
    Contenu toujours visible (pas d'animation d'entrée qui le masque), aplat
@@ -1329,8 +1434,8 @@
 .rt2-strip-card {
     position: relative;
     overflow: hidden;
-    background: #173f2a;
-    border: 1px solid rgba(29,26,22,.08);
+    background: #00874F;
+    border: 1px solid rgba(14,59,42,.08);
     transition: box-shadow .2s ease, border-color .2s ease;
 }
 .rt2-hero {
@@ -1350,7 +1455,7 @@
 .rt2-hero:hover,
 .rt2-side:hover,
 .rt2-strip-card:hover {
-    box-shadow: 0 12px 28px rgba(29,26,22,.16);
+    box-shadow: 0 12px 28px rgba(14,59,42,.16);
 }
 .rt2-img {
     position: absolute; inset: 0;
@@ -1366,7 +1471,7 @@
     width: 40px;
     height: 2px;
     margin-bottom: .75rem;
-    background: #f2790f;
+    background: #EB6E00;
 }
 
 /* ── Bandeau « Autres destinations » (défilement horizontal) ── */
@@ -1396,25 +1501,25 @@
     width: 38px; height: 38px;
     border-radius: 50%;
     background: #ffffff;
-    border: 1px solid #d8cdb8;
+    border: 1px solid #8AA99B;
     display: flex; align-items: center; justify-content: center;
-    color: #1d1a16;
+    color: #0E3B2A;
     cursor: pointer;
     flex-shrink: 0;
     transition: border-color .15s ease, color .15s ease;
 }
-.rt2-nav-btn:hover { border-color: #b9500a; color: #b9500a; }
+.rt2-nav-btn:hover { border-color: #EB6E00; color: #EB6E00; }
 
 .rt2-progress {
     height: 2px;
-    background: #e8e1d3;
+    background: #D8E9E0;
     border-radius: 999px;
     overflow: hidden;
     margin-top: 12px;
 }
 .rt2-progress-bar {
     height: 100%;
-    background: #b9500a;
+    background: #EB6E00;
     border-radius: 999px;
     transition: width .25s ease;
     width: 0%;
@@ -1425,23 +1530,23 @@
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 10px;
     border-radius: 999px;
-    background: #f6ecd5;
-    color: #8a6a1f;
+    background: #F3F8F5;
+    color: #B85600;
     font-size: 11px; font-weight: 600;
 }
 .rt2-badge i { font-size: 9px; }
 
 /* ── Pastilles « Explorer par catégorie » ── */
 .rt2-pill {
-    --pc: 163,69,10;
+    --pc: 184,86,0;
     display: inline-flex; align-items: center; gap: 9px;
     flex-shrink: 0;
     padding: 6px 16px 6px 6px;
     border-radius: 999px;
-    border: 1px solid #e8e1d3;
+    border: 1px solid #D8E9E0;
     background: #ffffff;
     font-size: 14px; font-weight: 500;
-    color: #1d1a16;
+    color: #0E3B2A;
     transition: border-color .15s ease, color .15s ease;
     text-decoration: none;
     white-space: nowrap;
@@ -1465,11 +1570,11 @@
 .rt2-pills-toggle {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 13px; font-weight: 600;
-    color: #b9500a;
+    color: #EB6E00;
     background: none; border: none; cursor: pointer;
     padding: 6px 4px;
 }
-.rt2-pills-toggle:hover { color: #9a4308; }
+.rt2-pills-toggle:hover { color: #B85600; }
 .rt2-pills-toggle i { transition: transform .2s ease; }
 .rt2-pills-toggle.is-expanded i { transform: rotate(180deg); }
 /* Même logique « Voir plus » pour les pilules de domaines culturels. */
@@ -1496,7 +1601,7 @@
     #rt2-pills-row::-webkit-scrollbar, #domain-pills-row::-webkit-scrollbar { display: none; }
     #rt2-pills-row .rt2-pill, #domain-pills-row .domain-pill {
         flex: none; width: auto; min-height: 0; white-space: nowrap; scroll-snap-align: start; padding-top: .55rem; padding-bottom: .55rem;
-        background: #ffffff !important; border: 1px solid #e8e1d3 !important; box-shadow: 0 1px 2px rgba(31, 27, 22, .05);
+        background: #ffffff !important; border: 1px solid #D8E9E0 !important; box-shadow: 0 1px 2px rgba(14,59,42, .05);
     }
     #rt2-pills-row .rt2-pill-extra, #domain-pills-row .domain-pill-extra { display: inline-flex !important; }
     div:has(> #rt2-pills-toggle), div:has(> #domain-pills-toggle) { display: none !important; }
@@ -1509,7 +1614,7 @@
     color: rgb(var(--pc));
     font-size: 11px;
 }
-.rt2-pill:hover { border-color: rgba(var(--pc),.55); color: #1d1a16; }
+.rt2-pill:hover { border-color: rgba(var(--pc),.55); color: #0E3B2A; }
 
 /* Couleurs du logo en alternance (coucher de soleil, soleil, palmier, lagune, anneau doré, mer, brun du texte)
    sur les pastilles « Explorer par catégorie » et « Explorer par domaine ». */
@@ -1522,19 +1627,19 @@
 #rt2-pills-row > :nth-child(7n+7), #domain-pills-row > :nth-child(7n+7) { --pc: 122,74,42 !important; }
 #rt2-pills-row .rt2-pill-icon { width: 28px; height: 28px; background: rgba(var(--pc),.14); border: 1px solid rgba(var(--pc),.25); color: rgb(var(--pc)); font-size: 12px; }
 #rt2-pills-row .rt2-pill:hover { background: rgba(var(--pc),.07); }
-#domain-pills-row .domain-pill { padding: 6px 16px 6px 6px !important; gap: 9px !important; background: #fff !important; border: 1px solid #e8e1d3 !important; }
+#domain-pills-row .domain-pill { padding: 6px 16px 6px 6px !important; gap: 9px !important; background: #fff !important; border: 1px solid #D8E9E0 !important; }
 #domain-pills-row .domain-pill > i:first-child {
     flex: none; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
     border-radius: 999px; background: rgba(var(--pc),.14); border: 1px solid rgba(var(--pc),.25);
     color: rgb(var(--pc)) !important; font-size: 12px !important;
 }
 #domain-pills-row .domain-pill:hover { border-color: rgba(var(--pc),.55) !important; background: rgba(var(--pc),.07) !important; }
-#domain-pills-row .domain-pill:hover span { color: #1d1a16 !important; }
+#domain-pills-row .domain-pill:hover span { color: #0E3B2A !important; }
 
 /* Voile sombre commun sous le texte des photos. */
 .rt2-overlay-b {
     position: absolute; inset: 0;
-    background: rgba(10, 16, 12, 0.39);
+    background: rgba(14,59,42, 0.39);
     z-index: 2;
 }
 
@@ -1546,13 +1651,32 @@
    clair réécrit en teintes sombres pour le reste de la page — invisibles
    ici sur fond de photo assombri par .rt2-overlay-b. */
 .rt2-content .rt2-title { color: #ffffff !important; }
-.rt2-content .rt2-district { color: rgba(253, 190, 123, 0.85) !important; }
-.rt2-content .rt2-meta { color: #d1d5db !important; }
+.rt2-content .rt2-district { color: rgba(247,195,150, 0.85) !important; }
+.rt2-content .rt2-meta { color: #D8E9E0 !important; }
 .rt2-content .rt2-meta-light { color: #e2e8f0 !important; }
-.rt2-content .rt2-meta-icon { color: rgba(242, 121, 15, 0.6) !important; }
-.rt2-content .rt2-meta-icon-soft { color: rgba(253, 190, 123, 0.9) !important; }
-.rt2-content .rt2-cta { color: #fa9a3c !important; }
-.rt2-content .rt2-arrow-btn { color: #fa9a3c !important; }
+.rt2-content .rt2-meta-icon { color: rgba(235,110,0, 0.6) !important; }
+.rt2-content .rt2-meta-icon-soft { color: rgba(247,195,150, 0.9) !important; }
+.rt2-content .rt2-cta { color: #EB6E00 !important; }
+.rt2-content .rt2-arrow-btn { color: #EB6E00 !important; }
+
+/* Mobile : espaces verticaux plus serrés entre les sections de l'accueil. */
+@media (max-width: 639px) {
+    #articles { padding-bottom: 28px; }
+    #annuaire, #regions-touristiques, #cultures-ivoiriennes, #evenements, #art-creations { padding-top: 32px; padding-bottom: 32px; }
+    #partenaires { padding-top: 20px; }
+    .ai-reco-strip { padding-top: 24px !important; padding-bottom: 24px !important; }
+}
+/* Tablette et ordinateur : espaces réduits aussi (96 px → 48/56 px par section). */
+@media (min-width: 640px) {
+    #articles { padding-top: 40px !important; padding-bottom: 40px !important; }
+    #articles .featured-title-wrap { margin-bottom: 32px !important; }
+    #annuaire, #regions-touristiques, #cultures-ivoiriennes, #evenements, #art-creations, #partenaires { padding-top: 48px !important; padding-bottom: 48px !important; }
+    .ai-reco-strip { padding-top: 32px !important; padding-bottom: 32px !important; }
+    .tpb-wrap { padding-bottom: 32px !important; }
+}
+@media (min-width: 1024px) {
+    #annuaire, #regions-touristiques, #cultures-ivoiriennes, #evenements, #art-creations, #partenaires { padding-top: 56px !important; padding-bottom: 56px !important; }
+}
 </style>
 
 <section id="regions-touristiques" class="py-16 sm:py-24 bg-dark-900 relative overflow-hidden"
@@ -1567,15 +1691,15 @@
 
         {{-- ── En-tête ─────────────────────────────────────────────── --}}
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 sm:mb-14 reveal">
-            <div>
-                <p class="text-gold-400 text-xs tracking-[.25em] uppercase font-elegant mb-3">{{ __('Voyage en Côte d\'Ivoire') }}</p>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">{{ __('Régions Touristiques') }}</h2>
-                <p class="text-[#1c1915] font-elegant text-xl font-light mt-4 max-w-lg">
+            <div class="sec-head">
+                <p class="sec-kicker">{{ __('Voyage en Côte d\'Ivoire') }}</p>
+                <h2 class="sec-title">{!! \Illuminate\Support\Str::of(e(__('Régions Touristiques')))->replaceMatches('/(\S+)$/u', '<em>$1</em>') !!}</h2>
+                <p class="sec-lead">
                     {{ __('Plages, parcs nationaux, monuments historiques… Explorez les villes et leurs merveilles.') }}
                 </p>
             </div>
             <a href="{{ route('tourist.cities') }}"
-               class="shrink-0 self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#d8cdb8] bg-white text-sm font-semibold text-[#1d1a16] hover:border-[#b9500a] hover:text-[#b9500a] transition-colors">
+               class="shrink-0 self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#8AA99B] bg-white text-sm font-semibold text-[#0E3B2A] hover:border-[#EB6E00] hover:text-[#EB6E00] transition-colors">
                 {{ __('Explorer toutes les villes') }} <i class="fas fa-arrow-right text-xs"></i>
             </a>
         </div>
@@ -1587,176 +1711,117 @@
             $rtSides = $rtMain->skip(1);
         @endphp
 
-        {{-- ── Destinations : la vedette en pleine largeur (cadre à la forme de son image, infos dessous),
-             puis 3 cartes 16:9 (format des visuels) : aucune image rognée ni texte intégré coupé. ── --}}
+        {{-- ── Destinations : 4 villes en cartes du même modèle que les établissements (.ti-place-card, ui-kit) :
+             photo dans la carte, pastille, région, nom, présentation, nombre de sites et bouton « Découvrir ». ── --}}
         @php
             $destSites = fn ($city, bool $long = false) => $city->sites_count > 0
                 ? trans_choice($long ? ':count site à explorer|:count sites à explorer' : ':count site|:count sites', $city->sites_count)
                 : __('Sites à venir');
         @endphp
-        <div class="rg reveal">
-            @if($rtHero)
-            <a href="{{ route('tourist.city', $rtHero->slug) }}" class="rg-hero group">
-                <span class="rg-media rg-hero__media" data-rg-fit>
-                    <span class="rg-media__fallback" aria-hidden="true">{{ mb_substr($rtHero->name, 0, 1) }}</span>
-                    @if($rtHero->thumbnail || $rtHero->cover_image)
-                        <img src="{{ $rtHero->thumbnail ?: $rtHero->cover_image }}" alt="{{ $rtHero->name }}" loading="lazy" decoding="async" onerror="this.remove()">
-                    @endif
-                    @if($rtHero->is_featured)
-                        <span class="rg-badge is-star"><i class="fas fa-star" aria-hidden="true"></i>{{ __('Destination vedette') }}</span>
-                    @endif
-                </span>
-                <span class="rg-hero__body">
-                    <span class="min-w-0">
-                        <span class="rg-hero__name">{{ $rtHero->name }}</span>
-                        @if($rtHero->district || $rtHero->region_administrative)
-                            <span class="rg-meta"><i class="fas fa-location-dot" aria-hidden="true"></i>{{ collect([$rtHero->district, $rtHero->region_administrative])->filter()->join(' · ') }}</span>
+        <div class="rgc reveal">
+            @foreach($homeTouristCities as $city)
+                @php
+                    $cImg = $city->thumbnail ?: $city->cover_image;
+                    $cUrl = route('tourist.city', $city->slug);
+                    $cMap = 'https://www.google.com/maps/search/?api=1&query='.rawurlencode($city->name.' Côte d\'Ivoire');
+                    $cRegion = $city->region_administrative ?: $city->district;
+                @endphp
+                <article class="ti-place-card rgc-card group">
+                    <div class="ti-place-card__media rgc-card__media">
+                        @if($cImg)
+                            <img src="{{ $cImg }}" alt="" loading="lazy" decoding="async" onerror="this.remove()" data-rgc-img>
                         @endif
-                        @if($rtHero->description)
-                            <span class="rg-hero__desc">{{ \Illuminate\Support\Str::limit(strip_tags($rtHero->description), 170) }}</span>
-                        @endif
-                        <span class="rg-chip"><i class="far fa-compass" aria-hidden="true"></i>{{ $destSites($rtHero, true) }}</span>
-                    </span>
-                    <span class="rg-go">{{ __('Découvrir :city', ['city' => $rtHero->name]) }} <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                </span>
-            </a>
-            @endif
+                        <span class="ti-place-card__icon" aria-hidden="true"><i class="fas fa-map-location-dot"></i></span>
 
-            @if($rtSides->isNotEmpty())
-            <div class="rg-row">
-                @foreach($rtSides as $city)
-                <a href="{{ route('tourist.city', $city->slug) }}" class="rg-card group">
-                    <span class="rg-media rg-card__media">
-                        <span class="rg-media__fallback" aria-hidden="true">{{ mb_substr($city->name, 0, 1) }}</span>
-                        @if($city->thumbnail || $city->cover_image)
-                            <img src="{{ $city->thumbnail ?: $city->cover_image }}" alt="{{ $city->name }}" loading="lazy" decoding="async" onerror="this.remove()">
+                        <div class="ti-place-card__top">
+                            <div class="ti-place-card__pills">
+                                @if($loop->first && $city->is_featured)
+                                    <span class="ti-place-card__pill rgc-star"><i class="fas fa-star" aria-hidden="true"></i>{{ __('Destination vedette') }}</span>
+                                @elseif($city->is_featured)
+                                    <span class="ti-place-card__pill"><i class="fas fa-star" aria-hidden="true"></i>{{ __('Vedette') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="ti-place-card__quick">
+                            <a href="{{ $cMap }}" target="_blank" rel="noopener" class="ti-place-card__qbtn" aria-label="{{ __('Voir :name sur la carte', ['name' => $city->name]) }}" title="{{ __('Carte') }}"><i class="fas fa-map-location-dot" aria-hidden="true"></i></a>
+                            <button type="button" class="ti-place-card__qbtn" data-place-share="{{ $cUrl }}" data-place-title="{{ $city->name }}" aria-label="{{ __('Partager :name', ['name' => $city->name]) }}" title="{{ __('Partager') }}"><i class="fas fa-share-nodes" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="ti-place-card__body">
+                        <div class="ti-place-card__row">
+                            @if($cRegion)
+                                <p class="ti-place-card__sector"><i class="fas fa-map" aria-hidden="true"></i>{{ $cRegion }}</p>
+                            @else
+                                <span></span>
+                            @endif
+                            <span class="ti-place-card__rate is-new"><i class="far fa-compass" aria-hidden="true"></i>{{ $destSites($city) }}</span>
+                        </div>
+                        <h3 class="ti-place-card__name"><a href="{{ $cUrl }}" class="ti-place-card__link">{{ $city->name }}</a></h3>
+                        @if($city->district && $city->district !== $cRegion)
+                            <p class="ti-place-card__location"><i class="fas fa-location-dot" aria-hidden="true"></i>{{ $city->district }}</p>
                         @endif
-                        @if($city->is_featured)
-                            <span class="rg-badge"><i class="fas fa-star" aria-hidden="true"></i>{{ __('Vedette') }}</span>
+                        @if($city->description)
+                            <p class="ti-place-card__text">{{ \Illuminate\Support\Str::limit(strip_tags($city->description), 140) }}</p>
                         @endif
-                    </span>
-                    <span class="rg-card__body">
-                        <span class="min-w-0">
-                            <span class="rg-card__name">{{ $city->name }}</span>
-                            <span class="rg-meta"><i class="fas fa-location-dot" aria-hidden="true"></i>{{ collect([$city->region_administrative ?: $city->district, $destSites($city)])->filter()->join(' · ') }}</span>
-                        </span>
-                        <span class="rg-arrow" aria-hidden="true"><i class="fas fa-arrow-right"></i></span>
-                    </span>
-                </a>
-                @endforeach
-            </div>
-            @endif
+                    </div>
+
+                    <div class="ti-place-card__footer">
+                        <span></span>
+                        <span class="ti-place-card__more" aria-hidden="true">{{ __('Découvrir') }}<i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </article>
+            @endforeach
         </div>
+        @include('partials.place-card-script')
         <style>
-            .rg { display: grid; gap: 20px; }
-            .rg-hero, .rg-card { display: flex; flex-direction: column; overflow: hidden; background: #ffffff; border: 1px solid #ece5d6; color: #1d1a16; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
-            .rg-hero { border-radius: 24px; }
-            .rg-card { border-radius: 20px; }
-            .rg-hero:hover, .rg-card:hover { transform: translateY(-3px); border-color: #e0d4bd; box-shadow: 0 24px 48px -30px rgb(29 26 22 / .45); color: #1d1a16; }
-            .rg-hero:focus-visible, .rg-card:focus-visible { outline: 3px solid #b9500a; outline-offset: 3px; }
-
-            .rg-media { position: relative; display: block; overflow: hidden; background: #1f5a3c; }
-            .rg-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
-            .group:hover .rg-media img { transform: scale(1.03); }
-            .rg-media__fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif, Georgia, serif); font-size: 64px; font-weight: 700; color: rgb(255 255 255 / .85); }
-            /* La vedette prend la forme de son visuel (fixée en JS, entre 16:9 et 3:1) ; 21:9 en attendant. */
-            .rg-hero__media { aspect-ratio: 21 / 9; }
-            .rg-card__media { aspect-ratio: 16 / 9; }
-
-            .rg-badge { position: absolute; top: 14px; left: 14px; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; background: #ffffff; color: #1d1a16; font-size: 12px; font-weight: 600; }
-            .rg-badge i { font-size: 10px; color: #b9500a; }
-            .rg-badge.is-star { background: #febf48; color: #1f1a0e; }
-            .rg-badge.is-star i { color: #1f1a0e; }
-
-            .rg-hero__body { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 26px 24px; }
-            .rg-hero__name { display: block; font-family: var(--font-serif, Georgia, serif); font-size: clamp(26px, 1.6vw + 14px, 34px); font-weight: 700; line-height: 1.1; }
-            .rg-hero__desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 68ch; margin-top: 10px; font-size: 15px; line-height: 1.55; color: #5b5346; }
-            .rg-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 13px; color: #5b5346; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .rg-meta i { font-size: 11px; color: #1b6b3a; }
-            .rg-chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; margin-top: 12px; padding: 0 10px; border-radius: 999px; background: #eef5ef; color: #1b4d31; font-size: 12px; font-weight: 600; }
-            .rg-go { flex-shrink: 0; display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 22px; border-radius: 999px; background: #b9500a; color: #ffffff; font-size: 14px; font-weight: 600; white-space: nowrap; transition: background .2s ease; }
-            .rg-hero:hover .rg-go { background: #9a4308; }
-            .rg-go i { font-size: 12px; transition: transform .2s ease; }
-            .rg-hero:hover .rg-go i { transform: translateX(3px); }
-
-            .rg-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-            .rg-card__body { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 16px 18px 20px; }
-            .rg-card__name { display: block; font-family: var(--font-serif, Georgia, serif); font-size: 21px; font-weight: 700; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .rg-arrow { width: 40px; height: 40px; flex-shrink: 0; border-radius: 999px; background: #b9500a; color: #ffffff; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; transition: transform .2s ease, background .2s ease; }
-            .rg-card:hover .rg-arrow { transform: rotate(-45deg); background: #9a4308; }
-
-            /* Tablette et mobile : les 3 villes défilent à l'horizontale (2 cartes et un bout visibles sur
-               tablette, une et un bout sur mobile) au lieu de 3 colonnes trop étroites. */
-            @media (max-width: 1023px) {
-                .rg-row { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 24px; margin: 0 -24px; padding: 0 24px 6px; scrollbar-width: none; }
-                .rg-row::-webkit-scrollbar { display: none; }
-                .rg-card { flex: 0 0 44%; scroll-snap-align: start; }
-            }
-            @media (max-width: 767px) {
-                .rg { gap: 16px; }
-                .rg-hero__body { flex-direction: column; align-items: flex-start; gap: 16px; padding: 18px 18px 20px; }
-                .rg-go { width: 100%; justify-content: center; }
-                .rg-row { gap: 14px; scroll-padding-inline: 16px; margin: 0 -16px; padding: 0 16px 6px; }
-                .rg-card { flex-basis: 78%; }
-            }
-            @media (prefers-reduced-motion: reduce) {
-                .rg-hero, .rg-card, .rg-media img, .rg-go i, .rg-arrow { transition: none; }
-                .rg-hero:hover, .rg-card:hover { transform: none; }
+            .rgc { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+            /* Visuels des villes au format 16:9 (celui des images chargées) : textes intégrés non rognés. */
+            .rgc-card__media { aspect-ratio: 16 / 9; }
+            .rgc-card__media.is-wide img { object-position: left center; }
+            .rgc-star { background: #EB6E00 !important; color: #0E3B2A !important; }
+            .rgc-star i { color: #0E3B2A !important; }
+            @media (max-width: 1023px) { .rgc { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+            /* Mobile : défilement horizontal, une carte et un bout visibles. */
+            @media (max-width: 639px) {
+                .rgc { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 16px; margin: 0 -16px; padding: 4px 16px 10px; scrollbar-width: none; }
+                .rgc::-webkit-scrollbar { display: none; }
+                .rgc-card { flex: 0 0 82%; min-width: 0; scroll-snap-align: start; }
+                .rgc-card .ti-place-card__media:not(:has(img)) { aspect-ratio: 16 / 9; }
             }
         </style>
         <script>
-        /* Le cadre de la vedette épouse le format de son visuel (borné entre 16:9 et 3:1) : une bannière
-           large avec texte intégré s'affiche en entier, sans recadrage. */
+        /* Bannière très large (texte intégré à gauche, ex. 3:1) : cadrée à gauche pour garder son titre lisible. */
         (function () {
-            var media = document.querySelector('[data-rg-fit]');
-            var img = media && media.querySelector('img');
-            if (!img) return;
-            function fit() {
-                if (!img.naturalWidth) return;
-                var r = Math.min(3, Math.max(16 / 9, img.naturalWidth / img.naturalHeight));
-                media.style.aspectRatio = r.toFixed(3);
-            }
-            if (img.complete) fit(); else img.addEventListener('load', fit);
+            document.querySelectorAll('[data-rgc-img]').forEach(function (img) {
+                function fit() { if (img.naturalWidth / img.naturalHeight > 2.2) img.parentNode.classList.add('is-wide'); }
+                if (img.complete) fit(); else img.addEventListener('load', fit);
+            });
         })();
         </script>
 
-        {{-- ── Autres destinations : pastilles ── --}}
-        @if($rtStrip->isNotEmpty())
-        <nav class="ti-dest-strip reveal" aria-label="{{ __('Autres destinations') }}">
-            <span class="ti-dest-strip__label">{{ __('Autres destinations') }}</span>
-            @foreach($rtStrip as $m => $city)
-                @php $destColors = ['#327661', '#1b6b3a', '#b9500a', '#8a6a1f', '#497318']; @endphp
-                <a href="{{ route('tourist.city', $city->slug) }}" class="ti-dest-chip">
-                    <span class="ti-dest-chip__avatar" style="background: {{ $destColors[$m % count($destColors)] }}">
-                        @if($city->thumbnail || $city->cover_image)
-                            <img src="{{ $city->thumbnail ?? $city->cover_image }}" alt="" loading="lazy" decoding="async" onerror="this.remove()">
-                        @endif
-                        <span aria-hidden="true">{{ mb_substr($city->name, 0, 1) }}</span>
-                    </span>
-                    <span>{{ $city->name }}<small>{{ $destSites($city) }}</small></span>
-                </a>
-            @endforeach
-        </nav>
-        @endif
+        {{-- « Autres destinations » : désormais des cartes dans la grille ci-dessus (même modèle pour toutes les villes). --}}
 
-        {{-- ── Catégories ─────────────────────────────────────────────── --}}
+        {{-- ── Catégories : retirées de l'accueil à la demande (bloc conservé, désactivé) ── --}}
+        @if(false)
         @php
             $touristCats = \App\Models\TouristCategory::where('is_active', 1)->orderBy('sort_order')->limit(8)->get();
         @endphp
         @if($touristCats->isNotEmpty())
         <div class="mt-12 pt-10 border-t border-white/5" id="rt2-pills">
             <div class="flex items-center justify-center gap-3 mb-6">
-                <span class="hidden sm:block w-8 h-px" style="background:rgba(242, 121, 15, 0.18)"></span>
-                <p class="text-center text-[#1c1915] text-sm tracking-[.22em] uppercase font-elegant flex items-center gap-2">
-                    <i class="fas fa-compass text-sm" style="color:#f2790f"></i>
+                <span class="hidden sm:block w-8 h-px" style="background:rgba(235,110,0, 0.18)"></span>
+                <p class="text-center text-[#0E3B2A] text-sm tracking-[.22em] uppercase font-elegant flex items-center gap-2">
+                    <i class="fas fa-compass text-sm" style="color:#EB6E00"></i>
                     {{ __('Explorer par catégorie') }}
                 </p>
-                <span class="hidden sm:block w-8 h-px" style="background:rgba(242, 121, 15, 0.18)"></span>
+                <span class="hidden sm:block w-8 h-px" style="background:rgba(235,110,0, 0.18)"></span>
             </div>
             <div class="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:justify-center" id="rt2-pills-row">
                 @foreach($touristCats as $j => $cat)
                 @php
-                    $catColor = $cat->color ?: '#a3450a';
+                    $catColor = $cat->color ?: '#B85600';
                     $catRgb = sscanf(ltrim($catColor, '#'), '%02x%02x%02x') ?: [163, 69, 10];
                 @endphp
                 <a href="{{ route('tourist.cities', ['categorie' => $cat->slug]) }}"
@@ -1782,6 +1847,7 @@
             </div>
             @endif
         </div>
+        @endif
         @endif
 
     </div>
@@ -1910,14 +1976,14 @@
 
         {{-- En-tête --}}
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 sm:mb-16">
-            <div class="reveal">
-                <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-3">{{ __('Patrimoine vivant') }}</p>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">{{ __('Cultures Ivoiriennes') }}</h2>
-                <p class="text-[#1c1915] font-elegant text-xl font-light mt-4 max-w-lg">
+            <div class="reveal sec-head">
+                <p class="sec-kicker">{{ __('Patrimoine vivant') }}</p>
+                <h2 class="sec-title">{!! \Illuminate\Support\Str::of(e(__('Cultures Ivoiriennes')))->replaceMatches('/(\S+)$/u', '<em>$1</em>') !!}</h2>
+                <p class="sec-lead">
                     {{ __('Peuples, traditions, masques, gastronomie… Plongez dans la richesse des 60 ethnies de Côte d\'Ivoire.') }}
                 </p>
             </div>
-            <a href="{{ route('cultural.peoples') }}" class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#d8cdb8] bg-white text-sm font-semibold text-[#1d1a16] hover:border-[#b9500a] hover:text-[#b9500a] transition-colors">
+            <a href="{{ route('cultural.peoples') }}" class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#8AA99B] bg-white text-sm font-semibold text-[#0E3B2A] hover:border-[#EB6E00] hover:text-[#EB6E00] transition-colors">
                 <span>{{ __('Explorer toutes les cultures') }}</span>
                 <i class="fas fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
             </a>
@@ -1930,15 +1996,15 @@
             @endforeach
         </div>
 
-        {{-- Domaines culturels --}}
-        @if(($homeCulturalDomains ?? collect())->isNotEmpty())
+        {{-- Domaines culturels : retirés de l'accueil à la demande (bloc conservé, désactivé) --}}
+        @if(false && ($homeCulturalDomains ?? collect())->isNotEmpty())
         <div class="mt-12 pt-10 border-t border-white/5">
-            <p class="text-center text-[#1c1915] text-sm tracking-[.2em] uppercase font-elegant mb-6">{{ __('Explorer par domaine') }}</p>
+            <p class="text-center text-[#0E3B2A] text-sm tracking-[.2em] uppercase font-elegant mb-6">{{ __('Explorer par domaine') }}</p>
             <div class="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:justify-center" id="domain-pills-row">
                 @foreach($homeCulturalDomains as $j => $domain)
                 <a href="{{ route('cultural.peoples', ['domaine' => $domain->slug]) }}" class="domain-pill group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:border-gold-500/40 hover:bg-gold-500/10 transition-all duration-200 {{ $j >= 4 ? 'domain-pill-extra' : '' }}">
                     <i class="{{ $domain->icon }} text-sm" style="color: {{ $domain->color }}"></i>
-                    <span class="text-[#1c1915] group-hover:text-[#a54a0b] text-sm font-medium transition-colors">{{ $domain->name }}</span>
+                    <span class="text-[#0E3B2A] group-hover:text-[#B85600] text-sm font-medium transition-colors">{{ $domain->name }}</span>
                 </a>
                 @endforeach
             </div>
@@ -1955,6 +2021,9 @@
 
     </div>
 </section>
+
+{{-- Bannière publicitaire (Administration › Bannières publicitaires) --}}
+@include('partials.home-promo-banner', ['placement' => 'after_cultures'])
 @endif
 
 {{-- ══════════════════════════════════════════════════════════
@@ -1968,12 +2037,13 @@
     <div class="section-watermark-bg"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="flex items-end justify-between mb-10 sm:mb-14">
-            <div class="reveal">
-                <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-2">{{ __('Agenda culturel') }}</p>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">{{ __('Événements à venir') }}</h2>
+            <div class="reveal sec-head">
+                <p class="sec-kicker">{{ __('Agenda culturel') }}</p>
+                <h2 class="sec-title">{!! \Illuminate\Support\Str::of(e(__('Événements à venir')))->replaceMatches('/(\S+)$/u', '<em>$1</em>') !!}</h2>
             </div>
+
             <a href="{{ route('events.index') }}"
-               class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#d8cdb8] bg-white text-sm font-semibold text-[#1d1a16] hover:border-[#b9500a] hover:text-[#b9500a] transition-colors">
+               class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#8AA99B] bg-white text-sm font-semibold text-[#0E3B2A] hover:border-[#EB6E00] hover:text-[#EB6E00] transition-colors">
                 {{ __('Voir l\'agenda complet') }} <i class="fas fa-arrow-right text-xs"></i>
             </a>
         </div>
@@ -1982,7 +2052,7 @@
             @forelse(($homeEvents ?? collect()) as $ev)
                 <div class="reveal">@include('partials.event-card', ['event' => $ev, 'headingTag' => 'h3'])</div>
             @empty
-                <p class="col-span-full rounded-2xl border border-dashed border-[#d8cdb8] px-6 py-10 text-center text-[#6b6458]">{{ __('Aucun événement à venir pour le moment.') }}</p>
+                <p class="col-span-full rounded-2xl border border-dashed border-[#8AA99B] px-6 py-10 text-center text-[#557466]">{{ __('Aucun événement à venir pour le moment.') }}</p>
             @endforelse
             {{-- Moins de 3 événements : une tuile mène à l'agenda complet au lieu de laisser la grille vide. --}}
             @if(($homeEvents ?? collect())->isNotEmpty() && ($homeEvents ?? collect())->count() < 3)
@@ -2010,19 +2080,20 @@
     /* !important : le thème clair force « background » sur cette section. */
     #art-creations.has-bg { isolation: isolate; background-image: var(--art-bg) !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
     /* Voile uni (clair en thème clair, sombre en thème sombre) : garde le titre et les cartes lisibles. */
-    #art-creations.has-bg::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(13,12,10,.78); }
-    html:not(.dark) #art-creations.has-bg::before { background: rgba(233,229,217,.8); }
+    #art-creations.has-bg::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(14,59,42,.78); }
+    html:not(.dark) #art-creations.has-bg::before { background: rgba(216,233,224,.7); }
 </style>
 @endif
 <section id="art-creations" class="py-16 sm:py-24 bg-dark-900 border-t border-white/5 relative overflow-hidden {{ $artBgUrl ? 'has-bg' : '' }}" @if($artBgUrl) style="--art-bg: url('{{ $artBgUrl }}');" @endif>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div class="flex items-end justify-between mb-10 sm:mb-14">
-            <div class="reveal">
-                <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-2">{{ __('Galerie d\'artistes') }}</p>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold gold-line">{{ __('Art & Créations') }}</h2>
+            <div class="reveal sec-head">
+                <p class="sec-kicker">{{ __('Galerie d\'artistes') }}</p>
+                <h2 class="sec-title">{!! \Illuminate\Support\Str::of(e(__('Art & Créations')))->replaceMatches('/(\S+)$/u', '<em>$1</em>') !!}</h2>
             </div>
+
             <a href="{{ route('art.index') }}"
-               class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#d8cdb8] bg-white text-sm font-semibold text-[#1d1a16] hover:border-[#b9500a] hover:text-[#b9500a] transition-colors">
+               class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#8AA99B] bg-white text-sm font-semibold text-[#0E3B2A] hover:border-[#EB6E00] hover:text-[#EB6E00] transition-colors">
                 {{ __('Voir toutes les créations') }} <i class="fas fa-arrow-right text-xs"></i>
             </a>
         </div>
@@ -2031,7 +2102,7 @@
             @forelse(($homeArtworks ?? collect()) as $art)
                 <div class="reveal">@include('partials.artwork-card', ['artwork' => $art, 'headingTag' => 'h3'])</div>
             @empty
-                <p class="col-span-full rounded-2xl border border-dashed border-[#d8cdb8] px-6 py-10 text-center text-[#6b6458]">{{ __('Aucune œuvre disponible pour le moment.') }}</p>
+                <p class="col-span-full rounded-2xl border border-dashed border-[#8AA99B] px-6 py-10 text-center text-[#557466]">{{ __('Aucune œuvre disponible pour le moment.') }}</p>
             @endforelse
             {{-- Moins de 3 œuvres : une tuile mène à la galerie complète au lieu de laisser la grille vide. --}}
             @if(($homeArtworks ?? collect())->isNotEmpty() && ($homeArtworks ?? collect())->count() < 3)
@@ -2065,12 +2136,10 @@
 >
     <div class="section-watermark-bg"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
-        <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-14 reveal">
-            <p class="text-gold-400 text-sm tracking-[.25em] uppercase font-elegant mb-3">{{ __('Ils nous font confiance') }}</p>
-            <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4 leading-snug text-white">
-                {{ __('Nos partenaires') }}
-            </h2>
-            <p class="text-[#1c1915] font-elegant text-xl font-light leading-relaxed">
+        <div class="sec-head sec-head--center max-w-2xl mx-auto mb-12 sm:mb-14 reveal">
+            <p class="sec-kicker">{{ __('Ils nous font confiance') }}</p>
+            <h2 class="sec-title">{!! \Illuminate\Support\Str::of(e(__('Nos partenaires')))->replaceMatches('/(\S+)$/u', '<em>$1</em>') !!}</h2>
+            <p class="sec-lead">
                 {{ __('Institutions, entreprises et organisations qui soutiennent la mise en valeur du patrimoine et du tourisme ivoirien.') }}
             </p>
         </div>
@@ -2083,11 +2152,11 @@
                             @php $ptype = $partner->typeEnum(); @endphp
                             @php
                                 $ptStyle = match ($ptype?->value) {
-                                    'ngo' => ['#1b6b3a', '#eef6f0', '#14532d', 'fa-heart'],
-                                    'government' => ['#b9500a', '#fdf4ec', '#9a4308', 'fa-landmark'],
-                                    'educational' => ['#327661', '#dcece6', '#23584a', 'fa-graduation-cap'],
-                                    'technology' => ['#1f1a0e', '#f6f3ec', '#3a352c', 'fa-laptop'],
-                                    default => ['#8a6a1f', '#f6ecd5', '#6f5416', 'fa-circle-plus'],
+                                    'ngo' => ['#00874F', '#F3F8F5', '#00874F', 'fa-heart'],
+                                    'government' => ['#EB6E00', '#F3F8F5', '#B85600', 'fa-landmark'],
+                                    'educational' => ['#00874F', '#D8E9E0', '#00874F', 'fa-graduation-cap'],
+                                    'technology' => ['#0E3B2A', '#F3F8F5', '#24503D', 'fa-laptop'],
+                                    default => ['#B85600', '#F3F8F5', '#B85600', 'fa-circle-plus'],
                                 };
                                 $ptInitials = collect(preg_split('/[\s\-’\']+/u', $partner->name))
                                     ->reject(fn ($w) => mb_strlen($w) < 3 || in_array(mb_strtolower($w), ['des', 'les', 'aux', 'pour', 'and', 'the'], true))
@@ -2159,6 +2228,9 @@
             const max = strip.scrollWidth - strip.clientWidth;
             prev.hidden = strip.scrollLeft <= 4;
             next.hidden = max <= 4 || strip.scrollLeft >= max - 4;
+            // Fondus de bord (accueil) : seulement du côté où il reste des rubriques à faire défiler.
+            strip.classList.toggle('is-start', prev.hidden);
+            strip.classList.toggle('is-end', next.hidden);
         };
         const scrollByStep = (dir) => {
             strip.scrollBy({ left: dir * Math.round(strip.clientWidth * 0.7), behavior: 'smooth' });

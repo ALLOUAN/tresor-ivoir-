@@ -9,12 +9,12 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-serif { font-family: 'Montserrat', serif; }
         .site-card { transition: transform .2s ease, box-shadow .2s ease; }
-        .site-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.4); }
-        html:not(.dark) body { background:#e9e5d9; color: #1c1915; }
-        html:not(.dark) .site-card { background:#f0ece1 !important; border-color: rgba(0,0,0,.12) !important; box-shadow: 0 8px 20px rgba(0,0,0,.05); }
+        .site-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(14,59,42,.4); }
+        html:not(.dark) body { background:#D8E9E0; color: #0E3B2A; }
+        html:not(.dark) .site-card { background:#F3F8F5 !important; border-color: rgba(14,59,42,.12) !important; box-shadow: 0 8px 20px rgba(14,59,42,.05); }
         /* Image de fond configurable (back-office, par catégorie) du bandeau —
            même modèle que .cultural-hero / .tourist-hero. */
         /* Hébergements : la carte .ti-place-card porte le cadre ; l'enveloppe .accom-card (module séjour) reste invisible. */
@@ -116,29 +116,29 @@
     </div>
 </section>
 <style>
-    .cg-hero { position: relative; overflow: hidden; background: #f3ead8; padding: 64px 20px 72px; border-bottom: 1px solid #e3d5bb; }
-    .cg-banner { position: relative; z-index: 1; max-width: 1140px; margin: 0 auto 22px; border-radius: 28px; overflow: hidden; border: 1px solid #e3d5bb; background: #e9e1d2; }
+    .cg-hero { position: relative; overflow: hidden; background: #D8E9E0; padding: 64px 20px 72px; border-bottom: 1px solid #D8E9E0; }
+    .cg-banner { position: relative; z-index: 1; max-width: 1140px; margin: 0 auto 22px; border-radius: 28px; overflow: hidden; border: 1px solid #D8E9E0; background: #D8E9E0; }
     .cg-banner img { display: block; width: 100%; height: clamp(150px, 19vw, 270px); object-fit: cover; }
     @media (max-width: 640px) { .cg-banner { border-radius: 20px; margin-bottom: 14px; } .cg-banner img { height: auto; aspect-ratio: 16 / 9; } }
-    .cg-hero__in { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 30px 40px 26px; border-radius: 32px; background: #f6efe1; border: 1px solid #e3d5bb; text-align: center; }
-    .cg-crumb { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 10px; padding: 8px 16px; border-radius: 999px; background: #fffaf0; border: 1px solid #e3d5bb; font-size: 12.5px; color: #8a7f6b; }
-    .cg-crumb a { color: #9a4308; font-weight: 600; text-decoration: none; }
+    .cg-hero__in { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 30px 40px 26px; border-radius: 32px; background: #F3F8F5; border: 1px solid #D8E9E0; text-align: center; }
+    .cg-crumb { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 10px; padding: 8px 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #D8E9E0; font-size: 12.5px; color: #557466; }
+    .cg-crumb a { color: #B85600; font-weight: 600; text-decoration: none; }
     .cg-crumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
-    .cg-crumb [aria-current] { font-weight: 700; color: #1d1a16; }
-    .cg-kicker { margin: 20px 0 0; font-size: 12.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #b9500a; }
-    .cg-title { margin: 10px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(34px, 3.4vw + 18px, 64px); font-weight: 700; line-height: 1.03; letter-spacing: -.015em; color: #1d1a16; }
-    .cg-lead { margin: 14px auto 0; max-width: 660px; font-size: 17px; line-height: 1.65; font-weight: 500; color: #2f261b; }
-    .cg-fact { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; margin: 24px auto 0; max-width: 760px; padding: 12px 12px 12px 14px; border-radius: 20px; background: #fff; border: 1px solid #e3d5bb; text-align: left; }
-    .cg-fact__tag { padding: 6px 11px; border-radius: 999px; background: #1b6b3a; color: #fff; font-size: 11.5px; font-weight: 800; letter-spacing: .04em; white-space: nowrap; }
-    .cg-fact__item { margin: 0; display: flex; flex-direction: column; gap: 3px; font-size: 14px; line-height: 1.5; color: #3a2f22; }
+    .cg-crumb [aria-current] { font-weight: 700; color: #0E3B2A; }
+    .cg-kicker { margin: 20px 0 0; font-size: 12.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #EB6E00; }
+    .cg-title { margin: 10px 0 0; font-family: 'Montserrat', serif; font-size: clamp(34px, 3.4vw + 18px, 64px); font-weight: 700; line-height: 1.03; letter-spacing: -.015em; color: #0E3B2A; }
+    .cg-lead { margin: 14px auto 0; max-width: 660px; font-size: 17px; line-height: 1.65; font-weight: 500; color: #0E3B2A; }
+    .cg-fact { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; margin: 24px auto 0; max-width: 760px; padding: 12px 12px 12px 14px; border-radius: 20px; background: #fff; border: 1px solid #D8E9E0; text-align: left; }
+    .cg-fact__tag { padding: 6px 11px; border-radius: 999px; background: #00874F; color: #fff; font-size: 11.5px; font-weight: 800; letter-spacing: .04em; white-space: nowrap; }
+    .cg-fact__item { margin: 0; display: flex; flex-direction: column; gap: 3px; font-size: 14px; line-height: 1.5; color: #0E3B2A; }
     .cg-fact__item[hidden] { display: none; }
-    .cg-fact__item a { align-self: flex-start; font-size: 12px; font-weight: 700; color: #9a4308; text-decoration: underline; text-underline-offset: 3px; }
+    .cg-fact__item a { align-self: flex-start; font-size: 12px; font-weight: 700; color: #B85600; text-decoration: underline; text-underline-offset: 3px; }
     .cg-fact__nav { display: flex; gap: 6px; }
-    .cg-fact__nav button { width: 34px; height: 34px; border-radius: 999px; border: 1px solid #e3d5bb; background: #fff; color: #9a4308; font-size: 18px; font-weight: 700; line-height: 1; cursor: pointer; }
-    .cg-fact__nav button:hover { border-color: #b9500a; }
-    .cg-fact__nav button:focus-visible, .cg-crumb a:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
-    .cg-credit b { font-style: normal; font-weight: 800; color: #9a4308; }
-    .cg-credit { margin: 14px 0 0; font-size: 11.5px; font-style: italic; color: #6b5f4c; }
+    .cg-fact__nav button { width: 34px; height: 34px; border-radius: 999px; border: 1px solid #D8E9E0; background: #fff; color: #B85600; font-size: 18px; font-weight: 700; line-height: 1; cursor: pointer; }
+    .cg-fact__nav button:hover { border-color: #EB6E00; }
+    .cg-fact__nav button:focus-visible, .cg-crumb a:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
+    .cg-credit b { font-style: normal; font-weight: 800; color: #B85600; }
+    .cg-credit { margin: 14px 0 0; font-size: 11.5px; font-style: italic; color: #24503D; }
     @media (max-width: 640px) {
         /* Mobile : une vraie bande de motifs visible au-dessus et au-dessous du panneau de lecture */
         .cg-hero { padding: 64px 16px 48px; }
@@ -361,7 +361,7 @@
              data-acc-links='@json($acc->booking_links ?? [])'
              data-acc-cover="{{ $imgSrc ?? '' }}">
             @include('partials.home-sector-card', ['it' => \App\Support\HomeSectorShowcase::card($acc, 'hotels')])
-            <div class="acc-stay-summary hidden px-3 py-2 rounded-xl text-xs" style="background:#fdf4ec;color:#9a4308"></div>
+            <div class="acc-stay-summary hidden px-3 py-2 rounded-xl text-xs" style="background:#F3F8F5;color:#B85600"></div>
             <div class="acc-rooms-panel hidden"></div>
             @if(count($links) > 0)
             <div class="acc-booking-links flex flex-wrap gap-2 px-1">
@@ -371,7 +371,7 @@
                    data-provider="{{ strtolower($bl['provider_name'] ?? '') }}"
                    target="_blank" rel="noopener nofollow"
                    class="bk-link inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition border"
-                   style="{{ ! empty($bl['is_official']) ? 'background:#b9500a;border-color:#b9500a;color:#fff' : 'background:#fff;border-color:#e6dccb;color:#4a443a' }}">
+                   style="{{ ! empty($bl['is_official']) ? 'background:#EB6E00;border-color:#EB6E00;color:#fff' : 'background:#fff;border-color:#D8E9E0;color:#24503D' }}">
                     @if(!empty($bl['logo_url']))
                         <img src="{{ $bl['logo_url'] }}" alt="{{ $bl['provider_name'] }}" class="h-3.5 w-auto object-contain">
                     @else
@@ -410,7 +410,7 @@
         <div class="relative shrink-0 overflow-hidden bg-green-900" style="height:460px">
             <img id="rm-hero-img" src="" alt=""
                  class="w-full h-full object-cover transition duration-300">
-            <div class="absolute inset-0 bg-linear-to-t from-green-950/80 via-green-950/20 to-transparent"></div>
+            <div class="absolute inset-0 bg-green-950/40"></div>
             <div class="absolute bottom-4 left-5 right-14">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold rounded-full mb-1.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>{{ __('Disponible') }}
@@ -571,7 +571,7 @@
 <style>
 /* Forcer le thème sombre sur le picker natif */
 .bk-date-input::-webkit-calendar-picker-indicator { filter: invert(.7) sepia(1) hue-rotate(10deg) saturate(.8); cursor: pointer; }
-.bk-date-input::-webkit-datetime-edit { color: #44413a; }
+.bk-date-input::-webkit-datetime-edit { color: #24503D; }
 </style>
 
 <script>
@@ -924,7 +924,7 @@
                         ? '<img src="' + thumbSrc + '" alt="' + (r.name || 'Chambre') + '" loading="lazy" class="w-full h-full object-cover">'
                         : '<div class="w-full h-full flex items-center justify-center"><i class="fas fa-bed text-slate-700 text-3xl"></i></div>')
                 +     '<span class="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-500/90 text-black text-xs font-bold rounded-full">'
-                +       '<span class="w-1.5 h-1.5 rounded-full bg-green-950/70 inline-block"></span>Dispo'
+                +       '<span class="w-1.5 h-1.5 rounded-full bg-green-950/40 inline-block"></span>Dispo'
                 +     '</span>'
                 +   '</button>'
                 +   '<div class="p-4 flex flex-col flex-1">'

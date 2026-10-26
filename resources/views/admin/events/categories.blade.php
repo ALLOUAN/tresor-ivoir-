@@ -32,7 +32,7 @@
         <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
-                    style="{{ $cat->color_hex ? 'background:' . $cat->color_hex . '22; color:' . $cat->color_hex : 'background:#e9e5d9; color:#94a3b8' }}">
+                    style="{{ $cat->color_hex ? 'background:' . $cat->color_hex . '22; color:' . $cat->color_hex : 'background:#D8E9E0; color:#8AA99B' }}">
                     <i class="{{ $cat->icon ?: 'fas fa-calendar' }}"></i>
                 </div>
                 <div>
@@ -119,9 +119,9 @@
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Couleur</label>
                     <div class="flex items-center gap-2">
-                        <input type="color" name="color_hex" id="cat_color_hex" value="#f2790f"
+                        <input type="color" name="color_hex" id="cat_color_hex" value="#EB6E00"
                             class="w-9 h-9 bg-slate-800 border border-slate-700 rounded-lg px-1 cursor-pointer shrink-0">
-                        <input type="text" id="cat_color_text" maxlength="7" placeholder="#f2790f"
+                        <input type="text" id="cat_color_text" maxlength="7" placeholder="#EB6E00"
                             class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 outline-none font-mono"
                             oninput="document.getElementById('cat_color_hex').value = this.value">
                     </div>
@@ -167,7 +167,7 @@ function openCatModal(cat = null) {
         document.getElementById('cat_name_en').value   = cat.name_en || '';
         document.getElementById('cat_icon').value      = cat.icon || '';
         document.getElementById('cat_icon_preview').className = cat.icon || 'fas fa-calendar';
-        const color = cat.color_hex || '#f2790f';
+        const color = cat.color_hex || '#EB6E00';
         document.getElementById('cat_color_hex').value  = color;
         document.getElementById('cat_color_text').value = color;
         document.getElementById('cat_sort_order').value = cat.sort_order || 0;
@@ -177,8 +177,8 @@ function openCatModal(cat = null) {
         mf.innerHTML = '';
         form.reset();
         document.getElementById('cat_icon_preview').className = 'fas fa-calendar';
-        document.getElementById('cat_color_hex').value  = '#f2790f';
-        document.getElementById('cat_color_text').value = '#f2790f';
+        document.getElementById('cat_color_hex').value  = '#EB6E00';
+        document.getElementById('cat_color_text').value = '#EB6E00';
         document.getElementById('cat_sort_order').value = 0;
     }
 

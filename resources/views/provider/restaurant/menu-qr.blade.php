@@ -7,16 +7,16 @@
     <style>
         @page { size: A4; margin: 12mm; }
         * { box-sizing: border-box; }
-        body { margin: 0; font-family: Georgia, 'Times New Roman', serif; color: #1c1915; background: #f6f3ed; }
+        body { margin: 0; font-family: Georgia, 'Times New Roman', serif; color: #0E3B2A; background: #F3F8F5; }
         .toolbar { text-align: center; padding: 14px; font-family: Arial, sans-serif; }
-        .toolbar button { background: #ef7c2b; color: #fff; border: 0; border-radius: 10px; padding: 10px 18px; font-weight: bold; cursor: pointer; }
+        .toolbar button { background: #EB6E00; color: #fff; border: 0; border-radius: 10px; padding: 10px 18px; font-weight: bold; cursor: pointer; }
         .sheet { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; max-width: 190mm; margin: 0 auto; }
-        .card { background: #fff; border: 1px solid #e3dccd; border-radius: 6mm; padding: 8mm 6mm; text-align: center; page-break-inside: avoid; }
+        .card { background: #fff; border: 1px solid #D8E9E0; border-radius: 6mm; padding: 8mm 6mm; text-align: center; page-break-inside: avoid; }
         .card h1 { font-size: 20pt; margin: 0 0 2mm; }
-        .card p { font-family: Arial, sans-serif; font-size: 10pt; margin: 0; color: #5c5548; }
+        .card p { font-family: Arial, sans-serif; font-size: 10pt; margin: 0; color: #24503D; }
         .card img { width: 52mm; height: 52mm; margin: 5mm auto; display: block; }
-        .card .scan { font-family: Arial, sans-serif; font-weight: bold; color: #31621c; font-size: 12pt; }
-        .card .brand { margin-top: 4mm; font-size: 8pt; color: #8a7f6b; }
+        .card .scan { font-family: Arial, sans-serif; font-weight: bold; color: #00874F; font-size: 12pt; }
+        .card .brand { margin-top: 4mm; font-size: 8pt; color: #557466; }
         @media print { body { background: #fff; } .toolbar { display: none; } }
     </style>
 </head>

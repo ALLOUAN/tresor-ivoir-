@@ -6,7 +6,7 @@
 @section('content')
 <style>
     .conversation-row {
-        border-left: 4px solid rgba(100, 116, 139, 0.6);
+        border-left: 4px solid rgba(85,116,102, 0.6);
         transition: all .25s ease;
     }
     .conversation-row:hover {
@@ -30,31 +30,31 @@
         border: 1px solid rgba(244, 63, 94, 0.35);
     }
     .conversation-type-unread {
-        border-left-color: rgba(242, 121, 15, 0.95);
-        background: rgba(242, 121, 15, 0.07);
+        border-left-color: rgba(235,110,0, 0.95);
+        background: rgba(235,110,0, 0.07);
     }
     .conversation-type-unread .conversation-type-pill {
-        background: rgba(242, 121, 15, 0.2);
-        color: rgb(251 191 36);
-        border: 1px solid rgba(242, 121, 15, 0.4);
+        background: rgba(235,110,0, 0.2);
+        color: rgb(235 110 0);
+        border: 1px solid rgba(235,110,0, 0.4);
     }
     .conversation-type-closed {
-        border-left-color: rgba(100, 116, 139, 0.9);
-        background: rgba(100, 116, 139, 0.06);
+        border-left-color: rgba(85,116,102, 0.9);
+        background: rgba(85,116,102, 0.06);
     }
     .conversation-type-closed .conversation-type-pill {
-        background: rgba(100, 116, 139, 0.22);
+        background: rgba(85,116,102, 0.22);
         color: rgb(203 213 225);
-        border: 1px solid rgba(148, 163, 184, 0.32);
+        border: 1px solid rgba(138,169,155, 0.32);
     }
     .conversation-type-standard {
-        border-left-color: rgba(16, 185, 129, 0.9);
-        background: rgba(16, 185, 129, 0.06);
+        border-left-color: rgba(0,135,79, 0.9);
+        background: rgba(0,135,79, 0.06);
     }
     .conversation-type-standard .conversation-type-pill {
-        background: rgba(16, 185, 129, 0.2);
-        color: rgb(110 231 183);
-        border: 1px solid rgba(16, 185, 129, 0.35);
+        background: rgba(0,135,79, 0.2);
+        color: rgb(0 135 79);
+        border: 1px solid rgba(0,135,79, 0.35);
     }
 </style>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

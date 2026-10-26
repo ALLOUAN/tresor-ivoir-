@@ -25,69 +25,69 @@
         /* Vérification de l'e-mail : dernière étape. Code en 6 cases (un seul vrai champ, collage et
            remplissage automatique compatibles), validité affichée, renvoi temporisé. Aplats. */
         * { box-sizing: border-box; }
-        body { margin: 0; min-height: 100vh; background: #f6f3ed; color: #1d1a16; font-family: 'Inter', sans-serif; }
+        body { margin: 0; min-height: 100vh; background: #F3F8F5; color: #0E3B2A; font-family: 'Montserrat', sans-serif; }
         .ve-stage { position: relative; overflow: hidden; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 16px 40px; }
         .ve-stage > .ivm .ivm-g { opacity: .22 !important; }
-        .ve-brand { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 8px 16px 8px 8px; border-radius: 999px; background: #fff; border: 1px solid #e8e1d3; text-decoration: none; color: #1d1a16; }
-        .ve-brand img { width: 40px; height: 40px; border-radius: 999px; object-fit: contain; }
-        .ve-brand b { font-family: 'Playfair Display', serif; font-size: 17px; }
-        .ve-card { position: relative; z-index: 1; width: 100%; max-width: 540px; overflow: hidden; border-radius: 28px; background: #fff; border: 1px solid #e8e1d3; }
+        .ve-brand { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 8px 16px 8px 8px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; text-decoration: none; color: #0E3B2A; }
+        .ve-brand img { display: block; }
+        .ve-brand b { font-family: 'Montserrat', serif; font-size: 17px; }
+        .ve-card { position: relative; z-index: 1; width: 100%; max-width: 540px; overflow: hidden; border-radius: 28px; background: #fff; border: 1px solid #D8E9E0; }
 
-        .ve-head { position: relative; overflow: hidden; padding: 26px 30px 30px; background: #123a25; color: #fff; text-align: center; }
+        .ve-head { position: relative; overflow: hidden; padding: 26px 30px 30px; background: #00874F; color: #fff; text-align: center; }
         .ve-head .ivm-g { opacity: .1 !important; }
-        .ve-head .ivm-g > * { stroke: #f6c38f !important; }
+        .ve-head .ivm-g > * { stroke: #F7C396 !important; }
         .ve-head .ivm-band { height: 6px; }
         .ve-head > :not(.ivm):not(.ivm-band) { position: relative; z-index: 1; }
-        .ve-step { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #f6c38f; }
-        .ve-icon { width: 64px; height: 64px; margin: 16px auto 0; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: #fff; color: #b9500a; }
+        .ve-step { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #F7C396; }
+        .ve-icon { width: 64px; height: 64px; margin: 16px auto 0; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: #fff; color: #EB6E00; }
         .ve-icon .ico { width: 32px; height: 32px; font-size: 32px; }
         .ve-icon .ico svg { width: 32px; height: 32px; }
-        .ve-title { margin: 14px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(25px, 3vw, 30px); font-weight: 700; line-height: 1.15; color: #fff; }
-        .ve-sub { margin: 8px auto 0; max-width: 40ch; font-size: 15px; line-height: 1.55; color: #cfe6d7; }
+        .ve-title { margin: 14px 0 0; font-family: 'Montserrat', serif; font-size: clamp(25px, 3vw, 30px); font-weight: 700; line-height: 1.15; color: #fff; }
+        .ve-sub { margin: 8px auto 0; max-width: 40ch; font-size: 15px; line-height: 1.55; color: #D8E9E0; }
         .ve-sub b { color: #fff; overflow-wrap: anywhere; white-space: nowrap; }
         @media (max-width: 520px) { .ve-sub b { white-space: normal; } }
 
         .ve-body { padding: 24px 30px 26px; }
         .ve-alert { display: flex; align-items: flex-start; gap: 10px; margin: 0 0 18px; padding: 12px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; }
         .ve-alert .ico { flex: none; width: 18px; height: 18px; margin-top: 1px; }
-        .ve-alert.is-ok { background: #eef6ef; border: 1px solid #cfe4d3; color: #1f5a33; }
-        .ve-alert.is-warn { background: #fdf4ec; border: 1px solid #f1dcc4; color: #9a4308; }
+        .ve-alert.is-ok { background: #F3F8F5; border: 1px solid #D8E9E0; color: #00874F; }
+        .ve-alert.is-warn { background: #F3F8F5; border: 1px solid #D8E9E0; color: #B85600; }
 
-        .ve-label { display: block; margin: 0 0 10px; text-align: center; font-size: 14px; font-weight: 700; color: #1d1a16; }
+        .ve-label { display: block; margin: 0 0 10px; text-align: center; font-size: 14px; font-weight: 700; color: #0E3B2A; }
         .ve-otp { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; max-width: 400px; margin: 0 auto; }
-        .ve-otp span { height: 62px; border-radius: 16px; border: 1.5px solid #e1d7c4; background: #fbf9f5; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: #1d1a16; font-variant-numeric: tabular-nums; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease; }
-        .ve-otp span.is-filled { background: #fff; border-color: #cfc2a8; }
-        .ve-otp span.is-active { border-color: #b9500a; background: #fff; box-shadow: 0 0 0 4px rgba(185,80,10,.12); }
-        .ve-otp span.is-active:empty::after { content: ''; width: 2px; height: 26px; background: #b9500a; animation: ve-blink 1s steps(1) infinite; }
+        .ve-otp span { height: 62px; border-radius: 16px; border: 1.5px solid #D8E9E0; background: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: #0E3B2A; font-variant-numeric: tabular-nums; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease; }
+        .ve-otp span.is-filled { background: #fff; border-color: #F7C396; }
+        .ve-otp span.is-active { border-color: #EB6E00; background: #fff; box-shadow: 0 0 0 4px rgba(235,110,0,.12); }
+        .ve-otp span.is-active:empty::after { content: ''; width: 2px; height: 26px; background: #EB6E00; animation: ve-blink 1s steps(1) infinite; }
         @keyframes ve-blink { 50% { opacity: 0; } }
         .ve-otp.is-error span { border-color: #c0362c; background: #fff; }
         /* Le vrai champ couvre les cases : clavier, collage et code proposé par le téléphone fonctionnent. */
         html .ve-otp input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0 !important; background: transparent !important; color: transparent !important; caret-color: transparent; font-size: 16px; letter-spacing: 1em; cursor: text; }
         .ve-err { margin: 10px 0 0; text-align: center; font-size: 13.5px; font-weight: 600; color: #b42318; }
 
-        .ve-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 13px; color: #6b6458; }
+        .ve-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 13px; color: #557466; }
         .ve-meta li { display: inline-flex; align-items: center; gap: 6px; }
-        .ve-meta li > .ico { width: 15px; height: 15px; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #1f8079; }
+        .ve-meta li > .ico { width: 15px; height: 15px; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #00874F; }
 
-        .ve-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 52px; border: 0; border-radius: 999px; background: #b9500a; color: #fff; font: inherit; font-size: 15.5px; font-weight: 800; text-decoration: none; cursor: pointer; transition: background .15s ease; }
-        .ve-btn:hover { background: #9a4308; }
+        .ve-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 52px; border: 0; border-radius: 999px; background: #EB6E00; color: #fff; font: inherit; font-size: 15.5px; font-weight: 800; text-decoration: none; cursor: pointer; transition: background .15s ease; }
+        .ve-btn:hover { background: #B85600; }
         .ve-btn .ico { width: 18px; height: 18px; }
         .ve-btn[disabled] { opacity: .55; cursor: default; }
-        .ve-btn.is-ghost { background: #fff; color: #3a2f22; border: 1.5px solid #e1d7c4; }
-        .ve-btn.is-ghost:hover:not([disabled]) { border-color: #b9500a; color: #9a4308; background: #fff; }
+        .ve-btn.is-ghost { background: #fff; color: #0E3B2A; border: 1.5px solid #D8E9E0; }
+        .ve-btn.is-ghost:hover:not([disabled]) { border-color: #EB6E00; color: #B85600; background: #fff; }
         .ve-submit { margin-top: 20px; }
         .ve-inbox { margin-top: 10px; }
 
-        .ve-help { margin: 22px 0 0; padding: 16px; border-radius: 18px; background: #fbf9f5; border: 1px solid #ece5d6; }
-        .ve-help p { margin: 0 0 10px; font-size: 13.5px; font-weight: 700; color: #1d1a16; }
-        .ve-help ul { display: grid; gap: 6px; margin: 0 0 14px; padding: 0; list-style: none; font-size: 13.5px; line-height: 1.45; color: #4a443a; }
+        .ve-help { margin: 22px 0 0; padding: 16px; border-radius: 18px; background: #FFFFFF; border: 1px solid #D8E9E0; }
+        .ve-help p { margin: 0 0 10px; font-size: 13.5px; font-weight: 700; color: #0E3B2A; }
+        .ve-help ul { display: grid; gap: 6px; margin: 0 0 14px; padding: 0; list-style: none; font-size: 13.5px; line-height: 1.45; color: #24503D; }
         .ve-help li { display: flex; gap: 8px; }
-        .ve-help li::before { content: ''; flex: none; width: 6px; height: 6px; margin-top: 7px; border-radius: 2px; transform: rotate(45deg); background: #d9650f; }
-        .ve-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin: 18px 0 0; font-size: 13.5px; color: #6b6458; }
-        .ve-link { border: 0; padding: 0; background: none; font: inherit; font-weight: 700; color: #9a4308; cursor: pointer; text-decoration: none; }
+        .ve-help li::before { content: ''; flex: none; width: 6px; height: 6px; margin-top: 7px; border-radius: 2px; transform: rotate(45deg); background: #EB6E00; }
+        .ve-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin: 18px 0 0; font-size: 13.5px; color: #557466; }
+        .ve-link { border: 0; padding: 0; background: none; font: inherit; font-weight: 700; color: #B85600; cursor: pointer; text-decoration: none; }
         .ve-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-        .ve-copy { position: relative; z-index: 1; margin: 18px 0 0; font-size: 12.5px; color: #8a7f6b; }
-        .ve-card a:focus-visible, .ve-card button:focus-visible, .ve-brand:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .ve-copy { position: relative; z-index: 1; margin: 18px 0 0; font-size: 12.5px; color: #557466; }
+        .ve-card a:focus-visible, .ve-card button:focus-visible, .ve-brand:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
 
         @media (max-width: 520px) {
             .ve-stage { justify-content: flex-start; padding: 16px 12px 28px; }
@@ -109,8 +109,7 @@
     @include('partials.ivorian-motifs', ['culture' => 'national'])
 
     <a href="{{ route('home') }}" class="ve-brand">
-        @if(!empty($siteBrand['logo_url']))<img src="{{ $siteBrand['logo_url'] }}" alt="">@endif
-        <b>{{ $siteBrand['site_name'] }}</b>
+        <img src="{{ $siteBrand['logo_compact_url'] ?? $siteBrand['logo_url'] }}" alt="{{ $siteBrand['site_name'] }}" style="height:46px;width:auto">
     </a>
 
     <div class="ve-card">

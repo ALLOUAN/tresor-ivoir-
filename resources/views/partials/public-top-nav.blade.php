@@ -60,7 +60,7 @@
         };
     };
     $publicGalleryActive = request()->routeIs('gallery.public');
-    $publicMediaActive = $publicGalleryActive || request()->routeIs('gallery.public.*', 'videos.*', 'comics.*');
+    $publicMediaActive = $publicGalleryActive || request()->routeIs('gallery.public.*', 'videos.*', 'comics.*', 'films.*');
     $headerImage = $headerImage ?? (\Illuminate\Support\Facades\Schema::hasTable('header_images')
         ? \App\Models\HeaderImage::query()->find(1)
         : null);
@@ -70,16 +70,16 @@
 @endphp
 
 <style>
-    .font-plus { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
+    .font-plus { font-family: 'Montserrat', 'Montserrat', system-ui, sans-serif; }
 
     /* ── Top bar ─────────────────────────────────────────── */
     .public-topbar {
         position: relative;
         isolation: isolate;
-        /* Orange terre cuite : avec l'en-tête blanc et le bandeau vert, le haut de page reprend les couleurs du drapeau. */
-        background-color: #b9500a;
+        /* Charte « Le Joyau » : le vert porte les fonds (texte blanc, contraste AA) ; l'orange reste l'accent. */
+        background-color: #00874F;
         /* Mêmes frises que le Flash info (losanges en haut, chevrons en bas), couleurs adaptées au fond orange. */
-        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='14' viewBox='0 0 56 14'><path d='M14 2 l5 5 l-5 5 l-5 -5 z' fill='none' stroke='%23fff4e6' stroke-opacity='.26' stroke-width='1.2'/><path d='M14 5 l2 2 l-2 2 l-2 -2 z' fill='%23f6c38f' fill-opacity='.4'/><circle cx='42' cy='7' r='1.3' fill='%23fff4e6' fill-opacity='.3'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='12' viewBox='0 0 56 12'><path d='M30 9 l5 -5 l5 5 l5 -5 l5 5' fill='none' stroke='%23123a25' stroke-opacity='.3' stroke-width='1.3'/><circle cx='8' cy='6' r='1.2' fill='%23fff4e6' fill-opacity='.28'/></svg>");
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='14' viewBox='0 0 56 14'><path d='M14 2 l5 5 l-5 5 l-5 -5 z' fill='none' stroke='%23F3F8F5' stroke-opacity='.26' stroke-width='1.2'/><path d='M14 5 l2 2 l-2 2 l-2 -2 z' fill='%23F7C396' fill-opacity='.4'/><circle cx='42' cy='7' r='1.3' fill='%23F3F8F5' fill-opacity='.3'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='12' viewBox='0 0 56 12'><path d='M30 9 l5 -5 l5 5 l5 -5 l5 5' fill='none' stroke='%23FFFFFF' stroke-opacity='.18' stroke-width='1.3'/><circle cx='8' cy='6' r='1.2' fill='%23F3F8F5' fill-opacity='.28'/></svg>");
         background-size: 56px 14px, 56px 12px;
         background-position: 0 3px, 28px calc(100% - 5px);
         background-repeat: repeat-x, repeat-x;
@@ -104,7 +104,7 @@
        le pont de thème clair (theme-light-bridge) réécrit ces classes en vert
        très foncé pour les usages sur fond clair, ce qui les rendait quasi
        invisibles sur ce bandeau à fond vert foncé. */
-    .public-slogan-text { color: #fff4e6; }
+    .public-slogan-text { color: #FFFFFF; }
     /* Liens de la barre orange : pastilles en aplat (fond plus foncé que la barre, fin contour clair) ;
        au survol, la pastille passe en crème et le texte en orange de la charte. */
     .public-topbar-action {
@@ -114,33 +114,33 @@
         height: 32px;
         padding: 0 0.85rem;
         border-radius: 999px;
-        border: 1px solid rgba(255,244,230,0.28);
-        background: #9a4308;
+        border: 1px solid rgba(255,255,255,0.32);
+        background: rgba(255,255,255,0.1);
         font-size: 12px;
         font-weight: 600;
-        color: #fff4e6;
+        color: #FFFFFF;
         transition: color .15s ease, background-color .15s ease, border-color .15s ease;
     }
     .public-topbar-action:hover,
     .public-topbar-action:focus-visible {
-        color: #9a4308;
-        background: #fff4e6;
-        border-color: #fff4e6;
+        color: #00874F;
+        background: #FFFFFF;
+        border-color: #FFFFFF;
         outline: none;
     }
-    .public-topbar-action i { font-size: 11px; color: #f6c38f; transition: color .15s ease; }
+    .public-topbar-action i { font-size: 11px; color: #FFFFFF; transition: color .15s ease; }
     .public-topbar-action:hover i,
-    .public-topbar-action:focus-visible i { color: #b9500a; }
+    .public-topbar-action:focus-visible i { color: #EB6E00; }
 
     /* ── Flash info ticker ───────────────────────────────── */
     /* Bandeau d'annonces sobre : fond encre plat, pastille orange, texte lisible.
        Les calques décoratifs (.flash-ticker-sheen / -accent) restent dans le markup mais sont neutres. */
     /* Frises tissées (losanges en haut, chevrons en bas, d'après les pagnes akan et baoulés) en couleurs du site ; la ligne de texte reste dégagée. */
-    .flash-ticker-bg { background-color: #123a25; background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='14' viewBox='0 0 56 14'><path d='M14 2 l5 5 l-5 5 l-5 -5 z' fill='none' stroke='%23e2742a' stroke-opacity='.28' stroke-width='1.2'/><path d='M14 5 l2 2 l-2 2 l-2 -2 z' fill='%23e0a12e' fill-opacity='.34'/><circle cx='42' cy='7' r='1.3' fill='%23e0a12e' fill-opacity='.3'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='12' viewBox='0 0 56 12'><path d='M30 9 l5 -5 l5 5 l5 -5 l5 5' fill='none' stroke='%23f3ead8' stroke-opacity='.24' stroke-width='1.2'/><circle cx='8' cy='6' r='1.2' fill='%23e0a12e' fill-opacity='.28'/></svg>"); background-size: 56px 14px, 56px 12px; background-position: 0 2px, 28px calc(100% - 5px); background-repeat: repeat-x, repeat-x; }
+    .flash-ticker-bg { background-color: #E8F4EE; background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='14' viewBox='0 0 56 14'><path d='M14 2 l5 5 l-5 5 l-5 -5 z' fill='none' stroke='%23EB6E00' stroke-opacity='.28' stroke-width='1.2'/><path d='M14 5 l2 2 l-2 2 l-2 -2 z' fill='%23EB6E00' fill-opacity='.34'/><circle cx='42' cy='7' r='1.3' fill='%23EB6E00' fill-opacity='.3'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='12' viewBox='0 0 56 12'><path d='M30 9 l5 -5 l5 5 l5 -5 l5 5' fill='none' stroke='%23D8E9E0' stroke-opacity='.24' stroke-width='1.2'/><circle cx='8' cy='6' r='1.2' fill='%23EB6E00' fill-opacity='.28'/></svg>"); background-size: 56px 14px, 56px 12px; background-position: 0 2px, 28px calc(100% - 5px); background-repeat: repeat-x, repeat-x; }
     .flash-ticker-sheen,
     .flash-ticker-accent { display: none; }
     /* Lisière kita (3 px) sous le bandeau */
-    .flash-ticker-accent-bottom { height: 3px !important; background-color: #b9500a; background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='3'><rect width='16' height='3' fill='%23b9500a'/><rect x='16' width='6' height='3' fill='%23e0a12e'/><rect x='22' width='14' height='3' fill='%231b6b3a'/><rect x='36' width='4' height='3' fill='%23f3ead8'/><rect x='40' width='8' height='3' fill='%23b9500a'/></svg>"); background-size: 48px 3px; }
+    .flash-ticker-accent-bottom { height: 3px !important; background-color: #EB6E00; background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='3'><rect width='16' height='3' fill='%23EB6E00'/><rect x='16' width='6' height='3' fill='%23EB6E00'/><rect x='22' width='14' height='3' fill='%2300874F'/><rect x='36' width='4' height='3' fill='%23D8E9E0'/><rect x='40' width='8' height='3' fill='%23EB6E00'/></svg>"); background-size: 48px 3px; }
     .flash-ticker > .relative { min-height: 0 !important; padding-top: .55rem !important; padding-bottom: .55rem !important; }
 
     .flash-ticker-badge {
@@ -148,14 +148,14 @@
         display: inline-flex; align-items: center; gap: 10px;
         padding: 4px 12px 4px 4px;
         border-radius: 999px;
-        background: rgba(255,255,255,.06);
+        background: #FFFFFF;
     }
     .flash-ticker-badge-orb {
         position: relative;
         width: 28px; height: 28px;
         display: inline-flex; align-items: center; justify-content: center;
         border-radius: 999px;
-        background: #b9500a;
+        background: #EB6E00;
         flex-shrink: 0;
     }
     .flash-ticker-badge-ring { display: none; }
@@ -170,12 +170,12 @@
         font-size: 12px; font-weight: 700; letter-spacing: .12em;
         white-space: nowrap;
     }
-    .flash-ticker-badge-live { color: #fdba74; text-transform: uppercase; }
-    .flash-ticker-badge-title { color: rgba(255,255,255,.7); text-transform: uppercase; font-weight: 600; }
+    .flash-ticker-badge-live { color: #B85600; text-transform: uppercase; }
+    .flash-ticker-badge-title { color: #557466; text-transform: uppercase; font-weight: 600; }
 
     .flash-ticker-track {
-        -webkit-mask-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65));
-                mask-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65));
+        -webkit-mask-image: none;
+                mask-image: none;
     }
 
     @keyframes flash-ticker-marquee {
@@ -195,24 +195,24 @@
         padding: 4px 14px;
         border-radius: 6px;
         font-size: 14px; font-weight: 500;
-        color: rgba(255,255,255,.88);
+        color: #0E3B2A;
         text-decoration: none;
         transition: color .15s ease, background-color .15s ease;
     }
     a.flash-ticker-item:hover {
-        color: #fff;
-        background: rgba(255,255,255,.07);
+        color: #00874F;
+        background: #FFFFFF;
         text-decoration: underline;
         text-underline-offset: 3px;
     }
     .flash-ticker-marker {
         width: 6px; height: 6px; border-radius: 999px;
         margin-right: 10px; flex-shrink: 0;
-        background: #94a3b8;
+        background: #8AA99B;
     }
     .flash-ticker-item--info    .flash-ticker-marker { background: #7cc4ee; }
-    .flash-ticker-item--success .flash-ticker-marker { background: #6fcf8f; }
-    .flash-ticker-item--warning .flash-ticker-marker { background: #f2c14e; }
+    .flash-ticker-item--success .flash-ticker-marker { background: #00874F; }
+    .flash-ticker-item--warning .flash-ticker-marker { background: #EB6E00; }
     .flash-ticker-item--urgent  .flash-ticker-marker { background: #f2797b; }
     /* Séparateur : petit losange ocre, en écho à la trame */
     .flash-ticker-sep {
@@ -222,7 +222,7 @@
         display: inline-block;
         border-radius: 1px;
         transform: rotate(45deg);
-        background: #e0a12e;
+        background: #EB6E00;
         opacity: .85;
     }
 
@@ -255,23 +255,48 @@
        du drapeau, et liseré tricolore en haut. Une image d'en-tête définie en administration passe par-dessus. */
     .public-header {
         background-color: rgba(255,255,255,.97);
-        background-image: var(--header-bg-image, none), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='84' viewBox='0 0 240 84'><g fill='none' stroke='%23f77f00' stroke-opacity='.22' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><path d='M40 30 q0 -14 14 -14 q14 0 14 14'/><path d='M40 30 q-22 -10 -22 10 q0 16 18 14'/><path d='M68 30 q22 -10 22 10 q0 16 -18 14'/><path d='M48 40 q0 16 4 24 q2 6 -4 8'/><path d='M60 40 q0 18 -4 28'/><path d='M46 46 q-8 6 -6 14'/><path d='M62 46 q8 6 6 14'/></g><g fill='%23f77f00' fill-opacity='.26'><circle cx='48' cy='31' r='1.4'/><circle cx='60' cy='31' r='1.4'/></g><g fill='none' stroke='%23d4951c' stroke-opacity='.26' stroke-width='1.7' stroke-linecap='round'><path d='M106 60 a16 16 0 0 1 32 0'/><path d='M98 60 h48'/><path d='M122 38 v-8 M108 44 l-6 -6 M136 44 l6 -6 M100 54 l-8 -2 M144 54 l8 -2'/></g><g fill='none' stroke='%23009e60' stroke-opacity='.2' stroke-width='1.7' stroke-linecap='round'><path d='M196 74 q-3 -26 2 -46'/><path d='M198 28 q-16 -6 -26 4'/><path d='M198 28 q16 -6 26 4'/><path d='M198 28 q-10 -14 -22 -12'/><path d='M198 28 q10 -14 22 -12'/><path d='M198 28 v-10'/></g></svg>");
+        background-image: var(--header-bg-image, none), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='84' viewBox='0 0 240 84'><g fill='none' stroke='%23EB6E00' stroke-opacity='.22' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><path d='M40 30 q0 -14 14 -14 q14 0 14 14'/><path d='M40 30 q-22 -10 -22 10 q0 16 18 14'/><path d='M68 30 q22 -10 22 10 q0 16 -18 14'/><path d='M48 40 q0 16 4 24 q2 6 -4 8'/><path d='M60 40 q0 18 -4 28'/><path d='M46 46 q-8 6 -6 14'/><path d='M62 46 q8 6 6 14'/></g><g fill='%23EB6E00' fill-opacity='.26'><circle cx='48' cy='31' r='1.4'/><circle cx='60' cy='31' r='1.4'/></g><g fill='none' stroke='%23EB6E00' stroke-opacity='.26' stroke-width='1.7' stroke-linecap='round'><path d='M106 60 a16 16 0 0 1 32 0'/><path d='M98 60 h48'/><path d='M122 38 v-8 M108 44 l-6 -6 M136 44 l6 -6 M100 54 l-8 -2 M144 54 l8 -2'/></g><g fill='none' stroke='%2300874F' stroke-opacity='.2' stroke-width='1.7' stroke-linecap='round'><path d='M196 74 q-3 -26 2 -46'/><path d='M198 28 q-16 -6 -26 4'/><path d='M198 28 q16 -6 26 4'/><path d='M198 28 q-10 -14 -22 -12'/><path d='M198 28 q10 -14 22 -12'/><path d='M198 28 v-10'/></g></svg>");
         background-size: cover, 240px 84px;
         background-position: center, 0 50%;
         background-repeat: no-repeat, repeat-x;
-        border-bottom: 1px solid #e8e1d3;
+        border-bottom: 1px solid #D8E9E0;
         transition: box-shadow .2s ease;
     }
     /* Menu et marque posés sur des capsules blanches unies : textes nets, la frise reste visible autour. */
-    .public-nav-rail { justify-self: center; width: max-content; max-width: 100%; padding: 5px 8px; border-radius: 999px; background: #fff; border: 1px solid #ece4d4; }
-    .public-brand-rail { padding: 4px 16px 4px 4px; border-radius: 22px; background: #fff; border: 1px solid #ece4d4; }
+    .public-nav-rail { justify-self: center; width: max-content; max-width: 100%; padding: 5px 8px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; }
+    .public-brand-rail { padding: 4px 16px 4px 4px; border-radius: 22px; background: #fff; border: 1px solid #D8E9E0; }
     @media (max-width: 639px) { .public-brand-rail { padding: 3px 10px 3px 3px; border-radius: 18px; } }
+
+    /* Avatar du compte : aplat orange de la marque (pas de dégradé), à toutes les tailles. */
+    #main-header .hdr-avatar { background: #EB6E00; }
+
+    /* ── En-tête mobile (< 640 px) : logo rond + nom du site à gauche, trois boutons ronds identiques de 44 px
+          à droite (recherche, compte, menu) — zones tactiles ≥ 44 px (Apple HIG), sans cadre ni dégradé. ── */
+    @media (max-width: 639px) {
+        #main-header > div:not(#public-mobile-menu) { height: 64px; gap: 10px; }
+        /* « S’abonner » est déjà dans la barre d’onglets du bas : retiré de l’en-tête pour laisser le nom du site lisible. */
+        #main-header .hdr-subscribe { display: none; }
+        #main-header > div:not(#public-mobile-menu) > div:last-child { justify-self: end; grid-column: -2 / -1; }
+        #main-header .public-brand-rail { padding: 0; border: 0; border-radius: 0; background: transparent; gap: 10px; min-width: 0; }
+        #main-header .public-brand-rail .logo-ring { border-radius: 999px; padding: 2px; background: #D8E9E0; }
+        #main-header .public-brand-rail .logo-ring-inner { width: 40px; height: 40px; border-radius: 999px; }
+        #main-header .public-brand-rail > div.hidden { display: block; min-width: 0; }
+        #main-header .public-brand-rail > div.hidden p:first-child { font-size: 16px; line-height: 1.1; white-space: nowrap; }
+        #main-header .public-brand-rail > div.hidden p + p { display: none; }
+        #main-header .hdr-btn, #main-header .hdr-user { width: 44px; height: 44px; padding: 0; justify-content: center; border-radius: 999px; border: 1px solid #D8E9E0 !important; background: #ffffff !important; color: #0E3B2A; }
+        #main-header .hdr-btn i { font-size: 15px; }
+        #main-header .hdr-user { gap: 0; }
+        #main-header .hdr-user #nav-dd-chevron { display: none; }
+        #main-header .hdr-user .hdr-avatar { width: 36px; height: 36px; font-size: 12.5px; letter-spacing: .02em; }
+        #main-header .hdr-btn:active, #main-header .hdr-user:active { background: #F3F8F5 !important; }
+    }
+    @media (max-width: 359px) { #main-header .public-brand-rail > div.hidden { display: none; } }
     /* Boutons ronds de l'en-tête (recherche, compte, menu) : fond blanc uni au-dessus de la frise ; les boutons colorés gardent le leur. */
     #main-header > div [class*="bg-white/"], #main-header > div button[class*="rounded"]:not([class*="bg-"]), #main-header .btn-ghost-header, #nav-user-dropdown-btn { background-color: #fff !important; }
     .public-header::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; pointer-events: none;
-        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='3'><rect width='12' height='3' fill='%23f77f00'/><rect x='12' width='6' height='3' fill='%23efe6d4'/><rect x='18' width='12' height='3' fill='%23009e60'/></svg>"); background-size: 30px 3px; background-repeat: repeat-x; }
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='3'><rect width='12' height='3' fill='%23EB6E00'/><rect x='12' width='6' height='3' fill='%23D8E9E0'/><rect x='18' width='12' height='3' fill='%2300874F'/></svg>"); background-size: 30px 3px; background-repeat: repeat-x; }
     .public-header.header-scrolled {
-        box-shadow: 0 6px 18px rgba(29,26,22,0.07);
+        box-shadow: 0 6px 18px rgba(14,59,42,0.07);
     }
     .public-nav-pill {
         position: relative;
@@ -280,17 +305,76 @@
         font-size: 0.8125rem;
         font-weight: 500;
         letter-spacing: 0.01em;
-        color: #4a443a;
+        color: #24503D;
         transition: color .15s ease, background-color .15s ease;
     }
     @media (min-width: 1536px) {
-        .public-nav-pill { padding: 0.5rem 0.7rem; }
+        .public-nav-pill { padding: 0.45rem 0.55rem; }
     }
-    /* Menu desktop en texte seul : les pictogrammes restent dans le menu mobile. */
-    .public-nav-pill > i:first-child { display: none; }
+    /* Menu desktop : mini-pastille d'icône devant chaque rubrique (modèle commun des icônes, couleur du thème). */
+    .public-nav-pill > i:first-child {
+        display: inline-flex; align-items: center; justify-content: center; flex: none;
+        width: 24px; height: 24px; margin-right: 5px; border-radius: 8px;
+        font-size: 11px !important; opacity: 1 !important;
+        background: var(--ti-ic-tint, #F3F8F5);
+        border: 1px solid color-mix(in srgb, var(--ti-ic, #EB6E00) 22%, transparent);
+        color: var(--ti-ic, #EB6E00);
+        transition: background .15s ease, color .15s ease;
+    }
+    .public-nav-pill:hover > i:first-child, .public-nav-pill.is-active > i:first-child { background: var(--ti-ic, #EB6E00); color: #ffffff; }
+    /* Visiteur non connecté (Connexion + S'abonner) : sous 1600 px, la place manque, les pastilles d'icône sont masquées. */
+    @media (max-width: 1599px) {
+        #main-header:has(.hdr-subscribe) .public-nav-pill > i:first-child { display: none; }
+    }
+    /* Bouton de compte : libellé « Mon espace » sur une ligne, affiché seulement sur très grand écran (sinon avatar seul). */
+    #main-header .hdr-user > span:not(.hdr-avatar) { white-space: nowrap; }
+    @media (max-width: 2099px) { #main-header .hdr-user > span:not(.hdr-avatar) { display: none !important; } #main-header .hdr-user { padding-right: 8px; } }
+
+    /* ── Ordinateur (≥ 1024 px) : menu complet à toutes les largeurs, compacté par paliers au lieu d'être
+          remplacé par le bouton burger. ── */
+    @media (min-width: 1024px) {
+        #main-header .public-nav-rail { display: flex !important; }
+        #public-menu-toggle, #public-mobile-menu { display: none !important; }
+        /* Colonne du menu bornée (minmax 0) : le menu ne pousse jamais la recherche / Connexion / S'abonner hors de l'écran.
+           Conteneur élargi pour les grands écrans. */
+        #main-header > div:not(#public-mobile-menu) { grid-template-columns: auto minmax(0, 1fr) auto; max-width: 120rem; }
+    }
+    /* Visiteur déconnecté (Connexion + S'abonner prennent ~300 px) : pastilles d'icône jusqu'à 1800 px seulement,
+       et nom du site masqué sous 1600 px. */
+    @media (min-width: 1600px) and (max-width: 1799px) {
+        #main-header:has(.hdr-subscribe) .public-nav-pill > i:first-child { display: none !important; }
+    }
+    @media (min-width: 1024px) and (max-width: 1599px) {
+        #main-header:has(.hdr-subscribe) .public-brand-rail { padding: 4px; border-radius: 999px; }
+        #main-header:has(.hdr-subscribe) .public-brand-rail > div:not(.logo-ring) { display: none !important; }
+    }
+    /* Même règle pour toutes les rubriques (principales et secondaires) : sous 1600 px, libellés seuls, sans pastille d'icône. */
+    @media (min-width: 1024px) and (max-width: 1599px) {
+        #main-header .public-nav-pill > i:first-child { display: none !important; }
+        #main-header .public-nav-pill { padding: .45rem .5rem; }
+    }
+    @media (min-width: 1024px) and (max-width: 1365px) {
+        #main-header > div:not(#public-mobile-menu) { gap: 12px; padding-left: 16px; padding-right: 16px; }
+        #main-header .public-brand-rail .logo-ring-inner { width: 3.25rem; height: 3.25rem; }
+        #main-header .public-nav-rail { padding: 4px 6px; }
+        #main-header .public-nav-pill { padding: .4rem .45rem; font-size: 12.5px; }
+        #main-header .hdr-subscribe > span { white-space: nowrap; }
+    }
+    /* Logo toujours visible ; seul le nom du site s'efface quand la place manque. */
+    @media (min-width: 1024px) and (max-width: 1439px) {
+        #main-header .public-brand-rail { padding: 4px; border-radius: 999px; }
+        #main-header .public-brand-rail > .logo-ring { display: block !important; }
+        #main-header .public-brand-rail > div:not(.logo-ring) { display: none !important; }
+    }
+    @media (min-width: 1024px) and (max-width: 1199px) {
+        #main-header .public-nav-pill { padding: .38rem .38rem; font-size: 12px; letter-spacing: 0; }
+        #main-header .public-nav-pill [id$="-nav-chevron"] { display: none; }
+        #main-header .btn-ghost-header { padding-left: 10px; padding-right: 10px; }
+        #main-header .hdr-subscribe { padding-left: 12px; padding-right: 12px; }
+    }
     .public-nav-pill:hover {
-        color: #1d1a16;
-        background: #f3eee4;
+        color: #0E3B2A;
+        background: #F3F8F5;
     }
     /* Page courante : texte vert forêt + filet or sous le libellé. */
     .public-nav-pill-glow::after {
@@ -301,27 +385,39 @@
         bottom: 1px;
         height: 2px;
         border-radius: 2px;
-        background: #b8892b;
+        background: #EB6E00;
         transform: scaleX(0);
         transition: transform .2s ease;
     }
     .public-nav-pill-glow.is-active::after { transform: scaleX(1); }
     .public-nav-pill.is-active {
-        color: #14532d;
+        color: #00874F;
         font-weight: 600;
         background: transparent;
     }
     /* Panneau du mega-menu "Hôtels & Résidences" : fond toujours sombre,
        non affecté par le pont de theme clair (qui réécrit text-gray-200 en
        texte sombre, ce qui le rendait invisible sur ce fond resté sombre). */
-    #hotels-nav-panel .text-gray-200 { color: #e5e7eb !important; }
+    #hotels-nav-panel .text-gray-200 { color: #F3F8F5 !important; }
     #hotels-nav-panel a:hover { color: #ffffff !important; background-color: rgba(255,255,255,0.05) !important; }
     #hotels-nav-panel .border-white\/10 { border-color: rgba(255,255,255,0.1) !important; }
+    /* Logo officiel horizontal (charte « Le Joyau ») : ≥ 140 px de large à l'écran (taille minimale), sans cadre ni effet. */
+    /* Zone de protection (charte p. 3) : fond blanc et marge autour du logo, aucun décor ni menu ne l'approche. */
+    #main-header .ti-header-logo { padding: 6px 12px !important; margin-right: 10px; border: 0 !important; border-radius: 12px !important; background: #fff !important; position: relative; z-index: 2; }
+    #main-header .ti-header-logo__img { display: block; height: 54px; width: auto; max-width: none; }
+    @media (min-width: 1024px) and (max-width: 1599px) { #main-header .ti-header-logo__img { height: 44px; } #main-header .ti-header-logo { padding: 5px 8px !important; margin-right: 4px; } #main-header .public-nav-pill { padding: .4rem .4rem; font-size: 12.5px; } }
+    @media (max-width: 1365px) { #main-header .ti-header-logo__img { height: 42px; } }
+    /* 1024–1199 px : « Autour de moi » et « Mon séjour » quittent la barre (toujours accessibles depuis l'accueil et le menu mobile). */
+    @media (min-width: 1024px) and (max-width: 1199px) { #main-header .public-nav-rail a[href*="autour-de-moi"], #main-header .public-nav-rail a[href*="mon-sejour"] { display: none !important; } }
+    /* Montserrat est plus large que l'ancienne police : entre 1024 et 1439 px, menu resserré pour que toutes les rubriques restent visibles. */
+    @media (min-width: 1024px) and (max-width: 1439px) { #main-header .public-nav-pill { padding: .34rem .3rem !important; font-size: 11.5px !important; letter-spacing: -.01em !important; } #main-header .ti-header-logo__img { height: 38px; } #main-header .ti-header-logo { padding: 4px 6px !important; margin-right: 0; } #main-header > div:not(#public-mobile-menu) { gap: 10px !important; } #main-header .btn-ghost-header, #main-header .hdr-subscribe { padding-left: 12px !important; padding-right: 12px !important; font-size: 13px !important; } }
+    @media (max-width: 639px) { #main-header .ti-header-logo__img { height: 42px; } }
+    @media (max-width: 359px) { #main-header .ti-header-logo__img { height: 38px; } }
     .logo-ring {
         position: relative;
         border-radius: 12px;
         padding: 1px;
-        background: #e8e1d3;
+        background: #D8E9E0;
     }
     .logo-ring-inner {
         border-radius: 11px;
@@ -331,15 +427,15 @@
     /* Nom du site : vert forêt plat (le dégradé vert clair d'origine manquait de contraste). */
     #main-header .group p.bg-clip-text {
         background: none !important;
-        color: #14532d !important;
-        -webkit-text-fill-color: #14532d;
+        color: #00874F !important;
+        -webkit-text-fill-color: #00874F;
     }
     .lang-switch-ultra {
         display: inline-flex;
         padding: 2px;
         border-radius: 8px;
-        background: #f3eee4;
-        border: 1px solid #e8e1d3;
+        background: #F3F8F5;
+        border: 1px solid #D8E9E0;
     }
     .lang-switch-ultra a {
         border-radius: 6px;
@@ -351,37 +447,51 @@
     }
     .btn-ghost-header {
         border-radius: 8px;
-        border: 1px solid #e8e1d3;
+        border: 1px solid #D8E9E0;
         background: #ffffff;
         transition: border-color .15s ease, background-color .15s ease, color .15s ease;
     }
     .btn-ghost-header:hover {
-        border-color: #d8cdb8;
-        background: #faf8f3;
+        border-color: #8AA99B;
+        background: #FFFFFF;
     }
     /* Bouton d'action du header : orange d'action plein. */
     .btn-gold-header {
         border-radius: 8px;
-        background: #b9500a;
+        background: #EB6E00;
         color: #ffffff !important;
         transition: background-color .15s ease;
     }
-    .btn-gold-header:hover { background: #9a4308; }
+    .btn-gold-header:hover { background: #B85600; }
     .btn-gold-header i, .btn-gold-header span { color: #ffffff !important; }
     #public-mobile-menu.mobile-menu-ultra {
         background: #ffffff;
-        border-top: 1px solid #e8e1d3;
-        box-shadow: 0 16px 32px rgba(29,26,22,0.10);
+        border-top: 1px solid #D8E9E0;
+        box-shadow: 0 16px 32px rgba(14,59,42,0.10);
     }
     #public-mobile-menu.mobile-menu-ultra a {
         border-radius: 10px;
         border: 1px solid transparent;
     }
-    #public-mobile-menu.mobile-menu-ultra a:hover { background: #f3eee4; }
+    /* Mobile : le menu (dans l'en-tête collant) ne descend jamais sous la barre d'onglets du bas ;
+       il défile à l'intérieur quand un accordéon (Résidences, Médiathèque) l'allonge. */
+    @media (max-width: 767px) {
+        #public-mobile-menu.mobile-menu-ultra {
+            max-height: calc(100vh - 64px - 78px - env(safe-area-inset-bottom));
+            max-height: calc(100dvh - 64px - 78px - env(safe-area-inset-bottom));
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 12px;
+        }
+        /* Menu ouvert : le bouton de l'assistant ne recouvre plus les rubriques. */
+        body:has(#public-mobile-menu:not(.hidden)) .ti-chat-fab { display: none; }
+    }
+    #public-mobile-menu.mobile-menu-ultra a:hover { background: #F3F8F5; }
     #public-mobile-menu.mobile-menu-ultra a.is-active {
-        background: #eef6f0;
-        border-color: #d9ecdf;
-        color: #14532d;
+        background: #F3F8F5;
+        border-color: #D8E9E0;
+        color: #00874F;
         font-weight: 600;
     }
 
@@ -389,37 +499,74 @@
     :root {
         --dd-bg: rgba(8,10,14,0.96);
         --dd-border: rgba(255,255,255,0.07);
-        --dd-shadow: 0 32px 64px -8px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.06);
+        --dd-shadow: 0 32px 64px -8px rgba(14,59,42,0.9), 0 0 0 1px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.06);
         --dd-divider: rgba(255,255,255,0.06);
-        --dd-head-gradient: rgba(242, 121, 15,0.07);
+        --dd-head-gradient: rgba(235,110,0,0.07);
     }
     html:not(.dark) {
-        --dd-bg: rgba(255,253,248,0.99);
-        --dd-border: rgba(0,0,0,0.09);
-        --dd-shadow: 0 24px 48px -8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.9);
-        --dd-divider: rgba(0,0,0,0.07);
-        --dd-head-gradient: rgba(242, 121, 15,0.05);
+        --dd-bg: rgba(255,255,255,0.99);
+        --dd-border: rgba(14,59,42,0.09);
+        --dd-shadow: 0 24px 48px -8px rgba(14,59,42,0.12), 0 0 0 1px rgba(14,59,42,0.05), inset 0 1px 0 rgba(255,255,255,0.9);
+        --dd-divider: rgba(14,59,42,0.07);
+        --dd-head-gradient: rgba(235,110,0,0.05);
     }
     .nav-dd-lnk {
         display: flex; align-items: center; gap: 0.75rem;
         padding: 0.45rem 0.625rem; border-radius: 0.625rem;
-        font-size: 0.8125rem; font-weight: 500; color: #44413a;
+        font-size: 0.8125rem; font-weight: 500; color: #24503D;
         text-decoration: none; white-space: nowrap;
         background: none; border: none; cursor: pointer;
         transition: background .15s ease, color .15s ease;
         width: 100%; text-align: left;
     }
-    .nav-dd-lnk:hover { background: rgba(0,0,0,0.04); color: #1c1915; }
-    .nav-dd-lnk:hover .nav-dd-icon { background: rgba(242, 121, 15,0.14); color: #9f4709; }
+    .nav-dd-lnk:hover { background: rgba(14,59,42,0.04); color: #0E3B2A; }
+    .nav-dd-lnk:hover .nav-dd-icon { background: rgba(235,110,0,0.14); color: #B85600; }
     .nav-dd-icon {
         width: 1.875rem; height: 1.875rem; border-radius: 0.5rem; flex-shrink: 0;
         display: flex; align-items: center; justify-content: center;
-        background: rgba(0,0,0,0.05); color: #544f47; font-size: 0.7rem;
+        background: rgba(14,59,42,0.05); color: #24503D; font-size: 0.7rem;
         transition: background .15s ease, color .15s ease;
     }
     .nav-dd-danger { color: #dc2626; }
     .nav-dd-danger .nav-dd-icon { color: #dc2626; background: rgba(239,68,68,0.08); }
     .nav-dd-danger:hover { background: rgba(239,68,68,0.06); color: #b91c1c; }
+
+    /* Menu « Mon espace » : même famille que le menu utilisateur du back-office. */
+    .pdd { --pdd-forest: #00874F; --pdd-orange: #EB6E00; --pdd-amber: #EB6E00; --pdd-ink: #0E3B2A; --pdd-soft: #24503D; --pdd-line: #D8E9E0;
+        position: absolute; right: 0; top: calc(100% + 12px); z-index: 50; width: 330px; max-width: calc(100vw - 24px); padding: 8px; border: 1px solid var(--pdd-line); border-radius: 24px; background: rgba(255,255,255,.97); backdrop-filter: blur(14px); box-shadow: 0 30px 60px -28px rgba(14,59,42,.45), 0 2px 6px rgba(14,59,42,.05); transform-origin: top right; animation: pdd-in .22s cubic-bezier(.2,.9,.3,1.2); color: var(--pdd-ink); }
+    .pdd.hidden { display: none; }
+    @keyframes pdd-in { from { opacity: 0; transform: translateY(-6px) scale(.96); } to { opacity: 1; transform: none; } }
+    .pdd-head { position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px; padding: 18px 16px 26px; border-radius: 18px; background: #00874F; color: #fff; }
+    .pdd-head .ivm-g { opacity: .2 !important; }
+    .pdd-head .ivm-g > * { stroke: #F7C396 !important; }
+    .pdd-head .ivm-band { height: 8px; }
+    .pdd-head > .pdd-av, .pdd-head > .pdd-head__txt { position: relative; z-index: 2; }
+    .pdd-av { position: relative; width: 58px; height: 58px; flex: none; padding: 2px; border-radius: 999px; background: var(--pdd-forest); }
+    .pdd-av > span { width: 100%; height: 100%; border-radius: inherit; border: 2px solid #fff; background: #EB6E00; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: 800; letter-spacing: .04em; }
+    .pdd-av::after { content: ''; position: absolute; right: 0; bottom: 0; width: 13px; height: 13px; border-radius: 999px; background: #00874F; border: 2px solid #00874F; }
+    .pdd-head__txt { min-width: 0; }
+    .pdd-head__txt b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 800; color: #fff; }
+    .pdd-head__txt small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; font-size: 12.5px; color: rgba(255,255,255,.75); }
+    .pdd-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; padding: 4px 10px; border-radius: 999px; background: var(--pdd-amber); color: var(--pdd-ink); font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    .pdd-badge i { font-size: 10px; }
+    .pdd-list { display: grid; gap: 2px; padding: 8px 0 4px; }
+    .pdd-item { --t: 0,135,79; display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 14px; color: var(--pdd-ink); text-decoration: none; transition: background .18s ease; }
+    .pdd-feature { margin-top: 8px; }
+    .pdd-ic { width: 38px; height: 38px; flex: none; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: rgba(var(--t), .1); color: rgb(var(--t)); font-size: 15px; transition: background .18s ease, color .18s ease, transform .18s ease; }
+    .pdd-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+    .pdd-txt b { font-size: 14px; font-weight: 700; }
+    .pdd-txt small { margin-top: 2px; font-size: 12px; color: var(--pdd-soft); }
+    .pdd-go { font-size: 11px; color: rgb(var(--t)); opacity: 0; transform: translateX(-6px); transition: opacity .18s ease, transform .18s ease; }
+    .pdd-item:hover, .pdd-item:focus-visible, .pdd-tile:hover, .pdd-tile:focus-visible { background: rgba(var(--t), .07); outline: none; }
+    .pdd-item:hover .pdd-ic, .pdd-item:focus-visible .pdd-ic, .pdd-tile:hover .pdd-ic, .pdd-tile:focus-visible .pdd-ic { background: rgb(var(--t)); color: #fff; transform: rotate(-6deg); }
+    .pdd-item:hover .pdd-go, .pdd-item:focus-visible .pdd-go { opacity: 1; transform: none; }
+    .pdd-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px 0; }
+    .pdd-tile { --t: 0,135,79; display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 14px; color: var(--pdd-ink); font-size: 13px; font-weight: 700; text-decoration: none; transition: background .18s ease; }
+    .pdd-tile .pdd-ic { width: 32px; height: 32px; border-radius: 10px; font-size: 13px; }
+    .pdd-out { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 44px; margin-top: 6px; border: 1px solid #f5c9cf !important; border-radius: 14px; background: #FFFFFF !important; color: #be123c; font-size: 14px; font-weight: 800; cursor: pointer; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+    .pdd-out:hover, .pdd-out:focus-visible { background: #e11d48 !important; border-color: #e11d48 !important; color: #fff; outline: none; }
+    @media (max-width: 640px) { .pdd { position: fixed; top: 72px; left: 12px; right: 12px; width: auto; max-width: none; } }
+    @media (prefers-reduced-motion: reduce) { .pdd { animation: none; } .pdd-ic, .pdd-go { transition: none; } }
 </style>
 
 {{-- ══════════════════════════════════════════════════════════
@@ -444,10 +591,13 @@
                     <i class="fas fa-phone-volume"></i>
                     <span>{{ $topPhoneDisplay }}</span>
                 </a>
+                {{-- Offre aux professionnels (B2B) : sans objet pour un client connecté. --}}
+                @unless(auth()->user()?->role === 'visitor')
                 <a href="{{ route('prestations.public') }}" class="public-topbar-action">
                     <i class="fas fa-concierge-bell"></i>
                     {{ __('Nos prestations') }}
                 </a>
+                @endunless
                 <button type="button" onclick="openContactModal()" class="public-topbar-action cursor-pointer">
                     <i class="fas fa-message"></i>
                     {{ __('Contact') }}
@@ -483,28 +633,9 @@
     @endif
 >
     <div class="max-w-[96rem] mx-auto px-4 sm:px-6 lg:px-8 h-[4.25rem] md:h-[5.25rem] grid grid-cols-[auto_1fr_auto] items-center gap-4 md:gap-6">
-        <a href="{{ route('home') }}" class="public-brand-rail flex items-center gap-3 sm:gap-3.5 shrink-0 group">
-            @if(!empty($siteBrand['logo_url']))
-                <div class="logo-ring shrink-0">
-                    <div class="logo-ring-inner w-12 h-12 md:w-[4rem] md:h-[4rem] flex items-center justify-center">
-                        <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain p-0.5">
-                    </div>
-                </div>
-            @else
-                <div class="logo-ring shrink-0">
-                    <div class="logo-ring-inner w-12 h-12 md:w-[4rem] md:h-[4rem] flex items-center justify-center bg-linear-to-br from-green-400 to-green-600">
-                        <i class="fas fa-gem text-dark-900 text-sm md:text-base drop-shadow-sm"></i>
-                    </div>
-                </div>
-            @endif
-            <div class="hidden sm:block min-w-0">
-                <p class="text-transparent bg-clip-text bg-linear-to-r from-green-200 via-green-400 to-green-600 font-serif font-bold text-base md:text-lg leading-tight tracking-tight truncate group-hover:from-green-100 group-hover:to-green-300 transition-all duration-300">
-                    {{ $siteBrand['site_name'] }}
-                </p>
-                <p class="text-gray-500 group-hover:text-gray-400 text-[9px] md:text-[10px] tracking-[0.22em] uppercase truncate font-plus font-medium mt-0.5 transition-colors">
-                    {{ $siteBrand['site_slogan'] ?: __('Magazine Premium') }}
-                </p>
-            </div>
+        {{-- Logo officiel « Le Joyau », version horizontale sans signature (largeur < 200 px : charte, p. 3). --}}
+        <a href="{{ route('home') }}" class="public-brand-rail ti-header-logo flex items-center shrink-0" aria-label="{{ $siteBrand['site_name'] }} — {{ __('Accueil') }}">
+            <img src="{{ $siteBrand['logo_compact_url'] ?? $siteBrand['logo_url'] }}" alt="{{ $siteBrand['site_name'] }}" width="1200" height="369" class="ti-header-logo__img">
         </a>
 
         <nav class="public-nav-rail hidden min-[1400px]:flex items-center justify-center gap-0.5 min-w-0 overflow-x-hidden overflow-y-visible">
@@ -581,10 +712,11 @@
                 })();
                 </script>
                 @else
-                <a href="{{ $item['href'] }}"
-                   class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $item['active'] ? 'is-active' : '' }} {{ ! empty($item['wideOnly']) ? 'max-[1599px]:!hidden' : '' }}">
+                {{-- Rubriques secondaires (is-wide) : toujours visibles sur ordinateur, réduites à leur icône sur les écrans étroits. --}}
+                <a href="{{ $item['href'] }}" @if(! empty($item['wideOnly'])) title="{{ $item['label'] }}" @endif
+                   class="public-nav-pill public-nav-pill-glow whitespace-nowrap inline-flex items-center gap-1 {{ $item['active'] ? 'is-active' : '' }} {{ ! empty($item['wideOnly']) ? 'is-wide' : '' }}">
                     <i class="{{ $item['icon'] }} text-[10px] opacity-80"></i>
-                    {{ $item['shortLabel'] ?? $item['label'] }}
+                    <span class="pill-label">{{ $item['shortLabel'] ?? $item['label'] }}</span>
                 </a>
                 @endif
             @endforeach
@@ -599,20 +731,21 @@
                 {{-- Styles propres au panneau (classes « mdd- ») : le thème clair réécrit les couleurs Tailwind
                      (text-gray-200, text-white…), ce qui rendait les libellés illisibles sur fond vert. --}}
                 <style>
-                    .mdd { width: 300px; padding: 8px; border-radius: 18px; background: #fff; border: 1px solid #e6dccb; box-shadow: 0 24px 50px -28px rgba(29,26,22,.45); font-family: 'Inter', sans-serif; }
+                    .mdd { width: 300px; padding: 8px; border-radius: 18px; background: #fff; border: 1px solid #D8E9E0; box-shadow: 0 24px 50px -28px rgba(14,59,42,.45); font-family: 'Montserrat', sans-serif; }
                     .mdd-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; text-decoration: none; transition: background .15s ease; }
-                    .mdd-item:hover, .mdd-item:focus-visible { background: #fdf4ec; outline: none; }
-                    .mdd-item.is-on { background: #f6f3ec; }
-                    .mdd-ico { flex: none; width: 42px; height: 42px; border-radius: 12px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; }
-                    .mdd-item:hover .mdd-ico { background: #b9500a; color: #fff; }
-                    .mdd-txt b { display: block; font-size: 14.5px; font-weight: 700; color: #1d1a16; line-height: 1.3; }
-                    .mdd-txt small { display: block; margin-top: 2px; font-size: 12.5px; color: #6b6458; line-height: 1.35; }
-                    .mdd-item:hover .mdd-txt b { color: #9a4308; }
+                    .mdd-item:hover, .mdd-item:focus-visible { background: #F3F8F5; outline: none; }
+                    .mdd-item.is-on { background: #F3F8F5; }
+                    .mdd-ico { flex: none; width: 42px; height: 42px; border-radius: 12px; background: #F3F8F5; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; }
+                    .mdd-item:hover .mdd-ico { background: var(--ti-ic, #EB6E00); border-color: var(--ti-ic, #EB6E00); color: #fff; }
+                    .mdd-ico--sm { width: 32px; height: 32px; border-radius: 10px; font-size: 16px; }
+                    .mdd-txt b { display: block; font-size: 14.5px; font-weight: 700; color: #0E3B2A; line-height: 1.3; }
+                    .mdd-txt small { display: block; margin-top: 2px; font-size: 12.5px; color: #557466; line-height: 1.35; }
+                    .mdd-item:hover .mdd-txt b { color: #B85600; }
                     .mdd.is-wide { width: 620px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; }
-                    .mdd-foot { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 4px 2px; padding: 10px 8px 4px; border-top: 1px solid #f0eadf; font-size: 12.5px; color: #6b6458; }
-                    .mdd-foot a { font-weight: 700; color: #9a4308; text-decoration: none; }
+                    .mdd-foot { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 4px 2px; padding: 10px 8px 4px; border-top: 1px solid #F3F8F5; font-size: 12.5px; color: #557466; }
+                    .mdd-foot a { font-weight: 700; color: #B85600; text-decoration: none; }
                     .mdd-foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
-                    .mdd-new { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px; background: #b9500a; color: #fff; font-style: normal; font-size: 10.5px; font-weight: 800; vertical-align: 2px; }
+                    .mdd-new { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px; background: #EB6E00; color: #fff; font-style: normal; font-size: 10.5px; font-weight: 800; vertical-align: 2px; }
                 </style>
                 <div class="hidden fixed z-[9999]" id="media-nav-panel">
                     <div class="mdd" role="menu" aria-label="{{ __('Médiathèque') }}">
@@ -623,6 +756,10 @@
                         <a href="{{ route('videos.index') }}" class="mdd-item {{ request()->routeIs('videos.*') ? 'is-on' : '' }}" role="menuitem">
                             <span class="mdd-ico"><x-icon name="clapperboard-play" /></span>
                             <span class="mdd-txt"><b>{{ __('Vidéos') }}</b><small>{{ __('À regarder, puis à réserver') }}</small></span>
+                        </a>
+                        <a href="{{ route('films.index') }}" class="mdd-item {{ request()->routeIs('films.*') ? 'is-on' : '' }}" role="menuitem">
+                            <span class="mdd-ico"><x-icon name="videocamera-record" /></span>
+                            <span class="mdd-txt"><b>{{ __('Cinéma d\'Ivoire') }} <em class="mdd-new">{{ __('Nouveau') }}</em></b><small>{{ __('Films documentaires et de fiction') }}</small></span>
                         </a>
                         <a href="{{ route('comics.index') }}" class="mdd-item {{ request()->routeIs('comics.*') ? 'is-on' : '' }}" role="menuitem">
                             <span class="mdd-ico"><x-icon name="book" /></span>
@@ -665,7 +802,7 @@
 
             {{-- Recherche --}}
             <a href="{{ route('search') }}"
-               class="w-9 h-9 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-gray-400 hover:text-green-300 hover:border-green-500/30 hover:bg-green-500/5 transition"
+               class="hdr-btn w-9 h-9 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-gray-400 hover:text-green-300 hover:border-green-500/30 hover:bg-green-500/5 transition"
                title="{{ __('Recherche') }}">
                 <i class="fas fa-magnifying-glass text-sm"></i>
             </a>
@@ -676,124 +813,91 @@
 
                 {{-- Trigger --}}
                 <button type="button" id="nav-user-dropdown-btn"
-                        class="group inline-flex items-center gap-2 pl-1.5 pr-2 2xl:pr-3.5 py-1.5 rounded-full border border-white/10 bg-white/4 hover:border-orange-500/30 hover:bg-orange-500/6 transition-all duration-200">
-                    <span class="w-7 h-7 rounded-full bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center text-[11px] font-bold text-white shadow-sm">
+                        class="hdr-user group inline-flex items-center gap-2 pl-1.5 pr-2 2xl:pr-3.5 py-1.5 rounded-full border border-white/10 bg-white/4 hover:border-orange-500/30 hover:bg-orange-500/6 transition-all duration-200">
+                    <span class="hdr-avatar w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white">
                         {{ $__initials }}
                     </span>
                     <span class="hidden 2xl:inline text-sm font-medium text-gray-300 group-hover:text-orange-100 transition-colors">{{ __('Mon espace') }}</span>
                     <i class="fas fa-chevron-down text-[9px] text-gray-500 group-hover:text-orange-400 transition-all duration-200" id="nav-dd-chevron"></i>
                 </button>
 
-                {{-- Dropdown --}}
-                <div id="nav-user-dropdown"
-                     class="hidden absolute right-0 top-full mt-3 w-72 z-50"
-                     role="menu">
-                    <div class="rounded-2xl overflow-hidden"
-                         style="background:var(--dd-bg);border:1px solid var(--dd-border);box-shadow:var(--dd-shadow);backdrop-filter:blur(32px)">
-
-                        {{-- En-tête utilisateur --}}
-                        <div class="relative px-4 pt-4 pb-3.5 overflow-hidden">
-                            <div class="absolute inset-0" style="background:var(--dd-head-gradient)"></div>
-                            <div class="relative flex items-start gap-3">
-                                <div class="w-11 h-11 rounded-xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-sm font-bold shadow-lg shrink-0"
-                                     style="box-shadow:0 8px 24px rgba(242, 121, 15,0.3)">
-                                    {{ $__initials }}
-                                </div>
-                                <div class="min-w-0 flex-1 pt-0.5">
-                                    <p class="text-white text-sm font-semibold leading-tight truncate">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</p>
-                                    <p class="text-slate-500 text-xs truncate mt-0.5">{{ auth()->user()->email }}</p>
-                                    <span class="mt-1.5 inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full
-                                        @if(auth()->user()->role==='admin') bg-orange-500/10 text-orange-300 border border-orange-500/20
-                                        @elseif(auth()->user()->role==='editor') bg-green-500/10 text-green-300 border border-green-500/20
-                                        @elseif(auth()->user()->role==='provider') bg-orange-500/10 text-orange-300 border border-orange-500/20
-                                        @else bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 @endif">
-                                        <span class="w-1.5 h-1.5 rounded-full
-                                            @if(auth()->user()->role==='admin') bg-orange-400
-                                            @elseif(auth()->user()->role==='editor') bg-green-400
-                                            @elseif(auth()->user()->role==='provider') bg-orange-400
-                                            @else bg-emerald-400 @endif"></span>
-                                        {{ ucfirst(auth()->user()->role) }}
-                                    </span>
-                                </div>
-                            </div>
+                {{-- Dropdown (même famille que le menu utilisateur du back-office) --}}
+                @php
+                    $__u = auth()->user();
+                    $__role = $__u->role;
+                    $__roleLabel = ['admin' => __('Admin'), 'editor' => __('Éditeur'), 'provider' => __('Prestataire')][$__role] ?? __('Voyageur');
+                    // [route, icône, libellé, sous-titre, teinte RGB]
+                    $__links = match ($__role) {
+                        'admin' => [
+                            [route('admin.dashboard'), 'fa-gauge-high', __('Tableau de bord'), __('Vue d\'ensemble'), '49,98,28'],
+                            [route('admin.users.index'), 'fa-users', __('Utilisateurs'), __('Comptes et rôles'), '50,118,97'],
+                            [route('admin.payments.index'), 'fa-chart-line', __('Finance'), __('Paiements et revenus'), '201,138,12'],
+                            [route('account.edit'), 'fa-user', __('Mon compte'), __('Profil et mot de passe'), '239,124,43'],
+                        ],
+                        'editor' => [
+                            [route('editor.dashboard'), 'fa-gauge-high', __('Tableau de bord'), __('Vue d\'ensemble'), '49,98,28'],
+                            [route('editor.articles.index'), 'fa-pen-nib', __('Mes articles'), __('Rédiger et publier'), '50,118,97'],
+                            [route('account.edit'), 'fa-user', __('Mon compte'), __('Profil et mot de passe'), '239,124,43'],
+                        ],
+                        'provider' => [
+                            [route('provider.dashboard'), 'fa-gauge-high', __('Tableau de bord'), __('Vue d\'ensemble'), '49,98,28'],
+                            [route('provider.profile.edit'), 'fa-store', __('Ma fiche'), __('Votre activité en ligne'), '50,118,97'],
+                            [route('provider.billing.plans'), 'fa-gem', __('Mon forfait'), __('Abonnement et options'), '201,138,12'],
+                            [route('account.edit'), 'fa-user', __('Mon compte'), __('Profil et mot de passe'), '239,124,43'],
+                        ],
+                        default => null,
+                    };
+                    $__tiles = $__links ? [] : [
+                        [route('visitor.reservations.index'), 'fa-bed', __('Réservations'), '49,98,28'],
+                        [route('visitor.receipts.index'), 'fa-receipt', __('Reçus'), '50,118,97'],
+                        [route('visitor.wallet.index'), 'fa-wallet', __('Portefeuille'), '201,138,12'],
+                        [route('visitor.purchases.index'), 'fa-image', __('Achats'), '239,124,43'],
+                        [route('visitor.art-orders.index'), 'fa-palette', __('Commandes Art'), '185,80,10'],
+                        [route('visitor.favorites.index'), 'fa-heart', __('Favoris'), '225,29,72'],
+                        [route('visitor.notifications.index'), 'fa-bell', __('Notifications'), '50,118,97'],
+                        [route('visitor.profile.edit'), 'fa-user-pen', __('Mon profil'), '49,98,28'],
+                    ];
+                @endphp
+                <div id="nav-user-dropdown" class="hidden pdd" role="menu">
+                    <div class="pdd-head">
+                        @include('partials.ivorian-motifs', ['culture' => 'national'])
+                        <span class="pdd-av"><span>{{ $__initials }}</span></span>
+                        <div class="pdd-head__txt">
+                            <b>{{ $__u->first_name }} {{ $__u->last_name }}</b>
+                            <small>{{ $__u->email }}</small>
+                            <span class="pdd-badge"><i class="fas {{ $__role === 'visitor' ? 'fa-suitcase-rolling' : 'fa-shield-halved' }}"></i>{{ $__roleLabel }}</span>
                         </div>
-
-                        <div style="height:1px;background:var(--dd-divider);margin:0 1rem"></div>
-
-                        {{-- Navigation --}}
-                        <div class="p-2">
-                            @if(auth()->user()->role === 'admin')
-                                <a href="{{ route('admin.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> {{ __('Tableau de bord') }}
-                                </a>
-                                <a href="{{ route('admin.users.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-users"></i></span> {{ __('Utilisateurs') }}
-                                </a>
-                                <a href="{{ route('admin.payments.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-chart-line"></i></span> {{ __('Finance') }}
-                                </a>
-                            @elseif(auth()->user()->role === 'editor')
-                                <a href="{{ route('editor.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> {{ __('Tableau de bord') }}
-                                </a>
-                                <a href="{{ route('editor.articles.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-pen-nib"></i></span> {{ __('Mes articles') }}
-                                </a>
-                            @elseif(auth()->user()->role === 'provider')
-                                <a href="{{ route('provider.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> {{ __('Tableau de bord') }}
-                                </a>
-                                <a href="{{ route('provider.profile.edit') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-store"></i></span> {{ __('Ma fiche') }}
-                                </a>
-                                <a href="{{ route('provider.billing.plans') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gem"></i></span> {{ __('Mon forfait') }}
-                                </a>
-                            @else
-                                <a href="{{ route('visitor.dashboard') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-gauge-high"></i></span> {{ __('Tableau de bord') }}
-                                </a>
-                                <a href="{{ route('visitor.reservations.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-bed"></i></span> {{ __('Mes réservations') }}
-                                </a>
-                                <a href="{{ route('visitor.receipts.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-receipt"></i></span> {{ __('Mes reçus') }}
-                                </a>
-                                <a href="{{ route('visitor.wallet.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-wallet"></i></span> {{ __('Mon portefeuille') }}
-                                </a>
-                                <a href="{{ route('visitor.purchases.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-image"></i></span> {{ __('Mes achats') }}
-                                </a>
-                                <a href="{{ route('visitor.art-orders.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-palette"></i></span> {{ __('Mes commandes Art') }}
-                                </a>
-                                <a href="{{ route('visitor.profile.edit') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-user-pen"></i></span> {{ __('Mon profil') }}
-                                </a>
-                                <a href="{{ route('visitor.favorites.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-heart"></i></span> {{ __('Mes favoris') }}
-                                </a>
-                                <a href="{{ route('visitor.notifications.index') }}" class="nav-dd-lnk">
-                                    <span class="nav-dd-icon"><i class="fas fa-bell"></i></span> {{ __('Notifications') }}
-                                </a>
-                            @endif
-                        </div>
-
-                        <div style="height:1px;background:var(--dd-divider);margin:0 1rem"></div>
-
-                        {{-- Déconnexion --}}
-                        <div class="p-2">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="nav-dd-lnk nav-dd-danger w-full text-left">
-                                    <span class="nav-dd-icon"><i class="fas fa-right-from-bracket"></i></span>
-                                    {{ __('Déconnexion') }}
-                                </button>
-                            </form>
-                        </div>
-
                     </div>
+
+                    @if($__links)
+                        <div class="pdd-list">
+                            @foreach($__links as [$__href, $__icon, $__label, $__sub, $__tone])
+                                <a href="{{ $__href }}" class="pdd-item" role="menuitem" style="--t: {{ $__tone }}">
+                                    <span class="pdd-ic"><i class="fas {{ $__icon }}"></i></span>
+                                    <span class="pdd-txt"><b>{{ $__label }}</b><small>{{ $__sub }}</small></span>
+                                    <i class="fas fa-arrow-right pdd-go" aria-hidden="true"></i>
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        <a href="{{ route('visitor.dashboard') }}" class="pdd-item pdd-feature" role="menuitem" style="--t: 49,98,28">
+                            <span class="pdd-ic"><i class="fas fa-gauge-high"></i></span>
+                            <span class="pdd-txt"><b>{{ __('Tableau de bord') }}</b><small>{{ __('Votre voyage en un coup d\'œil') }}</small></span>
+                            <i class="fas fa-arrow-right pdd-go" aria-hidden="true"></i>
+                        </a>
+                        <div class="pdd-grid">
+                            @foreach($__tiles as [$__href, $__icon, $__label, $__tone])
+                                <a href="{{ $__href }}" class="pdd-tile" role="menuitem" style="--t: {{ $__tone }}">
+                                    <span class="pdd-ic"><i class="fas {{ $__icon }}"></i></span>{{ $__label }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="pdd-out" role="menuitem"><i class="fas fa-power-off"></i>{{ __('Déconnexion') }}</button>
+                    </form>
                 </div>
             </div>
             @else
@@ -802,14 +906,14 @@
                 {{ __('Connexion') }}
             </a>
             <a href="{{ route('plans.public') }}"
-               class="inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 text-dark-900 text-xs sm:text-sm font-bold btn-gold-header">
+               class="hdr-subscribe inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 text-dark-900 text-xs sm:text-sm font-bold btn-gold-header">
                 <i class="fas fa-star text-[10px] sm:text-xs opacity-90 hidden sm:inline"></i>
                 <span>{{ __('S’abonner') }}</span>
             </a>
             @endauth
 
             <button id="public-menu-toggle" type="button"
-                class="min-[1400px]:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-gray-200 hover:text-white hover:border-green-500/30 hover:bg-green-500/5 transition">
+                class="hdr-btn min-[1400px]:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-gray-200 hover:text-white hover:border-green-500/30 hover:bg-green-500/5 transition">
                 <i class="fas fa-bars-staggered text-sm"></i>
             </button>
         </div>
@@ -819,24 +923,25 @@
     <div id="public-mobile-menu" class="mobile-menu-ultra min-[1400px]:hidden hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-1.5 font-plus">
             @foreach($publicNavItems as $item)
+                @continue(! empty($item['headerHidden']))  {{-- Annuaire : masqué dans le menu mobile comme dans l'en-tête --}}
                 @if(!empty($item['dropdown']))
                 <div>
                     <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.fa-chevron-down').classList.toggle('rotate-180')"
-                            class="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $item['active'] ? 'is-active' : '' }}">
-                        <span>{{ $item['label'] }}</span>
+                            class="mnav-row w-full flex items-center justify-between px-3 py-2 text-gray-700 font-medium text-sm tracking-wide {{ $item['active'] ? 'is-active' : '' }}">
+                        <span class="flex items-center gap-3"><span class="mdd-ico mdd-ico--sm"><i class="{{ $item['icon'] ?? 'fas fa-circle' }}" aria-hidden="true"></i></span>{{ $item['label'] }}</span>
                         <i class="fas fa-chevron-down text-xs transition-transform duration-200"></i>
                     </button>
                     <div class="hidden">
                         <div class="flex flex-col divide-y divide-black/5 px-2 py-1">
                             <a href="{{ route('accommodations.index') }}" class="flex items-center gap-3 px-2 py-3 group">
-                                <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon name="bed" /></span>
+                                <span class="mdd-ico mdd-ico--sm"><x-icon name="bed" /></span>
                                 <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Hôtels') }}</p>
                                 <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
                             </a>
                             @foreach($providerSectors as $sector)
                                 @continue($sector->slug === 'hotels')
                                 <a href="{{ $sectorUrl($sector) }}" class="flex items-center gap-3 px-2 py-3 group">
-                                    <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon :name="($sectorMeta[$sector->slug] ?? ['widget'])[0]" /></span>
+                                    <span class="mdd-ico mdd-ico--sm"><x-icon :name="($sectorMeta[$sector->slug] ?? ['widget'])[0]" /></span>
                                     <p class="font-semibold text-xs text-gray-800 flex-1">{{ $sector->localized('name') }}</p>
                                     <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
                                 </a>
@@ -845,8 +950,8 @@
                     </div>
                 </div>
                 @else
-                <a href="{{ $item['href'] }}" class="block px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $item['active'] ? 'is-active' : '' }}">
-                    {{ $item['label'] }}
+                <a href="{{ $item['href'] }}" class="mnav-row flex items-center gap-3 px-3 py-2 text-gray-700 font-medium text-sm tracking-wide {{ $item['active'] ? 'is-active' : '' }}">
+                    <span class="mdd-ico mdd-ico--sm"><i class="{{ $item['icon'] ?? 'fas fa-circle' }}" aria-hidden="true"></i></span>{{ $item['label'] }}
                 </a>
                 @endif
             @endforeach
@@ -854,25 +959,30 @@
             <div>
                 <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.fa-chevron-down').classList.toggle('rotate-180'); this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true')"
                         aria-expanded="{{ $publicMediaActive ? 'true' : 'false' }}"
-                        class="w-full flex items-center justify-between px-4 py-3 text-gray-700 font-medium text-sm tracking-wide {{ $publicMediaActive ? 'is-active' : '' }}">
-                    <span>{{ __('Médiathèque') }}</span>
+                        class="mnav-row w-full flex items-center justify-between px-3 py-2 text-gray-700 font-medium text-sm tracking-wide {{ $publicMediaActive ? 'is-active' : '' }}">
+                    <span class="flex items-center gap-3"><span class="mdd-ico mdd-ico--sm"><i class="fas fa-photo-film" aria-hidden="true"></i></span>{{ __('Médiathèque') }}</span>
                     <i class="fas fa-chevron-down text-xs transition-transform duration-200 {{ $publicMediaActive ? 'rotate-180' : '' }}"></i>
                 </button>
                 <div class="{{ $publicMediaActive ? '' : 'hidden' }}">
                     <div class="flex flex-col divide-y divide-black/5 px-2 py-1">
                         <a href="{{ route('gallery.public') }}" class="flex items-center gap-3 px-2 py-3 group">
-                            <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon name="camera" /></span>
+                            <span class="mdd-ico mdd-ico--sm"><x-icon name="camera" /></span>
                             <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Galerie photo') }}</p>
                             <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
                         </a>
                         <a href="{{ route('videos.index') }}" class="flex items-center gap-3 px-2 py-3 group">
-                            <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon name="clapperboard-play" /></span>
+                            <span class="mdd-ico mdd-ico--sm"><x-icon name="clapperboard-play" /></span>
                             <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Vidéos') }}</p>
                             <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
                         </a>
+                        <a href="{{ route('films.index') }}" class="flex items-center gap-3 px-2 py-3 group">
+                            <span class="mdd-ico mdd-ico--sm"><x-icon name="videocamera-record" /></span>
+                            <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Cinéma d\'Ivoire') }} <span style="display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#EB6E00;color:#fff;font-size:10px;font-weight:800">{{ __('Nouveau') }}</span></p>
+                            <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
+                        </a>
                         <a href="{{ route('comics.index') }}" class="flex items-center gap-3 px-2 py-3 group">
-                            <span class="w-8 h-8 rounded-lg bg-[#fdf4ec] text-[#b9500a] inline-flex items-center justify-center text-base"><x-icon name="book" /></span>
-                            <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Les Astuces de Mian') }} <span style="display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#b9500a;color:#fff;font-size:10px;font-weight:800">{{ __('Nouveau') }}</span></p>
+                            <span class="mdd-ico mdd-ico--sm"><x-icon name="book" /></span>
+                            <p class="font-semibold text-xs text-gray-800 flex-1">{{ __('Les Astuces de Mian') }} <span style="display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#EB6E00;color:#fff;font-size:10px;font-weight:800">{{ __('Nouveau') }}</span></p>
                             <i class="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-gray-500 transition"></i>
                         </a>
                     </div>
@@ -972,38 +1082,38 @@
     <div class="absolute inset-0" onclick="closeContactModal()" aria-hidden="true"></div>
     <style>
         /* Fenêtre de contact : en-tête vert à motifs, sujets en un clic, champs confortables. Aplats. */
-        .ct { position: relative; width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; border-radius: 26px; background: #fff; color: #1d1a16; font-family: 'Inter', sans-serif; }
-        .ct-head { position: relative; overflow: hidden; padding: 22px 24px 26px; background: #123a25; color: #fff; }
+        .ct { position: relative; width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; border-radius: 26px; background: #fff; color: #0E3B2A; font-family: 'Montserrat', sans-serif; }
+        .ct-head { position: relative; overflow: hidden; padding: 22px 24px 26px; background: #00874F; color: #fff; }
         .ct-head .ivm-g { opacity: .1 !important; }
-        .ct-head .ivm-g > * { stroke: #f6c38f !important; }
+        .ct-head .ivm-g > * { stroke: #F7C396 !important; }
         .ct-head > :not(.ivm):not(.ivm-band) { position: relative; z-index: 1; }
         .ct-head .ivm-band { height: 6px; }
         .ct-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
-        .ct-kick { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,.12); color: #f6c38f; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
-        .ct-title { margin: 10px 0 0; font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; line-height: 1.15; color: #fff; }
-        .ct-sub { margin: 6px 0 0; font-size: 14px; color: #cfe6d7; }
+        .ct-kick { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,.12); color: #F7C396; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+        .ct-title { margin: 10px 0 0; font-family: 'Montserrat', serif; font-size: 26px; font-weight: 700; line-height: 1.15; color: #fff; }
+        .ct-sub { margin: 6px 0 0; font-size: 14px; color: #D8E9E0; }
         .ct-close { flex: none; width: 40px; height: 40px; border-radius: 999px; border: 0; background: rgba(255,255,255,.12); color: #fff; font-size: 18px; cursor: pointer; }
         .ct-close:hover { background: rgba(255,255,255,.22); }
-        .ct-trust { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: #e7f3ec; }
+        .ct-trust { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: #F3F8F5; }
         .ct-trust li { display: inline-flex; align-items: center; gap: 6px; }
         .ct-trust a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
         .ct-form { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px; }
         .ct-topics { display: flex; flex-wrap: wrap; gap: 6px; }
-        .ct-topics button { height: 34px; padding: 0 13px; border-radius: 999px; border: 1px solid #e6dccb; background: #fff; color: #3a2f22; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .ct-topics button:hover { border-color: #b9500a; color: #9a4308; }
-        .ct-topics button.is-on { background: #fdf4ec; border-color: #b9500a; color: #9a4308; }
-        .ct-label { display: block; margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #1d1a16; }
-        .ct-label em { font-style: normal; font-weight: 600; color: #8a7f6b; }
+        .ct-topics button { height: 34px; padding: 0 13px; border-radius: 999px; border: 1px solid #D8E9E0; background: #fff; color: #0E3B2A; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .ct-topics button:hover { border-color: #EB6E00; color: #B85600; }
+        .ct-topics button.is-on { background: #F3F8F5; border-color: #EB6E00; color: #B85600; }
+        .ct-label { display: block; margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #0E3B2A; }
+        .ct-label em { font-style: normal; font-weight: 600; color: #557466; }
         .ct-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-        .ct-input { width: 100%; min-height: 48px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid #e6dccb; background: #fbf9f5; color: #1d1a16; font: inherit; font-size: 15px; outline: none; transition: border-color .15s ease, background .15s ease; }
-        .ct-input:focus { border-color: #b9500a; background: #fff; box-shadow: 0 0 0 4px rgba(185,80,10,.12); }
+        .ct-input { width: 100%; min-height: 48px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid #D8E9E0; background: #FFFFFF; color: #0E3B2A; font: inherit; font-size: 15px; outline: none; transition: border-color .15s ease, background .15s ease; }
+        .ct-input:focus { border-color: #EB6E00; background: #fff; box-shadow: 0 0 0 4px rgba(235,110,0,.12); }
         textarea.ct-input { min-height: 130px; resize: vertical; line-height: 1.55; }
         .ct-err { margin: 5px 0 0; font-size: 12.5px; font-weight: 600; color: #b42318; }
-        .ct-count { margin: 5px 0 0; text-align: right; font-size: 12px; color: #8a7f6b; }
-        .ct-send { display: flex; align-items: center; justify-content: center; gap: 9px; height: 52px; border: 0; border-radius: 999px; background: #b9500a; color: #fff; font-size: 15.5px; font-weight: 800; cursor: pointer; }
-        .ct-send:hover { background: #9a4308; }
-        .ct-legal { margin: 0; text-align: center; font-size: 12px; color: #8a7f6b; }
-        .ct button:focus-visible, .ct a:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .ct-count { margin: 5px 0 0; text-align: right; font-size: 12px; color: #557466; }
+        .ct-send { display: flex; align-items: center; justify-content: center; gap: 9px; height: 52px; border: 0; border-radius: 999px; background: #EB6E00; color: #fff; font-size: 15.5px; font-weight: 800; cursor: pointer; }
+        .ct-send:hover { background: #B85600; }
+        .ct-legal { margin: 0; text-align: center; font-size: 12px; color: #557466; }
+        .ct button:focus-visible, .ct a:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
         @media (max-width: 520px) {
             #contact-modal { padding: 0 !important; align-items: flex-end !important; }
             .ct { max-width: none; max-height: 94vh; border-radius: 24px 24px 0 0; }
@@ -1107,26 +1217,26 @@
             display: grid; grid-template-columns: repeat(5, 1fr); align-items: end;
             position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
             padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
-            background: #ffffff; border-top: 1px solid #e8e1d3; box-shadow: 0 -6px 20px rgb(29 26 22 / .08);
+            background: #ffffff; border-top: 1px solid #D8E9E0; box-shadow: 0 -6px 20px rgb(14 59 42 / .08);
         }
         .ti-tab {
             display: flex; flex-direction: column; align-items: center; gap: 3px;
             padding: 6px 2px; border: 0; background: none; cursor: pointer;
-            font: 600 11px/1.1 Inter, system-ui, sans-serif; color: #6b6458; text-decoration: none;
+            font: 600 11px/1.1 Montserrat, system-ui, sans-serif; color: #557466; text-decoration: none;
         }
         .ti-tab i { font-size: 19px; height: 24px; display: flex; align-items: center; }
-        .ti-tab.is-active { color: #14532d; }
-        .ti-tab.is-active i { background: #e6f1e9; border-radius: 10px; padding: 0 14px; }
-        .ti-tab--gold { color: #9a4308; }
-        .ti-tab--gold i { color: #b8892b; }
-        .ti-tab--main { margin-top: -26px; color: #14532d; }
+        .ti-tab.is-active { color: #00874F; }
+        .ti-tab.is-active i { background: #F3F8F5; border-radius: 10px; padding: 0 14px; }
+        .ti-tab--gold { color: #B85600; }
+        .ti-tab--gold i { color: #EB6E00; }
+        .ti-tab--main { margin-top: -26px; color: #00874F; }
         .ti-tab--main i {
             width: 56px; height: 56px; border-radius: 50%; padding: 0; justify-content: center;
-            background: #1b6b3a; color: #ffffff; font-size: 22px; border: 4px solid #ffffff;
-            box-shadow: 0 8px 18px rgb(27 107 58 / .35);
+            background: #00874F; color: #ffffff; font-size: 22px; border: 4px solid #ffffff;
+            box-shadow: 0 8px 18px rgb(0 135 79 / .35);
         }
-        .ti-tab--main.is-active i { background: #14532d; padding: 0; border-radius: 50%; }
-        .ti-tab[aria-expanded="true"] { color: #b9500a; }
+        .ti-tab--main.is-active i { background: #00874F; padding: 0; border-radius: 50%; }
+        .ti-tab[aria-expanded="true"] { color: #EB6E00; }
     }
 </style>
 <nav class="ti-tabbar" aria-label="{{ __('Navigation mobile') }}">

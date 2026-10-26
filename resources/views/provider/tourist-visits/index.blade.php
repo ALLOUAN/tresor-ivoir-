@@ -13,19 +13,19 @@
 {{-- Les erreurs (session('error')) sont affichées par le layout. --}}
 
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
-    <div class="bg-gradient-to-br from-green-900/40 to-green-900 border border-green-500/30 rounded-xl p-4">
+    <div class="bg-green-900/40 border border-green-500/30 rounded-xl p-4">
         <p class="text-green-300/80 text-xs font-medium">Total</p>
         <p class="text-white text-2xl font-bold mt-1">{{ number_format($stats['total']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-amber-900/40 to-green-900 border border-amber-500/30 rounded-xl p-4">
+    <div class="bg-amber-900/40 border border-amber-500/30 rounded-xl p-4">
         <p class="text-amber-300/80 text-xs font-medium">En attente</p>
         <p class="text-amber-200 text-2xl font-bold mt-1">{{ number_format($stats['pending_payment']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-emerald-900/40 to-green-900 border border-emerald-500/30 rounded-xl p-4">
+    <div class="bg-emerald-900/40 border border-emerald-500/30 rounded-xl p-4">
         <p class="text-emerald-300/80 text-xs font-medium">Confirmées</p>
         <p class="text-emerald-200 text-2xl font-bold mt-1">{{ number_format($stats['paid']) }}</p>
     </div>
-    <div class="bg-gradient-to-br from-slate-800/60 to-green-900 border border-slate-600/30 rounded-xl p-4">
+    <div class="bg-slate-800/60 border border-slate-600/30 rounded-xl p-4">
         <p class="text-slate-400 text-xs font-medium">Annulées</p>
         <p class="text-slate-300 text-2xl font-bold mt-1">{{ number_format($stats['cancelled']) }}</p>
     </div>

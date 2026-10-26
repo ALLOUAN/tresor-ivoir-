@@ -21,7 +21,7 @@
         <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
-                    style="{{ $cat->color_hex ? 'background:' . $cat->color_hex . '22; color:' . $cat->color_hex : 'background:#334155; color:#94a3b8' }}">
+                    style="{{ $cat->color_hex ? 'background:' . $cat->color_hex . '22; color:' . $cat->color_hex : 'background:#24503D; color:#8AA99B' }}">
                     <i class="fas {{ $cat->icon ?: 'fa-tag' }}"></i>
                 </div>
                 <div>
@@ -92,7 +92,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Couleur</label>
-                    <input type="color" name="color_hex" id="pcat_color_hex" value="#f2790f"
+                    <input type="color" name="color_hex" id="pcat_color_hex" value="#EB6E00"
                         class="w-full h-9 bg-slate-800 border border-slate-700 rounded-lg px-2 cursor-pointer">
                 </div>
             </div>
@@ -160,7 +160,7 @@ function openProvCatModal(cat = null) {
         document.getElementById('pcat_name_fr').value        = cat.name_fr || '';
         document.getElementById('pcat_name_en').value         = cat.name_en || '';
         document.getElementById('pcat_icon').value            = cat.icon || '';
-        document.getElementById('pcat_color_hex').value       = cat.color_hex || '#f2790f';
+        document.getElementById('pcat_color_hex').value       = cat.color_hex || '#EB6E00';
         document.getElementById('pcat_parent_id').value       = cat.parent_id || '';
         document.getElementById('pcat_description_fr').value  = cat.description_fr || '';
         document.getElementById('pcat_description_en').value  = cat.description_en || '';
@@ -177,7 +177,7 @@ function openProvCatModal(cat = null) {
         mf.innerHTML = '';
         form.reset();
         document.getElementById('pcat_is_active').checked = true;
-        document.getElementById('pcat_color_hex').value = '#f2790f';
+        document.getElementById('pcat_color_hex').value = '#EB6E00';
         document.querySelectorAll('#pcat_parent_id option').forEach(opt => opt.hidden = false);
     }
     const modal = document.getElementById('provCatModal');

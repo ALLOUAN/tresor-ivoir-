@@ -11,27 +11,27 @@
     @include('partials.theme-init')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { background-color:#e9e5d9; color:#fff; }
-        html:not(.dark) body            { background-color:#e9e5d9!important; color:#1c1915!important; }
-        html:not(.dark) .text-white     { color:#1c1915!important; }
-        html:not(.dark) .text-gray-200  { color:#2d2a23!important; }
-        html:not(.dark) .text-gray-400  { color:#544f47!important; }
-        html:not(.dark) .text-gray-300  { color:#44413a!important; }
-        html:not(.dark) .text-gray-500  { color:#5c574e!important; }
-        html:not(.dark) .text-gray-600  { color:#665f52!important; }
-        html:not(.dark) .placeholder-gray-600::placeholder { color:#665f52!important; }
-        html:not(.dark) .bg-dark-900    { background-color:#e9e5d9!important; }
-        html:not(.dark) .bg-dark-800\/70 { background-color:rgba(240,236,228,0.7)!important; }
-        html:not(.dark) .border-white\/10 { border-color:rgba(0,0,0,0.08)!important; }
-        html:not(.dark) .bg-white\/5    { background-color:rgba(0,0,0,0.04)!important; }
-        html:not(.dark) .hover\:bg-white\/10:hover { background-color:rgba(0,0,0,0.07)!important; }
-        html:not(.dark) .hover\:border-white\/20:hover { border-color:rgba(0,0,0,0.12)!important; }
-        html:not(.dark) .hover\:text-white:hover { color:#1c1915!important; }
-        html:not(.dark) .bg-green-900   { background-color:#e9e5d9!important; }
-        html:not(.dark) .bg-slate-800   { background-color:#e9e5d9!important; }
-        html:not(.dark) .border-slate-800 { border-color:#d6cfba!important; }
-        html:not(.dark) .text-slate-400 { color:#544f47!important; }
-        html:not(.dark) .text-slate-300 { color:#44413a!important; }
+        body { background-color:#D8E9E0; color:#fff; }
+        html:not(.dark) body            { background-color:#D8E9E0!important; color:#0E3B2A!important; }
+        html:not(.dark) .text-white     { color:#0E3B2A!important; }
+        html:not(.dark) .text-gray-200  { color:#0E3B2A!important; }
+        html:not(.dark) .text-gray-400  { color:#24503D!important; }
+        html:not(.dark) .text-gray-300  { color:#24503D!important; }
+        html:not(.dark) .text-gray-500  { color:#24503D!important; }
+        html:not(.dark) .text-gray-600  { color:#557466!important; }
+        html:not(.dark) .placeholder-gray-600::placeholder { color:#557466!important; }
+        html:not(.dark) .bg-dark-900    { background-color:#D8E9E0!important; }
+        html:not(.dark) .bg-dark-800\/70 { background-color:rgba(243,248,245,0.7)!important; }
+        html:not(.dark) .border-white\/10 { border-color:rgba(14,59,42,0.08)!important; }
+        html:not(.dark) .bg-white\/5    { background-color:rgba(14,59,42,0.04)!important; }
+        html:not(.dark) .hover\:bg-white\/10:hover { background-color:rgba(14,59,42,0.07)!important; }
+        html:not(.dark) .hover\:border-white\/20:hover { border-color:rgba(14,59,42,0.12)!important; }
+        html:not(.dark) .hover\:text-white:hover { color:#0E3B2A!important; }
+        html:not(.dark) .bg-green-900   { background-color:#D8E9E0!important; }
+        html:not(.dark) .bg-slate-800   { background-color:#D8E9E0!important; }
+        html:not(.dark) .border-slate-800 { border-color:#8AA99B!important; }
+        html:not(.dark) .text-slate-400 { color:#24503D!important; }
+        html:not(.dark) .text-slate-300 { color:#24503D!important; }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-83c8c6ca.css') }}?v={{ @filemtime(public_path('css/tw-83c8c6ca.css')) }}">
 </head>

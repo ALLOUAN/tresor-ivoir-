@@ -91,9 +91,9 @@
                 <label for="secondary_color" class="block text-sm text-slate-300 mb-1">Couleur secondaire</label>
                 <div class="flex items-center gap-3">
                     <input type="color" name="secondary_color" id="secondary_color"
-                           value="{{ old('secondary_color', $settings->secondary_color ?? '#0ea5e9') }}"
+                           value="{{ old('secondary_color', $settings->secondary_color ?? '#00874F') }}"
                            class="h-10 w-14 cursor-pointer rounded border border-slate-600 bg-slate-800 p-0.5">
-                    <input type="text" readonly value="{{ old('secondary_color', $settings->secondary_color ?? '#0ea5e9') }}"
+                    <input type="text" readonly value="{{ old('secondary_color', $settings->secondary_color ?? '#00874F') }}"
                            class="flex-1 bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-400 font-mono" id="secondary_color_hex">
                 </div>
             </div>

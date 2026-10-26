@@ -6,6 +6,7 @@ use App\Models\SubscriptionPlan;
 use App\Models\User;
 use App\Services\ClientAccountService;
 use App\Notifications\EmailVerificationCodeNotification;
+use App\Support\PlanBundle;
 use App\Support\ProviderProfileBootstrap;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
@@ -50,6 +51,10 @@ class AuthController extends Controller
         return view('auth.register', [
             'plans' => $plans,
             'selectedPlan' => $selectedPlan,
+            // Secteurs supplémentaires choisis sur /abonnements (un forfait par secteur, payés ensemble).
+            'bundleItems' => $selectedPlan
+                ? PlanBundle::items($selectedPlan, old('category_slug', $request->query('categorie')), old('avec', $request->query('avec')))
+                : collect(),
             'selectedPlanId' => $planId,
             'selectedCategorySlug' => old('category_slug', $request->query('categorie')),
         ]);
@@ -123,7 +128,12 @@ class AuthController extends Controller
             $rawCategorySlug = $request->input('category_slug');
             $categorySlug = $plan?->providerCategory?->slug ?? (is_string($rawCategorySlug) ? $rawCategorySlug : null);
 
-            ProviderProfileBootstrap::ensure($user, $categorySlug);
+            $provider = ProviderProfileBootstrap::ensure($user, $categorySlug);
+            // Secteurs supplémentaires déclarés à l'inscription : l'espace de chacun est ouvert dès maintenant.
+            $extraItems = $plan ? PlanBundle::extras($plan, $categorySlug, $request->input('avec')) : collect();
+            foreach ($extraItems as $item) {
+                $provider?->addSector($item['sector']->slug);
+            }
         }
 
         if ($user->role === 'visitor' && $request->boolean('newsletter_opt_in')) {
@@ -139,19 +149,27 @@ class AuthController extends Controller
         }
 
         if ($plan && $user->role === 'provider') {
-            session(['post_email_verification_subscription_plan_id' => $plan->id]);
+            $avec = PlanBundle::encode($extraItems ?? collect());
+            $sectorSlug = $plan->providerCategory ? null : ($categorySlug ?? null);
+            session([
+                'post_email_verification_subscription_plan_id' => $plan->id,
+                'post_email_verification_subscription_extra_ids' => $avec,
+                'post_email_verification_subscription_sector' => $sectorSlug,
+            ]);
 
             return redirect()
-                ->route('subscriptions.checkout', $plan)
+                ->route('subscriptions.checkout', array_filter(['plan' => $plan, 'categorie' => $sectorSlug, 'avec' => $avec ?: null]))
                 ->with('status', __('Bienvenue ! Finalisez votre abonnement ci-dessous.'));
         }
 
+        // Client : l'adresse e-mail se valide d'abord (code à 6 chiffres) ; l'espace client n'est ouvert
+        // qu'ensuite, puis retour à la page d'origine (ex. réservation) ou au tableau de bord.
         if ($user->role === 'visitor') {
             return redirect()
-                ->route('home')
+                ->route('verification.notice')
                 ->with('status', session()->has('mail_warning')
-                    ? __('Bienvenue ! Votre compte est créé. Vous pourrez renvoyer l\'e-mail de vérification depuis votre espace.')
-                    : __('Bienvenue ! Un e-mail de vérification a été envoyé à votre adresse.'));
+                    ? __('Bienvenue ! Votre compte est créé : il reste à confirmer votre adresse e-mail.')
+                    : __('Bienvenue ! Saisissez le code à 6 chiffres envoyé à votre adresse e-mail pour activer votre compte.'));
         }
 
         return redirect()
@@ -362,6 +380,8 @@ class AuthController extends Controller
     private function redirectAfterEmailVerification(User $user): RedirectResponse
     {
         $planId = session()->pull('post_email_verification_subscription_plan_id');
+        $avec = (string) session()->pull('post_email_verification_subscription_extra_ids', '');
+        $sectorSlug = session()->pull('post_email_verification_subscription_sector');
 
         if ($user->role === 'provider' && $planId) {
             $plan = SubscriptionPlan::query()
@@ -370,7 +390,7 @@ class AuthController extends Controller
                 ->first();
 
             if ($plan) {
-                return redirect()->route('subscriptions.checkout', $plan);
+                return redirect()->route('subscriptions.checkout', array_filter(['plan' => $plan, 'categorie' => $sectorSlug, 'avec' => $avec ?: null]));
             }
         }
 

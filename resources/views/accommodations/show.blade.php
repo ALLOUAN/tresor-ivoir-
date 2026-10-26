@@ -14,144 +14,144 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/fr.js"></script>
     <style>
         /* ── Calendrier de disponibilité (chambre) — thème aux couleurs du site ── */
-        .flatpickr-calendar { box-shadow: 0 20px 45px rgba(20,18,14,0.18); border-radius: 1rem; font-family: 'Inter', sans-serif; }
+        .flatpickr-calendar { box-shadow: 0 20px 45px rgba(14,59,42,0.18); border-radius: 1rem; font-family: 'Montserrat', sans-serif; }
         .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
-            background: #f2790f; border-color: #f2790f; color: #fff;
+            background: #EB6E00; border-color: #EB6E00; color: #fff;
         }
         .flatpickr-day.inRange {
-            background: rgba(242,121,15,0.14); border-color: rgba(242,121,15,0.14); box-shadow: -5px 0 0 rgba(242,121,15,0.14), 5px 0 0 rgba(242,121,15,0.14);
+            background: rgba(235,110,0,0.14); border-color: rgba(235,110,0,0.14); box-shadow: -5px 0 0 rgba(235,110,0,0.14), 5px 0 0 rgba(235,110,0,0.14);
         }
-        .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover { background: #d4630a; border-color: #d4630a; }
-        .flatpickr-day.today { border-color: #f2790f; }
+        .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover { background: #EB6E00; border-color: #EB6E00; }
+        .flatpickr-day.today { border-color: #EB6E00; }
         .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover {
-            color: #cfc7b8; text-decoration: line-through; cursor: not-allowed;
+            color: #8AA99B; text-decoration: line-through; cursor: not-allowed;
         }
         .bkp-date-loading { position: relative; }
         .bkp-date-loading::after {
             content: ''; position: absolute; inset: 0; border-radius: .75rem;
-            background: rgba(0, 0, 0, 0.02);
+            background: rgba(14,59,42, 0.02);
             pointer-events: none;
         }
     </style>
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
         .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
         .reveal.is-visible { opacity: 1; transform: none; }
         @media (prefers-reduced-motion: reduce) { .reveal, .reveal.is-visible { opacity:1!important; transform:none!important; transition:none!important; } }
 
         .btn-primary {
-            background: #f2790f;
-            box-shadow: 0 12px 28px rgba(242,121,15,0.35);
+            background: #EB6E00;
+            box-shadow: 0 12px 28px rgba(235,110,0,0.35);
             transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
-            color: #1b1408;
+            color: #0E3B2A;
         }
         .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
         .btn-primary:disabled { transform:none!important; filter:none!important; }
 
-        .hero-cover { position: relative; overflow: hidden; background: #14130f; }
+        .hero-cover { position: relative; overflow: hidden; background: #0E3B2A; }
         .hero-cover img { transition: transform .6s ease; }
         .hero-cover:hover img { transform: scale(1.05); }
-        .glass-arrow { border: 1px solid rgba(255,255,255,0.18); background: rgba(20,18,14,0.35); backdrop-filter: blur(10px); transition: transform .2s ease, background .2s ease; }
-        .glass-arrow:hover { background: rgba(20,18,14,0.6); transform: scale(1.06); }
+        .glass-arrow { border: 1px solid rgba(255,255,255,0.18); background: rgba(14,59,42,0.35); backdrop-filter: blur(10px); transition: transform .2s ease, background .2s ease; }
+        .glass-arrow:hover { background: rgba(14,59,42,0.6); transform: scale(1.06); }
         .gallery-tile { position: relative; overflow: hidden; cursor: pointer; border-radius: .85rem; }
         .gallery-tile img { transition: transform .4s ease; }
         .gallery-tile:hover img { transform: scale(1.08); }
 
         .bento-card {
-            border: 1px solid rgba(0,0,0,0.07);
-            background: #fdfcf9;
-            box-shadow: 0 10px 28px rgba(20,18,12,0.06);
+            border: 1px solid rgba(14,59,42,0.07);
+            background: #FFFFFF;
+            box-shadow: 0 10px 28px rgba(14,59,42,0.06);
         }
         .bento-icon {
             width: 2.2rem; height: 2.2rem; border-radius: 0.75rem;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(242, 121, 15, 0.12);
-            color: #d4630a;
+            background: rgba(235,110,0, 0.12);
+            color: #EB6E00;
         }
         .section-kicker { letter-spacing: .22em; }
-        .review-card { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(20,18,12,0.05); }
-        .related-tile { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 10px 26px rgba(20,18,12,0.06); transition: transform .25s ease, box-shadow .25s ease; }
-        .related-tile:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(194,94,10,0.16); }
+        .review-card { border: 1px solid rgba(14,59,42,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(14,59,42,0.05); }
+        .related-tile { border: 1px solid rgba(14,59,42,0.07); background: #ffffff; box-shadow: 0 10px 26px rgba(14,59,42,0.06); transition: transform .25s ease, box-shadow .25s ease; }
+        .related-tile:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(235,110,0,0.16); }
 
-        .booking-card { border: 1px solid rgba(0,0,0,0.08); background: #fdfbf7; box-shadow: 0 20px 50px rgba(20,18,12,0.1); }
+        .booking-card { border: 1px solid rgba(14,59,42,0.08); background: #FFFFFF; box-shadow: 0 20px 50px rgba(14,59,42,0.1); }
         .bkp-room-card { transition: transform .18s ease, border-color .18s ease, background .18s ease; }
         .bkp-room-card:hover { transform: translateY(-2px); }
-        .bkp-room-card.is-selected { border-color: rgba(242,121,15,0.55) !important; background: rgba(242,121,15,0.07) !important; box-shadow: 0 10px 22px rgba(242,121,15,0.14); }
+        .bkp-room-card.is-selected { border-color: rgba(235,110,0,0.55) !important; background: rgba(235,110,0,0.07) !important; box-shadow: 0 10px 22px rgba(235,110,0,0.14); }
         .bkp-pay-method { transition: border-color .18s ease, background .18s ease; }
-        .bkp-pay-method.is-active { border-color: rgba(242,121,15,0.55) !important; background: rgba(242,121,15,0.07) !important; }
+        .bkp-pay-method.is-active { border-color: rgba(235,110,0,0.55) !important; background: rgba(235,110,0,0.07) !important; }
 
         .mobile-cta-bar {
-            border-top: 1px solid rgba(0,0,0,0.08); background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
-            box-shadow: 0 -10px 26px rgba(20,18,12,0.1); padding-bottom: env(safe-area-inset-bottom, 0);
+            border-top: 1px solid rgba(14,59,42,0.08); background: rgba(255,255,255,0.92); backdrop-filter: blur(14px);
+            box-shadow: 0 -10px 26px rgba(14,59,42,0.1); padding-bottom: env(safe-area-inset-bottom, 0);
         }
 
         /* ══ Fiche hébergement — refonte visuelle (présentation seule) ══════════════════════════════
            Galerie en mosaïque, en-tête éditorial, sections en cartes posées, module de réservation
            « carte d'embarquement » ; aplats aux couleurs du logo, aucun dégradé. */
-        .hx-back { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #ece5d6; color: #9a4308; font-size: 13px; font-weight: 700; }
-        .hx-back:hover { border-color: #ef7c2b; color: #9a4308; }
+        .hx-back { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; color: #B85600; font-size: 13px; font-weight: 700; }
+        .hx-back:hover { border-color: #EB6E00; color: #B85600; }
         .hx-back i { font-size: 11px; }
         .hx-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; margin: 22px 0 22px; }
         .hx-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-        .hx-pill { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border-radius: 999px; background: #fdf4ec; color: #9a4308; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-        .hx-pill.is-gold { background: #febf48; color: #1f1a0e; letter-spacing: .12em; }
-        .hx-pill.is-ok { background: #eef6f0; color: #14532d; text-transform: none; letter-spacing: 0; }
-        .hx-title { margin: 0; font-family: 'Playfair Display', serif; font-size: clamp(34px, 3.4vw + 14px, 56px); font-weight: 700; line-height: 1.04; letter-spacing: -.02em; color: #1d1a16; }
-        .hx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin: 14px 0 0; font-size: 15px; color: #4a443a; }
+        .hx-pill { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; border-radius: 999px; background: #F3F8F5; color: #B85600; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+        .hx-pill.is-gold { background: #EB6E00; color: #0E3B2A; letter-spacing: .12em; }
+        .hx-pill.is-ok { background: #F3F8F5; color: #00874F; text-transform: none; letter-spacing: 0; }
+        .hx-title { margin: 0; font-family: 'Montserrat', serif; font-size: clamp(34px, 3.4vw + 14px, 56px); font-weight: 700; line-height: 1.04; letter-spacing: -.02em; color: #0E3B2A; }
+        .hx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin: 14px 0 0; font-size: 15px; color: #24503D; }
         .hx-meta > span { display: inline-flex; align-items: center; gap: 7px; }
-        .hx-meta i { color: #1b6b3a; font-size: 13px; }
-        .hx-rate { height: 32px; padding: 0 12px; border-radius: 999px; background: #f6ecd5; color: #6f5416; font-weight: 700; font-size: 14px; }
-        .hx-rate i { color: #b8892b !important; }
+        .hx-meta i { color: #00874F; font-size: 13px; }
+        .hx-rate { height: 32px; padding: 0 12px; border-radius: 999px; background: #F3F8F5; color: #B85600; font-weight: 700; font-size: 14px; }
+        .hx-rate i { color: #EB6E00 !important; }
         .hx-rate small { font-weight: 500; font-size: 12px; }
-        .hx-rate.is-new { background: #eef6f0; color: #14532d; }
-        .hx-rate.is-new i { color: #1b6b3a !important; }
+        .hx-rate.is-new { background: #F3F8F5; color: #00874F; }
+        .hx-rate.is-new i { color: #00874F !important; }
         .hx-actions { display: flex; align-items: center; gap: 10px; }
-        .hx-actions .ti-round { background: #fff; border: 1px solid #ece5d6; box-shadow: none; }
+        .hx-actions .ti-round { background: #fff; border: 1px solid #D8E9E0; box-shadow: none; }
 
         .hx-gallery { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 10px; height: clamp(340px, 52vh, 540px); }
         .hx-gallery.is-single { grid-template-columns: 1fr; grid-template-rows: 1fr; }
-        .hx-gallery__main { grid-row: span 2; border-radius: 28px; overflow: hidden; position: relative; background: #f3eee4; }
+        .hx-gallery__main { grid-row: span 2; border-radius: 28px; overflow: hidden; position: relative; background: #F3F8F5; }
         .hx-gallery__main img { transition: transform .7s ease; }
         .hx-gallery__main:hover img { transform: scale(1.03); }
         .hx-gallery__empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-        .hx-gallery__empty i { width: 76px; height: 76px; border-radius: 999px; background: #fff; color: #ef7c2b; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; }
-        .hx-gallery__tile { position: relative; padding: 0; border: 0; border-radius: 22px; overflow: hidden; background: #f3eee4; cursor: pointer; }
+        .hx-gallery__empty i { width: 76px; height: 76px; border-radius: 999px; background: #fff; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; }
+        .hx-gallery__tile { position: relative; padding: 0; border: 0; border-radius: 22px; overflow: hidden; background: #F3F8F5; cursor: pointer; }
         .hx-gallery__tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
         .hx-gallery__tile:hover img { transform: scale(1.07); }
-        .hx-gallery__tile:focus-visible, .hx-arrow:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
-        .hx-gallery__more { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(29,26,22,.55); color: #fff; font-size: 16px; font-weight: 700; }
+        .hx-gallery__tile:focus-visible, .hx-arrow:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
+        .hx-gallery__more { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(14,59,42,.55); color: #fff; font-size: 16px; font-weight: 700; }
         .hx-gallery.is-single .hx-gallery__main { grid-row: auto; }
-        .hx-zoom, .hx-gallery__count { position: absolute; z-index: 2; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 999px; background: rgba(255,255,255,.95); color: #1d1a16; box-shadow: 0 2px 8px rgba(29,26,22,.18); }
+        .hx-zoom, .hx-gallery__count { position: absolute; z-index: 2; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 999px; background: rgba(255,255,255,.95); color: #0E3B2A; box-shadow: 0 2px 8px rgba(14,59,42,.18); }
         .hx-zoom { right: 16px; bottom: 16px; width: 42px; height: 42px; font-size: 14px; }
-        .hx-gallery__room { position: absolute; z-index: 2; left: 16px; top: 16px; display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 999px; background: #1b6b3a; color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(29,26,22,.18); }
+        .hx-gallery__room { position: absolute; z-index: 2; left: 16px; top: 16px; display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 999px; background: #00874F; color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(14,59,42,.18); }
         .hx-gallery__count { left: 16px; bottom: 16px; height: 32px; padding: 0 12px; font-size: 13px; font-weight: 700; }
-        .hx-arrow { position: absolute; top: 50%; z-index: 3; width: 46px; height: 46px; margin-top: -23px; border: 0; border-radius: 999px; background: rgba(255,255,255,.95); color: #1d1a16; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(29,26,22,.25); transition: transform .15s ease, background .15s ease; }
-        .hx-arrow:hover { background: #b9500a; color: #fff; transform: scale(1.06); }
+        .hx-arrow { position: absolute; top: 50%; z-index: 3; width: 46px; height: 46px; margin-top: -23px; border: 0; border-radius: 999px; background: rgba(255,255,255,.95); color: #0E3B2A; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(14,59,42,.25); transition: transform .15s ease, background .15s ease; }
+        .hx-arrow:hover { background: #EB6E00; color: #fff; transform: scale(1.06); }
         .hx-arrow.is-prev { left: 16px; } .hx-arrow.is-next { right: 16px; }
         .hx-videos { display: flex; gap: 10px; margin-top: 10px; }
-        .hx-videos__tile { position: relative; width: 120px; height: 80px; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #1d1a16; cursor: pointer; }
+        .hx-videos__tile { position: relative; width: 120px; height: 80px; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #0E3B2A; cursor: pointer; }
         .hx-videos__tile img { width: 100%; height: 100%; object-fit: cover; }
-        .hx-videos__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(29,26,22,.35); }
+        .hx-videos__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(14,59,42,.35); }
 
         /* Galerie « fiche produit » : bande de vignettes verticale + grande image */
         .hx-gal { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px; height: clamp(360px, 58vh, 580px); }
         .hx-gal.is-single { grid-template-columns: minmax(0, 1fr); }
         .hx-gal__thumbs { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 2px; scrollbar-width: thin; scroll-snap-type: y proximity; }
-        .hx-gal__thumb { position: relative; flex: none; width: 84px; height: 84px; padding: 0; border: 2px solid transparent; border-radius: 16px; overflow: hidden; background: #f3eee4; cursor: pointer; opacity: .72; scroll-snap-align: start; transition: opacity .15s ease, border-color .15s ease, transform .15s ease; }
+        .hx-gal__thumb { position: relative; flex: none; width: 84px; height: 84px; padding: 0; border: 2px solid transparent; border-radius: 16px; overflow: hidden; background: #F3F8F5; cursor: pointer; opacity: .72; scroll-snap-align: start; transition: opacity .15s ease, border-color .15s ease, transform .15s ease; }
         .hx-gal__thumb img { width: 100%; height: 100%; object-fit: cover; }
         .hx-gal__thumb:hover { opacity: 1; transform: translateY(-1px); }
-        .hx-gal__thumb.is-active { opacity: 1; border-color: #b9500a; box-shadow: 0 0 0 3px rgba(239,124,43,.18); }
-        .hx-gal__thumb:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
-        .hx-gal__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(29,26,22,.45); font-size: 14px; }
-        .hx-gal__main { position: relative; border-radius: 28px; overflow: hidden; background: #f6f3ec; border: 1px solid #ece5d6; }
+        .hx-gal__thumb.is-active { opacity: 1; border-color: #EB6E00; box-shadow: 0 0 0 3px rgba(235,110,0,.18); }
+        .hx-gal__thumb:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
+        .hx-gal__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(14,59,42,.45); font-size: 14px; }
+        .hx-gal__main { position: relative; border-radius: 28px; overflow: hidden; background: #F3F8F5; border: 1px solid #D8E9E0; }
         .hx-gal__main > img { transition: opacity .25s ease; }
         .hx-gal__tools { position: absolute; z-index: 3; top: 14px; right: 14px; display: flex; flex-direction: column; gap: 8px; }
-        .hx-gal__tool { width: 42px; height: 42px; border: 0; border-radius: 999px; background: rgba(255,255,255,.96); color: #1d1a16; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; box-shadow: 0 2px 10px rgba(29,26,22,.18); transition: color .15s ease, transform .15s ease; }
-        .hx-gal__tool:hover { color: #b9500a; transform: scale(1.06); }
+        .hx-gal__tool { width: 42px; height: 42px; border: 0; border-radius: 999px; background: rgba(255,255,255,.96); color: #0E3B2A; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; box-shadow: 0 2px 10px rgba(14,59,42,.18); transition: color .15s ease, transform .15s ease; }
+        .hx-gal__tool:hover { color: #EB6E00; transform: scale(1.06); }
         .hx-gal__tool.is-on { color: #e11d2a; }
-        .hx-gal__tool:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .hx-gal__tool:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
         .hx-gal .hx-arrow { width: 44px; height: 44px; margin-top: -22px; }
         @media (max-width: 767px) {
             .hx-gal { grid-template-columns: minmax(0, 1fr); height: auto; gap: 10px; }
@@ -162,117 +162,117 @@
         }
         @media (prefers-reduced-motion: reduce) { .hx-gal__thumb, .hx-gal__main > img { transition: none; } }
 
-        .hx-tabs { position: sticky; top: 76px; z-index: 20; display: flex; gap: 4px; padding: 6px; overflow-x: auto; scrollbar-width: none; background: rgba(255,255,255,.96); border: 1px solid #ece5d6; border-radius: 999px; box-shadow: 0 10px 30px -24px rgba(29,26,22,.5); }
+        .hx-tabs { position: sticky; top: 76px; z-index: 20; display: flex; gap: 4px; padding: 6px; overflow-x: auto; scrollbar-width: none; background: rgba(255,255,255,.96); border: 1px solid #D8E9E0; border-radius: 999px; box-shadow: 0 10px 30px -24px rgba(14,59,42,.5); }
         .hx-tabs::-webkit-scrollbar { display: none; }
-        .hx-tabs a { flex: none; height: 38px; padding: 0 16px; border-radius: 999px; display: inline-flex; align-items: center; color: #4a443a; font-size: 14px; font-weight: 600; transition: background .15s ease, color .15s ease; }
-        .hx-tabs a:hover { background: #fdf4ec; color: #9a4308; }
-        .hx-kicker { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #b9500a; }
-        .hx-h2 { margin: 0 0 18px; font-family: 'Playfair Display', serif; font-size: clamp(24px, 1.4vw + 16px, 30px); font-weight: 700; line-height: 1.15; color: #1d1a16; }
+        .hx-tabs a { flex: none; height: 38px; padding: 0 16px; border-radius: 999px; display: inline-flex; align-items: center; color: #24503D; font-size: 14px; font-weight: 600; transition: background .15s ease, color .15s ease; }
+        .hx-tabs a:hover { background: #F3F8F5; color: #B85600; }
+        .hx-kicker { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #EB6E00; }
+        .hx-h2 { margin: 0 0 18px; font-family: 'Montserrat', serif; font-size: clamp(24px, 1.4vw + 16px, 30px); font-weight: 700; line-height: 1.15; color: #0E3B2A; }
         .hx-sechead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
-        .hx-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; color: #9a4308; font-size: 14px; font-weight: 700; }
+        .hx-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; color: #B85600; font-size: 14px; font-weight: 700; }
         .hx-link i { font-size: 11px; transition: transform .2s ease; }
         .hx-link:hover i { transform: translateX(3px); }
         section[id] { scroll-margin-top: 150px; }
 
-        .hx-lead { margin: 0 0 14px; font-family: 'Playfair Display', serif; font-size: clamp(20px, 1vw + 14px, 24px); line-height: 1.4; color: #1d1a16; }
-        .hx-text { margin: 0; font-size: 16px; line-height: 1.75; color: #3d372c; white-space: pre-line; }
+        .hx-lead { margin: 0 0 14px; font-family: 'Montserrat', serif; font-size: clamp(20px, 1vw + 14px, 24px); line-height: 1.4; color: #0E3B2A; }
+        .hx-text { margin: 0; font-size: 16px; line-height: 1.75; color: #24503D; white-space: pre-line; }
         .hx-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 24px 0 0; padding: 0; list-style: none; }
-        .hx-facts li { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 14px; border-radius: 20px; background: #fff; border: 1px solid #ece5d6; font-size: 15px; font-weight: 700; color: #1d1a16; }
-        .hx-facts small { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #6b6458; }
-        .hx-facts__icon { width: 42px; height: 42px; flex-shrink: 0; border-radius: 14px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; }
+        .hx-facts li { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 14px; border-radius: 20px; background: #fff; border: 1px solid #D8E9E0; font-size: 15px; font-weight: 700; color: #0E3B2A; }
+        .hx-facts small { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #557466; }
+        .hx-facts__icon { width: 42px; height: 42px; flex-shrink: 0; border-radius: 14px; background: #F3F8F5; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; }
 
         .hx-amen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
-        .hx-amen li { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 12px 14px; border-radius: 18px; background: #fff; border: 1px solid #ece5d6; font-size: 14px; font-weight: 600; color: #1d1a16; }
-        .hx-amen__icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 999px; background: #eef6f0; color: #1b6b3a; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+        .hx-amen li { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 12px 14px; border-radius: 18px; background: #fff; border: 1px solid #D8E9E0; font-size: 14px; font-weight: 600; color: #0E3B2A; }
+        .hx-amen__icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 999px; background: #F3F8F5; color: #00874F; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
 
         .hx-rooms { display: flex; flex-direction: column; gap: 14px; }
-        .hx-room { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 10px; background: #fff; border: 1px solid #ece5d6; border-radius: 26px; box-shadow: 0 14px 36px -30px rgba(29,26,22,.45); transition: transform .2s ease, border-color .2s ease; }
-        .hx-room:hover { transform: translateY(-3px); border-color: #d8cdb8; }
-        .hx-room__media { position: relative; height: 120px; border-radius: 18px; overflow: hidden; background: #f3eee4; display: flex; align-items: center; justify-content: center; color: #ef7c2b; font-size: 24px; }
+        .hx-room { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 10px; background: #fff; border: 1px solid #D8E9E0; border-radius: 26px; box-shadow: 0 14px 36px -30px rgba(14,59,42,.45); transition: transform .2s ease, border-color .2s ease; }
+        .hx-room:hover { transform: translateY(-3px); border-color: #8AA99B; }
+        .hx-room__media { position: relative; height: 120px; border-radius: 18px; overflow: hidden; background: #F3F8F5; display: flex; align-items: center; justify-content: center; color: #EB6E00; font-size: 24px; }
         .hx-room__media[role="button"] { cursor: zoom-in; }
         .hx-room__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-        .hx-room__count { position: absolute; right: 8px; bottom: 8px; height: 24px; padding: 0 8px; border-radius: 999px; background: rgba(29,26,22,.7); color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; }
+        .hx-room__count { position: absolute; right: 8px; bottom: 8px; height: 24px; padding: 0 8px; border-radius: 999px; background: rgba(14,59,42,.7); color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; }
         .hx-room__body { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-        .hx-room__name { margin: 0; font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #1d1a16; }
+        .hx-room__name { margin: 0; font-family: 'Montserrat', serif; font-size: 20px; font-weight: 700; color: #0E3B2A; }
         .hx-room__specs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-        .hx-room__specs li { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #f6f3ec; color: #3a352c; font-size: 12.5px; }
-        .hx-room__specs i { font-size: 11px; color: #b9500a; }
-        .hx-room__amen { margin: 0; font-size: 13px; color: #6b6458; }
+        .hx-room__specs li { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #F3F8F5; color: #24503D; font-size: 12.5px; }
+        .hx-room__specs i { font-size: 11px; color: #EB6E00; }
+        .hx-room__amen { margin: 0; font-size: 13px; color: #557466; }
         .hx-room__badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
-        .hx-room__badges span { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 999px; background: #febf48; color: #1f1a0e; font-size: 12px; font-weight: 700; }
+        .hx-room__badges span { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 999px; background: #EB6E00; color: #0E3B2A; font-size: 12px; font-weight: 700; }
         .hx-room__badges i { font-size: 10px; }
-        .hx-room__cond { margin: 0; display: flex; gap: 6px; font-size: 12px; color: #6b6458; }
-        .hx-room__cond i { margin-top: 2px; color: #8a6a1f; }
+        .hx-room__cond { margin: 0; display: flex; gap: 6px; font-size: 12px; color: #557466; }
+        .hx-room__cond i { margin-top: 2px; color: #B85600; }
         .hx-room__side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; padding-right: 8px; }
         .hx-room__price { margin: 0; text-align: right; line-height: 1.1; }
-        .hx-room__price small { display: block; margin-bottom: 3px; font-size: 11px; color: #6b6458; }
-        .hx-room__price strong { font-size: 22px; font-weight: 800; color: #1d1a16; letter-spacing: -.01em; }
-        .hx-room__price em { display: block; font-style: normal; font-size: 12px; color: #6b6458; }
+        .hx-room__price small { display: block; margin-bottom: 3px; font-size: 11px; color: #557466; }
+        .hx-room__price strong { font-size: 22px; font-weight: 800; color: #0E3B2A; letter-spacing: -.01em; }
+        .hx-room__price em { display: block; font-style: normal; font-size: 12px; color: #557466; }
 
         .hx-cond { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-        .hx-cond__item { display: flex; gap: 14px; align-items: flex-start; padding: 18px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; font-size: 14px; line-height: 1.6; color: #3d372c; }
+        .hx-cond__item { display: flex; gap: 14px; align-items: flex-start; padding: 18px; border-radius: 22px; background: #fff; border: 1px solid #D8E9E0; font-size: 14px; line-height: 1.6; color: #24503D; }
         .hx-cond__item p { margin: 0; }
-        .hx-cond__item.is-ok { background: #eef6f0; border-color: #cfe4d5; color: #14532d; font-weight: 600; }
+        .hx-cond__item.is-ok { background: #F3F8F5; border-color: #D8E9E0; color: #00874F; font-weight: 600; }
         .hx-cond__item.is-wide { grid-column: 1 / -1; }
-        .hx-cond__icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 14px; background: #fdf4ec; color: #b9500a; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; }
-        .hx-cond__item.is-ok .hx-cond__icon { background: #fff; color: #1b6b3a; }
+        .hx-cond__icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 14px; background: #F3F8F5; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; }
+        .hx-cond__item.is-ok .hx-cond__icon { background: #fff; color: #00874F; }
 
-        .hx-map { position: relative; border-radius: 28px; overflow: hidden; background: #f3eee4; border: 1px solid #ece5d6; }
+        .hx-map { position: relative; border-radius: 28px; overflow: hidden; background: #F3F8F5; border: 1px solid #D8E9E0; }
         .hx-map iframe { display: block; width: 100%; height: 300px; border: 0; filter: saturate(.85); }
-        .hx-map__lock { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 14px; align-items: flex-start; padding: 16px; border-radius: 20px; background: rgba(255,255,255,.97); box-shadow: 0 12px 30px -16px rgba(29,26,22,.5); }
-        .hx-map__title { margin: 0; font-size: 15px; font-weight: 700; color: #1d1a16; }
-        .hx-map__text { margin: 4px 0 8px; font-size: 13px; line-height: 1.55; color: #6b6458; }
+        .hx-map__lock { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 14px; align-items: flex-start; padding: 16px; border-radius: 20px; background: rgba(255,255,255,.97); box-shadow: 0 12px 30px -16px rgba(14,59,42,.5); }
+        .hx-map__title { margin: 0; font-size: 15px; font-weight: 700; color: #0E3B2A; }
+        .hx-map__text { margin: 4px 0 8px; font-size: 13px; line-height: 1.55; color: #557466; }
         .hx-map__lock .hx-link { margin: 0; }
         .hx-map:not(:has(iframe)) .hx-map__lock { position: static; }
 
-        .hx-score { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 18px; padding: 8px 16px 8px 8px; border-radius: 999px; background: #fff; border: 1px solid #ece5d6; font-size: 13px; color: #6b6458; }
-        .hx-score strong { width: 46px; height: 46px; border-radius: 999px; background: #1b6b3a; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 17px; }
-        .hx-score i { color: #b8892b; }
+        .hx-score { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 18px; padding: 8px 16px 8px 8px; border-radius: 999px; background: #fff; border: 1px solid #D8E9E0; font-size: 13px; color: #557466; }
+        .hx-score strong { width: 46px; height: 46px; border-radius: 999px; background: #00874F; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 17px; }
+        .hx-score i { color: #EB6E00; }
         .hx-reviews { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-        .hx-review { padding: 18px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
+        .hx-review { padding: 18px; border-radius: 22px; background: #fff; border: 1px solid #D8E9E0; }
         .hx-review__head { display: flex; align-items: center; gap: 10px; }
-        .hx-review__avatar { width: 40px; height: 40px; flex-shrink: 0; border-radius: 999px; background: #327661; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
-        .hx-review__name { display: block; font-size: 14px; font-weight: 700; color: #1d1a16; }
-        .hx-review__ok { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #1b6b3a; }
-        .hx-review__stars { margin-left: auto; display: inline-flex; gap: 2px; color: #b8892b; font-size: 12px; }
-        .hx-review__stars .is-off { color: #e3dccb; }
-        .hx-review__title { margin: 12px 0 0; font-size: 14px; font-weight: 700; color: #1d1a16; }
-        .hx-review__text { margin: 6px 0 0; font-size: 14px; line-height: 1.6; color: #4a443a; }
+        .hx-review__avatar { width: 40px; height: 40px; flex-shrink: 0; border-radius: 999px; background: #00874F; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+        .hx-review__name { display: block; font-size: 14px; font-weight: 700; color: #0E3B2A; }
+        .hx-review__ok { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #00874F; }
+        .hx-review__stars { margin-left: auto; display: inline-flex; gap: 2px; color: #EB6E00; font-size: 12px; }
+        .hx-review__stars .is-off { color: #D8E9E0; }
+        .hx-review__title { margin: 12px 0 0; font-size: 14px; font-weight: 700; color: #0E3B2A; }
+        .hx-review__text { margin: 6px 0 0; font-size: 14px; line-height: 1.6; color: #24503D; }
 
         /* Module de réservation : carte nette, en-tête prix, sélection orange */
-        .booking-card { background: #fff !important; border: 1px solid #ece5d6 !important; border-radius: 30px !important; box-shadow: 0 26px 60px -36px rgba(29,26,22,.55) !important; }
-        .hx-book-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: -4px -4px 16px; padding: 14px 16px; border-radius: 22px; background: #1b6b3a; color: #fff; }
-        .hx-book-head small { display: block; font-size: 12px; color: #dcebd0; }
+        .booking-card { background: #fff !important; border: 1px solid #D8E9E0 !important; border-radius: 30px !important; box-shadow: 0 26px 60px -36px rgba(14,59,42,.55) !important; }
+        .hx-book-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: -4px -4px 16px; padding: 14px 16px; border-radius: 22px; background: #00874F; color: #fff; }
+        .hx-book-head small { display: block; font-size: 12px; color: #D8E9E0; }
         .hx-book-head strong { font-size: 26px; font-weight: 800; letter-spacing: -.01em; }
-        .hx-book-head em { font-style: normal; font-size: 13px; color: #dcebd0; }
-        .hx-book-head .hx-book-rate { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: 999px; background: #febf48; color: #1f1a0e; font-size: 13px; font-weight: 700; }
+        .hx-book-head em { font-style: normal; font-size: 13px; color: #D8E9E0; }
+        .hx-book-head .hx-book-rate { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: 999px; background: #EB6E00; color: #0E3B2A; font-size: 13px; font-weight: 700; }
         .bkp-room-card { border-radius: 18px !important; }
-        .bkp-room-card.is-selected { border-color: #b9500a !important; background: #fdf4ec !important; box-shadow: 0 0 0 3px rgba(239,124,43,.18) !important; }
-        .bkp-pay-method.is-active { border-color: #b9500a !important; background: #fdf4ec !important; }
+        .bkp-room-card.is-selected { border-color: #EB6E00 !important; background: #F3F8F5 !important; box-shadow: 0 0 0 3px rgba(235,110,0,.18) !important; }
+        .bkp-pay-method.is-active { border-color: #EB6E00 !important; background: #F3F8F5 !important; }
         #booking-module input, #booking-module .bkp-step { font-size: 15px; }
-        #booking-module input:focus { outline: 2px solid #ef7c2b; outline-offset: 0; border-color: #ef7c2b; }
-        #bkp-submit { background: #b9500a; color: #fff; box-shadow: 0 14px 30px -14px rgba(185,80,10,.7); border-radius: 999px; }
-        #bkp-submit:hover { background: #9a4308; }
+        #booking-module input:focus { outline: 2px solid #EB6E00; outline-offset: 0; border-color: #EB6E00; }
+        #bkp-submit { background: #EB6E00; color: #fff; box-shadow: 0 14px 30px -14px rgba(235,110,0,.7); border-radius: 999px; }
+        #bkp-submit:hover { background: #B85600; }
         /* Compte express : note sous les coordonnées et encart du code (saisi sans quitter la page) */
-        .bkx-note { display: flex; gap: 8px; margin: 2px 0 0; font-size: 12px; line-height: 1.45; color: #6b6458; }
-        .bkx-note i { margin-top: 2px; color: #1f8079; }
-        .bkx { margin: 0 0 12px; padding: 14px; border-radius: 18px; background: #fdf4ec; border: 1px solid #f1dcc4; }
+        .bkx-note { display: flex; gap: 8px; margin: 2px 0 0; font-size: 12px; line-height: 1.45; color: #557466; }
+        .bkx-note i { margin-top: 2px; color: #00874F; }
+        .bkx { margin: 0 0 12px; padding: 14px; border-radius: 18px; background: #F3F8F5; border: 1px solid #D8E9E0; }
         .bkx[hidden] { display: none; }
-        .bkx-title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; font-weight: 800; color: #1d1a16; }
-        .bkx-title i { color: #b9500a; }
-        .bkx-text { margin: 4px 0 10px; font-size: 12.5px; color: #4a443a; }
-        .bkx-input { width: 100%; height: 52px; border-radius: 14px; border: 1.5px solid #e1d7c4; background: #fff; text-align: center; font-size: 24px; font-weight: 800; letter-spacing: .45em; color: #1d1a16; font-variant-numeric: tabular-nums; }
-        .bkx-input:focus { outline: none; border-color: #b9500a; box-shadow: 0 0 0 4px rgba(185,80,10,.14); }
+        .bkx-title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; font-weight: 800; color: #0E3B2A; }
+        .bkx-title i { color: #EB6E00; }
+        .bkx-text { margin: 4px 0 10px; font-size: 12.5px; color: #24503D; }
+        .bkx-input { width: 100%; height: 52px; border-radius: 14px; border: 1.5px solid #D8E9E0; background: #fff; text-align: center; font-size: 24px; font-weight: 800; letter-spacing: .45em; color: #0E3B2A; font-variant-numeric: tabular-nums; }
+        .bkx-input:focus { outline: none; border-color: #EB6E00; box-shadow: 0 0 0 4px rgba(235,110,0,.14); }
         .bkx-err { min-height: 0; margin: 6px 0 0; font-size: 12.5px; font-weight: 600; color: #b42318; }
         .bkx-err:empty { display: none; }
         .bkx-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 10px; }
-        .bkx-ok { flex: 1 1 100%; height: 46px; border: 0; border-radius: 999px; background: #b9500a; color: #fff; font-size: 14px; font-weight: 800; cursor: pointer; }
-        .bkx-ok:hover { background: #9a4308; }
+        .bkx-ok { flex: 1 1 100%; height: 46px; border: 0; border-radius: 999px; background: #EB6E00; color: #fff; font-size: 14px; font-weight: 800; cursor: pointer; }
+        .bkx-ok:hover { background: #B85600; }
         .bkx-ok[disabled] { opacity: .6; cursor: progress; }
-        .bkx-link { border: 0; padding: 0; background: none; font-size: 12.5px; font-weight: 700; color: #9a4308; cursor: pointer; }
+        .bkx-link { border: 0; padding: 0; background: none; font-size: 12.5px; font-weight: 700; color: #B85600; cursor: pointer; }
         .bkx-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-        .bkx-link[disabled] { color: #a89e8b; cursor: default; text-decoration: none; }
-        .bkx-hint { margin: 8px 0 0; font-size: 11.5px; color: #8a7f6b; }
+        .bkx-link[disabled] { color: #8AA99B; cursor: default; text-decoration: none; }
+        .bkx-hint { margin: 8px 0 0; font-size: 11.5px; color: #557466; }
 
         @media (max-width: 1023px) {
             .hx-gallery { grid-template-columns: 1fr 1fr; grid-template-rows: 2fr 1fr; height: auto; }
@@ -287,7 +287,7 @@
             .hx-amen, .hx-cond, .hx-reviews { grid-template-columns: 1fr; }
             .hx-room { grid-template-columns: 96px minmax(0, 1fr); }
             .hx-room__media { height: 96px; }
-            .hx-room__side { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; padding: 8px 4px 2px; border-top: 1px solid #ece5d6; }
+            .hx-room__side { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; padding: 8px 4px 2px; border-top: 1px solid #D8E9E0; }
             .hx-room__price { text-align: left; }
             .hx-map__lock { position: static; margin: 0; border-radius: 0; box-shadow: none; }
             .hx-tabs { top: 64px; }
@@ -296,7 +296,7 @@
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="text-[#1c1915]">
+<body class="text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -623,7 +623,7 @@
                         </div>
                         @endif
                         <h2 class="font-serif text-xl font-bold mb-1">{{ __('Réserver une chambre') }}</h2>
-                        <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Acompte de') }} {{ rtrim(rtrim(number_format($depositPercent, 1), '0'), '.') }}{{ __('% payé en ligne · solde réglé sur place à l\'hôtel.') }}</p>
+                        <p class="text-[#557466] text-xs mb-4">{{ __('Acompte de') }} {{ rtrim(rtrim(number_format($depositPercent, 1), '0'), '.') }}{{ __('% payé en ligne · solde réglé sur place à l\'hôtel.') }}</p>
 
 
                         <div>
@@ -640,16 +640,16 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $room['name'] ?? __('Chambre') }}</p>
-                                    <p class="text-[#8a7f6b] text-xs mt-0.5">
-                                        <i class="fas fa-user text-[#d4630a]/70 mr-1"></i>{{ $room['max_adults'] ?? 2 }} {{ __('pers. max') }}
+                                    <p class="text-[#0E3B2A] text-sm font-semibold truncate">{{ $room['name'] ?? __('Chambre') }}</p>
+                                    <p class="text-[#557466] text-xs mt-0.5">
+                                        <i class="fas fa-user text-[#EB6E00]/70 mr-1"></i>{{ $room['max_adults'] ?? 2 }} {{ __('pers. max') }}
                                         @if(!empty($room['area_m2'])) · {{ $room['area_m2'] }} m² @endif
                                     </p>
-                                    <p class="text-[#c25e0a] text-sm font-bold mt-1">
-                                        {{ number_format((int) ($room['price_xof'] ?? 0), 0, ',', ' ') }} {{ __('FCFA') }}<span class="text-[#8a7f6b] font-normal text-xs">{{ __('/nuit') }}</span>
+                                    <p class="text-[#EB6E00] text-sm font-bold mt-1">
+                                        {{ number_format((int) ($room['price_xof'] ?? 0), 0, ',', ' ') }} {{ __('FCFA') }}<span class="text-[#557466] font-normal text-xs">{{ __('/nuit') }}</span>
                                     </p>
                                     @foreach(app(\App\Services\RoomRates::class)->badges($room) as $badge)
-                                        <span class="inline-block mt-1 mr-1 px-2 py-0.5 rounded-full bg-[#31621c]/10 text-[#31621c] text-[11px] font-semibold">{{ $badge }}</span>
+                                        <span class="inline-block mt-1 mr-1 px-2 py-0.5 rounded-full bg-[#00874F]/10 text-[#00874F] text-[11px] font-semibold">{{ $badge }}</span>
                                     @endforeach
                                 </div>
                             </button>
@@ -659,8 +659,8 @@
                         {{-- Placé AVANT les champs de date : le calendrier s'ouvre juste en
                              dessous d'eux et recouvrirait ce message s'il était positionné
                              après (constaté : invisible une fois le calendrier ouvert). --}}
-                        <p id="bkp-dates-hint" class="text-sm text-[#5c5548] font-medium leading-snug mb-2 flex items-start gap-2">
-                            <i class="fas fa-calendar-days text-[#c25e0a] mt-0.5"></i>
+                        <p id="bkp-dates-hint" class="text-sm text-[#24503D] font-medium leading-snug mb-2 flex items-start gap-2">
+                            <i class="fas fa-calendar-days text-[#EB6E00] mt-0.5"></i>
                             <span>{{ __('Choisissez d\'abord une chambre pour voir ses disponibilités.') }}</span>
                         </p>
                         <div id="bkp-dates-legend" class="hidden items-center gap-2.5 mb-3 flex-wrap">
@@ -677,12 +677,12 @@
                         </div>
                         <div id="bkp-dates-wrap" class="grid grid-cols-2 gap-2.5 mb-3">
                             <div>
-                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">{{ __('Arrivée') }}</label>
+                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#557466] mb-1">{{ __('Arrivée') }}</label>
                                 <input type="text" id="bkp-checkin" readonly placeholder="{{ __('Sélectionner') }}"
                                        class="w-full bg-white border border-black/10 rounded-xl px-3 py-2 text-sm cursor-pointer">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">{{ __('Départ') }}</label>
+                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#557466] mb-1">{{ __('Départ') }}</label>
                                 <input type="text" id="bkp-checkout" readonly placeholder="{{ __('Sélectionner') }}"
                                        class="w-full bg-white border border-black/10 rounded-xl px-3 py-2 text-sm cursor-pointer">
                             </div>
@@ -690,53 +690,53 @@
 
                         <div class="grid grid-cols-2 gap-2.5 mb-4">
                             <div>
-                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">{{ __('Chambres') }}</label>
+                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#557466] mb-1">{{ __('Chambres') }}</label>
                                 <div class="flex items-center bg-white border border-black/10 rounded-xl overflow-hidden">
-                                    <button type="button" class="bkp-step w-9 h-9 text-[#8a7f6b] hover:text-[#c25e0a]" data-target="bkp-rooms" data-step="-1">−</button>
+                                    <button type="button" class="bkp-step w-9 h-9 text-[#557466] hover:text-[#EB6E00]" data-target="bkp-rooms" data-step="-1">−</button>
                                     <span id="bkp-rooms" class="flex-1 text-center text-sm font-semibold" data-value="1">1</span>
-                                    <button type="button" class="bkp-step w-9 h-9 text-[#8a7f6b] hover:text-[#c25e0a]" data-target="bkp-rooms" data-step="1">+</button>
+                                    <button type="button" class="bkp-step w-9 h-9 text-[#557466] hover:text-[#EB6E00]" data-target="bkp-rooms" data-step="1">+</button>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1">{{ __('Voyageurs') }}</label>
+                                <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#557466] mb-1">{{ __('Voyageurs') }}</label>
                                 <div class="flex items-center bg-white border border-black/10 rounded-xl overflow-hidden">
-                                    <button type="button" class="bkp-step w-9 h-9 text-[#8a7f6b] hover:text-[#c25e0a]" data-target="bkp-guests" data-step="-1">−</button>
+                                    <button type="button" class="bkp-step w-9 h-9 text-[#557466] hover:text-[#EB6E00]" data-target="bkp-guests" data-step="-1">−</button>
                                     <span id="bkp-guests" class="flex-1 text-center text-sm font-semibold" data-value="2">2</span>
-                                    <button type="button" class="bkp-step w-9 h-9 text-[#8a7f6b] hover:text-[#c25e0a]" data-target="bkp-guests" data-step="1">+</button>
+                                    <button type="button" class="bkp-step w-9 h-9 text-[#557466] hover:text-[#EB6E00]" data-target="bkp-guests" data-step="1">+</button>
                                 </div>
                             </div>
                         </div>
 
                         <div id="bkp-breakdown" class="hidden rounded-2xl border border-orange-400/25 bg-orange-50 px-4 py-3.5 mb-4 text-sm">
-                            <div class="flex items-center justify-between text-[#5c5548] mb-1">
+                            <div class="flex items-center justify-between text-[#24503D] mb-1">
                                 <span id="bkp-nights-label"></span>
-                                <span id="bkp-total" class="text-[#1c1915] font-medium"></span>
+                                <span id="bkp-total" class="text-[#0E3B2A] font-medium"></span>
                             </div>
-                            <div id="bkp-discount-row" class="hidden flex items-center justify-between text-[#31621c] font-semibold">
+                            <div id="bkp-discount-row" class="hidden flex items-center justify-between text-[#00874F] font-semibold">
                                 <span id="bkp-discount-label"></span>
                                 <span id="bkp-discount"></span>
                             </div>
-                            <div id="bkp-promo-row" class="hidden flex items-center justify-between text-[#31621c] font-semibold">
+                            <div id="bkp-promo-row" class="hidden flex items-center justify-between text-[#00874F] font-semibold">
                                 <span id="bkp-promo-label"></span>
                                 <span id="bkp-promo"></span>
                             </div>
-                            <p id="bkp-variable" class="hidden text-xs text-[#8a7f6b]">{{ __('Tarif variable selon les dates (week-end, saison).') }}</p>
+                            <p id="bkp-variable" class="hidden text-xs text-[#557466]">{{ __('Tarif variable selon les dates (week-end, saison).') }}</p>
                             <div class="flex items-center justify-between pt-1.5 mt-1.5 border-t border-orange-400/20">
-                                <span class="text-[#3d372c]">{{ __('Acompte à payer maintenant') }}</span>
-                                <span id="bkp-deposit" class="text-[#c25e0a] font-bold"></span>
+                                <span class="text-[#24503D]">{{ __('Acompte à payer maintenant') }}</span>
+                                <span id="bkp-deposit" class="text-[#EB6E00] font-bold"></span>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 gap-2.5 mb-3">
-                            <input type="text" id="bkp-full-name" placeholder="{{ __('Nom complet') }}" value="{{ auth()->user()?->full_name }}" {{ auth()->check() ? 'readonly' : '' }} autocomplete="name" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ auth()->check() ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
-                            <input type="tel" id="bkp-phone" placeholder="{{ __('Téléphone') }}" value="{{ auth()->user()?->phone }}" {{ auth()->user()?->phone ? 'readonly' : '' }} autocomplete="tel" inputmode="tel" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ auth()->user()?->phone ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
-                            <input type="email" id="bkp-email" placeholder="{{ __('Email') }}" value="{{ auth()->user()?->email }}" {{ auth()->check() ? 'readonly' : '' }} autocomplete="email" inputmode="email" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#a89f8f] {{ auth()->check() ? 'bg-black/[0.03] text-[#5c5548]' : '' }}">
+                            <input type="text" id="bkp-full-name" placeholder="{{ __('Nom complet') }}" value="{{ auth()->user()?->full_name }}" {{ auth()->check() ? 'readonly' : '' }} autocomplete="name" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#8AA99B] {{ auth()->check() ? 'bg-black/[0.03] text-[#24503D]' : '' }}">
+                            <input type="tel" id="bkp-phone" placeholder="{{ __('Téléphone') }}" value="{{ auth()->user()?->phone }}" {{ auth()->user()?->phone ? 'readonly' : '' }} autocomplete="tel" inputmode="tel" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#8AA99B] {{ auth()->user()?->phone ? 'bg-black/[0.03] text-[#24503D]' : '' }}">
+                            <input type="email" id="bkp-email" placeholder="{{ __('Email') }}" value="{{ auth()->user()?->email }}" {{ auth()->check() ? 'readonly' : '' }} autocomplete="email" inputmode="email" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm placeholder:text-[#8AA99B] {{ auth()->check() ? 'bg-black/[0.03] text-[#24503D]' : '' }}">
                             @unless($canBook)
                                 <p class="bkx-note"><i class="fas fa-circle-info" aria-hidden="true"></i>{{ auth()->check() ? __('Un code de confirmation sera envoyé à votre adresse avant le paiement.') : __('Pas encore de compte ? Il est créé pour vous : un code de confirmation sera envoyé à cette adresse avant le paiement.') }}</p>
                             @endunless
                             @if($accommodation->provider_id && \App\Models\ProviderPromoCode::where('provider_id', $accommodation->provider_id)->where('is_active', true)->exists())
                                 <div>
-                                    <input type="text" id="bkp-promo-code" maxlength="30" autocapitalize="characters" placeholder="{{ __('Code promo (facultatif)') }}" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm uppercase placeholder:normal-case placeholder:text-[#a89f8f]">
+                                    <input type="text" id="bkp-promo-code" maxlength="30" autocapitalize="characters" placeholder="{{ __('Code promo (facultatif)') }}" class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm uppercase placeholder:normal-case placeholder:text-[#8AA99B]">
                                     <p id="bkp-promo-error" class="hidden mt-1 text-xs text-red-700"></p>
                                 </div>
                             @endif
@@ -744,17 +744,17 @@
 
                         @if($canBook)
                         <div class="mb-3">
-                            <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#8a7f6b] mb-1.5">{{ __('Moyen de paiement') }}</label>
+                            <label class="block text-[10px] font-semibold uppercase tracking-widest text-[#557466] mb-1.5">{{ __('Moyen de paiement') }}</label>
                             <div class="grid grid-cols-2 gap-2">
                                 <button type="button" id="bkp-pay-cinetpay" data-method="cinetpay"
                                         class="bkp-pay-method is-active text-left rounded-xl border-2 border-black/8 bg-white px-3 py-2.5">
-                                    <span class="block text-[#1c1915] text-xs font-bold"><i class="fas fa-mobile-screen mr-1"></i>{{ __('CinetPay') }}</span>
-                                    <span class="block text-[#8a7f6b] text-[10px] mt-0.5">{{ __('Mobile Money / Carte') }}</span>
+                                    <span class="block text-[#0E3B2A] text-xs font-bold"><i class="fas fa-mobile-screen mr-1"></i>{{ __('CinetPay') }}</span>
+                                    <span class="block text-[#557466] text-[10px] mt-0.5">{{ __('Mobile Money / Carte') }}</span>
                                 </button>
                                 <button type="button" id="bkp-pay-wallet" data-method="wallet"
                                         class="bkp-pay-method text-left rounded-xl border-2 border-black/8 bg-white px-3 py-2.5">
-                                    <span class="block text-[#1c1915] text-xs font-bold"><i class="fas fa-wallet mr-1"></i>{{ __('Mon solde Wallet') }}</span>
-                                    <span class="block text-[#8a7f6b] text-[10px] mt-0.5">{{ number_format($walletBalanceXof, 0, ',', ' ') }} {{ __('FCFA disponible') }}</span>
+                                    <span class="block text-[#0E3B2A] text-xs font-bold"><i class="fas fa-wallet mr-1"></i>{{ __('Mon solde Wallet') }}</span>
+                                    <span class="block text-[#557466] text-[10px] mt-0.5">{{ number_format($walletBalanceXof, 0, ',', ' ') }} {{ __('FCFA disponible') }}</span>
                                 </button>
                             </div>
                         </div>
@@ -784,13 +784,13 @@
                             <i class="fas fa-lock text-sm"></i>
                             <span id="bkp-submit-label">{{ __('Sélectionnez une chambre') }}</span>
                         </button>
-                        <p class="text-center text-xs text-[#a89f8f] py-1 mt-2">{{ __('Paiement sécurisé via CinetPay · solde réglé sur place') }}</p>
+                        <p class="text-center text-xs text-[#8AA99B] py-1 mt-2">{{ __('Paiement sécurisé via CinetPay · solde réglé sur place') }}</p>
                         </div>
                     </div>
                     @elseif($accommodation->provider && ($accommodation->provider->reserve_url || $accommodation->provider->website))
                     <div class="booking-card rounded-3xl p-5">
                         <h2 class="font-serif text-xl font-bold mb-1">{{ __('Contacter cet établissement') }}</h2>
-                        <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Réservation directement auprès du prestataire.') }}</p>
+                        <p class="text-[#557466] text-xs mb-4">{{ __('Réservation directement auprès du prestataire.') }}</p>
                         <a href="{{ $accommodation->provider->reserve_url ?: $accommodation->provider->website }}"
                            target="_blank" rel="noopener noreferrer"
                            class="btn-primary btn-shine flex items-center justify-between w-full px-5 py-4 rounded-2xl font-extrabold text-[15px] group">
@@ -819,8 +819,8 @@
     @if(!empty($accommodation->room_types))
     <div class="mobile-cta-bar fixed bottom-0 inset-x-0 z-40 lg:hidden px-4 py-3 flex items-center gap-3">
         <div class="flex-1 min-w-0">
-            <p class="text-[#8a7f6b] text-[10px] uppercase font-semibold">{{ __('À partir de') }}</p>
-            <p class="font-bold text-sm truncate">{{ number_format((int) ($cheapestRoom ?? 0), 0, ',', ' ') }} {{ __('FCFA') }}<span class="text-[#8a7f6b] font-normal text-xs">{{ __('/nuit') }}</span></p>
+            <p class="text-[#557466] text-[10px] uppercase font-semibold">{{ __('À partir de') }}</p>
+            <p class="font-bold text-sm truncate">{{ number_format((int) ($cheapestRoom ?? 0), 0, ',', ' ') }} {{ __('FCFA') }}<span class="text-[#557466] font-normal text-xs">{{ __('/nuit') }}</span></p>
         </div>
         <a href="{{ route('accommodations.rooms', $accommodation->slug) }}" class="btn-primary btn-shine shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-xs">
             <i class="fas fa-bed"></i> {{ __('Réserver') }}
@@ -828,7 +828,7 @@
     </div>
     @endif
 
-    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0a0907]/96 items-center justify-center p-4" onclick="closeLightbox()">
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0E3B2A]/96 items-center justify-center p-4" onclick="closeLightbox()">
         <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()">
             <i class="fas fa-xmark"></i>
         </button>

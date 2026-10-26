@@ -100,7 +100,7 @@
 
 {{-- ═══════════════ BANNIÈRES (liste répétable) ═══════════════ --}}
 <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20 mb-8">
-    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-green-700 via-green-600 to-green-600">
+    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-green-700">
         <div>
             <h2 class="text-white font-semibold text-lg tracking-tight">Bannières</h2>
             <p class="text-green-100/80 text-xs mt-0.5">Image, titre et contenu — plusieurs bannières défilent en carrousel sur la page publique.</p>
@@ -193,7 +193,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeCreateBannerModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Ajouter une bannière</h2>
                 <button type="button" onclick="closeCreateBannerModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -214,7 +214,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeEditBannerModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Modifier la bannière</h2>
                 <button type="button" onclick="closeEditBannerModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -341,7 +341,7 @@
 
 {{-- ═══════════════ PRESTATIONS (liste répétable) ═══════════════ --}}
 <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
-    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-green-700 via-green-600 to-green-600">
+    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-green-700">
         <div>
             <h2 class="text-white font-semibold text-lg tracking-tight">Nos différentes prestations</h2>
             <p class="text-green-100/80 text-xs mt-0.5">Titre, description, image ou icône, lien — organisées par ordre d'affichage.</p>
@@ -440,7 +440,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeCreateItemModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Ajouter une prestation</h2>
                 <button type="button" onclick="closeCreateItemModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -461,7 +461,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeEditItemModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Modifier la prestation</h2>
                 <button type="button" onclick="closeEditItemModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>

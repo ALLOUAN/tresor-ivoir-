@@ -12,8 +12,8 @@
         body {
             margin: 0;
             font-family: Georgia, 'Times New Roman', serif;
-            color: #1c1915;
-            background: #f6f3ed;
+            color: #0E3B2A;
+            background: #F3F8F5;
             font-size: 13px;
             line-height: 1.5;
         }
@@ -21,7 +21,7 @@
             max-width: 760px;
             margin: 0 auto;
             background: #ffffff;
-            border: 1px solid rgba(0,0,0,0.08);
+            border: 1px solid rgba(14,59,42,0.08);
         }
         .toolbar {
             max-width: 760px;
@@ -41,31 +41,31 @@
             font-weight: 700;
             text-decoration: none;
             cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.12);
+            border: 1px solid rgba(14,59,42,0.12);
             background: #ffffff;
-            color: #1c1915;
+            color: #0E3B2A;
         }
         .toolbar .primary {
-            background: #f2790f;
+            background: #EB6E00;
             border: none;
-            color: #1b1408;
+            color: #0E3B2A;
         }
-        .header { width: 100%; border-collapse: collapse; background: #1c1712; color: #ffffff; }
+        .header { width: 100%; border-collapse: collapse; background: #0E3B2A; color: #ffffff; }
         .header td { padding: 16px 28px; vertical-align: middle; }
         .header-brand { width: 100%; border-collapse: collapse; }
         .header-brand td { vertical-align: middle; padding: 0; }
         .header-brand img { height: 34px; max-width: 150px; object-fit: contain; }
         .header-brand .name { font-size: 16px; font-weight: bold; letter-spacing: .02em; }
-        .header-brand .slogan { font-size: 9px; color: #d8cdb8; font-family: Helvetica, Arial, sans-serif; }
+        .header-brand .slogan { font-size: 9px; color: #8AA99B; font-family: Helvetica, Arial, sans-serif; }
         .header-doc { text-align: right; font-family: Helvetica, Arial, sans-serif; }
-        .header-doc .label { font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: #f4c65a; }
+        .header-doc .label { font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: #EB6E00; }
         .header-doc .ref { font-size: 17px; font-weight: bold; margin-top: 2px; }
 
-        .band { width: 100%; border-collapse: collapse; background: #fdf7ec; border-bottom: 1px solid rgba(0,0,0,0.06); font-family: Helvetica, Arial, sans-serif; }
+        .band { width: 100%; border-collapse: collapse; background: #F3F8F5; border-bottom: 1px solid rgba(14,59,42,0.06); font-family: Helvetica, Arial, sans-serif; }
         .band td { padding: 9px 28px; vertical-align: middle; }
-        .band .status { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 10.5px; font-weight: bold; background: #dcf7e6; color: #067647; }
-        .band .status.pending { background: #fef3c7; color: #92400e; }
-        .band .date-issued { font-size: 10.5px; color: #6b6355; }
+        .band .status { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 10.5px; font-weight: bold; background: #F3F8F5; color: #00874F; }
+        .band .status.pending { background: #FDEFE3; color: #B85600; }
+        .band .date-issued { font-size: 10.5px; color: #557466; }
 
         .content { padding: 16px 28px 6px; }
         .section { margin-bottom: 13px; }
@@ -74,7 +74,7 @@
             font-size: 9.5px;
             letter-spacing: .16em;
             text-transform: uppercase;
-            color: #c25e0a;
+            color: #EB6E00;
             font-weight: bold;
             border-bottom: 1.5px solid #f2790f33;
             padding-bottom: 4px;
@@ -82,27 +82,27 @@
         }
         table.kv { width: 100%; border-collapse: collapse; }
         table.kv td { padding: 3px 0; vertical-align: top; font-size: 12px; }
-        table.kv td.label { color: #6b6355; width: 42%; font-family: Helvetica, Arial, sans-serif; font-size: 10.5px; }
+        table.kv td.label { color: #557466; width: 42%; font-family: Helvetica, Arial, sans-serif; font-size: 10.5px; }
         table.kv td.value { font-weight: bold; }
 
         .grid2 { width: 100%; border-collapse: collapse; }
         .grid2 td { width: 50%; vertical-align: top; padding-right: 24px; }
 
         table.pricing { width: 100%; border-collapse: collapse; margin-top: 2px; }
-        table.pricing td { padding: 4px 0; font-size: 12px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        table.pricing td { padding: 4px 0; font-size: 12px; border-bottom: 1px solid rgba(14,59,42,0.06); }
         table.pricing td:last-child { text-align: right; font-weight: bold; }
-        table.pricing tr.total td { border-bottom: none; border-top: 2px solid #1c1915; padding-top: 6px; font-size: 14px; }
-        table.pricing tr.paid td { color: #067647; }
-        table.pricing tr.balance td { color: #92400e; }
+        table.pricing tr.total td { border-bottom: none; border-top: 2px solid #0E3B2A; padding-top: 6px; font-size: 14px; }
+        table.pricing tr.paid td { color: #00874F; }
+        table.pricing tr.balance td { color: #B85600; }
 
-        .conditions { background: #fdf7ec; border: 1px solid #f2790f22; border-radius: 8px; padding: 10px 14px; font-size: 11px; color: #4a4436; white-space: pre-line; }
+        .conditions { background: #F3F8F5; border: 1px solid #f2790f22; border-radius: 8px; padding: 10px 14px; font-size: 11px; color: #24503D; white-space: pre-line; }
 
-        .footer { width: 100%; border-collapse: collapse; border-top: 1px solid rgba(0,0,0,0.08); font-family: Helvetica, Arial, sans-serif; }
+        .footer { width: 100%; border-collapse: collapse; border-top: 1px solid rgba(14,59,42,0.08); font-family: Helvetica, Arial, sans-serif; }
         .footer td { padding: 12px 28px; vertical-align: middle; }
-        .footer .legal { font-size: 9px; color: #8a7f6b; max-width: 420px; line-height: 1.5; }
+        .footer .legal { font-size: 9px; color: #557466; max-width: 420px; line-height: 1.5; }
         .footer .qr { text-align: center; width: 90px; }
         .footer .qr img { width: 66px; height: 66px; }
-        .footer .qr p { font-size: 7.5px; color: #8a7f6b; margin: 3px 0 0; }
+        .footer .qr p { font-size: 7.5px; color: #557466; margin: 3px 0 0; }
 
         @media print {
             body { background: #ffffff; }

@@ -15,7 +15,9 @@ use App\Models\Review;
 use App\Models\ReviewReply;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Services\SiteAudience;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 
 class AdminDashboardController extends Controller
@@ -62,8 +64,10 @@ class AdminDashboardController extends Controller
         $revenue_by_month = $this->revenueByMonth();
         $signups_by_day = $this->signupsByDay();
         $recent_provider_activity = $this->recentProviderActivity();
+        $audience = app(SiteAudience::class)->summary();
 
         return view('dashboards.admin', compact(
+            'audience',
             'stats',
             'recent_users',
             'pending_reviews',
@@ -73,6 +77,12 @@ class AdminDashboardController extends Controller
             'signups_by_day',
             'recent_provider_activity',
         ));
+    }
+
+    /** Audience du site en JSON (actualisation automatique du tableau de bord toutes les 30 s). */
+    public function audience(): JsonResponse
+    {
+        return response()->json(app(SiteAudience::class)->summary())->header('Cache-Control', 'no-store');
     }
 
     /**

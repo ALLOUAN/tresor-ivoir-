@@ -23,7 +23,7 @@
 
         <div class="divide-y divide-slate-800/80">
             @forelse($conversations as $conversation)
-                <a href="{{ route('visitor.conversations.show', $conversation) }}" data-conversation-row data-conversation-id="{{ $conversation->id }}" class="block px-5 py-4 hover:bg-[#f3eee4] transition">
+                <a href="{{ route('visitor.conversations.show', $conversation) }}" data-conversation-row data-conversation-id="{{ $conversation->id }}" class="block px-5 py-4 hover:bg-[#F3F8F5] transition">
                     <div class="flex items-start justify-between gap-4">
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">

@@ -8,28 +8,28 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
         .hero-experience {
             background:
                 linear-gradient(transparent, transparent),
-                linear-gradient(#1c1912, #1c1912);
+                linear-gradient(#0E3B2A, #0E3B2A);
         }
-        .filter-card { border: 1px solid rgba(0,0,0,0.08); background: #ffffff; box-shadow: 0 14px 34px rgba(20,18,12,0.08); }
+        .filter-card { border: 1px solid rgba(14,59,42,0.08); background: #ffffff; box-shadow: 0 14px 34px rgba(14,59,42,0.08); }
         .venue-card {
-            border: 1px solid rgba(0,0,0,0.07);
-            background: #fdfcf9;
-            box-shadow: 0 10px 28px rgba(20,18,12,0.06);
+            border: 1px solid rgba(14,59,42,0.07);
+            background: #FFFFFF;
+            box-shadow: 0 10px 28px rgba(14,59,42,0.06);
             transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
         }
-        .venue-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(39,174,96,0.14); border-color: rgba(39,174,96,0.3); }
-        .venue-cover { position: relative; overflow: hidden; background: #14130f; }
+        .venue-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,135,79,0.14); border-color: rgba(0,135,79,0.3); }
+        .venue-cover { position: relative; overflow: hidden; background: #0E3B2A; }
         .venue-cover img { transition: transform .5s ease; }
         .venue-card:hover .venue-cover img { transform: scale(1.06); }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="text-[#1c1915]">
+<body class="text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -50,8 +50,8 @@
         <form method="GET" action="{{ route('tourist-experience.index') }}" class="filter-card rounded-2xl p-5 mb-8">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">{{ __('Ville') }}</label>
-                    <select name="ville" class="w-full bg-[#f6f3ed] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
+                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#557466] mb-1">{{ __('Ville') }}</label>
+                    <select name="ville" class="w-full bg-[#F3F8F5] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
                         <option value="">{{ __('Toutes villes') }}</option>
                         @foreach($cities as $c)
                             <option value="{{ $c->id }}" @selected((string) $cityId === (string) $c->id)>{{ $c->name }}</option>
@@ -59,8 +59,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#8a7f6b] mb-1">{{ __('Trier par') }}</label>
-                    <select name="tri" class="w-full bg-[#f6f3ed] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
+                    <label class="block text-[11px] font-semibold uppercase tracking-wide text-[#557466] mb-1">{{ __('Trier par') }}</label>
+                    <select name="tri" class="w-full bg-[#F3F8F5] border border-black/10 rounded-lg px-3 py-2.5 text-sm">
                         <option value="pertinence" @selected($sort==='pertinence')>{{ __('Pertinence') }}</option>
                         <option value="recent" @selected($sort==='recent')>{{ __('Plus récent') }}</option>
                         <option value="popularite" @selected($sort==='popularite')>{{ __('Popularité') }}</option>
@@ -82,8 +82,8 @@
                 @include('partials.home-sector-card', ['it' => \App\Support\HomeSectorShowcase::card($experience, 'sites-touristiques')])
             @empty
             <div class="col-span-full text-center py-16 rounded-2xl border border-dashed border-black/10 bg-white/60">
-                <i class="fas fa-landmark text-3xl mb-3 block text-[#c9bfa8]"></i>
-                <p class="text-[#8a7f6b]">{{ __('Aucun site ne correspond à ces critères.') }}</p>
+                <i class="fas fa-landmark text-3xl mb-3 block text-[#8AA99B]"></i>
+                <p class="text-[#557466]">{{ __('Aucun site ne correspond à ces critères.') }}</p>
             </div>
             @endforelse
         </div>

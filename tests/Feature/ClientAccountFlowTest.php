@@ -42,6 +42,44 @@ class ClientAccountFlowTest extends TestCase
         $this->assertDatabaseMissing('users', ['email' => 'awa@exemple.ci']);
     }
 
+    public function test_new_client_must_confirm_email_before_reaching_the_dashboard(): void
+    {
+        Notification::fake();
+        $this->post(route('register.post'), $this->registerPayload())
+            ->assertRedirect(route('verification.notice'));
+
+        $user = User::firstWhere('email', 'awa@exemple.ci');
+        $this->assertFalse($user->hasVerifiedEmail());
+        Notification::assertSentTo($user, EmailVerificationCodeNotification::class);
+
+        // Espace client fermé tant que l'adresse n'est pas confirmée.
+        $this->get(route('visitor.dashboard'))->assertRedirect(route('verification.notice'));
+        $this->get(route('verification.notice'))->assertOk();
+
+        // Le code (conservé haché) est remplacé par un code connu, puis saisi.
+        $key = 'email_verification_code:'.$user->getKey();
+        Cache::put($key, ['hash' => Hash::make('123456')] + Cache::get($key), now()->addMinutes(10));
+        $this->post(route('verification.code'), ['verification_code' => '123 456'])
+            ->assertRedirect(route('visitor.dashboard'));
+
+        $this->assertTrue($user->fresh()->hasVerifiedEmail());
+        $this->get(route('visitor.dashboard'))->assertOk();
+    }
+
+    public function test_taken_email_offers_login_and_password_reset(): void
+    {
+        Notification::fake();
+        $this->post(route('register.post'), $this->registerPayload())->assertRedirect();
+        auth()->logout();
+
+        $this->from(route('register', ['role' => 'visitor']))
+            ->followingRedirects()
+            ->post(route('register.post'), $this->registerPayload())
+            ->assertSee('Cette adresse e-mail est déjà utilisée.')
+            ->assertSee('Vous avez déjà un compte avec cette adresse.')
+            ->assertSee(route('password.request'), false);
+    }
+
     public function test_newsletter_is_opt_in_only(): void
     {
         Notification::fake();

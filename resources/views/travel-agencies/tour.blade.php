@@ -11,14 +11,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
     </style>
     @include('partials.detail-theme')
     @include('partials.booking-page-theme')
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="dx text-[#1c1915]">
+<body class="dx text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -52,12 +52,12 @@
             <h1 class="hx-title">{{ $tour->name }}</h1>
             @if($tour->summary)<p class="hx-lead mt-3 mb-0">{{ $tour->summary }}</p>@endif
             <p class="hx-meta">
-                <span><i class="fas fa-building text-[#b9500a] mr-1" aria-hidden="true"></i><a href="{{ route('travel-agency.show', $agency->slug) }}" class="font-semibold underline-offset-2 hover:underline">{{ $agency->name }}</a></span>
-                @if($tour->duration_days)<span><i class="fas fa-calendar-days text-[#b9500a] mr-1" aria-hidden="true"></i>{{ trans_choice(':count jour|:count jours', $tour->duration_days) }}</span>@endif
-                @if($tour->max_participants)<span><i class="fas fa-users text-[#b9500a] mr-1" aria-hidden="true"></i>{{ __(':n voyageurs max', ['n' => $tour->max_participants]) }}</span>@endif
-                @if($tour->languagesList())<span><i class="fas fa-language text-[#b9500a] mr-1" aria-hidden="true"></i>{{ implode(', ', $tour->languagesList()) }}</span>@endif
+                <span><i class="fas fa-building text-[#EB6E00] mr-1" aria-hidden="true"></i><a href="{{ route('travel-agency.show', $agency->slug) }}" class="font-semibold underline-offset-2 hover:underline">{{ $agency->name }}</a></span>
+                @if($tour->duration_days)<span><i class="fas fa-calendar-days text-[#EB6E00] mr-1" aria-hidden="true"></i>{{ trans_choice(':count jour|:count jours', $tour->duration_days) }}</span>@endif
+                @if($tour->max_participants)<span><i class="fas fa-users text-[#EB6E00] mr-1" aria-hidden="true"></i>{{ __(':n voyageurs max', ['n' => $tour->max_participants]) }}</span>@endif
+                @if($tour->languagesList())<span><i class="fas fa-language text-[#EB6E00] mr-1" aria-hidden="true"></i>{{ implode(', ', $tour->languagesList()) }}</span>@endif
             </p>
-            <a href="#reserver" class="lg:hidden mt-4 inline-flex items-center gap-2 rounded-full bg-[#b9500a] hover:bg-[#9a4308] text-white font-bold text-sm px-5 py-3">
+            <a href="#reserver" class="lg:hidden mt-4 inline-flex items-center gap-2 rounded-full bg-[#EB6E00] hover:bg-[#B85600] text-white font-bold text-sm px-5 py-3">
                 <i class="fas fa-calendar-check" aria-hidden="true"></i>{{ __('Réserver') }} · {{ __('dès') }} {{ $fmt($tour->fromPrice()) }}
             </a>
         </div>
@@ -128,7 +128,7 @@
                     <p class="hx-kicker">{{ __('Le prix comprend') }}</p>
                     <h2 class="tp-h2">{{ __('Inclus et non inclus') }}</h2>
                     <div class="tp-incl">
-                        @if($incl)<div class="tp-box"><h3 class="text-[#1b6b3a]">{{ __('Inclus') }}</h3><ul class="tp-list">@foreach($incl as $l)<li><i class="fas fa-check text-[#1b6b3a]" aria-hidden="true"></i>{{ $l }}</li>@endforeach</ul></div>@endif
+                        @if($incl)<div class="tp-box"><h3 class="text-[#00874F]">{{ __('Inclus') }}</h3><ul class="tp-list">@foreach($incl as $l)<li><i class="fas fa-check text-[#00874F]" aria-hidden="true"></i>{{ $l }}</li>@endforeach</ul></div>@endif
                         @if($excl)<div class="tp-box"><h3 class="text-[#a3341f]">{{ __('Non inclus') }}</h3><ul class="tp-list">@foreach($excl as $l)<li><i class="fas fa-xmark text-[#a3341f]" aria-hidden="true"></i>{{ $l }}</li>@endforeach</ul></div>@endif
                     </div>
                 </section>
@@ -140,7 +140,7 @@
                     <h2 class="tp-h2">{{ __('Lieux de prise en charge') }}</h2>
                     <ul class="tp-list tp-box">
                         @foreach($pickups as $p)
-                            <li><i class="fas fa-location-dot text-[#b9500a]" aria-hidden="true"></i><span><b>{{ $p['label'] }}</b>@if($p['time']) — {{ str_replace(':', ' h ', $p['time']) }}@endif @if($p['note'])<span class="text-[#6b6458]"> · {{ $p['note'] }}</span>@endif</span></li>
+                            <li><i class="fas fa-location-dot text-[#EB6E00]" aria-hidden="true"></i><span><b>{{ $p['label'] }}</b>@if($p['time']) — {{ str_replace(':', ' h ', $p['time']) }}@endif @if($p['note'])<span class="text-[#557466]"> · {{ $p['note'] }}</span>@endif</span></li>
                         @endforeach
                     </ul>
                 </section>
@@ -165,7 +165,7 @@
                                         @else<span class="tp-badge">{{ __(':n places disponibles', ['n' => $left]) }}</span>@endif
                                     </span>
                                 </div>
-                                <div class="tp-dep__price">{{ $fmt($tour->adultPrice(1, $d)) }}<small class="block text-[11px] font-semibold text-[#6b6458]">/ {{ __('pers.') }}</small></div>
+                                <div class="tp-dep__price">{{ $fmt($tour->adultPrice(1, $d)) }}<small class="block text-[11px] font-semibold text-[#557466]">/ {{ __('pers.') }}</small></div>
                             </div>
                         @endforeach
                     </div>
@@ -180,16 +180,16 @@
                         <h3>{{ __('Paiement') }}</h3>
                         <ul class="tp-list">
                             @if($tour->deposit_percent)
-                                <li><i class="fas fa-wallet text-[#b9500a]" aria-hidden="true"></i>{{ __('Acompte de :p % à la réservation', ['p' => $tour->deposit_percent]) }}</li>
-                                <li><i class="fas fa-calendar-check text-[#b9500a]" aria-hidden="true"></i>{{ __('Solde à régler :d jours avant le départ (rappel automatique)', ['d' => $tour->balance_due_days]) }}</li>
-                                <li><i class="fas fa-circle-info text-[#b9500a]" aria-hidden="true"></i>{{ __('Réservation à moins de :d jours : paiement intégral', ['d' => $tour->balance_due_days]) }}</li>
+                                <li><i class="fas fa-wallet text-[#EB6E00]" aria-hidden="true"></i>{{ __('Acompte de :p % à la réservation', ['p' => $tour->deposit_percent]) }}</li>
+                                <li><i class="fas fa-calendar-check text-[#EB6E00]" aria-hidden="true"></i>{{ __('Solde à régler :d jours avant le départ (rappel automatique)', ['d' => $tour->balance_due_days]) }}</li>
+                                <li><i class="fas fa-circle-info text-[#EB6E00]" aria-hidden="true"></i>{{ __('Réservation à moins de :d jours : paiement intégral', ['d' => $tour->balance_due_days]) }}</li>
                             @else
-                                <li><i class="fas fa-wallet text-[#b9500a]" aria-hidden="true"></i>{{ __('Paiement intégral à la réservation') }}</li>
+                                <li><i class="fas fa-wallet text-[#EB6E00]" aria-hidden="true"></i>{{ __('Paiement intégral à la réservation') }}</li>
                             @endif
-                            <li><i class="fas fa-mobile-screen text-[#b9500a]" aria-hidden="true"></i>{{ __('Mobile Money, carte bancaire (CinetPay) ou solde Trésors d\'Ivoire') }}</li>
-                            @if($tour->child_price_xof !== null)<li><i class="fas fa-child text-[#b9500a]" aria-hidden="true"></i>{{ __('Enfant:age : :p', ['age' => $tour->child_age_max ? ' ('.__('jusqu\'à :n ans', ['n' => $tour->child_age_max]).')' : '', 'p' => $fmt((int) $tour->child_price_xof)]) }}</li>@endif
-                            @if($tour->single_supplement_xof)<li><i class="fas fa-bed text-[#b9500a]" aria-hidden="true"></i>{{ __('Supplément chambre individuelle : :p', ['p' => $fmt((int) $tour->single_supplement_xof)]) }}</li>@endif
-                            @foreach($tiers as $t)<li><i class="fas fa-people-group text-[#b9500a]" aria-hidden="true"></i>{{ __('Dès :n voyageurs : :p / pers.', ['n' => $t['min'], 'p' => $fmt($t['price_xof'])]) }}</li>@endforeach
+                            <li><i class="fas fa-mobile-screen text-[#EB6E00]" aria-hidden="true"></i>{{ __('Mobile Money, carte bancaire (CinetPay) ou solde Trésors d\'Ivoire') }}</li>
+                            @if($tour->child_price_xof !== null)<li><i class="fas fa-child text-[#EB6E00]" aria-hidden="true"></i>{{ __('Enfant:age : :p', ['age' => $tour->child_age_max ? ' ('.__('jusqu\'à :n ans', ['n' => $tour->child_age_max]).')' : '', 'p' => $fmt((int) $tour->child_price_xof)]) }}</li>@endif
+                            @if($tour->single_supplement_xof)<li><i class="fas fa-bed text-[#EB6E00]" aria-hidden="true"></i>{{ __('Supplément chambre individuelle : :p', ['p' => $fmt((int) $tour->single_supplement_xof)]) }}</li>@endif
+                            @foreach($tiers as $t)<li><i class="fas fa-people-group text-[#EB6E00]" aria-hidden="true"></i>{{ __('Dès :n voyageurs : :p / pers.', ['n' => $t['min'], 'p' => $fmt($t['price_xof'])]) }}</li>@endforeach
                         </ul>
                     </div>
                     <div class="tp-box">
@@ -201,7 +201,7 @@
                                 @endforeach
                             </ul>
                         @else
-                            <p class="text-sm text-[#4a443a] m-0">{{ __('Non remboursable, sauf annulation du départ par l\'agence.') }}</p>
+                            <p class="text-sm text-[#24503D] m-0">{{ __('Non remboursable, sauf annulation du départ par l\'agence.') }}</p>
                         @endif
                         <p class="tp-note">{{ __('Départ annulé par l\'agence ou minimum de voyageurs non atteint : remboursement intégral sur votre solde.') }}</p>
                     </div>
@@ -216,7 +216,7 @@
                         @foreach($others as $o)
                             <a href="{{ route('travel-agency.tour', [$agency->slug, $o->slug]) }}" class="dx-offer">
                                 <span class="dx-offer__media">@if($o->images[0] ?? null)<img src="{{ $o->images[0] }}" alt="" loading="lazy" class="w-full h-full object-cover">@else<i class="fas fa-route" aria-hidden="true"></i>@endif</span>
-                                <span class="dx-offer__body"><span class="dx-offer__name">{{ $o->name }}</span>@if($o->duration_days)<span class="text-xs text-[#6b6458]">{{ trans_choice(':count jour|:count jours', $o->duration_days) }}</span>@endif</span>
+                                <span class="dx-offer__body"><span class="dx-offer__name">{{ $o->name }}</span>@if($o->duration_days)<span class="text-xs text-[#557466]">{{ trans_choice(':count jour|:count jours', $o->duration_days) }}</span>@endif</span>
                                 <span class="dx-offer__side"><span class="dx-offer__price font-bold">{{ $fmt($o->fromPrice()) }}</span><span class="dx-offer__ask"><i class="fas fa-arrow-right" aria-hidden="true"></i></span></span>
                             </a>
                         @endforeach
@@ -275,7 +275,7 @@
                             <span class="tp-label">{{ __('Options') }}</span>
                             @foreach($extras as $i => $e)
                                 <label class="tp-extra"><input type="checkbox" name="extras[]" value="{{ $i }}" @checked(in_array($i, old('extras', []))) data-quote-input>
-                                    <span>{{ $e['label'] }}</span><span class="font-bold whitespace-nowrap">+ {{ $fmt($e['price_xof']) }} <small class="font-medium text-[#6b6458]">{{ $e['per'] === 'booking' ? __('/ réservation') : __('/ pers.') }}</small></span></label>
+                                    <span>{{ $e['label'] }}</span><span class="font-bold whitespace-nowrap">+ {{ $fmt($e['price_xof']) }} <small class="font-medium text-[#557466]">{{ $e['per'] === 'booking' ? __('/ réservation') : __('/ pers.') }}</small></span></label>
                             @endforeach
                         @endif
 
@@ -296,7 +296,7 @@
                         @if($errors->tour->any())<p class="tp-err">{{ $errors->tour->first() }}</p>@endif
                         <p class="tp-err hidden" id="tp-err"></p>
                         <button type="submit" class="tp-submit" id="tp-submit"><i class="fas fa-lock mr-1.5" aria-hidden="true"></i><span id="tp-submit-label">{{ __('Réserver') }}</span></button>
-                        <p class="tp-note"><i class="fas fa-bolt text-[#b9500a] mr-1" aria-hidden="true"></i>{{ __('Confirmation immédiate. Vous remplirez ensuite les noms des voyageurs depuis « Mes voyages ».') }}</p>
+                        <p class="tp-note"><i class="fas fa-bolt text-[#EB6E00] mr-1" aria-hidden="true"></i>{{ __('Confirmation immédiate. Vous remplirez ensuite les noms des voyageurs depuis « Mes voyages ».') }}</p>
                     </form>
                 @endif
             </div>

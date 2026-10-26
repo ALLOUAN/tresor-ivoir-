@@ -8,27 +8,27 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-serif { font-family: 'Montserrat', serif; }
         .providers-filter-shell {
-            box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+            box-shadow: 0 12px 28px rgba(14,59,42,0.18);
         }
         .provider-list-card {
             transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
         }
         .provider-list-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+            box-shadow: 0 12px 24px rgba(14,59,42,0.2);
         }
         html:not(.dark) .providers-filter-shell {
-            background:#e9e5d9 !important;
-            border-color: rgba(0,0,0,0.08) !important;
-            box-shadow: 0 12px 26px rgba(0,0,0,0.06);
+            background:#D8E9E0 !important;
+            border-color: rgba(14,59,42,0.08) !important;
+            box-shadow: 0 12px 26px rgba(14,59,42,0.06);
         }
         html:not(.dark) .provider-list-card {
-            background:#e9e5d9 !important;
-            border-color: rgba(0,0,0,0.08) !important;
-            box-shadow: 0 10px 22px rgba(0,0,0,0.05);
+            background:#D8E9E0 !important;
+            border-color: rgba(14,59,42,0.08) !important;
+            box-shadow: 0 10px 22px rgba(14,59,42,0.05);
         }
         /* Image de fond configurable (back-office) du bandeau de la page Annuaire. */
         .providers-hero {
@@ -57,7 +57,7 @@
             style="--providers-hero-bg-image: url('{{ $providersHeroImage->image_url }}');"
         @endif
     >
-        <a href="{{ route('home') }}" class="absolute top-6 right-6 z-10 rounded-full bg-white/95 px-3.5 py-1.5 text-sm font-medium shadow-sm hover:underline" style="color:#b9500a">{{ __('← Retour accueil') }}</a>
+        <a href="{{ route('home') }}" class="absolute top-6 right-6 z-10 rounded-full bg-white/95 px-3.5 py-1.5 text-sm font-medium shadow-sm hover:underline" style="color:#EB6E00">{{ __('← Retour accueil') }}</a>
         <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
             <div class="ti-hero-card inline-block rounded-2xl px-6 py-8 sm:px-12 sm:py-10">
                 <p class="text-orange-400 text-sm font-medium uppercase tracking-widest mb-3">{{ __('Annuaire') }}</p>
@@ -150,7 +150,7 @@
                         @endphp
                         <div class="mt-3 flex items-center justify-between text-xs">
                             @if($cardRating > 0)
-                                <span class="font-semibold text-[#1d1a16]"><i class="fas fa-star text-[10px] mr-1" style="color:#b8892b"></i>{{ number_format($cardRating, 1, ',', ' ') }}</span>
+                                <span class="font-semibold text-[#0E3B2A]"><i class="fas fa-star text-[10px] mr-1" style="color:#EB6E00"></i>{{ number_format($cardRating, 1, ',', ' ') }}</span>
                             @else
                                 <span class="text-gray-500">{{ __('Pas encore d’avis') }}</span>
                             @endif

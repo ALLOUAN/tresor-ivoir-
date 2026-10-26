@@ -5,14 +5,14 @@
 
 @php
     $tab = fn ($label, $key, $val, $current) => '<a href="'.e(request()->fullUrlWithQuery([$key => $val, 'page' => null])).'" class="px-3 py-1.5 rounded-lg text-xs font-medium '.($current === $val ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-400 hover:text-white').'">'.e($label).'</a>';
-    $badge = fn ($v) => match ($v) {'likely' => ['Problème probable', '#c0362c', '#fdeceb'], 'review' => ['À vérifier', '#9a6a00', '#fdf3d6'], default => ['Sain', '#1b6b3a', '#eef6f0']};
+    $badge = fn ($v) => match ($v) {'likely' => ['Problème probable', '#c0362c', '#fdeceb'], 'review' => ['À vérifier', '#B85600', '#F3F8F5'], default => ['Sain', '#00874F', '#F3F8F5']};
     $t = $eval['text']; $im = $eval['images']; $dec = $eval['decisions']; $real = $eval['real'];
     $pct = fn ($v) => $v === null ? '—' : number_format($v * 100, 0, ',', ' ').' %';
 @endphp
 
 @section('content')
 @if(session('status'))
-    <p class="mb-4 text-sm rounded-lg px-4 py-3" style="background:#eef6f0;border:1px solid #d9ecdf;color:#14532d"><i class="fas fa-circle-check mr-2"></i>{{ session('status') }}</p>
+    <p class="mb-4 text-sm rounded-lg px-4 py-3" style="background:#F3F8F5;border:1px solid #D8E9E0;color:#00874F"><i class="fas fa-circle-check mr-2"></i>{{ session('status') }}</p>
 @endif
 
 <div class="mb-6 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">

@@ -29,10 +29,8 @@ class ActivityController extends Controller
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
 
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
         abort_unless(
-            in_array($rootSlug, ['loisirs-culture', 'sites-touristiques'], true),
+            $provider->hasSector(['loisirs-culture', 'sites-touristiques']),
             403,
             'Cette fonctionnalité est réservée aux prestataires des catégories Loisirs & Culture et Sites Touristiques.'
         );

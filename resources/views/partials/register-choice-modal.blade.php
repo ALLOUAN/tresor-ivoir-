@@ -20,51 +20,51 @@
     <style>
         /* Choix du profil : en-tête vert à motifs, deux grandes cartes cliquables (client / prestataire),
            étape 1 sur 2, lien de connexion. Aplats ; ombre au survol seulement. */
-        .rc { --sunset: 217,101,15; --palm: 74,138,42; position: relative; width: 100%; max-width: 820px; max-height: 92vh; overflow-y: auto; border-radius: 28px; background: #fff; color: #1d1a16; font-family: 'Inter', sans-serif; }
-        .rc-head { position: relative; overflow: hidden; padding: 26px 30px 30px; background: #123a25; color: #fff; }
+        .rc { --sunset: 235,110,0; --palm: 0,135,79; position: relative; width: 100%; max-width: 820px; max-height: 92vh; overflow-y: auto; border-radius: 28px; background: #fff; color: #0E3B2A; font-family: 'Montserrat', sans-serif; }
+        .rc-head { position: relative; overflow: hidden; padding: 26px 30px 30px; background: #00874F; color: #fff; }
         .rc-head .ivm-g { opacity: .1 !important; }
-        .rc-head .ivm-g > * { stroke: #f6c38f !important; }
+        .rc-head .ivm-g > * { stroke: #F7C396 !important; }
         .rc-head .ivm-band { height: 6px; }
         .rc-head > :not(.ivm):not(.ivm-band) { position: relative; z-index: 1; }
-        .rc-step { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #f6c38f; }
+        .rc-step { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #F7C396; }
         .rc-step i { display: inline-flex; gap: 4px; }
         .rc-step i b { width: 22px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.25); }
-        .rc-step i b:first-child { background: #f6c38f; }
-        .rc-title { margin: 10px 48px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(25px, 3vw, 32px); font-weight: 700; line-height: 1.12; color: #fff; }
-        .rc-sub { margin: 6px 0 0; font-size: 15px; color: #cfe6d7; }
+        .rc-step i b:first-child { background: #F7C396; }
+        .rc-title { margin: 10px 48px 0 0; font-family: 'Montserrat', serif; font-size: clamp(25px, 3vw, 32px); font-weight: 700; line-height: 1.12; color: #fff; }
+        .rc-sub { margin: 6px 0 0; font-size: 15px; color: #D8E9E0; }
         .rc-close { position: absolute; right: 18px; top: 18px; z-index: 2; width: 40px; height: 40px; border: 0; border-radius: 999px; background: rgba(255,255,255,.12); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; }
         .rc-close:hover { background: rgba(255,255,255,.22); }
         #register-choice-panel .rc-close { position: absolute; left: auto; right: 18px; top: 18px; margin: 0; }
 
         .rc-body { padding: 22px 24px 20px; }
         .rc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-        .rc-card { --c: var(--sunset); position: relative; display: flex; flex-direction: column; padding: 20px; border-radius: 22px; background: #fff; border: 1.5px solid #ece5d6; transition: border-color .15s ease, box-shadow .2s ease, transform .2s ease; }
+        .rc-card { --c: var(--sunset); position: relative; display: flex; flex-direction: column; padding: 20px; border-radius: 22px; background: #fff; border: 1.5px solid #D8E9E0; transition: border-color .15s ease, box-shadow .2s ease, transform .2s ease; }
         .rc-card.is-pro { --c: var(--palm); }
-        .rc-card:hover, .rc-card:focus-within { border-color: rgb(var(--c)); box-shadow: 0 22px 40px -30px rgba(29,26,22,.55); transform: translateY(-2px); }
+        .rc-card:hover, .rc-card:focus-within { border-color: rgb(var(--c)); box-shadow: 0 22px 40px -30px rgba(14,59,42,.55); transform: translateY(-2px); }
         .rc-card__top { display: flex; align-items: center; gap: 12px; }
         .rc-ico { flex: none; width: 52px; height: 52px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; background: rgba(var(--c), .12); color: rgb(var(--c)); }
         .rc-ico .ico { width: 26px; height: 26px; }
         .rc-who { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: rgb(var(--c)); }
-        .rc-card h3 { margin: 2px 0 0; font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; line-height: 1.2; color: #1d1a16; }
-        .rc-desc { margin: 12px 0 0; font-size: 14px; line-height: 1.55; color: #4a443a; }
+        .rc-card h3 { margin: 2px 0 0; font-family: 'Montserrat', serif; font-size: 21px; font-weight: 700; line-height: 1.2; color: #0E3B2A; }
+        .rc-desc { margin: 12px 0 0; font-size: 14px; line-height: 1.55; color: #24503D; }
         .rc-list { flex: 1; display: flex; flex-direction: column; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
-        .rc-list li { display: flex; align-items: flex-start; gap: 9px; font-size: 14px; line-height: 1.4; color: #2f2a22; }
+        .rc-list li { display: flex; align-items: flex-start; gap: 9px; font-size: 14px; line-height: 1.4; color: #0E3B2A; }
         .rc-list li > .ico { flex: none; width: 18px; height: 18px; margin: 1px 0 0; padding: 0; border: 0; border-radius: 0; background: none; color: rgb(var(--c)); }
-        .rc-note { display: inline-flex; align-items: center; gap: 7px; align-self: flex-start; margin: 16px 0 0; padding: 6px 11px; border-radius: 999px; background: rgba(var(--c), .1); font-size: 12.5px; font-weight: 700; color: #3a2f22; }
+        .rc-note { display: inline-flex; align-items: center; gap: 7px; align-self: flex-start; margin: 16px 0 0; padding: 6px 11px; border-radius: 999px; background: rgba(var(--c), .1); font-size: 12.5px; font-weight: 700; color: #0E3B2A; }
         .rc-note .ico { width: 15px; height: 15px; color: rgb(var(--c)); }
-        .rc-cta { display: flex; align-items: center; justify-content: center; gap: 9px; height: 50px; margin-top: 16px; border-radius: 999px; background: #b9500a; color: #fff; font-size: 15px; font-weight: 800; text-decoration: none; transition: background .15s ease; }
-        .rc-cta:hover { background: #9a4308; }
+        .rc-cta { display: flex; align-items: center; justify-content: center; gap: 9px; height: 50px; margin-top: 16px; border-radius: 999px; background: #EB6E00; color: #fff; font-size: 15px; font-weight: 800; text-decoration: none; transition: background .15s ease; }
+        .rc-cta:hover { background: #B85600; }
         .rc-cta .ico { width: 18px; height: 18px; }
         /* Toute la carte est cliquable (le lien s'étend sur la carte) */
         .rc-cta::after { content: ''; position: absolute; inset: 0; border-radius: 22px; }
-        .rc-cta:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 3px; }
-        .rc-close:focus-visible, .rc-foot a:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .rc-cta:focus-visible { outline: 3px solid #EB6E00; outline-offset: 3px; }
+        .rc-close:focus-visible, .rc-foot a:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
 
-        .rc-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #f0eadf; font-size: 13.5px; color: #6b6458; }
-        .rc-foot a { font-weight: 700; color: #9a4308; text-decoration: none; }
+        .rc-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #F3F8F5; font-size: 13.5px; color: #557466; }
+        .rc-foot a { font-weight: 700; color: #B85600; text-decoration: none; }
         .rc-foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
         .rc-foot span { display: inline-flex; align-items: center; gap: 6px; }
-        .rc-foot .ico { width: 15px; height: 15px; color: #1f8079; }
+        .rc-foot .ico { width: 15px; height: 15px; color: #00874F; }
 
         @media (max-width: 640px) {
             #register-choice-modal { padding: 0 !important; align-items: flex-end !important; }
@@ -151,7 +151,7 @@
 
             <div class="rc-foot">
                 <span><x-icon name="shield-check" />{{ __('Vos données restent confidentielles.') }}</span>
-                <p style="margin:0">{{ __('Déjà un compte ?') }} <button type="button" data-close-register-modal style="border:0;background:none;padding:0;font:inherit;font-weight:700;color:#9a4308;cursor:pointer">{{ __('Se connecter') }}</button></p>
+                <p style="margin:0">{{ __('Déjà un compte ?') }} <button type="button" data-close-register-modal style="border:0;background:none;padding:0;font:inherit;font-weight:700;color:#B85600;cursor:pointer">{{ __('Se connecter') }}</button></p>
             </div>
         </div>
     </div>

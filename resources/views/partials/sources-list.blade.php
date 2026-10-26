@@ -22,11 +22,11 @@
 </section>
 @once
 <style>
-    .ti-sources__box { padding: 18px 20px; border-radius: 22px; background: #fff; border: 1px solid #ece5d6; }
-    .ti-sources__title { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #14532d; }
-    .ti-sources__title i { color: #b9500a; }
-    .ti-sources__list { margin: 0; padding-left: 20px; list-style: decimal; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; line-height: 1.5; color: #4a443a; }
-    .ti-sources__list a { color: #9a4308; text-decoration: underline; text-underline-offset: 2px; }
+    .ti-sources__box { padding: 18px 20px; border-radius: 22px; background: #fff; border: 1px solid #D8E9E0; }
+    .ti-sources__title { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #00874F; }
+    .ti-sources__title i { color: #EB6E00; }
+    .ti-sources__list { margin: 0; padding-left: 20px; list-style: decimal; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; line-height: 1.5; color: #24503D; }
+    .ti-sources__list a { color: #B85600; text-decoration: underline; text-underline-offset: 2px; }
     .ti-sources__list a i { margin-left: 6px; font-size: 10px; }
 </style>
 @endonce

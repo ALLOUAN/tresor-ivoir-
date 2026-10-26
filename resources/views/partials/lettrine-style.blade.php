@@ -4,16 +4,15 @@
     Partagé par la page publique, l'aperçu rédacteur et la zone d'édition.
 --}}
 @once
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap">
 <style>
     p.lettrine {
-        --lettrine: #e11d2a;
+        --lettrine: #EB6E00;
         border-left: 3px solid var(--lettrine);
         padding-left: 1.15rem;
     }
     p.lettrine::first-letter {
         float: left;
-        font-family: 'Oswald', Impact, 'Arial Narrow', sans-serif;
+        font-family: 'Montserrat', Impact, 'Arial Narrow', sans-serif;
         font-weight: 700;
         font-size: 3.5em;
         line-height: .8;

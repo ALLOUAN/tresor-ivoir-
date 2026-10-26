@@ -20,24 +20,24 @@
 
 @once
 <style>
-    .ti-dayroute { border-top: 1px solid #ece4d3; }
-    .ti-dayroute__toggle { width: 100%; display: flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; font-size: 14px; color: #31621c; background: #f7f3ea; }
-    .ti-dayroute__toggle:hover { background: #f0eadb; }
+    .ti-dayroute { border-top: 1px solid #D8E9E0; }
+    .ti-dayroute__toggle { width: 100%; display: flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; font-size: 14px; color: #00874F; background: #F3F8F5; }
+    .ti-dayroute__toggle:hover { background: #D8E9E0; }
     .ti-dayroute__chev { margin-left: auto; transition: transform .2s; }
     .ti-dayroute.is-open .ti-dayroute__chev { transform: rotate(180deg); }
     .ti-dayroute__panel { display: grid; grid-template-columns: 1fr; }
     @media (min-width: 768px) { .ti-dayroute__panel { grid-template-columns: 3fr 2fr; } }
-    .ti-dayroute__map { min-height: 280px; background: #e8e1d3; }
-    .ti-dayroute__info { padding: 14px 18px; font-size: 14px; color: #3d372c; }
+    .ti-dayroute__map { min-height: 280px; background: #D8E9E0; }
+    .ti-dayroute__info { padding: 14px 18px; font-size: 14px; color: #24503D; }
     .ti-dayroute__summary { font-weight: 600; margin-bottom: 8px; }
     .ti-dayroute__steps { list-style: none; margin: 0; padding: 0; }
     .ti-dayroute__steps li { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; }
-    .ti-dayroute__no { width: 22px; height: 22px; border-radius: 50%; background: #31621c; color: #fff; font: 700 11px/22px Inter, sans-serif; text-align: center; flex-shrink: 0; }
-    .ti-dayroute__no.is-home { background: #ef7c2b; }
-    .ti-dayroute__leg { font-size: 12px; color: #8a7f6b; padding-left: 32px; }
-    .ti-dayroute__gmaps { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-weight: 600; color: #ef7c2b; }
-    .ti-dayroute__pin { width: 26px; height: 26px; border-radius: 50%; background: #31621c; color: #fff; border: 2px solid #fff; font: 700 12px/22px Inter, sans-serif; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
-    .ti-dayroute__pin.is-home { background: #ef7c2b; }
+    .ti-dayroute__no { width: 22px; height: 22px; border-radius: 50%; background: #00874F; color: #fff; font: 700 11px/22px Montserrat, sans-serif; text-align: center; flex-shrink: 0; }
+    .ti-dayroute__no.is-home { background: #EB6E00; }
+    .ti-dayroute__leg { font-size: 12px; color: #557466; padding-left: 32px; }
+    .ti-dayroute__gmaps { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-weight: 600; color: #EB6E00; }
+    .ti-dayroute__pin { width: 26px; height: 26px; border-radius: 50%; background: #00874F; color: #fff; border: 2px solid #fff; font: 700 12px/22px Montserrat, sans-serif; text-align: center; box-shadow: 0 3px 8px rgba(14,59,42,.25); }
+    .ti-dayroute__pin.is-home { background: #EB6E00; }
 </style>
 <script>
 (function () {
@@ -86,7 +86,7 @@
         const last = data.legs[data.stops.length];
         if (last) html += `<li class="ti-dayroute__leg"><i class="fas fa-car-side mr-1"></i>${dur(last.minutes)} ${T.route} · ${last.km} km → ⌂</li>`;
         steps.innerHTML = html;
-        summary.innerHTML = `${T.total} : ${dur(data.total.minutes)} · ${data.total.km} km <small style="font-weight:400;color:#8a7f6b">(${data.engine === 'google' ? T.optimized : T.estimated})</small>`;
+        summary.innerHTML = `${T.total} : ${dur(data.total.minutes)} · ${data.total.km} km <small style="font-weight:400;color:#557466">(${data.engine === 'google' ? T.optimized : T.estimated})</small>`;
         const gm = box.querySelector('.ti-dayroute__gmaps');
         if (data.maps_url) { gm.href = data.maps_url; gm.hidden = false; }
 
@@ -107,7 +107,7 @@
         const path = data.polyline
             ? geometry.encoding.decodePath(data.polyline)
             : [data.home, ...data.stops, data.home].map(p => ({ lat: p.lat, lng: p.lng }));
-        new Polyline({ map, path, strokeColor: '#31621c', strokeOpacity: data.polyline ? 0.9 : 0.6, strokeWeight: data.polyline ? 5 : 3, geodesic: true,
+        new Polyline({ map, path, strokeColor: '#00874F', strokeOpacity: data.polyline ? 0.9 : 0.6, strokeWeight: data.polyline ? 5 : 3, geodesic: true,
             icons: data.polyline ? [] : [{ icon: { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 }, offset: '0', repeat: '12px' }] });
         map.fitBounds(bounds, 50);
     }

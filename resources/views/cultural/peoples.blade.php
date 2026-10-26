@@ -8,9 +8,9 @@
     @include('partials.theme-light-bridge')
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Playfair Display', serif; }
-        html:not(.dark) body { background:#e9e5d9; color: #1c1915; }
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-serif { font-family: 'Montserrat', serif; }
+        html:not(.dark) body { background:#D8E9E0; color: #0E3B2A; }
         /* Image de fond configurable (back-office) du bandeau de la page Cultures. */
         .cultural-hero {
             background-size: cover;

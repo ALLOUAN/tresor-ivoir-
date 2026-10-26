@@ -29,9 +29,7 @@ class TransportController extends Controller
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
 
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-        abort_unless($rootSlug === 'transports', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Transports & Mobilité.');
+        abort_unless($provider->hasSector('transports'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Transports & Mobilité.');
 
         return $provider;
     }

@@ -11,15 +11,15 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         @include('partials.theme-light-bridge')
     <style>
-        html:not(.dark) .bg-slate-800\/60 { background-color:rgba(0,0,0,0.04) !important; }
-        html:not(.dark) .border-slate-600 { border-color:#c2b89e !important; }
-        html:not(.dark) .placeholder-slate-500::placeholder { color:#665f52 !important; }
+        html:not(.dark) .bg-slate-800\/60 { background-color:rgba(14,59,42,0.04) !important; }
+        html:not(.dark) .border-slate-600 { border-color:#8AA99B !important; }
+        html:not(.dark) .placeholder-slate-500::placeholder { color:#557466 !important; }
         .step-panel { transition: opacity .3s ease, transform .3s ease; }
         .step-panel.is-hidden { opacity: 0; transform: translateX(16px); pointer-events: none; }
         .step-panel.is-active { opacity: 1; transform: translateX(0); }
         .plan-radio input[type="radio"]:checked + label {
-            border-color: rgba(242,121,15,0.6);
-            background: rgba(242,121,15,0.1);
+            border-color: rgba(235,110,0,0.6);
+            background: rgba(235,110,0,0.1);
         }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-803c04c8.css') }}?v={{ @filemtime(public_path('css/tw-803c04c8.css')) }}">
@@ -43,17 +43,8 @@
 
     {{-- Logo / Brand --}}
     <div class="text-center mb-8">
-        @if(!empty($siteBrand['logo_url']))
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 border border-slate-600 mb-4 overflow-hidden p-1">
-                <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
-            </div>
-        @else
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-500 mb-4">
-                <i class="fas fa-gem text-white text-2xl"></i>
-            </div>
-        @endif
-        <h1 class="text-3xl font-bold text-orange-400 tracking-wide">{{ $siteBrand['site_name'] }}</h1>
-        <p class="text-slate-400 text-sm mt-1">{{ $siteBrand['site_slogan'] ?: __('Magazine Culturel & Touristique Premium') }}</p>
+        <a href="{{ route('home') }}" class="inline-block mb-4" aria-label="{{ $siteBrand['site_name'] }}"><img src="{{ $siteBrand['logo_vertical_url'] ?? $siteBrand['logo_url'] }}" alt="{{ $siteBrand['site_name'] }}" width="210" height="207" style="width:210px;height:auto"></a>
+        <h1 class="sr-only">{{ $siteBrand['site_name'] }}</h1>
         <span class="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-300 text-[11px] font-semibold uppercase tracking-wide">
             <i class="fas fa-star text-[10px]"></i> {{ __('Espace pro — Inscription prestataire') }}
         </span>
@@ -90,14 +81,23 @@
 
             @if(isset($selectedPlan) && $selectedPlan)
                 <input type="hidden" name="plan_id" value="{{ $selectedPlan->id }}">
+                @php
+                    $bundleItems = ($bundleItems ?? collect())->isNotEmpty() ? $bundleItems : collect([['plan' => $selectedPlan, 'sector' => null]]);
+                    $bundleAvec = \App\Support\PlanBundle::encode($bundleItems->slice(1));
+                @endphp
+                @if($bundleAvec !== '')
+                    <input type="hidden" name="avec" value="{{ $bundleAvec }}">
+                @endif
                 <div class="rounded-xl border border-orange-500/30 bg-orange-500/10 p-3.5 flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <p class="text-[11px] font-medium text-orange-300/80 uppercase tracking-wide mb-1">{{ __('Forfait sélectionné') }}</p>
-                        <p class="text-sm font-semibold text-white truncate">{{ $selectedPlan->name_fr }}</p>
-                        <p class="text-xs text-slate-500 mt-0.5">
-                            {{ $selectedPlan->providerCategory?->name_fr ?? __('Toutes catégories') }}
-                            · {{ number_format((float) $selectedPlan->price_monthly, 0, ',', ' ') }} {{ __('FCFA/mois') }}
-                        </p>
+                        <p class="text-[11px] font-medium text-orange-300/80 uppercase tracking-wide mb-1">{{ $bundleItems->count() > 1 ? __(':n secteurs sélectionnés', ['n' => $bundleItems->count()]) : __('Forfait sélectionné') }}</p>
+                        @foreach($bundleItems as $bi)
+                            <p class="text-sm font-semibold text-white truncate">{{ $bi['sector']?->name_fr ?? $bi['plan']->providerCategory?->name_fr ?? __('Toutes catégories') }} · {{ $bi['plan']->name_fr }}</p>
+                            <p class="text-xs text-slate-500 mt-0.5 mb-1">{{ number_format((float) $bi['plan']->price_monthly, 0, ',', ' ') }} {{ __('FCFA/mois') }}</p>
+                        @endforeach
+                        @if($bundleItems->count() > 1)
+                            <p class="text-xs font-semibold text-orange-200 mt-1">{{ __('Total') }} : {{ number_format(\App\Support\PlanBundle::total($bundleItems, 'monthly'), 0, ',', ' ') }} {{ __('FCFA/mois') }}</p>
+                        @endif
                     </div>
                     <a href="{{ route('plans.public') }}" class="shrink-0 text-xs font-medium text-orange-300 hover:text-orange-200 transition whitespace-nowrap">
                         {{ __('Changer d\'offre') }}

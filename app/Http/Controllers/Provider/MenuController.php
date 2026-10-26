@@ -27,9 +27,7 @@ class MenuController extends Controller
             abort(404, 'Aucune fiche prestataire trouvée.');
         }
 
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-        abort_unless($rootSlug === 'restaurants', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Restaurants & Gastronomie.');
+        abort_unless($provider->hasSector('restaurants'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Restaurants & Gastronomie.');
 
         return $provider;
     }

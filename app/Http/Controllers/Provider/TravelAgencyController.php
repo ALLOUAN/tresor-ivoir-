@@ -31,10 +31,7 @@ class TravelAgencyController extends Controller
     /** Une agence de voyages ne peut être gérée que par un prestataire de la catégorie "agences-voyages". */
     private function assertTravelAgencyCategory(Provider $provider): void
     {
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-
-        abort_unless($rootSlug === 'agences-voyages', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Agences de Voyages & Tours.');
+        abort_unless($provider->hasSector('agences-voyages'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Agences de Voyages & Tours.');
     }
 
     /* ── Vue d'ensemble ──────────────────────────────────────────────────── */

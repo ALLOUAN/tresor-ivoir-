@@ -24,6 +24,10 @@ Schedule::command('payouts:auto-transfer')->everyTenMinutes()->withoutOverlappin
 Schedule::command('art:release-pending')->dailyAt('06:30');
 Schedule::command('tours:process')->dailyAt('07:00')->withoutOverlapping();
 Schedule::command('leisure:waitlist')->everyTenMinutes()->withoutOverlapping();
+// Comptes clients / prestataires jamais confirmés par e-mail : supprimés 30 jours après leur création (sans activité).
+// Audience du site : lignes journalières anonymes conservées 400 jours.
+Schedule::call(fn () => app(\App\Services\SiteAudience::class)->prune())->dailyAt('03:15')->name('site-audience-prune')->onOneServer();
+Schedule::command('accounts:purge-unverified')->dailyAt('02:30')->withoutOverlapping()->onOneServer();
 
 // Sauvegarde (audit DB-06) : dump base de données + fichiers uploadés (storage/app/public)
 // + .env, purge des sauvegardes selon la stratégie de rétention configurée, puis contrôle

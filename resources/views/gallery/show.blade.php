@@ -33,15 +33,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <style>
         * { box-sizing: border-box; }
-        body { background: #e9e5d9; }
+        body { background: #D8E9E0; }
         .pin-card { break-inside: avoid; }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background:#f3f0ea; }
-        ::-webkit-scrollbar-thumb { background: #f2790f; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background:#F3F8F5; }
+        ::-webkit-scrollbar-thumb { background: #EB6E00; border-radius: 3px; }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="bg-[#e9e5d9] text-[#1c1915] antialiased font-sans">
+<body class="bg-[#D8E9E0] text-[#0E3B2A] antialiased font-sans">
     @include('partials.page-background')
 
 @include('partials.public-top-nav')
@@ -54,7 +54,7 @@
             <div class="lg:sticky lg:top-24">
                 <div class="relative rounded-[1.75rem] overflow-hidden bg-gray-100 shadow-[0_2px_24px_rgba(0,0,0,0.12)]">
                     <a href="{{ route('gallery.public') }}"
-                       class="absolute top-4 left-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1c1915] shadow-md hover:bg-gray-100 transition"
+                       class="absolute top-4 left-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#0E3B2A] shadow-md hover:bg-gray-100 transition"
                        aria-label="{{ __('Retour à la galerie') }}" title="{{ __('Retour à la galerie') }}">
                         <i class="fas fa-arrow-left text-sm"></i>
                     </a>
@@ -72,7 +72,7 @@
                     @include('gallery.partials.like-button', [
                         'img' => $media,
                         'isLiked' => ($likedMediaIds[$media->id] ?? false),
-                        'class' => 'inline-flex items-center gap-2 h-10 px-4 rounded-full border border-gray-200 text-[#1c1915] text-sm font-semibold hover:bg-gray-50 transition',
+                        'class' => 'inline-flex items-center gap-2 h-10 px-4 rounded-full border border-gray-200 text-[#0E3B2A] text-sm font-semibold hover:bg-gray-50 transition',
                     ])
                 </div>
 
@@ -80,7 +80,7 @@
                 @if($title !== '' || $authorLabel)
                     <div class="mt-4 px-1">
                         @if($title !== '')
-                            <h1 class="font-serif text-xl sm:text-2xl font-semibold leading-snug text-[#1c1915]">{{ $title }}</h1>
+                            <h1 class="font-serif text-xl sm:text-2xl font-semibold leading-snug text-[#0E3B2A]">{{ $title }}</h1>
                         @endif
                         @if($caption !== '')
                             <p class="mt-1.5 text-sm text-gray-600 leading-relaxed">{{ $caption }}</p>
@@ -88,7 +88,7 @@
                         @if($authorLabel)
                             <div class="mt-4 flex items-center gap-2.5">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white text-sm font-bold">{{ $authorInitial }}</span>
-                                <span class="text-sm font-semibold text-[#1c1915]">{{ $authorLabel }}</span>
+                                <span class="text-sm font-semibold text-[#0E3B2A]">{{ $authorLabel }}</span>
                             </div>
                         @endif
                     </div>
@@ -98,7 +98,7 @@
             {{-- ══ Colonne droite : « Idées susceptibles de vous plaire » ══ --}}
             @if($relatedImages->isNotEmpty())
                 <div>
-                    <h2 class="font-plus text-lg sm:text-xl font-bold text-[#1c1915] mb-4">{{ __('Idées susceptibles de vous plaire') }}</h2>
+                    <h2 class="font-plus text-lg sm:text-xl font-bold text-[#0E3B2A] mb-4">{{ __('Idées susceptibles de vous plaire') }}</h2>
                     <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5">
                         @foreach($relatedImages as $img)
                             @include('gallery.partials.related-card', ['img' => $img, 'isLiked' => ($likedMediaIds[$img->id] ?? false)])

@@ -161,7 +161,7 @@
                 @endif
 
                 {{-- Overlay gradient --}}
-                <div class="absolute inset-0 bg-linear-to-t from-green-900/80 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-green-900/40"></div>
 
                 {{-- Badges top --}}
                 <div class="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">

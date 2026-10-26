@@ -11,8 +11,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             .reveal, .reveal.is-visible { opacity: 1 !important; transform: none !important; transition: none !important; }
@@ -24,9 +24,9 @@
         .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
         .reveal.is-visible { opacity: 1; transform: none; }
 
-        .glass-pill { border: 1px solid rgba(255,255,255,0.22); background: rgba(20,18,14,0.4); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
-        .glass-arrow { border: 1px solid rgba(255,255,255,0.18); background: rgba(20,18,14,0.35); backdrop-filter: blur(10px); transition: transform .2s ease, background .2s ease; }
-        .glass-arrow:hover { background: rgba(20,18,14,0.6); transform: scale(1.06); }
+        .glass-pill { border: 1px solid rgba(255,255,255,0.22); background: rgba(14,59,42,0.4); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+        .glass-arrow { border: 1px solid rgba(255,255,255,0.18); background: rgba(14,59,42,0.35); backdrop-filter: blur(10px); transition: transform .2s ease, background .2s ease; }
+        .glass-arrow:hover { background: rgba(14,59,42,0.6); transform: scale(1.06); }
 
         /* Texte posé sur la photo/vidéo héro : toujours blanc, non affecté par le pont de
            theme clair (qui réécrit .text-white en texte sombre pour le fond de page, ce qui
@@ -36,57 +36,57 @@
         #prov-hero-wrap .text-white\/60 { color:rgba(255,255,255,.6) !important; }
         #prov-hero-wrap .text-white\/40 { color:rgba(255,255,255,.4) !important; }
 
-        .hero-scrim { background: linear-gradient(rgba(8, 7, 5, 0.44), rgba(8, 7, 5, 0.44)), linear-gradient(rgba(8, 7, 5, 0.2), rgba(8, 7, 5, 0.2)); }
-        .rating-badge { border: 1px solid rgba(255,255,255,0.2); background: rgba(20,18,14,0.55); backdrop-filter: blur(16px); }
+        .hero-scrim { background: linear-gradient(rgba(14,59,42, 0.44), rgba(14,59,42, 0.44)), linear-gradient(rgba(14,59,42, 0.2), rgba(14,59,42, 0.2)); }
+        .rating-badge { border: 1px solid rgba(255,255,255,0.2); background: rgba(14,59,42,0.55); backdrop-filter: blur(16px); }
 
         .btn-primary {
-            background: #f2790f;
-            box-shadow: 0 12px 28px rgba(242,121,15,0.35);
+            background: #EB6E00;
+            box-shadow: 0 12px 28px rgba(235,110,0,0.35);
             transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
-            color: #1b1408;
+            color: #0E3B2A;
         }
-        .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 16px 36px rgba(242,121,15,0.45); }
+        .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 16px 36px rgba(235,110,0,0.45); }
         .btn-primary:disabled { transform: none !important; filter: none !important; }
 
         .bento-card {
-            border: 1px solid rgba(0,0,0,0.07);
-            background: #fdfcf9;
-            box-shadow: 0 10px 30px rgba(20,18,12,0.06);
+            border: 1px solid rgba(14,59,42,0.07);
+            background: #FFFFFF;
+            box-shadow: 0 10px 30px rgba(14,59,42,0.06);
             transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
         }
-        .bento-card:hover { transform: translateY(-3px); box-shadow: 0 16px 38px rgba(194,94,10,0.13); border-color: rgba(242,121,15,0.28); }
+        .bento-card:hover { transform: translateY(-3px); box-shadow: 0 16px 38px rgba(235,110,0,0.13); border-color: rgba(235,110,0,0.28); }
         .bento-icon {
             width: 2.2rem; height: 2.2rem; border-radius: 0.75rem;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(242, 121, 15, 0.12);
-            color: #d4630a;
+            background: rgba(235,110,0, 0.12);
+            color: #EB6E00;
         }
         .section-kicker { letter-spacing: .22em; }
 
         .filmstrip-thumb { transition: transform .25s ease, opacity .25s ease, box-shadow .25s ease; }
         .filmstrip-thumb:hover { transform: translateY(-2px); }
 
-        .review-card { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(20,18,12,0.05); transition: transform .2s ease, box-shadow .2s ease; }
-        .review-card:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(194,94,10,0.1); }
-        .rating-bar-track { height: .4rem; border-radius: 999px; background: rgba(194,94,10,0.1); overflow: hidden; }
-        .rating-bar-fill { height: 100%; border-radius: 999px; background: #f3a035; }
+        .review-card { border: 1px solid rgba(14,59,42,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(14,59,42,0.05); transition: transform .2s ease, box-shadow .2s ease; }
+        .review-card:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(235,110,0,0.1); }
+        .rating-bar-track { height: .4rem; border-radius: 999px; background: rgba(235,110,0,0.1); overflow: hidden; }
+        .rating-bar-fill { height: 100%; border-radius: 999px; background: #EB6E00; }
 
         .booking-card {
-            border: 1px solid rgba(0,0,0,0.08);
-            background: #fdfbf7;
-            box-shadow: 0 20px 50px rgba(20,18,12,0.1);
+            border: 1px solid rgba(14,59,42,0.08);
+            background: #FFFFFF;
+            box-shadow: 0 20px 50px rgba(14,59,42,0.1);
         }
         .related-row {
-            border: 1px solid rgba(0,0,0,0.07); background: #ffffff;
-            box-shadow: 0 6px 18px rgba(20,18,12,0.05);
+            border: 1px solid rgba(14,59,42,0.07); background: #ffffff;
+            box-shadow: 0 6px 18px rgba(14,59,42,0.05);
             transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
         }
-        .related-row:hover { transform: translateX(3px); border-color: rgba(242,121,15,0.35); box-shadow: 0 10px 24px rgba(194,94,10,0.12); }
+        .related-row:hover { transform: translateX(3px); border-color: rgba(235,110,0,0.35); box-shadow: 0 10px 24px rgba(235,110,0,0.12); }
 
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="text-[#1c1915]">
+<body class="text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -97,7 +97,7 @@
             <div class="mb-4 p-3 bg-red-900/10 border border-red-700/30 rounded-xl text-red-800 text-sm">{{ session('error') }}</div>
         @endif
 
-        <a href="{{ route('providers.index') }}" class="inline-flex items-center gap-2 text-[#c25e0a] hover:text-[#a24d08] transition text-sm font-semibold">
+        <a href="{{ route('providers.index') }}" class="inline-flex items-center gap-2 text-[#EB6E00] hover:text-[#B85600] transition text-sm font-semibold">
             <i class="fas fa-arrow-left text-[11px]"></i> {{ __('Retour à l\'annuaire') }}
         </a>
 
@@ -128,7 +128,7 @@
 
             <div class="space-y-3 reveal is-visible">
                 {{-- ── HERO GALERIE CINÉMATIQUE ─────────────────────────────── --}}
-                <div class="relative rounded-3xl overflow-hidden bg-[#14130f]"
+                <div class="relative rounded-3xl overflow-hidden bg-[#0E3B2A]"
                      style="height:clamp(360px,64vh,600px)" id="prov-hero-wrap">
 
                     @if($galleryPhotos->isNotEmpty())
@@ -256,7 +256,7 @@
                         @endforeach
                     </div>
                     <span id="prov-counter"
-                          class="shrink-0 text-xs font-mono text-[#8a7f6b] bg-white border border-black/8 px-2.5 py-1.5 rounded-lg tabular-nums">
+                          class="shrink-0 text-xs font-mono text-[#557466] bg-white border border-black/8 px-2.5 py-1.5 rounded-lg tabular-nums">
                         {{ str_pad(1, 2, '0', STR_PAD_LEFT) }} / {{ str_pad($galleryPhotos->count(), 2, '0', STR_PAD_LEFT) }}
                     </span>
                 </div>
@@ -266,13 +266,13 @@
             @if(isset($menuByCategory) && $menuByCategory->isNotEmpty())
             {{-- ── NOTRE CARTE (Restaurants & Gastronomie) ── --}}
             <section class="reveal is-visible">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('Au menu') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Au menu') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-4">{{ __('Notre carte') }}</h2>
 
                 <div class="space-y-6">
                     @foreach($menuByCategory as $categoryName => $items)
                     <div>
-                        <h3 class="text-[#c25e0a] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
+                        <h3 class="text-[#EB6E00] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @foreach($items as $item)
                             <div class="bento-card rounded-xl p-3.5 flex items-center gap-3">
@@ -282,11 +282,11 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $item->name }}</p>
+                                    <p class="text-[#0E3B2A] text-sm font-semibold truncate">{{ $item->name }}</p>
                                     @if($item->description)
-                                    <p class="text-[#8a7f6b] text-xs mt-0.5 line-clamp-2">{{ $item->description }}</p>
+                                    <p class="text-[#557466] text-xs mt-0.5 line-clamp-2">{{ $item->description }}</p>
                                     @endif
-                                    <p class="text-[#c25e0a] text-sm font-bold mt-1">{{ number_format((int) $item->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-[#EB6E00] text-sm font-bold mt-1">{{ number_format((int) $item->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 </div>
                             </div>
                             @endforeach
@@ -300,13 +300,13 @@
             @if(isset($toursByCategory) && $toursByCategory->isNotEmpty())
             {{-- ── NOS CIRCUITS (Agences de Voyages & Tours) ── --}}
             <section class="reveal is-visible">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('Nos offres') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Nos offres') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-4">{{ __('Nos circuits') }}</h2>
 
                 <div class="space-y-6">
                     @foreach($toursByCategory as $categoryName => $tours)
                     <div>
-                        <h3 class="text-[#c25e0a] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
+                        <h3 class="text-[#EB6E00] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @foreach($tours as $tour)
                             <div class="bento-card rounded-xl p-3.5 flex items-center gap-3">
@@ -316,13 +316,13 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $tour->name }}</p>
-                                    <p class="text-[#8a7f6b] text-xs mt-0.5">
+                                    <p class="text-[#0E3B2A] text-sm font-semibold truncate">{{ $tour->name }}</p>
+                                    <p class="text-[#557466] text-xs mt-0.5">
                                         @if($tour->duration_days) {{ $tour->duration_days }} {{ $tour->duration_days > 1 ? 'jours' : 'jour' }} @endif
                                         @if($tour->duration_days && $tour->max_participants) · @endif
                                         @if($tour->max_participants) {{ $tour->max_participants }} {{ __('pers. max') }} @endif
                                     </p>
-                                    <p class="text-[#c25e0a] text-sm font-bold mt-1">{{ number_format((int) $tour->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-[#EB6E00] text-sm font-bold mt-1">{{ number_format((int) $tour->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 </div>
                             </div>
                             @endforeach
@@ -336,13 +336,13 @@
             @if(isset($activitiesByCategory) && $activitiesByCategory->isNotEmpty())
             {{-- ── NOS ACTIVITÉS (Loisirs & Culture) ── --}}
             <section class="reveal is-visible">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('À vivre sur place') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('À vivre sur place') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-4">{{ __('Nos activités') }}</h2>
 
                 <div class="space-y-6">
                     @foreach($activitiesByCategory as $categoryName => $activityGroup)
                     <div>
-                        <h3 class="text-[#c25e0a] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
+                        <h3 class="text-[#EB6E00] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @foreach($activityGroup as $activity)
                             <div class="bento-card rounded-xl p-3.5 flex items-center gap-3">
@@ -352,13 +352,13 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $activity->name }}</p>
-                                    <p class="text-[#8a7f6b] text-xs mt-0.5">
+                                    <p class="text-[#0E3B2A] text-sm font-semibold truncate">{{ $activity->name }}</p>
+                                    <p class="text-[#557466] text-xs mt-0.5">
                                         @if($activity->duration_minutes) {{ $activity->duration_minutes }} {{ __('min') }} @endif
                                         @if($activity->duration_minutes && $activity->max_participants) · @endif
                                         @if($activity->max_participants) {{ $activity->max_participants }} {{ __('pers. max') }} @endif
                                     </p>
-                                    <p class="text-[#c25e0a] text-sm font-bold mt-1">{{ number_format((int) $activity->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-[#EB6E00] text-sm font-bold mt-1">{{ number_format((int) $activity->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 </div>
                             </div>
                             @endforeach
@@ -372,13 +372,13 @@
             @if(isset($transportByCategory) && $transportByCategory->isNotEmpty())
             {{-- ── NOS OFFRES DE TRANSPORT (Transports & Mobilité) ── --}}
             <section class="reveal is-visible">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('Se déplacer') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Se déplacer') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-4">{{ __('Nos offres de transport') }}</h2>
 
                 <div class="space-y-6">
                     @foreach($transportByCategory as $categoryName => $offerGroup)
                     <div>
-                        <h3 class="text-[#c25e0a] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
+                        <h3 class="text-[#EB6E00] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @foreach($offerGroup as $offer)
                             <div class="bento-card rounded-xl p-3.5 flex items-center gap-3">
@@ -388,11 +388,11 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $offer->name }}</p>
+                                    <p class="text-[#0E3B2A] text-sm font-semibold truncate">{{ $offer->name }}</p>
                                     @if($offer->max_passengers)
-                                    <p class="text-[#8a7f6b] text-xs mt-0.5">{{ $offer->max_passengers }} {{ __('pers. max') }}</p>
+                                    <p class="text-[#557466] text-xs mt-0.5">{{ $offer->max_passengers }} {{ __('pers. max') }}</p>
                                     @endif
-                                    <p class="text-[#c25e0a] text-sm font-bold mt-1">{{ number_format((int) $offer->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-[#EB6E00] text-sm font-bold mt-1">{{ number_format((int) $offer->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 </div>
                             </div>
                             @endforeach
@@ -406,13 +406,13 @@
             @if(isset($artworksByCategory) && $artworksByCategory->isNotEmpty())
             {{-- ── NOS ŒUVRES (Art & Créations) ── --}}
             <section class="reveal is-visible">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('Galerie') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Galerie') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-4">{{ __('Nos œuvres') }}</h2>
 
                 <div class="space-y-6">
                     @foreach($artworksByCategory as $categoryName => $artworkGroup)
                     <div>
-                        <h3 class="text-[#c25e0a] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
+                        <h3 class="text-[#EB6E00] text-sm font-bold uppercase tracking-wide mb-3">{{ $categoryName }}</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @foreach($artworkGroup as $artwork)
                             <a href="{{ route('art.show', $artwork->slug) }}" class="bento-card rounded-xl p-3.5 flex items-center gap-3 hover:border-orange-500/40 transition">
@@ -422,11 +422,11 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[#1c1915] text-sm font-semibold truncate">{{ $artwork->title }}</p>
+                                    <p class="text-[#0E3B2A] text-sm font-semibold truncate">{{ $artwork->title }}</p>
                                     @if($artwork->medium)
-                                    <p class="text-[#8a7f6b] text-xs mt-0.5 truncate">{{ $artwork->medium }}</p>
+                                    <p class="text-[#557466] text-xs mt-0.5 truncate">{{ $artwork->medium }}</p>
                                     @endif
-                                    <p class="text-[#c25e0a] text-sm font-bold mt-1">{{ number_format((int) $artwork->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                                    <p class="text-[#EB6E00] text-sm font-bold mt-1">{{ number_format((int) $artwork->price_xof, 0, ',', ' ') }} {{ __('FCFA') }}</p>
                                 </div>
                             </a>
                             @endforeach
@@ -448,7 +448,7 @@
                             <input type="hidden" name="type" value="provider">
                             <input type="hidden" name="id" value="{{ $provider->id }}">
                             <button type="submit"
-                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 hover:border-orange-400/50 hover:bg-orange-50 text-[#c25e0a] text-xs font-bold transition">
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 hover:border-orange-400/50 hover:bg-orange-50 text-[#EB6E00] text-xs font-bold transition">
                                 <i class="fas fa-heart text-[10px]"></i> {{ __('Ajouter à ma wishlist') }}
                             </button>
                         </form>
@@ -461,9 +461,9 @@
                     @endif
                 @endauth
 
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('Présentation') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Présentation') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-4">{{ __('À propos') }}</h2>
-                <p class="text-[#3d372c] leading-relaxed text-[15px]">
+                <p class="text-[#24503D] leading-relaxed text-[15px]">
                     {{ $provider->localized('description') ?: __('Description non disponible.') }}
                 </p>
 
@@ -479,8 +479,8 @@
                     <div class="bento-card rounded-xl p-3.5 flex items-center gap-3">
                         <div class="bento-icon shrink-0"><i class="fas {{ $row['icon'] }} text-[11px]"></i></div>
                         <div class="min-w-0">
-                            <p class="text-[#8a7f6b] text-[10px] uppercase tracking-wide font-semibold">{{ $row['label'] }}</p>
-                            <p class="text-[#1c1915] text-sm font-medium truncate">{{ $row['value'] }}</p>
+                            <p class="text-[#557466] text-[10px] uppercase tracking-wide font-semibold">{{ $row['label'] }}</p>
+                            <p class="text-[#0E3B2A] text-sm font-medium truncate">{{ $row['value'] }}</p>
                         </div>
                     </div>
                     @endif
@@ -490,9 +490,9 @@
                     <div class="bento-card rounded-xl p-3.5 flex items-center gap-3 sm:col-span-2">
                         <div class="bento-icon shrink-0"><i class="fas fa-globe text-[11px]"></i></div>
                         <div class="min-w-0">
-                            <p class="text-[#8a7f6b] text-[10px] uppercase tracking-wide font-semibold">{{ __('Site web') }}</p>
+                            <p class="text-[#557466] text-[10px] uppercase tracking-wide font-semibold">{{ __('Site web') }}</p>
                             <a href="{{ $provider->website }}" target="_blank"
-                               class="text-[#c25e0a] hover:text-[#a24d08] text-sm font-medium truncate block transition">
+                               class="text-[#EB6E00] hover:text-[#B85600] text-sm font-medium truncate block transition">
                                 {{ $provider->website }}
                             </a>
                         </div>
@@ -504,7 +504,7 @@
             @if($provider->sponsoredArticles->isNotEmpty())
             {{-- ── ARTICLES ASSOCIÉS ───────────────────────────────────────── --}}
             <section class="reveal">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('À lire') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('À lire') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-4">{{ __('Articles associés') }}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     @foreach($provider->sponsoredArticles as $article)
@@ -515,9 +515,9 @@
                         </div>
                         @endif
                         <div class="min-w-0 flex-1">
-                            <p class="text-[#1c1915] text-sm font-semibold line-clamp-2">{{ $article->localized('title') }}</p>
+                            <p class="text-[#0E3B2A] text-sm font-semibold line-clamp-2">{{ $article->localized('title') }}</p>
                             @if($article->published_at)
-                            <p class="text-[#8a7f6b] text-xs mt-1">{{ $article->published_at->translatedFormat('d M Y') }}</p>
+                            <p class="text-[#557466] text-xs mt-1">{{ $article->published_at->translatedFormat('d M Y') }}</p>
                             @endif
                         </div>
                     </a>
@@ -528,23 +528,23 @@
 
             {{-- ── LOCALISATION ─────────────────────────────────────────────── --}}
             <section class="reveal">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('Où se trouve l\'établissement') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Où se trouve l\'établissement') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-4">{{ __('Localisation') }}</h2>
 
                 @if($provider->latitude && $provider->longitude)
-                    @include('partials.route-map', ['type' => 'annuaire', 'slug' => $provider->slug, 'lat' => $provider->latitude, 'lng' => $provider->longitude, 'name' => $provider->name, 'accent' => '#c25e0a'])
+                    @include('partials.route-map', ['type' => 'annuaire', 'slug' => $provider->slug, 'lat' => $provider->latitude, 'lng' => $provider->longitude, 'name' => $provider->name, 'accent' => '#EB6E00'])
                     <a href="{{ route('directions.go', ['annuaire', $provider->slug]) }}" data-in-page-route target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 hover:border-orange-400/50 hover:bg-orange-50 text-[#c25e0a] text-xs font-bold transition">
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 hover:border-orange-400/50 hover:bg-orange-50 text-[#EB6E00] text-xs font-bold transition">
                         <i class="fas fa-diamond-turn-right text-[10px]"></i> {{ __('Itinéraire') }}
                     </a>
                 @else
-                    <p class="text-[#8a7f6b] text-sm">{{ __('Coordonnées non renseignées pour cet établissement.') }}</p>
+                    <p class="text-[#557466] text-sm">{{ __('Coordonnées non renseignées pour cet établissement.') }}</p>
                 @endif
             </section>
 
             {{-- ── AVIS CLIENTS ──────────────────────────────────────────────── --}}
             <section class="reveal">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('Retours d\'expérience') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Retours d\'expérience') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-6">{{ __('Avis clients') }}</h2>
 
                 @php
@@ -553,23 +553,23 @@
                     $extraReviews = $sortedReviews->slice(2);
                 @endphp
                 @if($sortedReviews->isEmpty())
-                    <p class="text-[#8a7f6b] text-sm">{{ __('Aucun avis approuvé pour ce prestataire.') }}</p>
+                    <p class="text-[#557466] text-sm">{{ __('Aucun avis approuvé pour ce prestataire.') }}</p>
                 @else
                     <div class="space-y-4">
                         @foreach($visibleReviews as $review)
                             <div class="review-card rounded-xl p-4">
                                 <div class="flex items-center justify-between mb-2">
-                                    <p class="font-semibold text-sm">{{ $review->author_name ?: ($review->user->full_name ?? __('Anonyme')) }}@if($review->is_verified)<span class="inline-flex items-center gap-1 ml-1.5 px-2 py-0.5 rounded-full bg-[#31621c]/10 text-[#31621c] text-[11px] font-semibold align-middle"><i class="fas fa-circle-check text-[10px]"></i>{{ __('Séjour vérifié') }}</span>@endif</p>
-                                    <span class="text-[#c25e0a] text-sm font-bold">{{ $review->rating }} ★</span>
+                                    <p class="font-semibold text-sm">{{ $review->author_name ?: ($review->user->full_name ?? __('Anonyme')) }}@if($review->is_verified)<span class="inline-flex items-center gap-1 ml-1.5 px-2 py-0.5 rounded-full bg-[#00874F]/10 text-[#00874F] text-[11px] font-semibold align-middle"><i class="fas fa-circle-check text-[10px]"></i>{{ __('Séjour vérifié') }}</span>@endif</p>
+                                    <span class="text-[#EB6E00] text-sm font-bold">{{ $review->rating }} ★</span>
                                 </div>
                                 @if($review->title)
-                                    <p class="text-[#1c1915] text-sm font-medium">{{ $review->title }}</p>
+                                    <p class="text-[#0E3B2A] text-sm font-medium">{{ $review->title }}</p>
                                 @endif
-                                <p class="text-[#5c5548] text-sm mt-1">{{ $review->comment }}</p>
+                                <p class="text-[#24503D] text-sm mt-1">{{ $review->comment }}</p>
                                 @if($review->reply && $review->reply->is_visible)
-                                    <div class="mt-3 bg-[#fbf5e9] rounded-lg p-3 text-sm border border-black/6">
-                                        <p class="text-[#c25e0a] text-xs font-bold mb-1">{{ __('Réponse du prestataire') }}</p>
-                                        <p class="text-[#3d372c]">{{ $review->reply->reply_text }}</p>
+                                    <div class="mt-3 bg-[#F3F8F5] rounded-lg p-3 text-sm border border-black/6">
+                                        <p class="text-[#EB6E00] text-xs font-bold mb-1">{{ __('Réponse du prestataire') }}</p>
+                                        <p class="text-[#24503D]">{{ $review->reply->reply_text }}</p>
                                     </div>
                                 @endif
                             </div>
@@ -581,17 +581,17 @@
                             @foreach($extraReviews as $review)
                                 <div class="review-card rounded-xl p-4">
                                     <div class="flex items-center justify-between mb-2">
-                                        <p class="font-semibold text-sm">{{ $review->author_name ?: ($review->user->full_name ?? __('Anonyme')) }}@if($review->is_verified)<span class="inline-flex items-center gap-1 ml-1.5 px-2 py-0.5 rounded-full bg-[#31621c]/10 text-[#31621c] text-[11px] font-semibold align-middle"><i class="fas fa-circle-check text-[10px]"></i>{{ __('Séjour vérifié') }}</span>@endif</p>
-                                        <span class="text-[#c25e0a] text-sm font-bold">{{ $review->rating }} ★</span>
+                                        <p class="font-semibold text-sm">{{ $review->author_name ?: ($review->user->full_name ?? __('Anonyme')) }}@if($review->is_verified)<span class="inline-flex items-center gap-1 ml-1.5 px-2 py-0.5 rounded-full bg-[#00874F]/10 text-[#00874F] text-[11px] font-semibold align-middle"><i class="fas fa-circle-check text-[10px]"></i>{{ __('Séjour vérifié') }}</span>@endif</p>
+                                        <span class="text-[#EB6E00] text-sm font-bold">{{ $review->rating }} ★</span>
                                     </div>
                                     @if($review->title)
-                                        <p class="text-[#1c1915] text-sm font-medium">{{ $review->title }}</p>
+                                        <p class="text-[#0E3B2A] text-sm font-medium">{{ $review->title }}</p>
                                     @endif
-                                    <p class="text-[#5c5548] text-sm mt-1">{{ $review->comment }}</p>
+                                    <p class="text-[#24503D] text-sm mt-1">{{ $review->comment }}</p>
                                     @if($review->reply && $review->reply->is_visible)
-                                        <div class="mt-3 bg-[#fbf5e9] rounded-lg p-3 text-sm border border-black/6">
-                                            <p class="text-[#c25e0a] text-xs font-bold mb-1">{{ __('Réponse du prestataire') }}</p>
-                                            <p class="text-[#3d372c]">{{ $review->reply->reply_text }}</p>
+                                        <div class="mt-3 bg-[#F3F8F5] rounded-lg p-3 text-sm border border-black/6">
+                                            <p class="text-[#EB6E00] text-xs font-bold mb-1">{{ __('Réponse du prestataire') }}</p>
+                                            <p class="text-[#24503D]">{{ $review->reply->reply_text }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -601,7 +601,7 @@
                         <button type="button" id="reviews-toggle"
                                 data-more-label="Voir plus ({{ $extraReviews->count() }} avis)"
                                 data-less-label="Voir moins"
-                                class="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-black/10 text-[#c25e0a] text-sm font-bold hover:bg-orange-50 hover:border-orange-400/40 transition">
+                                class="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-black/10 text-[#EB6E00] text-sm font-bold hover:bg-orange-50 hover:border-orange-400/40 transition">
                             <span>{{ __('Voir plus (') }}{{ $extraReviews->count() }} {{ __('avis)') }}</span>
                             <i class="fas fa-chevron-down text-xs"></i>
                         </button>
@@ -625,13 +625,13 @@
                         @foreach($criteria as $criterion)
                             <div>
                                 <div class="flex items-center justify-between mb-1.5">
-                                    <span class="text-[#3d372c] font-medium">{{ $criterion['label'] }}</span>
-                                    <span class="text-[#c25e0a] font-bold">{{ number_format((float) $criterion['value'], 1) }}/5</span>
+                                    <span class="text-[#24503D] font-medium">{{ $criterion['label'] }}</span>
+                                    <span class="text-[#EB6E00] font-bold">{{ number_format((float) $criterion['value'], 1) }}/5</span>
                                 </div>
                                 <div class="rating-bar-track">
                                     <div class="rating-bar-fill" style="width: {{ min(100, max(0, (float) $criterion['value'] / 5 * 100)) }}%"></div>
                                 </div>
-                                <p class="text-[#8a7f6b] text-[11px] mt-1">{{ $criterion['count'] }} {{ __('avis') }}</p>
+                                <p class="text-[#557466] text-[11px] mt-1">{{ $criterion['count'] }} {{ __('avis') }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -642,12 +642,12 @@
                     @php
                         $showPrice = ['budget' => __('Économique'), 'mid' => __('Intermédiaire'), 'premium' => __('Haut de gamme'), 'luxury' => __('Luxe')][$provider->price_range] ?? null;
                     @endphp
-                    @if($showPrice)<p class="text-[#3d372c] text-sm">{{ __('Gamme :') }} <span class="font-semibold">{{ $showPrice }}</span></p>@endif
-                    <p class="text-[#3d372c] text-sm mt-1">{{ __('Plage prix:') }} {{ number_format((float) ($provider->price_min ?? 0), 0, ',', ' ') }} - {{ number_format((float) ($provider->price_max ?? 0), 0, ',', ' ') }} {{ __('FCFA') }}</p>
+                    @if($showPrice)<p class="text-[#24503D] text-sm">{{ __('Gamme :') }} <span class="font-semibold">{{ $showPrice }}</span></p>@endif
+                    <p class="text-[#24503D] text-sm mt-1">{{ __('Plage prix:') }} {{ number_format((float) ($provider->price_min ?? 0), 0, ',', ' ') }} - {{ number_format((float) ($provider->price_max ?? 0), 0, ',', ' ') }} {{ __('FCFA') }}</p>
 
                     <div class="mt-5">
-                        <h3 class="text-[#1c1915] text-sm font-semibold mb-2">{{ __('Horaires') }}</h3>
-                        <div class="space-y-1 text-xs text-[#5c5548]">
+                        <h3 class="text-[#0E3B2A] text-sm font-semibold mb-2">{{ __('Horaires') }}</h3>
+                        <div class="space-y-1 text-xs text-[#24503D]">
                             @php
                                 $days = [__('Dim'), __('Lun'), __('Mar'), __('Mer'), __('Jeu'), __('Ven'), __('Sam')];
                             @endphp
@@ -665,20 +665,20 @@
                 @if(request()->boolean('avis'))
                     <section class="bento-card rounded-2xl p-5 reveal" id="laisser-un-avis">
                         <h2 class="font-serif text-xl font-bold mb-2">{{ __('Votre avis compte') }}</h2>
-                        <p class="text-sm text-[#3d372c] mb-3">{{ __('Connectez-vous pour partager votre expérience : votre avis portera le badge « Séjour vérifié ».') }}</p>
-                        <a href="{{ route('login', ['redirect' => request()->getRequestUri().'#laisser-un-avis']) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#ef7c2b] text-white font-semibold text-sm"><i class="fas fa-right-to-bracket"></i> {{ __('Se connecter') }}</a>
+                        <p class="text-sm text-[#24503D] mb-3">{{ __('Connectez-vous pour partager votre expérience : votre avis portera le badge « Séjour vérifié ».') }}</p>
+                        <a href="{{ route('login', ['redirect' => request()->getRequestUri().'#laisser-un-avis']) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#EB6E00] text-white font-semibold text-sm"><i class="fas fa-right-to-bracket"></i> {{ __('Se connecter') }}</a>
                     </section>
                 @endif
             @endguest
             @auth
                 @if($canReview)
                     <section class="bento-card rounded-2xl p-5 reveal" id="laisser-un-avis">
-                        <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('Votre avis compte') }}</p>
+                        <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Votre avis compte') }}</p>
                         <h2 class="font-serif text-xl font-bold mb-4">{{ __('Laisser un avis') }}</h2>
                         <form method="POST" action="{{ route('reviews.store', $provider) }}" class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             @csrf
                             <div>
-                                <label class="text-xs text-[#8a7f6b] font-semibold">{{ __('Note globale *') }}</label>
+                                <label class="text-xs text-[#557466] font-semibold">{{ __('Note globale *') }}</label>
                                 <select name="rating" required class="mt-1 w-full bg-white border border-black/10 rounded-lg px-3 py-2 text-sm">
                                     <option value="">{{ __('Choisir...') }}</option>
                                     @for($i = 5; $i >= 1; $i--)
@@ -687,11 +687,11 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="text-xs text-[#8a7f6b] font-semibold">{{ __('Titre') }}</label>
+                                <label class="text-xs text-[#557466] font-semibold">{{ __('Titre') }}</label>
                                 <input type="text" name="title" class="mt-1 w-full bg-white border border-black/10 rounded-lg px-3 py-2 text-sm">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="text-xs text-[#8a7f6b] font-semibold">{{ __('Commentaire *') }}</label>
+                                <label class="text-xs text-[#557466] font-semibold">{{ __('Commentaire *') }}</label>
                                 <textarea name="comment" rows="4" required class="mt-1 w-full bg-white border border-black/10 rounded-lg px-3 py-2 text-sm"></textarea>
                             </div>
                             <div class="md:col-span-2">
@@ -716,7 +716,7 @@
                 @include('partials.gift-card-cta', ['provider' => $provider])
                 <div class="booking-card rounded-3xl p-5">
                     <h2 class="font-serif text-xl font-bold mb-1">{{ __('Contacter le prestataire') }}</h2>
-                    <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Posez vos questions directement, en toute sécurité, sans quitter la plateforme.') }}</p>
+                    <p class="text-[#557466] text-xs mb-4">{{ __('Posez vos questions directement, en toute sécurité, sans quitter la plateforme.') }}</p>
 
                     @auth
                         @if(auth()->user()->role === 'visitor')
@@ -724,7 +724,7 @@
                                 @csrf
                                 <input type="hidden" name="provider_id" value="{{ $provider->id }}">
                                 <textarea name="message" rows="3" required maxlength="4000"
-                                          class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm placeholder:text-[#a89f8f]"
+                                          class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm placeholder:text-[#8AA99B]"
                                           placeholder="{{ __('Votre message au prestataire...') }}"></textarea>
                                 <button type="submit" class="btn-primary btn-shine flex items-center justify-center gap-2.5 w-full px-5 py-3.5 rounded-2xl font-extrabold text-[14px]">
                                     <i class="fas fa-paper-plane text-sm"></i> {{ __('Envoyer le message') }}
@@ -733,12 +733,12 @@
                         @endif
                     @else
                         <div class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-5 text-center">
-                            <p class="text-[#1c1915] font-bold text-sm mb-1">{{ __('Connectez-vous pour contacter ce prestataire') }}</p>
+                            <p class="text-[#0E3B2A] font-bold text-sm mb-1">{{ __('Connectez-vous pour contacter ce prestataire') }}</p>
                             <div class="flex items-center justify-center gap-2 mt-3">
                                 <a href="{{ route('login', ['redirect' => request()->getRequestUri()]) }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs">
                                     <i class="fas fa-right-to-bracket text-xs"></i> {{ __('Se connecter') }}
                                 </a>
-                                <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#1c1915] transition">
+                                <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#0E3B2A] transition">
                                     {{ __('Créer un compte') }}
                                 </a>
                             </div>
@@ -751,7 +751,7 @@
 
         @if($related->isNotEmpty())
             <section class="mt-16 reveal">
-                <p class="section-kicker text-[#c25e0a] text-xs font-bold uppercase mb-2">{{ __('À découvrir aussi') }}</p>
+                <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('À découvrir aussi') }}</p>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-6">{{ __('Prestataires similaires') }}</h2>
                 <div class="space-y-3">
                     @foreach($related as $r)
@@ -761,11 +761,11 @@
                                 ?: $r->accommodation?->cover_image;
                         @endphp
                         <a href="{{ route('providers.show', $r->slug) }}" class="related-row flex items-center gap-4 rounded-xl p-3">
-                            <div class="w-12 h-12 rounded-lg border border-black/8 bg-[#f0ece1] flex items-center justify-center overflow-hidden shrink-0">
+                            <div class="w-12 h-12 rounded-lg border border-black/8 bg-[#F3F8F5] flex items-center justify-center overflow-hidden shrink-0">
                                 @if($rCoverImg)
                                     <img src="{{ $rCoverImg }}" alt="" class="w-full h-full object-cover">
                                 @else
-                                    <i class="fas fa-store text-[#c25e0a]/70"></i>
+                                    <i class="fas fa-store text-[#EB6E00]/70"></i>
                                 @endif
                             </div>
                             <div class="flex-1 min-w-0">
@@ -777,9 +777,9 @@
                                     </span>
                                     @endif
                                 </div>
-                                <p class="text-[#8a7f6b] text-sm mt-0.5 truncate">{{ collect([$r->category->localized('name') ?? __('Prestataire'), $r->city])->filter()->join(' · ') }}</p>
+                                <p class="text-[#557466] text-sm mt-0.5 truncate">{{ collect([$r->category->localized('name') ?? __('Prestataire'), $r->city])->filter()->join(' · ') }}</p>
                             </div>
-                            <i class="fas fa-chevron-right text-[#8a7f6b]/50 text-xs shrink-0"></i>
+                            <i class="fas fa-chevron-right text-[#557466]/50 text-xs shrink-0"></i>
                         </a>
                     @endforeach
                 </div>
@@ -787,7 +787,7 @@
         @endif
     </div>
 
-    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0a0907]/96 items-center justify-center p-4" onclick="closeLightbox()">
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0E3B2A]/96 items-center justify-center p-4" onclick="closeLightbox()">
         <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()">
             <i class="fas fa-xmark"></i>
         </button>

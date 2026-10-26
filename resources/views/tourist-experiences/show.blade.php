@@ -16,28 +16,28 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
-        .btn-primary { background: #27AE60; box-shadow: 0 12px 28px rgba(39,174,96,0.3); color: #fff; transition: transform .2s ease, filter .2s ease; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
+        .btn-primary { background: #00874F; box-shadow: 0 12px 28px rgba(0,135,79,0.3); color: #fff; transition: transform .2s ease, filter .2s ease; }
         .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
-        .hero-cover { position: relative; overflow: hidden; background: #14130f; }
+        .hero-cover { position: relative; overflow: hidden; background: #0E3B2A; }
         .hero-cover img { transition: transform .6s ease; }
         .hero-cover:hover img { transform: scale(1.05); }
         .gallery-tile { position: relative; overflow: hidden; cursor: pointer; border-radius: .85rem; }
         .gallery-tile img { transition: transform .4s ease; }
         .gallery-tile:hover img { transform: scale(1.08); }
-        .bento-card { border: 1px solid rgba(0,0,0,0.07); background: #fdfcf9; box-shadow: 0 10px 28px rgba(20,18,12,0.06); }
-        .bento-icon { width: 2.2rem; height: 2.2rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; background: rgba(39, 174, 96, 0.12); color: #27AE60; }
+        .bento-card { border: 1px solid rgba(14,59,42,0.07); background: #FFFFFF; box-shadow: 0 10px 28px rgba(14,59,42,0.06); }
+        .bento-icon { width: 2.2rem; height: 2.2rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; background: rgba(0,135,79, 0.12); color: #00874F; }
         .section-kicker { letter-spacing: .22em; }
-        .review-card { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(20,18,12,0.05); }
-        .related-tile { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 10px 26px rgba(20,18,12,0.06); transition: transform .25s ease, box-shadow .25s ease; }
-        .related-tile:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(39,174,96,0.16); }
-        .contact-card { border: 1px solid rgba(0,0,0,0.08); background: #fdfbf7; box-shadow: 0 20px 50px rgba(20,18,12,0.1); }
+        .review-card { border: 1px solid rgba(14,59,42,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(14,59,42,0.05); }
+        .related-tile { border: 1px solid rgba(14,59,42,0.07); background: #ffffff; box-shadow: 0 10px 26px rgba(14,59,42,0.06); transition: transform .25s ease, box-shadow .25s ease; }
+        .related-tile:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(0,135,79,0.16); }
+        .contact-card { border: 1px solid rgba(14,59,42,0.08); background: #FFFFFF; box-shadow: 0 20px 50px rgba(14,59,42,0.1); }
     </style>
     @include('partials.detail-theme')
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="dx text-[#1c1915]">
+<body class="dx text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -62,7 +62,7 @@
                 {{-- ── ÉQUIPEMENTS ────────────────────────────────────────── --}}
                 @if(!empty($experience->amenities))
                 <section class="reveal" id="equipements">
-                    <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('Confort') }}</p>
+                    <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Confort') }}</p>
                     <h2 class="font-serif text-2xl font-bold mb-5">{{ __('Équipements & services') }}</h2>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         @foreach($experience->amenities as $am)
@@ -84,10 +84,10 @@
 
                 {{-- ── LOCALISATION ─────────────────────────────────────────── --}}
                 <section class="reveal" id="localisation">
-                    <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('Où se trouve le site') }}</p>
+                    <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Où se trouve le site') }}</p>
                     <h2 class="font-serif text-2xl font-bold mb-4">{{ __('Localisation') }}</h2>
                     @if($experience->latitude && $experience->longitude)
-                        @include('partials.route-map', ['type' => 'experience', 'slug' => $experience->slug, 'lat' => $experience->latitude, 'lng' => $experience->longitude, 'name' => $experience->name, 'accent' => '#b9500a'])
+                        @include('partials.route-map', ['type' => 'experience', 'slug' => $experience->slug, 'lat' => $experience->latitude, 'lng' => $experience->longitude, 'name' => $experience->name, 'accent' => '#EB6E00'])
                         <a href="{{ route('directions.go', ['experience', $experience->slug]) }}" data-in-page-route target="_blank" rel="noopener noreferrer"
                            class="dx-route mt-3"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i> {{ __('Itinéraire') }}
                         </a>
@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     @else
-                        <p class="text-[#8a7f6b] text-sm">{{ __('Coordonnées non renseignées pour ce site.') }}</p>
+                        <p class="text-[#557466] text-sm">{{ __('Coordonnées non renseignées pour ce site.') }}</p>
                     @endif
                 </section>
 
@@ -119,7 +119,7 @@
                     @if(true)
                     <div class="contact-card rounded-3xl p-5" id="tvp-booking-module" data-slug="{{ $experience->slug }}">
                         <h2 class="font-serif text-xl font-bold mb-1">{{ __('Réserver une visite') }}</h2>
-                        <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Choisissez le mode de visite qui vous convient.') }}</p>
+                        <p class="text-[#557466] text-xs mb-4">{{ __('Choisissez le mode de visite qui vous convient.') }}</p>
 
                         @php
                             // Modes réellement réservables : la visite groupée exige au moins une session à venir.
@@ -159,8 +159,8 @@
                             $tvpBookable = $tvpBookable || $tvpCustom->isNotEmpty();
                         @endphp
                         @if(empty($tvpModes))
-                            <div class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-4 text-sm text-[#5c5548]">
-                                <p class="m-0"><i class="fas fa-circle-info mr-1 text-[#b9500a]"></i>{{ __('Ce site ne propose pas encore de réservation en ligne. Contactez-le pour organiser votre visite.') }}</p>
+                            <div class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-4 text-sm text-[#24503D]">
+                                <p class="m-0"><i class="fas fa-circle-info mr-1 text-[#EB6E00]"></i>{{ __('Ce site ne propose pas encore de réservation en ligne. Contactez-le pour organiser votre visite.') }}</p>
                                 <a href="#contact-card" class="dx-route mt-3"><i class="fas fa-comment-dots" aria-hidden="true"></i>{{ __('Contacter le site') }}</a>
                             </div>
                             @php
@@ -171,7 +171,7 @@
                                 };
                             @endphp
                             @if($tvpManageUrl)
-                                <a href="{{ $tvpManageUrl }}" class="mt-3 flex items-center gap-2 rounded-2xl bg-[#fff8e6] border border-[#febf48]/60 px-4 py-3 text-sm font-semibold text-[#5c4a12]">
+                                <a href="{{ $tvpManageUrl }}" class="mt-3 flex items-center gap-2 rounded-2xl bg-[#F3F8F5] border border-[#EB6E00]/60 px-4 py-3 text-sm font-semibold text-[#B85600]">
                                     <i class="fas fa-ticket-simple"></i>{{ __('Créer les types de visite de ce site') }}<i class="fas fa-arrow-right ml-auto text-xs"></i>
                                 </a>
                             @endif
@@ -180,12 +180,12 @@
                             @if(auth()->user()->role !== 'visitor')
                                 {{-- Comptes prestataire / admin / éditeur : on montre ce que voit le client, sans formulaire. --}}
                                 @include('partials.tvp-preview')
-                                <div class="rounded-2xl bg-[#fff8e6] border border-[#febf48]/60 px-4 py-3 text-sm text-[#5c4a12]">
+                                <div class="rounded-2xl bg-[#F3F8F5] border border-[#EB6E00]/60 px-4 py-3 text-sm text-[#B85600]">
                                     <i class="fas fa-circle-info mr-1"></i>
                                     {{ __('Vous êtes connecté avec un compte :role. Les réservations se font avec un compte visiteur.', ['role' => match (auth()->user()->role) { 'provider' => __('prestataire'), 'admin' => __('administrateur'), 'editor' => __('éditeur'), default => auth()->user()->role }]) }}
                                 </div>
                             @elseif(! $tvpBookable)
-                                <p class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-4 text-sm text-[#5c5548] text-center">
+                                <p class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-4 text-sm text-[#24503D] text-center">
                                     {{ __('Aucune date de visite n\'est ouverte pour le moment. Revenez bientôt ou contactez le site ci-dessous.') }}
                                 </p>
                             @else
@@ -221,7 +221,7 @@
                                             <div id="tvp-slots" class="tvp-slots" role="radiogroup" aria-label="{{ __('Heure d\'entrée') }}"></div>
                                             <p class="tvp-legend"><span class="tvp-legend__dot"></span>{{ __('Disponible') }}<span class="tvp-legend__dot is-off"></span>{{ __('Complet ou passé') }}</p>
                                         </div>
-                                        <p id="tvp-day-status" class="text-[12px] text-[#6b6458] hidden"></p>
+                                        <p id="tvp-day-status" class="text-[12px] text-[#557466] hidden"></p>
                                         <div>
                                             <p class="tvp-step">{{ __('Participants') }}</p>
                                             <div id="tvp-tiers" class="tvp-tiers"></div>
@@ -238,19 +238,19 @@
 
                                     <div id="tvp-panel-solo" class="space-y-3">
                                         <div>
-                                            <label class="block text-[#8a7f6b] text-[11px] mb-1">{{ __('Date souhaitée (optionnel)') }}</label>
+                                            <label class="block text-[#557466] text-[11px] mb-1">{{ __('Date souhaitée (optionnel)') }}</label>
                                             <input type="date" name="desired_date" min="{{ now()->toDateString() }}"
                                                    class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm">
                                         </div>
                                     </div>
 
                                     <div id="tvp-panel-group" class="space-y-2 hidden">
-                                        <label class="block text-[#8a7f6b] text-[11px] mb-1">{{ __('Session') }}</label>
+                                        <label class="block text-[#557466] text-[11px] mb-1">{{ __('Session') }}</label>
                                         <div id="tvp-sessions" class="space-y-1.5 max-h-56 overflow-y-auto"></div>
                                     </div>
 
                                     <div id="tvp-participants-wrap">
-                                        <label class="block text-[#8a7f6b] text-[11px] mb-1">{{ __('Nombre de participants') }}</label>
+                                        <label class="block text-[#557466] text-[11px] mb-1">{{ __('Nombre de participants') }}</label>
                                         <input type="number" name="participants_count" value="1" min="1" max="50"
                                                class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm" id="tvp-participants">
                                     </div>
@@ -258,24 +258,24 @@
                                     <div id="tvp-rates" class="grid grid-cols-2 gap-2">
                                         @if($experience->visit_child_price_xof !== null)
                                         <div>
-                                            <label class="block text-[#8a7f6b] text-[11px] mb-1">{{ __('dont enfants (−12 ans)') }} · {{ number_format($experience->visit_child_price_xof, 0, ',', ' ') }} F</label>
+                                            <label class="block text-[#557466] text-[11px] mb-1">{{ __('dont enfants (−12 ans)') }} · {{ number_format($experience->visit_child_price_xof, 0, ',', ' ') }} F</label>
                                             <input type="number" name="children_count" value="0" min="0" max="50" id="tvp-children"
                                                    class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm">
                                         </div>
                                         @endif
                                         @if($experience->visit_resident_price_xof !== null)
                                         <div>
-                                            <label class="block text-[#8a7f6b] text-[11px] mb-1">{{ __('dont résidents') }} · {{ number_format($experience->visit_resident_price_xof, 0, ',', ' ') }} F</label>
+                                            <label class="block text-[#557466] text-[11px] mb-1">{{ __('dont résidents') }} · {{ number_format($experience->visit_resident_price_xof, 0, ',', ' ') }} F</label>
                                             <input type="number" name="residents_count" value="0" min="0" max="50" id="tvp-residents"
                                                    class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm">
                                         </div>
                                         @endif
-                                        <p class="col-span-2 text-[11px] text-[#8a7f6b]">{{ __('Résidents de Côte d\'Ivoire / CEDEAO : pièce justificative demandée à l\'entrée.') }}</p>
+                                        <p class="col-span-2 text-[11px] text-[#557466]">{{ __('Résidents de Côte d\'Ivoire / CEDEAO : pièce justificative demandée à l\'entrée.') }}</p>
                                     </div>
                                     @endif
 
                                     <div>
-                                        <label class="block text-[#8a7f6b] text-[11px] mb-1">{{ __('Message (optionnel)') }}</label>
+                                        <label class="block text-[#557466] text-[11px] mb-1">{{ __('Message (optionnel)') }}</label>
                                         <textarea name="message" rows="2" maxlength="1000"
                                                   class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm"></textarea>
                                     </div>
@@ -283,7 +283,7 @@
                                     <div class="rounded-xl bg-black/[0.03] border border-black/8 px-3.5 py-3 text-sm">
                                         <div id="tvp-breakdown" class="tvp-breakdown hidden"></div>
                                         <div class="flex items-center justify-between">
-                                            <span class="text-[#8a7f6b]">{{ __('Total') }}</span>
+                                            <span class="text-[#557466]">{{ __('Total') }}</span>
                                             <span class="font-bold" id="tvp-total">—</span>
                                         </div>
                                     </div>
@@ -295,7 +295,7 @@
                                             <i class="fas fa-hand-holding-dollar mr-1" aria-hidden="true"></i>{{ __('Réserver maintenant, payer sur place') }}
                                         </button>
                                     </div>
-                                    <p id="tvp-cancel-note" class="text-[12px] text-[#1b6b3a] hidden"><i class="fas fa-rotate-left mr-1" aria-hidden="true"></i><span></span></p>
+                                    <p id="tvp-cancel-note" class="text-[12px] text-[#00874F] hidden"><i class="fas fa-rotate-left mr-1" aria-hidden="true"></i><span></span></p>
 
                                     <p id="tvp-error" class="text-red-600 text-xs hidden"></p>
 
@@ -307,12 +307,12 @@
                         @else
                             @include('partials.tvp-preview')
                             <div class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-5 text-center">
-                                <p class="text-[#1c1915] font-bold text-sm mb-1">{{ __('Connectez-vous pour réserver une visite') }}</p>
+                                <p class="text-[#0E3B2A] font-bold text-sm mb-1">{{ __('Connectez-vous pour réserver une visite') }}</p>
                                 <div class="flex items-center justify-center gap-2 mt-3">
                                     <a href="{{ route('login', ['redirect' => request()->getRequestUri()]) }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs">
                                         <i class="fas fa-right-to-bracket text-xs"></i> {{ __('Se connecter') }}
                                     </a>
-                                    <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#1c1915] transition">
+                                    <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#0E3B2A] transition">
                                         {{ __('Créer un compte') }}
                                     </a>
                                 </div>
@@ -324,7 +324,7 @@
 
                     <div class="contact-card rounded-3xl p-5" id="contact-card">
                         <h2 class="font-serif text-xl font-bold mb-1">{{ __('Contacter ce prestataire') }}</h2>
-                        <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Posez vos questions directement, en toute sécurité, sans quitter la plateforme.') }}</p>
+                        <p class="text-[#557466] text-xs mb-4">{{ __('Posez vos questions directement, en toute sécurité, sans quitter la plateforme.') }}</p>
                         {{-- Arrivée depuis « Contacter à ce sujet » (?item=…) : rappel de l'élément choisi. --}}
                         @if(is_string(request('item')) && request('item') !== '')
                         <div class="ti-contact-item">
@@ -340,7 +340,7 @@
                                         @csrf
                                         <input type="hidden" name="provider_id" value="{{ $experience->provider->id }}">
                                         <textarea name="message" id="contact-message" rows="3" required maxlength="4000"
-                                                  class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm placeholder:text-[#a89f8f]"
+                                                  class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm placeholder:text-[#8AA99B]"
                                                   placeholder="{{ __('Votre message...') }}"></textarea>
                                         <button type="submit" class="btn-primary btn-shine flex items-center justify-center gap-2.5 w-full px-5 py-3.5 rounded-2xl font-extrabold text-[14px]">
                                             <i class="fas fa-paper-plane text-sm"></i> {{ __('Envoyer le message') }}
@@ -351,12 +351,12 @@
                                 @endif
                             @else
                                 <div class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-5 text-center">
-                                    <p class="text-[#1c1915] font-bold text-sm mb-1">{{ __('Connectez-vous pour contacter ce prestataire') }}</p>
+                                    <p class="text-[#0E3B2A] font-bold text-sm mb-1">{{ __('Connectez-vous pour contacter ce prestataire') }}</p>
                                     <div class="flex items-center justify-center gap-2 mt-3">
                                         <a href="{{ route('login', ['redirect' => request()->getRequestUri()]) }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs">
                                             <i class="fas fa-right-to-bracket text-xs"></i> {{ __('Se connecter') }}
                                         </a>
-                                        <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#1c1915] transition">
+                                        <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#0E3B2A] transition">
                                             {{ __('Créer un compte') }}
                                         </a>
                                     </div>
@@ -368,7 +368,7 @@
                                 <i class="fas fa-phone text-sm"></i> {{ $experience->phone }}
                             </a>
                             @else
-                            <p class="text-[#8a7f6b] text-sm">{{ __('Aucun moyen de contact renseigné.') }}</p>
+                            <p class="text-[#557466] text-sm">{{ __('Aucun moyen de contact renseigné.') }}</p>
                             @endif
                         @endif
                     </div>
@@ -378,7 +378,7 @@
 
         @if($related->isNotEmpty())
         <section class="mt-16 reveal">
-            <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('À découvrir aussi') }}</p>
+            <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('À découvrir aussi') }}</p>
             <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-6">{{ __('Sites similaires') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach($related as $r)
@@ -389,7 +389,7 @@
         @endif
     </div>
 
-    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0a0907]/96 items-center justify-center p-4" onclick="closeLightbox()">
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0E3B2A]/96 items-center justify-center p-4" onclick="closeLightbox()">
         <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()">
             <i class="fas fa-xmark"></i>
         </button>
@@ -488,7 +488,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
         paymentMethod = method;
         methodButtons.forEach(b => {
             const on = b.dataset.method === method;
-            b.classList.toggle('bg-[#b9500a]', on);
+            b.classList.toggle('bg-[#EB6E00]', on);
             b.classList.toggle('text-white', on);
             b.classList.toggle('is-active', on);
         });
@@ -497,9 +497,9 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
     function setActiveTab() {
         tabs.forEach(btn => {
             const active = btn === activeTab;
-            btn.classList.toggle('bg-[#b9500a]', active);
+            btn.classList.toggle('bg-[#EB6E00]', active);
             btn.classList.toggle('text-white', active);
-            btn.classList.toggle('text-[#1c1915]', !active);
+            btn.classList.toggle('text-[#0E3B2A]', !active);
             btn.classList.toggle('is-active', active);
             btn.setAttribute('aria-checked', active ? 'true' : 'false');
         });
@@ -565,7 +565,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
         slot = null; dayInfo = null;
         if (!cDate.value) return;
         slotsWrap.classList.toggle('hidden', !cfg.slots);
-        if (cfg.slots) slotsBox.innerHTML = '<p class="text-[#8a7f6b] text-xs">' + T.loading + '</p>';
+        if (cfg.slots) slotsBox.innerHTML = '<p class="text-[#557466] text-xs">' + T.loading + '</p>';
         dayStatus.classList.add('hidden');
         const typeId = activeTab.dataset.typeId;
         fetch('/experiences-touristiques/' + slug + '/visite/creneaux?type=' + typeId + '&date=' + cDate.value, { headers: { 'Accept': 'application/json' } })
@@ -587,7 +587,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
                     const sub = s.past ? T.past : (s.remaining === null ? '' : (s.remaining <= 0 ? T.full : (s.remaining === 1 ? T.leftOne : s.remaining + ' ' + T.left)));
                     return '<button type="button" class="tvp-slot" role="radio" aria-checked="false" data-time="' + s.time + '" data-remaining="' + (s.remaining ?? '') + '" data-adjust="' + s.adjust_percent + '"' + (s.available ? '' : ' disabled') + '>' +
                         '<strong>' + s.time.replace(':', ' h ') + '</strong><small>' + sub + '</small>' + pct + '</button>';
-                }).join('') || '<p class="text-[#8a7f6b] text-xs">' + T.noSlot + '</p>';
+                }).join('') || '<p class="text-[#557466] text-xs">' + T.noSlot + '</p>';
                 if (list.length && !list.some(s => s.available)) { dayStatus.textContent = T.noSlot; dayStatus.classList.remove('hidden'); }
                 refreshSlotStates();
                 recomputeTotal();
@@ -617,13 +617,13 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
     cDate?.addEventListener('change', () => { if (cfg) loadSlots(); });
 
     function loadSessions() {
-        sessionsBox.innerHTML = '<p class="text-[#8a7f6b] text-xs">' + T.loading + '</p>';
+        sessionsBox.innerHTML = '<p class="text-[#557466] text-xs">' + T.loading + '</p>';
         fetch('/experiences-touristiques/' + slug + '/visite/sessions')
             .then(r => r.json())
             .then(data => {
                 const sessions = data.sessions || [];
                 if (!sessions.length) {
-                    sessionsBox.innerHTML = '<p class="text-[#8a7f6b] text-xs">Aucune session disponible pour le moment.</p>';
+                    sessionsBox.innerHTML = '<p class="text-[#557466] text-xs">Aucune session disponible pour le moment.</p>';
                     return;
                 }
                 sessionsBox.innerHTML = '';

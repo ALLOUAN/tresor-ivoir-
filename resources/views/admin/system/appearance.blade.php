@@ -25,7 +25,7 @@
      data-edit-slide-id="{{ e((string) old('edit_slide_id', '')) }}"></div>
 
 <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
-    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-green-700 via-green-600 to-green-600">
+    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-green-700">
         <div>
             <h2 class="text-white font-semibold text-lg tracking-tight">Gestion des Slides (Images &amp; Vidéos)</h2>
             <p class="text-green-100/80 text-xs mt-0.5">Titre, visibilité, ordre — image ou vidéo responsive par breakpoint.</p>
@@ -177,7 +177,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeCreateSlideModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
         <div class="w-full max-w-5xl bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Ajouter un nouveau slide</h2>
                 <button type="button" onclick="closeCreateSlideModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -197,7 +197,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeEditSlideModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center">
         <div class="w-full max-w-5xl bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Modifier le slide</h2>
                 <button type="button" onclick="closeEditSlideModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>

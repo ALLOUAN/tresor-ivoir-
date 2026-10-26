@@ -49,6 +49,8 @@ class TouristManagementController extends Controller
             $data['thumbnail'] = $this->storeCityImage($thumbFile, 'thumb');
         }
 
+        $data['banners'] = $this->cityBanners($request, null);
+
         TouristCity::create($data);
         return back()->with('success', "Ville « {$data['name']} » créée.");
     }
@@ -72,6 +74,8 @@ class TouristManagementController extends Controller
             $this->deleteCityImage($city->thumbnail);
             $data['thumbnail'] = $this->storeCityImage($thumbFile, 'thumb');
         }
+
+        $data['banners'] = $this->cityBanners($request, $city);
 
         $city->update($data);
         return back()->with('success', "Ville « {$city->name} » mise à jour.");
@@ -334,6 +338,12 @@ class TouristManagementController extends Controller
             'thumbnail_file'        => 'nullable|file|image|max:5120',
             'cover_image'           => 'nullable|string|max:500',
             'cover_image_file'      => 'nullable|file|image|max:5120',
+            // Bannières supplémentaires (diaporama) : celles conservées, nouveaux fichiers, nouvelles URL (une par ligne).
+            'banners_keep'          => 'nullable|array|max:'.TouristCity::MAX_BANNERS,
+            'banners_keep.*'        => 'string|max:500',
+            'banner_files'          => 'nullable|array|max:'.TouristCity::MAX_BANNERS,
+            'banner_files.*'        => 'file|image|max:5120',
+            'banner_urls'           => 'nullable|string|max:5000',
             'website'               => 'nullable|url|max:300',
             'latitude'              => 'nullable|numeric|between:-90,90',
             'longitude'             => 'nullable|numeric|between:-180,180',
@@ -402,6 +412,42 @@ class TouristManagementController extends Controller
         Storage::disk('public')->put($filename, fopen($file->getPathname(), 'r'));
 
         return '/storage/' . $filename;
+    }
+
+    /**
+     * Bannières supplémentaires d'une ville : celles cochées « à garder », puis les fichiers envoyés, puis les URL
+     * saisies (une par ligne), sans doublon et dans la limite de TouristCity::MAX_BANNERS. Les fichiers retirés
+     * (stockés sur le site) sont supprimés du disque.
+     */
+    private function cityBanners(Request $request, ?TouristCity $city): array
+    {
+        $old = $city?->banners ?? [];
+        $keep = collect($request->input('banners_keep', []))
+            ->filter(fn ($u) => is_string($u) && in_array($u, $old, true))   // on ne garde que des bannières existantes
+            ->values();
+
+        foreach (array_diff($old, $keep->all()) as $removed) {
+            $this->deleteCityImage($removed);
+        }
+
+        $new = collect($request->file('banner_files', []))
+            ->filter(fn ($f) => $f && $f->isValid())
+            ->map(fn ($f) => $this->storeCityImage($f, 'banner'));
+
+        $urls = collect(preg_split('/\R/', (string) $request->input('banner_urls', '')))
+            ->map(fn ($u) => trim($u))
+            ->filter(fn ($u) => $u !== '' && mb_strlen($u) <= 500 && (str_starts_with($u, '/') || filter_var($u, FILTER_VALIDATE_URL)));
+
+        $all = $keep->merge($new)->merge($urls)->unique()->values();
+
+        // Au-delà de la limite, les nouveaux fichiers en trop ne sont pas conservés.
+        foreach ($all->slice(TouristCity::MAX_BANNERS) as $extra) {
+            if ($new->contains($extra)) {
+                $this->deleteCityImage($extra);
+            }
+        }
+
+        return $all->take(TouristCity::MAX_BANNERS)->all();
     }
 
     private function deleteCityImage(?string $url): void

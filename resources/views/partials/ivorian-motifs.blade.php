@@ -6,21 +6,38 @@
 --}}
 @php
     $miBand = $band ?? true;
+    // Filigrane du nom du site en lettres creuses (désactivable : 'mark' => false).
+    $miMark = $mark ?? true;
     $miKey = $culture ?? 'senoufo';
     if ($miKey === 'national') $miKey = 'senoufo';
     if ($miKey === 'krou-cote') $miKey = 'lagunaire';
-    $miId = 'ivm-'.$miKey;
+    // Identifiant unique par inclusion : avec plusieurs motifs sur une page, un id partagé ferait réutiliser
+    // le premier motif (et ses couleurs) partout.
+    $miId = 'ivm-'.$miKey.'-'.substr(md5(uniqid('', true)), 0, 6);
 @endphp
 @once
 <style>
-    .ivm { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    /* Opacité globale réduite : s'applique en plus des réglages propres à chaque page. */
+    .ivm { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; opacity: .55; container-type: size; }
     .ivm svg { display: block; width: 100%; height: 100%; }
+    /* Nom en lettres creuses, d'après le logo de la charte : « TRÉSORS » vert, « D'IVOIRE » orange, Montserrat 800 espacé.
+       Posé en haut du bloc et coupé par le bord (les cartes qui chevauchent le bas des bandeaux le cachaient). Sur fond sombre (.is-dark), « TRÉSORS » passe en blanc. */
+    .ivm-mark { position: absolute; left: 0; right: 0; top: 0; transform: translateY(-26%); margin: 0; text-align: center; white-space: nowrap; overflow: hidden;
+        font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; line-height: 1;
+        font-size: min(6.8cqw, 34cqh); -webkit-text-fill-color: transparent; opacity: .32; user-select: none; }
+    .ivm-mark span { -webkit-text-stroke: 1.5px #00874F; }
+    .ivm-mark span + span { -webkit-text-stroke-color: #EB6E00; }
+    .ivm-mark.is-dark { opacity: .26; }
+    .ivm-mark.is-dark span:first-child { -webkit-text-stroke-color: #FFFFFF; }
+    @supports not (font-size: 1cqw) { .ivm-mark { font-size: 6.4vw; } }
+    /* Bandes basses (en-tête, frises) : pas de filigrane. */
+    @container (max-height: 160px) { .ivm-mark { display: none; } }
     /* Couleurs des motifs (palette du site, aplats) : orange terre cuite, vert forêt, ocre, brun ; points pleins assortis. */
-    .ivm-g > :nth-child(4n+1) { stroke: #c2560d; }
-    .ivm-g > :nth-child(4n+2) { stroke: #1f7a43; }
-    .ivm-g > :nth-child(4n+3) { stroke: #d4951c; }
-    .ivm-g > :nth-child(4n+4) { stroke: #7a4a2a; }
-    .ivm-g > circle[fill] { fill: #c2560d; stroke: #c2560d; }
+    .ivm-g > :nth-child(4n+1) { stroke: #EB6E00; }
+    .ivm-g > :nth-child(4n+2) { stroke: #00874F; }
+    .ivm-g > :nth-child(4n+3) { stroke: #EB6E00; }
+    .ivm-g > :nth-child(4n+4) { stroke: #B85600; }
+    .ivm-g > circle[fill] { fill: #EB6E00; stroke: #EB6E00; }
     .ivm-band { position: absolute; left: 0; right: 0; bottom: 0; height: 16px; z-index: 1; pointer-events: none; }
     .ivm-band svg { display: block; width: 100%; height: 100%; }
     @media (max-width: 640px) {
@@ -30,12 +47,25 @@
         .ivm-g { opacity: .62; stroke-width: 2.8px; }
     }
 </style>
+<script>
+// Filigrane : sur un fond sombre (premier fond opaque trouvé en remontant), « TRÉSORS » passe en blanc.
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.ivm-mark').forEach(function (m) {
+        for (var el = m.parentElement; el; el = el.parentElement) {
+            var c = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+            if (!c || (c.length > 3 && +c[3] < 0.5)) continue;
+            if ((0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255 < 0.5) m.classList.add('is-dark');
+            break;
+        }
+    });
+});
+</script>
 @endonce
 <div class="ivm" aria-hidden="true">
     <svg xmlns="http://www.w3.org/2000/svg">
         <defs>
             <pattern id="{{ $miId }}" width="260" height="260" patternUnits="userSpaceOnUse">
-                <g class="ivm-g" fill="none" stroke="#5a3d26" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".42">
+                <g class="ivm-g" fill="none" stroke="#B85600" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".42">
                 @switch($miKey)
                     @case('baoule')
                         {{-- Masque Goli (disque à cornes) --}}
@@ -66,7 +96,7 @@
                         {{-- Nkyinkyim (zigzag) --}}
                         <path d="M140 170 l14 14 l14 -14 l14 14 l14 -14 l14 14 l14 -14"/>
                         <path d="M140 200 l14 14 l14 -14 l14 14 l14 -14 l14 14 l14 -14"/>
-                        <circle cx="236" cy="236" r="6"/><circle cx="236" cy="236" r="2" fill="#5a3d26"/>
+                        <circle cx="236" cy="236" r="6"/><circle cx="236" cy="236" r="2" fill="#B85600"/>
                         @break
                     @case('lagunaire')
                         {{-- Pirogue et pagayeur --}}
@@ -142,7 +172,7 @@
                         <path d="M30 80 h50 q10 0 12 -10 l8 -14 M100 56 l-6 -26 M100 56 l6 -24 M36 80 v26 M74 80 v26 M30 80 l-8 -8"/>
                         {{-- Éléphant --}}
                         <path d="M150 90 q0 -40 40 -40 q36 0 36 36 v20 M226 86 q14 4 10 30 M160 90 v20 M200 90 v20 M150 90 h60"/>
-                        <circle cx="210" cy="70" r="3" fill="#5a3d26"/>
+                        <circle cx="210" cy="70" r="3" fill="#B85600"/>
                         {{-- Bateba (statuette aux bras levés) --}}
                         <circle cx="60" cy="160" r="9"/>
                         <path d="M60 170 v40 M60 178 l-18 -18 M60 178 l18 -18 M60 210 l-10 30 M60 210 l10 30"/>
@@ -314,7 +344,7 @@
                         <path d="M178 54 q6 -4 11 0 M193 54 q6 -4 11 0 M190 62 v12 M182 84 q8 5 16 0"/>
                         {{-- Calao (Sénoufo) --}}
                         <path d="M24 186 q14 -20 38 -12 q10 4 8 12 q-2 10 -16 12 q-20 2 -30 -12 z M66 178 l24 -6 l-22 12"/>
-                        <circle cx="60" cy="180" r="2" fill="#5a3d26"/>
+                        <circle cx="60" cy="180" r="2" fill="#B85600"/>
                         <path d="M38 196 l-4 14 M50 197 l2 14"/>
                         {{-- Sankofa (Akan) --}}
                         <path d="M190 214 q-30 -20 -18 -40 q11 -14 25 -2 q7 -11 18 -5 q14 9 -4 27 q-9 9 -21 20 z"/>
@@ -359,12 +389,12 @@
                         {{-- Sénoufo : toiles de Korhogo (calao, poisson, crocodile, tortue, frises) --}}
                         <path d="M30 70 q14 -22 40 -14 q10 4 8 14 q-2 10 -18 12 q-22 2 -30 -12 z"/>
                         <path d="M76 60 l26 -6 l-24 12"/>
-                        <circle cx="70" cy="62" r="2.2" fill="#5a3d26"/>
+                        <circle cx="70" cy="62" r="2.2" fill="#B85600"/>
                         <path d="M44 82 l-4 14 M56 83 l2 14"/>
                         <path d="M30 70 l-14 -8 l4 12 l-10 2 l16 6"/>
                         <path d="M150 40 q24 -18 52 0 q-28 18 -52 0 z"/>
                         <path d="M202 40 l14 -10 v20 z"/>
-                        <circle cx="162" cy="37" r="2" fill="#5a3d26"/>
+                        <circle cx="162" cy="37" r="2" fill="#B85600"/>
                         <path d="M172 32 v16 M182 32 v16 M192 34 v12"/>
                         <path d="M120 150 q40 -12 96 0 q-14 8 -40 8 h-40 q-10 0 -16 -8 z"/>
                         <path d="M136 146 l6 -8 l6 8 l6 -8 l6 8 l6 -8 l6 8 l6 -8 l6 8"/>
@@ -383,21 +413,22 @@
         </defs>
         <rect width="100%" height="100%" fill="url(#{{ $miId }})"/>
     </svg>
+    @if($miMark)<p class="ivm-mark"><span>Trésors</span> <span>d'Ivoire</span></p>@endif
 </div>
 @if($miBand)
     <div class="ivm-band" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <defs>
                 <pattern id="ivm-kita" width="96" height="16" patternUnits="userSpaceOnUse">
-                    <rect width="96" height="16" fill="#1d1a16"/>
-                    <rect x="0" width="22" height="16" fill="#b9500a"/>
-                    <rect x="4" y="5" width="4" height="6" fill="#e0a12e"/><rect x="14" y="5" width="4" height="6" fill="#e0a12e"/>
-                    <rect x="24" width="10" height="16" fill="#e0a12e"/>
-                    <rect x="36" width="22" height="16" fill="#1b6b3a"/>
-                    <rect x="40" y="0" width="4" height="4" fill="#f3ead8"/><rect x="50" y="12" width="4" height="4" fill="#f3ead8"/>
-                    <rect x="60" width="6" height="16" fill="#f3ead8"/>
-                    <rect x="68" width="22" height="16" fill="#b9500a"/>
-                    <rect x="72" y="6" width="14" height="4" fill="#1d1a16"/>
+                    <rect width="96" height="16" fill="#0E3B2A"/>
+                    <rect x="0" width="22" height="16" fill="#EB6E00"/>
+                    <rect x="4" y="5" width="4" height="6" fill="#EB6E00"/><rect x="14" y="5" width="4" height="6" fill="#EB6E00"/>
+                    <rect x="24" width="10" height="16" fill="#EB6E00"/>
+                    <rect x="36" width="22" height="16" fill="#00874F"/>
+                    <rect x="40" y="0" width="4" height="4" fill="#D8E9E0"/><rect x="50" y="12" width="4" height="4" fill="#D8E9E0"/>
+                    <rect x="60" width="6" height="16" fill="#D8E9E0"/>
+                    <rect x="68" width="22" height="16" fill="#EB6E00"/>
+                    <rect x="72" y="6" width="14" height="4" fill="#0E3B2A"/>
                 </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#ivm-kita)"/>

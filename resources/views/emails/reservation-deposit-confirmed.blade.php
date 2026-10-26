@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Acompte confirmé</title>
 </head>
-<body style="font-family: Arial, sans-serif; color: #1c1915; background:#f6f3ed; margin:0; padding:24px 0;">
-    <table role="presentation" width="100%" style="max-width:560px; margin:0 auto; background:#ffffff; border:1px solid rgba(0,0,0,.08); border-radius:14px; overflow:hidden;" cellpadding="0" cellspacing="0">
+<body style="font-family: Arial, sans-serif; color: #0E3B2A; background:#F3F8F5; margin:0; padding:24px 0;">
+    <table role="presentation" width="100%" style="max-width:560px; margin:0 auto; background:#ffffff; border:1px solid rgba(14,59,42,.08); border-radius:14px; overflow:hidden;" cellpadding="0" cellspacing="0">
         <tr>
-            <td style="background:#181511; padding:22px 26px;">
+            <td style="background:#0E3B2A; padding:22px 26px;">
                 @if(!empty($branding['logo_url']))
                     <img src="{{ $branding['logo_url'] }}" alt="{{ $branding['site_name'] }}" style="height:34px; display:block;">
                 @else
@@ -41,26 +41,26 @@
                 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px 0;">
                     <tr>
                         <td style="padding-right:10px; padding-bottom:10px;">
-                            <a href="{{ $confirmationUrl }}" style="display:inline-block; padding:12px 20px; background:#e38a26; color:#1b1408; font-weight:bold; text-decoration:none; border-radius:8px; font-size:13px;">
+                            <a href="{{ $confirmationUrl }}" style="display:inline-block; padding:12px 20px; background:#EB6E00; color:#0E3B2A; font-weight:bold; text-decoration:none; border-radius:8px; font-size:13px;">
                                 Voir ma confirmation
                             </a>
                         </td>
                         <td style="padding-bottom:10px;">
-                            <a href="{{ $receiptUrl }}" style="display:inline-block; padding:12px 20px; background:#ffffff; color:#1c1915; font-weight:bold; text-decoration:none; border-radius:8px; border:1px solid rgba(0,0,0,.15); font-size:13px;">
+                            <a href="{{ $receiptUrl }}" style="display:inline-block; padding:12px 20px; background:#ffffff; color:#0E3B2A; font-weight:bold; text-decoration:none; border-radius:8px; border:1px solid rgba(14,59,42,.15); font-size:13px;">
                                 Voir mon reçu en ligne
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <a href="{{ $guestRegistrationUrl }}" style="display:inline-block; padding:12px 20px; background:#c25e0a; color:#ffffff; font-weight:bold; text-decoration:none; border-radius:8px; font-size:13px;">
+                            <a href="{{ $guestRegistrationUrl }}" style="display:inline-block; padding:12px 20px; background:#EB6E00; color:#ffffff; font-weight:bold; text-decoration:none; border-radius:8px; font-size:13px;">
                                 Voir ma fiche d'enregistrement
                             </a>
                         </td>
                     </tr>
                 </table>
 
-                <p style="font-size:12px; color:#8a7f6b;">Ces liens sont personnels — ne les partagez pas.</p>
+                <p style="font-size:12px; color:#557466;">Ces liens sont personnels — ne les partagez pas.</p>
                 <p>Merci pour votre confiance.</p>
             </td>
         </tr>

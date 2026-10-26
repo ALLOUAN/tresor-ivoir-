@@ -15,7 +15,7 @@
 
             {{-- Marque --}}
             <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-800">
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 shrink-0">
+                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-orange-400 shrink-0">
                     <i class="fas fa-gem text-white text-base"></i>
                 </div>
                 <div class="min-w-0">
@@ -114,7 +114,7 @@
             {{-- Footer utilisateur --}}
             <div class="border-t border-slate-800 p-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs font-bold shrink-0">
                         {{ strtoupper(substr(auth()->user()->first_name ?? '', 0, 1) . substr(auth()->user()->last_name ?? '', 0, 1)) }}
                     </div>
                     <div class="flex-1 min-w-0">
@@ -158,11 +158,11 @@
     .dp-nav-link {
         display: flex; align-items: center; gap: 0.625rem;
         width: 100%; padding: 0.5rem 0.75rem; border-radius: 0.5rem;
-        font-size: 0.875rem; color: #544f47; text-align: left;
+        font-size: 0.875rem; color: #24503D; text-align: left;
         transition: background .15s, color .15s; cursor: pointer; background: none; border: none;
     }
-    .dp-nav-link:hover { background: rgba(0,0,0,0.04); color: #1c1915; }
-    .dp-nav-link.dp-active { background: rgba(242, 121, 15,0.12); color: #fa9a3c; font-weight: 500; }
+    .dp-nav-link:hover { background: rgba(14,59,42,0.04); color: #0E3B2A; }
+    .dp-nav-link.dp-active { background: rgba(235,110,0,0.12); color: #EB6E00; font-weight: 500; }
 </style>
 
 <script>

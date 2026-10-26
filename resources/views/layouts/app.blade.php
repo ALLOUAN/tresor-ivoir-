@@ -19,33 +19,35 @@
             gap: 0.625rem;
             padding: 0.5rem 0.75rem;
             border-radius: 0.5rem;
-            color: #94a3b8;
+            color: #8AA99B;
             font-size: 0.875rem;
             transition: color 0.15s ease, background 0.15s ease;
         }
-        .sidebar-link:hover { background:#e9e5d9; color: #fff; }
+        .sidebar-link:hover { background:#D8E9E0; color: #fff; }
         .sidebar-link.active {
-            background: rgba(242, 121, 15, 0.12);
-            color: #fa9a3c;
+            background: rgba(235,110,0, 0.12);
+            color: #EB6E00;
             font-weight: 500;
         }
         /* ——— Sidebar administrateur ——— */
         .admin-sidebar {
             width: 18rem;
-            background:#e9e5d9;
-            border-right: 1px solid rgba(242, 121, 15, 0.12);
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+            background:#D8E9E0;
+            border-right: 1px solid rgba(235,110,0, 0.12);
+            box-shadow: 4px 0 24px rgba(14,59,42, 0.35);
         }
+        .ti-side-logo { display: flex; align-items: center; justify-content: center; padding: 10px 14px; border-radius: 14px; background: #fff; }
+        .ti-side-logo img { display: block; width: 100%; max-width: 190px; height: auto; }
         .admin-sidebar-brand {
-            background: rgba(242, 121, 15, 0.04);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(235,110,0, 0.04);
+            border-bottom: 1px solid rgba(138,169,155, 0.12);
         }
         .admin-sidebar .nav-section-title {
             font-size: 0.65rem;
             font-weight: 700;
             letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: #64748b;
+            color: #557466;
             padding: 1rem 0.75rem 0.4rem;
             margin-top: 0.15rem;
             display: flex;
@@ -57,13 +59,13 @@
             flex: 1;
             height: 1px;
             order: 1;
-            background: rgba(100, 116, 139, 0.23);
+            background: rgba(85,116,102, 0.23);
         }
         /* Groupes repliables : le titre est cliquable, le chevron tourne à l'ouverture. */
         .admin-sidebar .nav-group > summary { list-style: none; cursor: pointer; user-select: none; border-radius: .6rem; transition: color .15s ease; }
         .admin-sidebar .nav-group > summary::-webkit-details-marker { display: none; }
-        .admin-sidebar .nav-group > summary:hover { color: #f2790f; }
-        .admin-sidebar .nav-group > summary:focus-visible { outline: 2px solid #f2790f; outline-offset: 1px; }
+        .admin-sidebar .nav-group > summary:hover { color: #EB6E00; }
+        .admin-sidebar .nav-group > summary:focus-visible { outline: 2px solid #EB6E00; outline-offset: 1px; }
         .admin-sidebar .nav-chevron { order: 2; font-size: .62rem; transition: transform .2s ease; transform: rotate(-90deg); }
         .admin-sidebar .nav-group[open] > summary .nav-chevron { transform: rotate(0deg); }
         .admin-sidebar .nav-group-body { display: grid; gap: .125rem; padding-bottom: .25rem; }
@@ -74,7 +76,7 @@
             gap: 0.75rem;
             padding: 0.45rem 0.65rem 0.45rem 0.5rem;
             border-radius: 0.75rem;
-            color: #94a3b8;
+            color: #8AA99B;
             font-size: 0.875rem;
             font-weight: 500;
             text-decoration: none;
@@ -82,14 +84,14 @@
             margin-bottom: 1px;
         }
         .admin-sidebar .nav-row:hover {
-            background: rgba(233, 229, 217, 0.04);
-            color: #f1f5f9;
+            background: rgba(216,233,224, 0.04);
+            color: #F3F8F5;
         }
         .admin-sidebar .nav-row.is-active {
             font-weight: 600;
-            background: rgba(242, 121, 15, 0.08);
-            color: #fdbe7b;
-            box-shadow: inset 3px 0 0 #f2790f;
+            background: rgba(235,110,0, 0.08);
+            color: #F7C396;
+            box-shadow: inset 3px 0 0 #EB6E00;
         }
         .admin-sidebar .nav-row-icon {
             width: 2.25rem;
@@ -98,103 +100,164 @@
             align-items: center;
             justify-content: center;
             border-radius: 0.55rem;
-            background: rgba(233, 229, 217, 0.85);
-            border: 1px solid rgba(71, 85, 105, 0.35);
+            background: rgba(216,233,224, 0.85);
+            border: 1px solid rgba(36,80,61, 0.35);
             flex-shrink: 0;
             font-size: 0.8rem;
             transition: inherit;
         }
         .admin-sidebar .nav-row:hover .nav-row-icon {
-            background: rgba(51, 65, 85, 0.95);
-            border-color: rgba(100, 116, 139, 0.45);
+            background: rgba(36,80,61, 0.95);
+            border-color: rgba(85,116,102, 0.45);
             color: #e2e8f0;
         }
         .admin-sidebar .nav-row.is-active .nav-row-icon {
-            background: rgba(242, 121, 15, 0.18);
-            border-color: rgba(242, 121, 15, 0.35);
-            color: #fa9a3c;
+            background: rgba(235,110,0, 0.18);
+            border-color: rgba(235,110,0, 0.35);
+            color: #EB6E00;
         }
         .admin-sidebar .nav-scroll {
             scrollbar-width: thin;
-            scrollbar-color: rgba(242, 121, 15, 0.35) transparent;
+            scrollbar-color: rgba(235,110,0, 0.35) transparent;
         }
         .admin-sidebar .role-pill {
-            background: rgba(167, 80, 9, 0.3);
-            border: 1px solid rgba(250, 154, 60, 0.25);
-            box-shadow: 0 0 20px rgba(242, 121, 15, 0.12);
+            background: rgba(184,86,0, 0.3);
+            border: 1px solid rgba(235,110,0, 0.25);
+            box-shadow: 0 0 20px rgba(235,110,0, 0.12);
         }
         .admin-sidebar-footer {
             background: rgba(255, 255, 255, 0.45);
-            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            border-top: 1px solid rgba(138,169,155, 0.12);
         }
         .admin-sidebar .user-card {
             border-radius: 0.75rem;
             padding: 0.65rem 0.75rem;
-            background: rgba(233, 229, 217, 0.55);
-            border: 1px solid rgba(71, 85, 105, 0.35);
+            background: rgba(216,233,224, 0.55);
+            border: 1px solid rgba(36,80,61, 0.35);
         }
         .admin-sidebar .user-avatar {
-            box-shadow: 0 0 0 2px rgba(242, 121, 15, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 0 0 2px rgba(235,110,0, 0.35), 0 4px 12px rgba(14,59,42, 0.25);
         }
         /* ── Light mode: body & fond ──────────────────── */
-        html:not(.dark) body                    { background-color:#e9e5d9!important; color:#1c1915!important; }
-        html:not(.dark) .text-white             { color:#1c1915!important; }
-        html:not(.dark) .text-slate-100         { color:#1c1915!important; }
-        html:not(.dark) .text-slate-200         { color:#2d2a23!important; }
-        html:not(.dark) .text-slate-300         { color:#44413a!important; }
-        html:not(.dark) .text-slate-400         { color:#544f47!important; }
-        html:not(.dark) .text-slate-500         { color:#665f52!important; }
-        html:not(.dark) .text-slate-600         { color:#5c574e!important; }
-        html:not(.dark) .bg-green-950           { background-color:#e9e5d9!important; }
-        html:not(.dark) .bg-green-900           { background-color:#ddd7c7!important; }
-        html:not(.dark) .bg-slate-800           { background-color:#f0ece1!important; }
-        html:not(.dark) .bg-slate-700           { background-color:#ddd7c7!important; }
-        html:not(.dark) .border-slate-800       { border-color:#d6cfba!important; }
-        html:not(.dark) .border-slate-700       { border-color:#c2b89e!important; }
-        html:not(.dark) .border-slate-700\/70   { border-color:rgba(0,0,0,0.1)!important; }
-        html:not(.dark) .bg-green-900\/80       { background-color:rgba(233, 229, 217, 0.97)!important; }
-        html:not(.dark) .bg-slate-800\/70       { background-color:rgba(0,0,0,0.05)!important; }
-        html:not(.dark) .bg-slate-700\/70       { background-color:rgba(0,0,0,0.06)!important; }
-        html:not(.dark) .hover\:bg-slate-700\/70:hover { background-color:rgba(0,0,0,0.08)!important; }
+        html:not(.dark) body                    { background-color:#D8E9E0!important; color:#0E3B2A!important; }
+        html:not(.dark) .text-white             { color:#0E3B2A!important; }
+        html:not(.dark) .text-slate-100         { color:#0E3B2A!important; }
+        html:not(.dark) .text-slate-200         { color:#0E3B2A!important; }
+        html:not(.dark) .text-slate-300         { color:#24503D!important; }
+        html:not(.dark) .text-slate-400         { color:#24503D!important; }
+        html:not(.dark) .text-slate-500         { color:#557466!important; }
+        html:not(.dark) .text-slate-600         { color:#24503D!important; }
+        html:not(.dark) .bg-green-950           { background-color:#D8E9E0!important; }
+        html:not(.dark) .bg-green-900           { background-color:#D8E9E0!important; }
+        html:not(.dark) .bg-slate-800           { background-color:#F3F8F5!important; }
+        html:not(.dark) .bg-slate-700           { background-color:#D8E9E0!important; }
+        html:not(.dark) .border-slate-800       { border-color:#8AA99B!important; }
+        html:not(.dark) .border-slate-700       { border-color:#8AA99B!important; }
+        html:not(.dark) .border-slate-700\/70   { border-color:rgba(14,59,42,0.1)!important; }
+        html:not(.dark) .bg-green-900\/80       { background-color:rgba(216,233,224, 0.97)!important; }
+        html:not(.dark) .bg-slate-800\/70       { background-color:rgba(14,59,42,0.05)!important; }
+        html:not(.dark) .bg-slate-700\/70       { background-color:rgba(14,59,42,0.06)!important; }
+        html:not(.dark) .hover\:bg-slate-700\/70:hover { background-color:rgba(14,59,42,0.08)!important; }
         /* ── Light mode: sidebar non-admin ──────────── */
-        html:not(.dark) .sidebar-link              { color:#544f47; }
-        html:not(.dark) .sidebar-link:hover        { background:rgba(0,0,0,0.04); color:#1c1915; }
-        html:not(.dark) .sidebar-link.active       { background:rgba(242, 121, 15,0.1); color:#a3450a; }
+        html:not(.dark) .sidebar-link              { color:#24503D; }
+        html:not(.dark) .sidebar-link:hover        { background:rgba(14,59,42,0.04); color:#0E3B2A; }
+        html:not(.dark) .sidebar-link.active       { background:rgba(235,110,0,0.1); color:#B85600; }
         /* ── Light mode: sidebar admin ───────────────── */
         html:not(.dark) .admin-sidebar {
-            background:#ddd7c7;
-            border-right-color:#d6cfba;
-            box-shadow:4px 0 24px rgba(0,0,0,0.05);
+            background:#D8E9E0;
+            border-right-color:#8AA99B;
+            box-shadow:4px 0 24px rgba(14,59,42,0.05);
         }
         html:not(.dark) .admin-sidebar-brand {
-            background:rgba(242, 121, 15, 0.03);
-            border-bottom-color:rgba(0,0,0,0.07);
+            background:rgba(235,110,0, 0.03);
+            border-bottom-color:rgba(14,59,42,0.07);
         }
-        html:not(.dark) .admin-sidebar .nav-section-title { color:#665f52; }
+        html:not(.dark) .admin-sidebar .nav-section-title { color:#557466; }
         html:not(.dark) .admin-sidebar .nav-section-title::after {
-            background:rgba(0, 0, 0, 0.07);
+            background:rgba(14,59,42, 0.07);
         }
-        html:not(.dark) .admin-sidebar .nav-row                   { color:#544f47; }
-        html:not(.dark) .admin-sidebar .nav-row:hover             { background:rgba(0,0,0,0.04); color:#1c1915; }
-        html:not(.dark) .admin-sidebar .nav-row.is-active         { background:rgba(242, 121, 15, 0.07); color:#a3450a; box-shadow:inset 3px 0 0 #f2790f; }
-        html:not(.dark) .admin-sidebar .nav-row-icon              { background:rgba(0,0,0,0.05); border-color:rgba(0,0,0,0.1); color:#544f47; }
-        html:not(.dark) .admin-sidebar .nav-row:hover .nav-row-icon { background:rgba(0,0,0,0.08); border-color:rgba(0,0,0,0.14); color:#1c1915; }
-        html:not(.dark) .admin-sidebar .nav-row.is-active .nav-row-icon { background:rgba(242, 121, 15,0.14); border-color:rgba(242, 121, 15,0.3); color:#9f4709; }
-        html:not(.dark) .admin-sidebar-footer { background:rgba(255, 255, 255, 0.45); border-top-color:rgba(0,0,0,0.07); }
-        html:not(.dark) .admin-sidebar .user-card { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.1); }
-        html:not(.dark) .admin-sidebar .user-avatar { box-shadow:0 0 0 2px rgba(242, 121, 15,0.3),0 4px 12px rgba(0,0,0,0.08); }
-        html:not(.dark) .admin-sidebar .role-pill { background:rgba(167, 80, 9, 0.09); border-color:rgba(250,154,60,0.2); box-shadow:none; }
-        html:not(.dark) .admin-sidebar .nav-scroll { scrollbar-color:rgba(242, 121, 15,0.2) transparent; }
+        html:not(.dark) .admin-sidebar .nav-row                   { color:#24503D; }
+        html:not(.dark) .admin-sidebar .nav-row:hover             { background:rgba(14,59,42,0.04); color:#0E3B2A; }
+        html:not(.dark) .admin-sidebar .nav-row.is-active         { background:rgba(235,110,0, 0.07); color:#B85600; box-shadow:inset 3px 0 0 #EB6E00; }
+        html:not(.dark) .admin-sidebar .nav-row-icon              { background:rgba(14,59,42,0.05); border-color:rgba(14,59,42,0.1); color:#24503D; }
+        html:not(.dark) .admin-sidebar .nav-row:hover .nav-row-icon { background:rgba(14,59,42,0.08); border-color:rgba(14,59,42,0.14); color:#0E3B2A; }
+        html:not(.dark) .admin-sidebar .nav-row.is-active .nav-row-icon { background:rgba(235,110,0,0.14); border-color:rgba(235,110,0,0.3); color:#B85600; }
+        html:not(.dark) .admin-sidebar-footer { background:rgba(255, 255, 255, 0.45); border-top-color:rgba(14,59,42,0.07); }
+        html:not(.dark) .admin-sidebar .user-card { background:rgba(14,59,42,0.04); border-color:rgba(14,59,42,0.1); }
+        html:not(.dark) .admin-sidebar .user-avatar { box-shadow:0 0 0 2px rgba(235,110,0,0.3),0 4px 12px rgba(14,59,42,0.08); }
+        html:not(.dark) .admin-sidebar .role-pill { background:rgba(184,86,0, 0.09); border-color:rgba(235,110,0,0.2); box-shadow:none; }
+        html:not(.dark) .admin-sidebar .nav-scroll { scrollbar-color:rgba(235,110,0,0.2) transparent; }
         /* ── Light mode: top bar ─────────────────────── */
-        html:not(.dark) header.sticky { border-bottom-color:#d6cfba!important; }
+        html:not(.dark) header.sticky { border-bottom-color:#8AA99B!important; }
         /* ── Light mode: content cards ───────────────── */
-        html:not(.dark) .bg-white\/5  { background-color:rgba(0,0,0,0.04)!important; }
-        html:not(.dark) .border-white\/10 { border-color:rgba(0,0,0,0.1)!important; }
-        html:not(.dark) .divide-slate-800>*+* { border-color:#d6cfba!important; }
+        html:not(.dark) .bg-white\/5  { background-color:rgba(14,59,42,0.04)!important; }
+        html:not(.dark) .border-white\/10 { border-color:rgba(14,59,42,0.1)!important; }
+        html:not(.dark) .divide-slate-800>*+* { border-color:#8AA99B!important; }
         /* ── Light mode: toast messages ──────────────── */
-        html:not(.dark) .bg-emerald-500\/15 { background-color:rgba(209,250,229,0.6)!important; }
-        html:not(.dark) .border-emerald-400\/40 { border-color:rgba(52,211,153,0.4)!important; }
+        html:not(.dark) .bg-emerald-500\/15 { background-color:rgba(216,233,224,0.6)!important; }
+        html:not(.dark) .border-emerald-400\/40 { border-color:rgba(0,135,79,0.4)!important; }
         html:not(.dark) .bg-red-900\/40 { background-color:rgba(255,228,228,0.6)!important; }
+
+        /* Menu utilisateur (barre du haut) */
+        /* Aux couleurs du site : vert forêt, orange ivoirien, ambre, crème. */
+        .um { --um-forest: #00874F; --um-deep: #00874F; --um-teal: #00874F; --um-orange: #EB6E00; --um-amber: #EB6E00; --um-ink: #0E3B2A; --um-soft: #24503D; --um-line: #D8E9E0; --um-cream: #F3F8F5; position: relative; }
+        .um-trigger { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 14px 0 4px; border: 1px solid var(--um-line); border-radius: 999px; background: #fff; color: var(--um-ink); cursor: pointer; transition: border-color .2s ease, box-shadow .2s ease, background .2s ease; }
+        .um-trigger:hover, .um.is-open .um-trigger { background: var(--um-cream); border-color: #F7C396; box-shadow: 0 10px 24px -16px rgba(0,135,79,.55); }
+        .um-trigger:focus-visible { outline: 3px solid rgba(235,110,0,.45); outline-offset: 2px; }
+        .um-av { position: relative; width: 38px; height: 38px; flex: none; padding: 2px; border-radius: 999px; background: var(--um-orange); }
+        .um-av > span { width: 100%; height: 100%; border-radius: inherit; border: 2px solid #fff; background: var(--um-forest); color: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 12.5px; font-weight: 800; letter-spacing: .04em; }
+        .um-av img { width: 100%; height: 100%; object-fit: cover; }
+        .um-av::after { content: ''; position: absolute; right: 0; bottom: 0; width: 10px; height: 10px; border-radius: 999px; background: #00874F; border: 2px solid #fff; }
+        .um-av.is-lg { width: 58px; height: 58px; }
+        .um-av.is-lg > span { font-size: 19px; border-color: rgba(255,255,255,.9); }
+        .um-av.is-lg::after { width: 13px; height: 13px; border-color: var(--um-deep); }
+        .um-who { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; text-align: left; max-width: 170px; }
+        .um-who b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; font-weight: 800; color: var(--um-ink); }
+        .um-who small { margin-top: 2px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--um-orange); }
+        .um-chev { width: 24px; height: 24px; border-radius: 999px; background: #F3F8F5; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: var(--um-soft); transition: transform .25s ease, background .2s ease; }
+        .um.is-open .um-chev { transform: rotate(180deg); background: var(--um-amber); color: var(--um-ink); }
+
+        .um-panel { position: absolute; right: 0; top: calc(100% + 10px); z-index: 60; width: 320px; max-width: calc(100vw - 24px); padding: 8px; border: 1px solid var(--um-line); border-radius: 24px; background: rgba(255,255,255,.96); backdrop-filter: blur(14px); box-shadow: 0 30px 60px -28px rgba(14,59,42,.45), 0 2px 6px rgba(14,59,42,.05); transform-origin: top right; animation: um-in .22s cubic-bezier(.2,.9,.3,1.2); }
+        .um-panel[hidden] { display: none; }
+        @keyframes um-in { from { opacity: 0; transform: translateY(-6px) scale(.96); } to { opacity: 1; transform: none; } }
+        /* En-tête : aplat vert forêt + motifs ivoiriens au trait (partials.ivorian-motifs), lisière kita en bas. */
+        .um-head { position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px; padding: 18px 16px 26px; border-radius: 18px; color: #fff; background: #00874F; }
+        .um-head .ivm-g { opacity: .2 !important; }
+        .um-head .ivm-g > * { stroke: #F7C396 !important; }
+        .um-head .ivm-band { height: 8px; }
+        .um-head > .um-av, .um-head > .um-head__txt { position: relative; z-index: 2; }
+        .um-head__txt { min-width: 0; }
+        .um-head__txt b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 800; letter-spacing: -.01em; color: #fff; }
+        .um-head__txt small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; font-size: 12.5px; color: rgba(255,255,255,.75); }
+        .um-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; padding: 4px 10px; border-radius: 999px; background: var(--um-amber); color: var(--um-ink); font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+        .um-badge i { font-size: 10px; }
+        .um-list { display: grid; gap: 2px; padding: 8px 0 4px; }
+        .um-sep { height: 1px; margin: 4px 10px; background: var(--um-line); }
+        .um-item { --t: 0,135,79; display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 10px; border: 0; border-radius: 14px; background: none; color: var(--um-ink); text-align: left; text-decoration: none; cursor: pointer; transition: background .18s ease; }
+        .um-ic { width: 38px; height: 38px; flex: none; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: rgba(var(--t), .1); color: rgb(var(--t)); font-size: 15px; transition: background .18s ease, color .18s ease, transform .18s ease; }
+        .um-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+        .um-txt b { font-size: 14px; font-weight: 700; }
+        .um-txt small { margin-top: 2px; font-size: 12px; color: var(--um-soft); }
+        .um-go { font-size: 11px; color: rgb(var(--t)); opacity: 0; transform: translateX(-6px); transition: opacity .18s ease, transform .18s ease; }
+        .um-item:hover, .um-item:focus-visible { background: rgba(var(--t), .07); outline: none; }
+        .um-item:hover .um-ic, .um-item:focus-visible .um-ic { background: rgb(var(--t)); color: #fff; transform: rotate(-6deg); }
+        .um-item:hover .um-go, .um-item:focus-visible .um-go { opacity: 1; transform: none; }
+        .um-out { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 44px; margin-top: 6px; border: 1px solid #f5c9cf; border-radius: 14px; background: #FFFFFF; color: #be123c; font-size: 14px; font-weight: 800; cursor: pointer; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+        .um-out:hover, .um-out:focus-visible { background: #e11d48; border-color: #e11d48; color: #fff; outline: none; }
+        body.adm header.sticky .um-out { color: #be123c !important; }
+        body.adm header.sticky .um-out:hover, body.adm header.sticky .um-out:focus-visible { color: #fff !important; }
+
+        html.dark .um { --um-ink: #F3F8F5; --um-soft: #8AA99B; --um-line: #00874F; --um-cream: #00874F; }
+        html.dark .um-trigger, html.dark .um-panel { background: #006B3F; }
+        html.dark .um-chev { background: rgba(255,255,255,.08); }
+        html.dark .um-av > span, html.dark .um-av::after { border-color: #006B3F; }
+        html.dark .um-out { background: rgba(225,29,72,.12); border-color: rgba(225,29,72,.35); color: #fda4af; }
+        @media (max-width: 640px) {
+            .um-trigger { padding: 0 4px; gap: 0; border-color: transparent; background: transparent; }
+            .um-who, .um-chev { display: none; }
+            .um-panel { position: fixed; top: 64px; right: 12px; left: 12px; width: auto; max-width: none; }
+        }
+        @media (prefers-reduced-motion: reduce) { .um-panel { animation: none; } .um-ic, .um-go, .um-chev { transition: none; } }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
     @php $admShell = in_array(auth()->user()?->role, ['admin', 'provider'], true); @endphp
@@ -237,14 +300,16 @@
                 $providerCategoryRootSlug = $provider->category?->parent_id
                     ? $provider->category?->parent?->slug
                     : $provider->category?->slug;
-                $providerIsAccommodationCategory = $providerCategoryRootSlug === 'hotels';
-                $providerIsArtCategory = $providerCategoryRootSlug === 'art-creations';
-                $providerIsRestaurantCategory = $providerCategoryRootSlug === 'restaurants';
-                $providerIsTravelAgencyCategory = $providerCategoryRootSlug === 'agences-voyages';
-                $providerIsLeisureCategory = in_array($providerCategoryRootSlug, ['loisirs-culture', 'sites-touristiques'], true);
-                $providerIsLeisureVenueCategory = $providerCategoryRootSlug === 'loisirs-culture';
-                $providerIsTouristExperienceCategory = $providerCategoryRootSlug === 'sites-touristiques';
-                $providerIsTransportCategory = $providerCategoryRootSlug === 'transports';
+                // Prestataire multi-secteurs : chaque secteur exercé ouvre son espace dans le menu.
+                $providerSectorSlugs = $provider->sectorSlugs();
+                $providerIsAccommodationCategory = in_array('hotels', $providerSectorSlugs, true);
+                $providerIsArtCategory = in_array('art-creations', $providerSectorSlugs, true);
+                $providerIsRestaurantCategory = in_array('restaurants', $providerSectorSlugs, true);
+                $providerIsTravelAgencyCategory = in_array('agences-voyages', $providerSectorSlugs, true);
+                $providerIsLeisureCategory = (bool) array_intersect(['loisirs-culture', 'sites-touristiques'], $providerSectorSlugs);
+                $providerIsLeisureVenueCategory = in_array('loisirs-culture', $providerSectorSlugs, true);
+                $providerIsTouristExperienceCategory = in_array('sites-touristiques', $providerSectorSlugs, true);
+                $providerIsTransportCategory = in_array('transports', $providerSectorSlugs, true);
             }
         } elseif ($role === 'visitor') {
             $sidebarClientMessagingUnreadCount = \App\Models\Conversation::query()
@@ -267,22 +332,16 @@
     <aside id="sidebar"
         class="fixed inset-y-0 left-0 z-50 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300
             {{ $admShell ? 'admin-sidebar' : 'w-64 bg-green-900 border-r border-slate-800' }}">
+        @if($admShell)
+            @include('partials.ivorian-motifs', ['culture' => 'national', 'band' => false])
+        @endif
 
         {{-- Brand --}}
-        <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-800 {{ $admShell ? 'admin-sidebar-brand !border-b-0' : '' }}">
-            @if(!empty($siteBrand['logo_url']))
-                <div class="flex items-center justify-center {{ $admShell ? 'w-10 h-10 rounded-xl' : 'w-9 h-9 rounded-lg' }} bg-white/5 border border-slate-700 shrink-0 overflow-hidden p-0.5">
-                    <img src="{{ $siteBrand['logo_url'] }}" alt="" class="max-w-full max-h-full object-contain">
-                </div>
-            @else
-                <div class="flex items-center justify-center {{ $admShell ? 'w-10 h-10 rounded-xl shadow-lg shadow-orange-900/40' : 'w-9 h-9 rounded-lg' }} bg-gradient-to-br from-orange-400 to-orange-600 shrink-0">
-                    <i class="fas fa-gem text-white {{ $admShell ? 'text-lg' : 'text-base' }}"></i>
-                </div>
-            @endif
-            <div class="min-w-0">
-                <p class="text-orange-400 font-bold {{ $admShell ? 'text-[0.95rem] tracking-tight' : 'text-sm' }} leading-tight truncate">{{ $siteBrand['site_name'] }}</p>
-                <p class="text-slate-500 {{ $admShell ? 'text-[11px]' : 'text-xs' }} truncate">{{ $siteBrand['site_slogan'] ?: 'Magazine Premium' }}</p>
-            </div>
+        {{-- Logo officiel sur bandeau blanc (charte : sur fond coloré non uni, logo dans un bandeau blanc ; jamais recomposé). --}}
+        <div class="px-4 py-4 border-b border-slate-800 {{ $admShell ? 'admin-sidebar-brand !border-b-0' : '' }}">
+            <a href="{{ route('home') }}" class="ti-side-logo" aria-label="{{ $siteBrand['site_name'] }}">
+                <img src="{{ $siteBrand['logo_compact_url'] ?? $siteBrand['logo_url'] }}" alt="{{ $siteBrand['site_name'] }}" width="1200" height="369">
+            </a>
         </div>
 
         {{-- Role badge --}}
@@ -416,10 +475,22 @@
                     @php $__pendingVideos = \Illuminate\Support\Facades\Schema::hasTable('videos') ? \App\Models\Video::where('status', 'pending')->count() : 0; @endphp
                     @if($__pendingVideos)<span class="ml-auto px-1.5 min-w-5 h-5 rounded-full bg-orange-500 text-black text-[11px] font-bold inline-flex items-center justify-center">{{ $__pendingVideos }}</span>@endif
                 </a>
+                <a href="{{ route('admin.films.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.films.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-clapperboard"></i></span>
+                    <span>Cinéma d'Ivoire</span>
+                    @php $__pendingFilms = \Illuminate\Support\Facades\Schema::hasTable('films') ? \App\Models\Film::where('status', 'pending')->count() : 0; @endphp
+                    @if($__pendingFilms)<span class="ml-auto px-1.5 min-w-5 h-5 rounded-full bg-orange-500 text-black text-[11px] font-bold inline-flex items-center justify-center">{{ $__pendingFilms }}</span>@endif
+                </a>
                 <a href="{{ route('admin.comics.index') }}"
                    class="nav-row {{ request()->routeIs('admin.comics.*') ? 'is-active' : '' }}">
                     <span class="nav-row-icon"><i class="fas fa-book-open"></i></span>
                     <span>Astuces de Mian (BD)</span>
+                </a>
+                <a href="{{ route('admin.home-banners.index') }}"
+                   class="nav-row {{ request()->routeIs('admin.home-banners.*') ? 'is-active' : '' }}">
+                    <span class="nav-row-icon"><i class="fas fa-rectangle-ad"></i></span>
+                    <span>Bannières publicitaires</span>
                 </a>
                 <a href="{{ route('admin.homepage-bubbles.index') }}"
                    class="nav-row {{ request()->routeIs('admin.homepage-bubbles.*') ? 'is-active' : '' }}">
@@ -637,281 +708,191 @@
                     <a href="{{ route('provider.gift-cards.index') }}" class="sidebar-link {{ request()->routeIs('provider.gift-cards.*') ? 'active' : '' }}"><i class="fas fa-gift w-4 text-center"></i> Bons cadeaux</a>
                     <a href="{{ route('provider.notifications.index') }}" class="sidebar-link {{ request()->routeIs('provider.notifications.*') ? 'active' : '' }}"><i class="fas fa-bell w-4 text-center"></i> Notifications</a>
                 @else
-                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Mon établissement</p>
-                <a href="{{ route('provider.dashboard') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.dashboard') ? 'active' : '' }}">
+                @php
+                    /*
+                     * Menu prestataire organisé par tâche (et non par module) : pilotage, réservations, offre du secteur,
+                     * clients, visibilité, finances, compte. Chaque lien n'apparaît qu'une fois ; l'offre propre au secteur
+                     * (hébergement, restaurant, agence, activités, site, transport, atelier) est regroupée sous un seul titre.
+                     * Entrée : [route, motifs routeIs actifs, icône Font Awesome, libellé].
+                     */
+                    $pvGroups = []; $pvBook = []; $pvOfferTitles = []; $pvWallet = false;
+                    if ($providerIsAccommodationCategory ?? false) {
+                        $pvOfferTitles[] = 'Mon hébergement'; $pvGroups['Mon hébergement'] = []; $pvWallet = true;
+                        array_push($pvGroups[end($pvOfferTitles)],
+                            ['provider.accommodation.dashboard', ['provider.accommodation.dashboard'], 'fa-house-chimney', 'Vue d\'ensemble'],
+                            ['provider.accommodation.profile.edit', ['provider.accommodation.profile.*'], 'fa-hotel', 'Fiche établissement'],
+                            ['provider.accommodation.rooms.index', ['provider.accommodation.rooms.*'], 'fa-bed', 'Chambres & tarifs'],
+                            ['provider.accommodation.gallery.index', ['provider.accommodation.gallery.*'], 'fa-photo-film', 'Galerie photos']);
+                        array_push($pvBook,
+                            ['provider.reservations.index', ['provider.reservations.*'], 'fa-calendar-check', 'Réservations'],
+                            ['provider.tourist-visits.index', ['provider.tourist-visits.*'], 'fa-person-hiking', 'Visites'],
+                            ['provider.tickets.index', ['provider.tickets.*'], 'fa-qrcode', 'Contrôle des billets']);
+                    }
+                    if ($providerIsRestaurantCategory ?? false) {
+                        $pvOfferTitles[] = 'Mon restaurant'; $pvGroups['Mon restaurant'] = []; $pvWallet = true;
+                        array_push($pvGroups[end($pvOfferTitles)],
+                            ['provider.menu.dashboard', ['provider.menu.dashboard'], 'fa-house-chimney', 'Vue d\'ensemble'],
+                            ['provider.restaurant.profile.edit', ['provider.restaurant.profile.*'], 'fa-utensils', 'Fiche établissement'],
+                            ['provider.menu.index', ['provider.menu.index', 'provider.menu.create', 'provider.menu.edit'], 'fa-book-open', 'Ma carte'],
+                            ['provider.restaurant.gallery.index', ['provider.restaurant.gallery.*'], 'fa-photo-film', 'Galerie photos']);
+                        $pvBook[] = ['provider.restaurant.tables.edit', ['provider.restaurant.tables.*'], 'fa-chair', 'Tables & plat du jour'];
+                    }
+                    if ($providerIsTravelAgencyCategory ?? false) {
+                        $pvOfferTitles[] = 'Mon agence'; $pvGroups['Mon agence'] = []; $pvWallet = true;
+                        array_push($pvGroups[end($pvOfferTitles)],
+                            ['provider.tours.dashboard', ['provider.tours.dashboard'], 'fa-house-chimney', 'Vue d\'ensemble'],
+                            ['provider.travel-agency.profile.edit', ['provider.travel-agency.profile.*'], 'fa-plane', 'Fiche établissement'],
+                            ['provider.tours.index', ['provider.tours.index', 'provider.tours.create', 'provider.tours.edit'], 'fa-route', 'Mes circuits'],
+                            ['provider.travel-agency.gallery.index', ['provider.travel-agency.gallery.*'], 'fa-photo-film', 'Galerie photos']);
+                    }
+                    if ($providerIsTouristExperienceCategory ?? false) {
+                        $pvOfferTitles[] = 'Mon site & mes visites'; $pvGroups['Mon site & mes visites'] = [];
+                        array_push($pvGroups[end($pvOfferTitles)],
+                            ['provider.tourist-experience.dashboard', ['provider.tourist-experience.dashboard'], 'fa-house-chimney', 'Vue d\'ensemble'],
+                            ['provider.tourist-experience.profile.edit', ['provider.tourist-experience.profile.*'], 'fa-landmark', 'Fiche établissement'],
+                            ['provider.tourist-experience.visit-types.index', ['provider.tourist-experience.visit-types.*'], 'fa-map-signs', 'Types de visite'],
+                            ['provider.tourist-experience.sessions.index', ['provider.tourist-experience.sessions.*'], 'fa-clock', 'Créneaux de visite'],
+                            ['provider.tourist-experience.gallery.index', ['provider.tourist-experience.gallery.*'], 'fa-photo-film', 'Galerie photos']);
+                        $pvBook[] = ['provider.tourist-visits.index', ['provider.tourist-visits.*'], 'fa-person-hiking', 'Visites réservées'];
+                    }
+                    if ($providerIsLeisureVenueCategory ?? false) {
+                        $pvOfferTitles[] = 'Mon établissement'; $pvGroups['Mon établissement'] = [];
+                        array_push($pvGroups[end($pvOfferTitles)],
+                            ['provider.leisure-venue.dashboard', ['provider.leisure-venue.dashboard'], 'fa-house-chimney', 'Vue d\'ensemble'],
+                            ['provider.leisure-venue.profile.edit', ['provider.leisure-venue.profile.*'], 'fa-masks-theater', 'Fiche établissement'],
+                            ['provider.leisure-venue.gallery.index', ['provider.leisure-venue.gallery.*'], 'fa-photo-film', 'Galerie photos']);
+                    }
+                    if ($providerIsLeisureCategory ?? false) {
+                        $pvOfferTitles[] = 'Mes activités'; $pvGroups['Mes activités'] = []; $pvWallet = true;
+                        array_push($pvGroups[end($pvOfferTitles)],
+                            ['provider.activities.dashboard', ['provider.activities.dashboard'], 'fa-chart-simple', 'Bilan des activités'],
+                            ['provider.activities.index', ['provider.activities.index', 'provider.activities.create', 'provider.activities.edit'], 'fa-person-hiking', 'Mes activités']);
+                        array_push($pvBook,
+                            ['provider.activity-bookings.index', ['provider.activity-bookings.*', 'provider.leisure-resources.*', 'provider.leisure-packages.*', 'provider.leisure-passes.*'], 'fa-ticket', 'Réservations & formules'],
+                            ['provider.tickets.index', ['provider.tickets.*'], 'fa-qrcode', 'Scanner les billets']);
+                    }
+                    if ($providerIsTransportCategory ?? false) {
+                        $pvOfferTitles[] = 'Ma compagnie'; $pvGroups['Ma compagnie'] = []; $pvWallet = true;
+                        array_push($pvGroups[end($pvOfferTitles)],
+                            ['provider.transport.dashboard', ['provider.transport.dashboard'], 'fa-house-chimney', 'Vue d\'ensemble'],
+                            ['provider.transport-company.profile.edit', ['provider.transport-company.profile.*'], 'fa-car', 'Fiche établissement'],
+                            ['provider.transport.index', ['provider.transport.index', 'provider.transport.create', 'provider.transport.edit'], 'fa-car-side', 'Mes offres'],
+                            ['provider.transport-company.gallery.index', ['provider.transport-company.gallery.*'], 'fa-photo-film', 'Galerie photos']);
+                        $pvBook[] = ['provider.transport-bookings.index', ['provider.transport-bookings.*', 'provider.transport-fleet.*', 'provider.transport-trips.*'], 'fa-calendar-check', 'Planning, flotte, lignes'];
+                    }
+                    if ($providerIsArtCategory ?? false) {
+                        $pvOfferTitles[] = 'Mon atelier'; $pvGroups['Mon atelier'] = []; $pvWallet = true;
+                        array_push($pvGroups[end($pvOfferTitles)],
+                            ['provider.artworks.dashboard', ['provider.artworks.dashboard'], 'fa-house-chimney', 'Vue d\'ensemble'],
+                            ['provider.artworks.index', ['provider.artworks.index', 'provider.artworks.create', 'provider.artworks.edit'], 'fa-palette', 'Mes œuvres'],
+                            ['provider.artist-profile.edit', ['provider.artist-profile.*', 'provider.art-offers.*', 'provider.art-commissions.*'], 'fa-id-badge', 'Page artiste, offres, sur mesure']);
+                        $pvBook[] = ['provider.art-orders.index', ['provider.art-orders.*'], 'fa-box-open', 'Commandes d\'art'];
+                    }
+                    // Un même lien (ex. contrôle des billets) n'apparaît qu'une fois.
+                    $pvBook = collect($pvBook)->unique(fn ($i) => $i[0])->values()->all();
+                    $pendingBookings = \App\Models\BookingRequest::whereIn('provider_id', \App\Models\Provider::forUserQuery(auth()->id())->select('id'))->where('status', 'new')->count();
+                    $pvBadge = 'ml-auto inline-flex min-w-[1.2rem] h-[1.2rem] px-1 items-center justify-center rounded-full bg-orange-500 text-black text-[10px] font-bold leading-none';
+                @endphp
+
+                {{-- Pilotage --}}
+                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Pilotage</p>
+                <a href="{{ route('provider.dashboard') }}" class="sidebar-link {{ request()->routeIs('provider.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-gauge-high w-4 text-center"></i> Tableau de bord
                 </a>
-                <a href="{{ route('provider.agenda') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.agenda') ? 'active' : '' }}">
+                <a href="{{ route('provider.agenda') }}" class="sidebar-link {{ request()->routeIs('provider.agenda') ? 'active' : '' }}">
                     <i class="fas fa-calendar-day w-4 text-center"></i> Planning du jour
                 </a>
-                <a href="{{ route('provider.profile.edit') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.profile.*') ? 'active' : '' }}">
-                    <i class="fas fa-store w-4 text-center"></i> Ma fiche
-                </a>
-                <a href="{{ route('provider.videos.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.videos.*') ? 'active' : '' }}">
-                    <i class="fas fa-film w-4 text-center"></i> Mes vidéos
-                </a>
-                <a href="{{ route('provider.verification.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.verification.*') ? 'active' : '' }}">
-                    <i class="fas fa-id-card w-4 text-center"></i> Vérification du compte
-                </a>
-                <a href="{{ route('provider.gift-cards.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.gift-cards.*') ? 'active' : '' }}">
-                    <i class="fas fa-gift w-4 text-center"></i> Bons cadeaux
-                </a>
-                <a href="{{ route('provider.promo-codes.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.promo-codes.*') ? 'active' : '' }}">
-                    <i class="fas fa-tag w-4 text-center"></i> Codes promo
-                </a>
-                <a href="{{ route('provider.team.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.team.*') ? 'active' : '' }}">
-                    <i class="fas fa-users w-4 text-center"></i> Mon équipe
-                </a>
-                <a href="{{ route('provider.booking-requests.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.booking-requests.*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-plus w-4 text-center"></i> Demandes de réservation
-                    @php $pendingBookings = \App\Models\BookingRequest::whereIn('provider_id', \App\Models\Provider::forUserQuery(auth()->id())->select('id'))->where('status', 'new')->count(); @endphp
-                    @if($pendingBookings > 0)<span class="ml-auto text-[10px] font-bold bg-orange-500 text-black rounded-full px-1.5">{{ $pendingBookings }}</span>@endif
-                </a>
-                <a href="{{ route('provider.disputes.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.disputes.*') ? 'active' : '' }}">
-                    <i class="fas fa-scale-balanced w-4 text-center"></i> Litiges
-                </a>
-                @if($providerIsAccommodationCategory ?? false)
-                    <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Mon hébergement</p>
-                    <a href="{{ route('provider.accommodation.dashboard') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.accommodation.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney w-4 text-center"></i> Vue d'ensemble
-                    </a>
-                    <a href="{{ route('provider.accommodation.profile.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.accommodation.profile.*') ? 'active' : '' }}">
-                        <i class="fas fa-hotel w-4 text-center"></i> Fiche établissement
-                    </a>
-                    <a href="{{ route('provider.accommodation.rooms.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.accommodation.rooms.*') ? 'active' : '' }}">
-                        <i class="fas fa-bed w-4 text-center"></i> Chambres & tarifs
-                    </a>
-                    <a href="{{ route('provider.accommodation.gallery.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.accommodation.gallery.*') ? 'active' : '' }}">
-                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
-                    </a>
-                    <a href="{{ route('provider.reservations.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.reservations.*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar-check w-4 text-center"></i> Réservations
-                    </a>
-                    <a href="{{ route('provider.tourist-visits.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.tourist-visits.*') ? 'active' : '' }}">
-                        <i class="fas fa-person-hiking w-4 text-center"></i> Visites
-                    </a>
-                    <a href="{{ route('provider.tickets.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.tickets.*') ? 'active' : '' }}">
-                        <i class="fas fa-qrcode w-4 text-center"></i> Contrôle des billets
-                    </a>
-                    <a href="{{ route('provider.wallet.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
-                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
-                    </a>
-                @endif
-                <a href="{{ route('provider.reviews.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.reviews.*') ? 'active' : '' }}">
-                    <i class="fas fa-star w-4 text-center"></i> Mes avis
+                <a href="{{ route('provider.analytics') }}" class="sidebar-link {{ request()->routeIs('provider.analytics*') ? 'active' : '' }}">
+                    <i class="fas fa-chart-line w-4 text-center"></i> Statistiques
                 </a>
                 @if(config('ai.enabled', true))
-                <a href="{{ route('provider.insights') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.insights*') ? 'active' : '' }}">
-                    <i class="fas fa-chart-area w-4 text-center"></i> Analyse avancée
+                    <a href="{{ route('provider.insights') }}" class="sidebar-link {{ request()->routeIs('provider.insights*') ? 'active' : '' }}">
+                        <i class="fas fa-chart-area w-4 text-center"></i> Analyse avancée
+                    </a>
+                @endif
+
+                {{-- Réservations et commandes --}}
+                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Réservations</p>
+                <a href="{{ route('provider.booking-requests.index') }}" class="sidebar-link {{ request()->routeIs('provider.booking-requests.*') ? 'active' : '' }}">
+                    <i class="fas fa-calendar-plus w-4 text-center"></i> <span class="flex-1">Demandes de réservation</span>
+                    @if($pendingBookings > 0)<span class="{{ $pvBadge }}">{{ $pendingBookings > 99 ? '99+' : $pendingBookings }}</span>@endif
                 </a>
-                @endif
-                <a href="{{ route('provider.media.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.media.*') ? 'active' : '' }}">
-                    <i class="fas fa-images w-4 text-center"></i> Médias
+                @foreach($pvBook as [$pvRoute, $pvActive, $pvIcon, $pvLabel])
+                    <a href="{{ route($pvRoute) }}" class="sidebar-link {{ request()->routeIs(...$pvActive) ? 'active' : '' }}">
+                        <i class="fas {{ $pvIcon }} w-4 text-center"></i> {{ $pvLabel }}
+                    </a>
+                @endforeach
+
+                {{-- Offre propre au secteur --}}
+                @foreach($pvGroups as $pvOfferTitle => $pvOffer)
+                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">{{ $pvOfferTitle }}</p>
+                    @foreach($pvOffer as [$pvRoute, $pvActive, $pvIcon, $pvLabel])
+                        <a href="{{ route($pvRoute) }}" class="sidebar-link {{ request()->routeIs(...$pvActive) ? 'active' : '' }}">
+                            <i class="fas {{ $pvIcon }} w-4 text-center"></i> {{ $pvLabel }}
+                        </a>
+                    @endforeach
+                @endforeach
+
+                {{-- Clients --}}
+                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Clients</p>
+                <a href="{{ route('provider.client-conversations.index') }}" class="sidebar-link {{ request()->routeIs('provider.client-conversations.*') ? 'active' : '' }}">
+                    <i class="fas fa-message w-4 text-center"></i> <span class="flex-1">Messages clients</span>
+                    @if($sidebarClientMessagingUnreadCount > 0)<span class="{{ $pvBadge }}">{{ $sidebarClientMessagingUnreadCount > 99 ? '99+' : $sidebarClientMessagingUnreadCount }}</span>@endif
                 </a>
-                <a href="{{ route('provider.conversations.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.conversations.*') ? 'active' : '' }}">
-                    <i class="fas fa-comments w-4 text-center"></i>
-                    <span class="flex-1">Messagerie admin</span>
-                    @if($sidebarMessagingUnreadCount > 0)
-                        <span class="inline-flex min-w-[1.2rem] h-[1.2rem] px-1 items-center justify-center rounded-full bg-orange-500 text-black text-[10px] font-bold leading-none">
-                            {{ $sidebarMessagingUnreadCount > 99 ? '99+' : $sidebarMessagingUnreadCount }}
-                        </span>
-                    @endif
+                <a href="{{ route('provider.reviews.index') }}" class="sidebar-link {{ request()->routeIs('provider.reviews.*') ? 'active' : '' }}">
+                    <i class="fas fa-star w-4 text-center"></i> Avis clients
                 </a>
-                <a href="{{ route('provider.client-conversations.index') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.client-conversations.*') ? 'active' : '' }}">
-                    <i class="fas fa-message w-4 text-center"></i>
-                    <span class="flex-1">Messages clients</span>
-                    @if($sidebarClientMessagingUnreadCount > 0)
-                        <span class="inline-flex min-w-[1.2rem] h-[1.2rem] px-1 items-center justify-center rounded-full bg-orange-500 text-black text-[10px] font-bold leading-none">
-                            {{ $sidebarClientMessagingUnreadCount > 99 ? '99+' : $sidebarClientMessagingUnreadCount }}
-                        </span>
-                    @endif
+                <a href="{{ route('provider.disputes.index') }}" class="sidebar-link {{ request()->routeIs('provider.disputes.*') ? 'active' : '' }}">
+                    <i class="fas fa-scale-balanced w-4 text-center"></i> Litiges
                 </a>
-                @if($providerIsArtCategory ?? false)
-                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Espace Art &amp; Créations</p>
-                    <a href="{{ route('provider.artworks.dashboard') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.artworks.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
-                    </a>
-                    <a href="{{ route('provider.artworks.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.artworks.index') || request()->routeIs('provider.artworks.create') || request()->routeIs('provider.artworks.edit') ? 'active' : '' }}">
-                        <i class="fas fa-palette w-4 text-center"></i> Mes œuvres
-                    </a>
-                    <a href="{{ route('provider.art-orders.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.art-orders.*') ? 'active' : '' }}">
-                        <i class="fas fa-box-open w-4 text-center"></i> Commandes Art
-                    </a>
-                    <a href="{{ route('provider.artist-profile.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.artist-profile.*', 'provider.art-offers.*', 'provider.art-commissions.*') ? 'active' : '' }}">
-                        <i class="fas fa-id-badge w-4 text-center"></i> Page artiste, offres, sur mesure
-                    </a>
-                    <a href="{{ route('provider.wallet.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
+
+                {{-- Visibilité et ventes --}}
+                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Visibilité &amp; ventes</p>
+                <a href="{{ route('provider.promo-codes.index') }}" class="sidebar-link {{ request()->routeIs('provider.promo-codes.*') ? 'active' : '' }}">
+                    <i class="fas fa-tag w-4 text-center"></i> Codes promo
+                </a>
+                <a href="{{ route('provider.gift-cards.index') }}" class="sidebar-link {{ request()->routeIs('provider.gift-cards.*') ? 'active' : '' }}">
+                    <i class="fas fa-gift w-4 text-center"></i> Bons cadeaux
+                </a>
+                <a href="{{ route('provider.media.index') }}" class="sidebar-link {{ request()->routeIs('provider.media.*') ? 'active' : '' }}">
+                    <i class="fas fa-images w-4 text-center"></i> Publications
+                </a>
+                <a href="{{ route('provider.videos.index') }}" class="sidebar-link {{ request()->routeIs('provider.videos.*') ? 'active' : '' }}">
+                    <i class="fas fa-film w-4 text-center"></i> Mes vidéos
+                </a>
+
+                {{-- Finances --}}
+                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Finances</p>
+                @if($pvWallet)
+                    <a href="{{ route('provider.wallet.index') }}" class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
                         <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
                     </a>
                 @endif
-                @if($providerIsRestaurantCategory ?? false)
-                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Espace Restaurant</p>
-                    <a href="{{ route('provider.menu.dashboard') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.menu.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
-                    </a>
-                    <a href="{{ route('provider.restaurant.profile.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.restaurant.profile.*') ? 'active' : '' }}">
-                        <i class="fas fa-utensils w-4 text-center"></i> Fiche établissement
-                    </a>
-                    <a href="{{ route('provider.menu.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.menu.index') || request()->routeIs('provider.menu.create') || request()->routeIs('provider.menu.edit') ? 'active' : '' }}">
-                        <i class="fas fa-book-open w-4 text-center"></i> Ma carte
-                    </a>
-                    <a href="{{ route('provider.restaurant.tables.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.restaurant.tables.*') ? 'active' : '' }}">
-                        <i class="fas fa-chair w-4 text-center"></i> Tables & plat du jour
-                    </a>
-                    <a href="{{ route('provider.restaurant.gallery.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.restaurant.gallery.*') ? 'active' : '' }}">
-                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
-                    </a>
-                    <a href="{{ route('provider.wallet.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
-                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
-                    </a>
-                @endif
-                @if($providerIsTravelAgencyCategory ?? false)
-                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Espace Agence de Voyages</p>
-                    <a href="{{ route('provider.tours.dashboard') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.tours.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
-                    </a>
-                    <a href="{{ route('provider.travel-agency.profile.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.travel-agency.profile.*') ? 'active' : '' }}">
-                        <i class="fas fa-plane w-4 text-center"></i> Fiche établissement
-                    </a>
-                    <a href="{{ route('provider.tours.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.tours.index') || request()->routeIs('provider.tours.create') || request()->routeIs('provider.tours.edit') ? 'active' : '' }}">
-                        <i class="fas fa-route w-4 text-center"></i> Mes circuits
-                    </a>
-                    <a href="{{ route('provider.travel-agency.gallery.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.travel-agency.gallery.*') ? 'active' : '' }}">
-                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
-                    </a>
-                    <a href="{{ route('provider.wallet.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
-                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
-                    </a>
-                @endif
-                @if($providerIsLeisureCategory ?? false)
-                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Activités</p>
-                    <a href="{{ route('provider.activities.dashboard') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.activities.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
-                    </a>
-                    <a href="{{ route('provider.activities.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.activities.index') || request()->routeIs('provider.activities.create') || request()->routeIs('provider.activities.edit') ? 'active' : '' }}">
-                        <i class="fas fa-person-hiking w-4 text-center"></i> Mes activités
-                    </a>
-                    <a href="{{ route('provider.activity-bookings.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.activity-bookings.*', 'provider.leisure-resources.*', 'provider.leisure-packages.*', 'provider.leisure-passes.*') ? 'active' : '' }}">
-                        <i class="fas fa-ticket w-4 text-center"></i> Réservations, formules, cartes
-                    </a>
-                    <a href="{{ route('provider.tickets.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.tickets.*') ? 'active' : '' }}">
-                        <i class="fas fa-qrcode w-4 text-center"></i> Scanner les billets
-                    </a>
-                    <a href="{{ route('provider.wallet.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
-                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
-                    </a>
-                @endif
-                @if($providerIsTouristExperienceCategory ?? false)
-                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Mon établissement</p>
-                    <a href="{{ route('provider.tourist-experience.dashboard') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.tourist-experience.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
-                    </a>
-                    <a href="{{ route('provider.tourist-experience.profile.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.tourist-experience.profile.*') ? 'active' : '' }}">
-                        <i class="fas fa-landmark w-4 text-center"></i> Fiche établissement
-                    </a>
-                    <a href="{{ route('provider.tourist-experience.gallery.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.tourist-experience.gallery.*') ? 'active' : '' }}">
-                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
-                    </a>
-                @endif
-                @if($providerIsLeisureVenueCategory ?? false)
-                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Mon établissement</p>
-                    <a href="{{ route('provider.leisure-venue.dashboard') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.leisure-venue.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
-                    </a>
-                    <a href="{{ route('provider.leisure-venue.profile.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.leisure-venue.profile.*') ? 'active' : '' }}">
-                        <i class="fas fa-masks-theater w-4 text-center"></i> Fiche établissement
-                    </a>
-                    <a href="{{ route('provider.leisure-venue.gallery.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.leisure-venue.gallery.*') ? 'active' : '' }}">
-                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
-                    </a>
-                @endif
-                @if($providerIsTransportCategory ?? false)
-                    <p class="px-3 py-1.5 text-xs font-semibold text-orange-400/90 uppercase tracking-wider mt-3">Espace Transport</p>
-                    <a href="{{ route('provider.transport.dashboard') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.transport.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-house-chimney w-4 text-center"></i> Tableau de bord
-                    </a>
-                    <a href="{{ route('provider.transport-company.profile.edit') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.transport-company.profile.*') ? 'active' : '' }}">
-                        <i class="fas fa-car w-4 text-center"></i> Fiche établissement
-                    </a>
-                    <a href="{{ route('provider.transport.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.transport.index') || request()->routeIs('provider.transport.create') || request()->routeIs('provider.transport.edit') ? 'active' : '' }}">
-                        <i class="fas fa-car-side w-4 text-center"></i> Mes offres
-                    </a>
-                    <a href="{{ route('provider.transport-bookings.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.transport-bookings.*', 'provider.transport-fleet.*', 'provider.transport-trips.*') ? 'active' : '' }}">
-                        <i class="fas fa-calendar-check w-4 text-center"></i> Planning, flotte, lignes
-                    </a>
-                    <a href="{{ route('provider.transport-company.gallery.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.transport-company.gallery.*') ? 'active' : '' }}">
-                        <i class="fas fa-photo-film w-4 text-center"></i> Galerie photos
-                    </a>
-                    <a href="{{ route('provider.wallet.index') }}"
-                       class="sidebar-link {{ request()->routeIs('provider.wallet.*') ? 'active' : '' }}">
-                        <i class="fas fa-wallet w-4 text-center"></i> Portefeuille
-                    </a>
-                @endif
-                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Abonnement</p>
-                <a href="{{ route('provider.billing.plans') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.billing.plans') || request()->routeIs('provider.billing.checkout') ? 'active' : '' }}">
+                <a href="{{ route('provider.billing.plans') }}" class="sidebar-link {{ request()->routeIs('provider.billing.plans') || request()->routeIs('provider.billing.checkout') ? 'active' : '' }}">
                     <i class="fas fa-gem w-4 text-center"></i> Mon forfait
                 </a>
-                <a href="{{ route('provider.billing.invoices') }}"
-                   class="sidebar-link {{ request()->routeIs('provider.billing.invoices') || request()->routeIs('provider.billing.confirmation') ? 'active' : '' }}">
+                <a href="{{ route('provider.billing.invoices') }}" class="sidebar-link {{ request()->routeIs('provider.billing.invoices') || request()->routeIs('provider.billing.confirmation') ? 'active' : '' }}">
                     <i class="fas fa-file-invoice w-4 text-center"></i> Factures
                 </a>
 
+                {{-- Compte --}}
+                <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider mt-3">Compte</p>
+                <a href="{{ route('provider.profile.edit') }}" class="sidebar-link {{ request()->routeIs('provider.profile.*') ? 'active' : '' }}">
+                    <i class="fas fa-store w-4 text-center"></i> Profil &amp; horaires
+                </a>
+                <a href="{{ route('provider.verification.index') }}" class="sidebar-link {{ request()->routeIs('provider.verification.*') ? 'active' : '' }}">
+                    <i class="fas fa-id-card w-4 text-center"></i> Vérification du compte
+                </a>
+                <a href="{{ route('provider.team.index') }}" class="sidebar-link {{ request()->routeIs('provider.team.*') ? 'active' : '' }}">
+                    <i class="fas fa-users w-4 text-center"></i> Mon équipe
+                </a>
+                <a href="{{ route('provider.conversations.index') }}" class="sidebar-link {{ request()->routeIs('provider.conversations.*') ? 'active' : '' }}">
+                    <i class="fas fa-headset w-4 text-center"></i> <span class="flex-1">Support Trésors d'Ivoire</span>
+                    @if($sidebarMessagingUnreadCount > 0)<span class="{{ $pvBadge }}">{{ $sidebarMessagingUnreadCount > 99 ? '99+' : $sidebarMessagingUnreadCount }}</span>@endif
+                </a>
+                <a href="{{ route('provider.notifications.index') }}" class="sidebar-link {{ request()->routeIs('provider.notifications.*') ? 'active' : '' }}">
+                    <i class="fas fa-bell w-4 text-center"></i> Notifications
+                </a>
                 @endif
             @else {{-- visitor --}}
                 <p class="px-3 py-1.5 text-xs font-semibold text-slate-600 uppercase tracking-wider">Espace visiteur</p>
@@ -973,7 +954,7 @@
         {{-- User footer --}}
         <div class="border-t border-slate-800 p-4 {{ $admShell ? 'admin-sidebar-footer' : '' }}">
             <div class="flex items-center gap-3 {{ $admShell ? 'user-card' : '' }}">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-xs font-bold shrink-0 {{ $admShell ? 'user-avatar' : '' }}">
+                <div class="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs font-bold shrink-0 {{ $admShell ? 'user-avatar' : '' }}">
                     {{ auth()->user()->initials }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -1041,18 +1022,85 @@
                 <span class="text-slate-500 text-xs hidden sm:block">
                     {{ now()->locale('fr')->isoFormat('dddd D MMMM YYYY') }}
                 </span>
+
+                {{-- Menu utilisateur --}}
+                @php
+                    $umUser = auth()->user();
+                    $umRoleLabel = ['admin' => 'Admin', 'editor' => 'Éditeur', 'provider' => 'Prestataire', 'visitor' => 'Visiteur'][$role] ?? ucfirst($role);
+                    $umProfile = $role === 'visitor' ? route('visitor.profile.edit') : route('account.edit');
+                    $umPassword = $role === 'visitor' ? route('visitor.profile.edit') : route('account.edit').'#mot-de-passe';
+                    $umSettings = match ($role) {
+                        'admin' => route('admin.administration.settings'),
+                        'provider' => route('provider.profile.edit'),
+                        default => null,
+                    };
+                @endphp
+                <div class="um" id="user-menu">
+                    <button type="button" class="um-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu-panel">
+                        <span class="um-av"><span>@if($umUser->avatar_url)<img src="{{ $umUser->avatar_url }}" alt="">@else{{ $umUser->initials }}@endif</span></span>
+                        <span class="um-who">
+                            <b>{{ $umUser->full_name }}</b>
+                            <small>{{ $umRoleLabel }}</small>
+                        </span>
+                        <i class="fas fa-chevron-down um-chev" aria-hidden="true"></i>
+                    </button>
+                    <div class="um-panel" id="user-menu-panel" role="menu" hidden>
+                        <div class="um-head">
+                            @include('partials.ivorian-motifs', ['culture' => 'national'])
+                            <span class="um-av is-lg"><span>@if($umUser->avatar_url)<img src="{{ $umUser->avatar_url }}" alt="">@else{{ $umUser->initials }}@endif</span></span>
+                            <div class="um-head__txt">
+                                <b>{{ $umUser->full_name }}</b>
+                                <small>{{ $umUser->email }}</small>
+                                <span class="um-badge"><i class="fas fa-shield-halved"></i>{{ $umRoleLabel }}</span>
+                            </div>
+                        </div>
+                        <div class="um-list">
+                            <a href="{{ $umProfile }}" class="um-item" role="menuitem" style="--t: 49,98,28">
+                                <span class="um-ic"><i class="fas fa-user"></i></span>
+                                <span class="um-txt"><b>Mon profil</b><small>Identité et coordonnées</small></span>
+                                <i class="fas fa-arrow-right um-go" aria-hidden="true"></i>
+                            </a>
+                            <a href="{{ $umPassword }}" class="um-item" role="menuitem" style="--t: 201,138,12">
+                                <span class="um-ic"><i class="fas fa-key"></i></span>
+                                <span class="um-txt"><b>Modifier mot de passe</b><small>Sécurité du compte</small></span>
+                                <i class="fas fa-arrow-right um-go" aria-hidden="true"></i>
+                            </a>
+                            @if($umSettings)
+                                <a href="{{ $umSettings }}" class="um-item" role="menuitem" style="--t: 50,118,97">
+                                    <span class="um-ic"><i class="fas fa-sliders"></i></span>
+                                    <span class="um-txt"><b>Paramètres</b><small>{{ $role === 'admin' ? 'Réglages de la plateforme' : 'Fiche de votre activité' }}</small></span>
+                                    <i class="fas fa-arrow-right um-go" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                            <div class="um-sep"></div>
+                            <a href="{{ route('home') }}" class="um-item" role="menuitem" style="--t: 239,124,43">
+                                <span class="um-ic"><i class="fas fa-house"></i></span>
+                                <span class="um-txt"><b>Retour au site</b><small>Trésors d'Ivoire</small></span>
+                                <i class="fas fa-arrow-right um-go" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="um-out" role="menuitem"><i class="fas fa-power-off"></i>Déconnexion</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </header>
 
         {{-- Page content --}}
         <main class="flex-1 p-4 sm:p-6 lg:p-8">
+            {{-- Espace prestataire : fond de page à motifs ivoiriens très discrets (comme le tableau de bord admin). --}}
+            @if($role === 'provider')
+                <div class="pv-bg" aria-hidden="true">@include('partials.ivorian-motifs', ['culture' => 'national', 'band' => false])</div>
+            @endif
             @if($role === 'admin')
                 @php
                     $schedulerLastRun = \Illuminate\Support\Facades\Cache::get('scheduler:last_run');
                     $schedulerStale = ! $schedulerLastRun || \Illuminate\Support\Carbon::parse($schedulerLastRun)->lt(now()->subMinutes(15));
                 @endphp
                 @if($schedulerStale)
-                    <div class="mb-4 p-3 rounded-lg border text-sm flex items-start gap-2" style="background:#fff4e5;border-color:#f2b27a;color:#7a3204;">
+                    <div class="mb-4 p-3 rounded-lg border text-sm flex items-start gap-2" style="background:#F3F8F5;border-color:#F7C396;color:#B85600;">
                         <i class="fas fa-triangle-exclamation mt-0.5"></i>
                         <span><strong>Tâches planifiées arrêtées.</strong> Le cron <code>php artisan schedule:run</code> ne tourne pas sur le serveur
                         {{ $schedulerLastRun ? '(dernière exécution '.\Illuminate\Support\Carbon::parse($schedulerLastRun)->locale('fr')->diffForHumans().')' : '(aucune exécution enregistrée)' }} :
@@ -1078,6 +1126,21 @@
             sidebar.classList.toggle('-translate-x-full');
             overlay.classList.toggle('hidden');
         }
+
+        (function () {
+            const menu = document.getElementById('user-menu');
+            if (!menu) return;
+            const trigger = menu.querySelector('.um-trigger');
+            const panel = menu.querySelector('.um-panel');
+            const setOpen = (open) => {
+                panel.hidden = !open;
+                trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                menu.classList.toggle('is-open', open);
+            };
+            trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(panel.hidden); });
+            document.addEventListener('click', (e) => { if (!menu.contains(e.target)) setOpen(false); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) { setOpen(false); trigger.focus(); } });
+        })();
 
         const successToast = document.getElementById('success-toast');
         if (successToast) {

@@ -85,7 +85,7 @@ class SiteSetting extends Model
             return static::defaultBranding();
         }
 
-        return Cache::remember(self::BRAND_CACHE_KEY, 3600, function (): array {
+        $brand = Cache::remember(self::BRAND_CACHE_KEY, 3600, function (): array {
             $s = static::query()->find(1);
 
             return array_merge([
@@ -97,6 +97,8 @@ class SiteSetting extends Model
                 'maintenance_mode' => (bool) ($s?->maintenance_mode ?? false),
             ], static::contactAndSocialPayload());
         });
+
+        return array_merge($brand, static::charterLogos());
     }
 
     public static function forgetBrandCache(): void
@@ -124,7 +126,30 @@ class SiteSetting extends Model
             'logo_url' => null,
             'favicon_url' => null,
             'maintenance_mode' => false,
-        ], static::contactAndSocialPayload());
+        ], static::contactAndSocialPayload(), static::charterLogos());
+    }
+
+    /**
+     * Charte graphique « Le Joyau » (V1, octobre 2026) : fichiers maîtres du logo, déclinés pour le web
+     * dans public/images/brand (fond transparent). Ils priment sur l'ancien logo enregistré en base.
+     *
+     * @return array<string, string>
+     */
+    public static function charterLogos(): array
+    {
+        $v = '?v=2026-10';
+
+        return [
+            // Les emplacements historiques du logo sont carrés ou ronds : l'emblème seul y est utilisé ;
+            // la version horizontale complète est placée explicitement (en-tête, pied de page, connexion).
+            'logo_url' => '/images/brand/emblem.png'.$v,
+            'logo_horizontal_url' => '/images/brand/logo-horizontal.png'.$v, // version principale horizontale
+            'logo_compact_url' => '/images/brand/logo-horizontal-compact.png'.$v, // sans signature (< 200 px de large)
+            'logo_vertical_url' => '/images/brand/logo-vertical.png'.$v, // couvertures, pages d'accueil de compte
+            'emblem_url' => '/images/brand/emblem.png'.$v,                // emblème seul (petits formats)
+            'favicon_url' => '/images/brand/favicon-32.png'.$v,
+            'apple_icon_url' => '/images/brand/apple-touch-icon.png'.$v,
+        ];
     }
 
     /**

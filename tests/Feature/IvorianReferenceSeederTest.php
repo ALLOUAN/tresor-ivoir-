@@ -36,7 +36,8 @@ class IvorianReferenceSeederTest extends TestCase
         $tai = TouristSite::where('slug', 'parc-national-tai')->firstOrFail();
         $this->assertSame('https://whc.unesco.org/fr/list/195', $tai->sources[0]['url']);
         // Les 8 mosquées du bien UNESCO : 6 fiches + Kong (grande et petite mosquée sur une même fiche).
-        $this->assertSame(6, TouristSite::where('slug', 'like', 'mosquee-%')->count());
+        // Liste explicite : d'autres mosquées (hors bien UNESCO, ex. Ganhoué à Touba) ont aussi un slug « mosquee-… ».
+        $this->assertSame(6, TouristSite::whereIn('slug', ['mosquee-kaouara', 'mosquee-kouto', 'mosquee-tengrela', 'mosquee-samatiguila', 'mosquee-nambira', 'mosquee-sorobango'])->count());
         $this->assertTrue(TouristSite::where('slug', 'grande-mosquee-kong')->exists());
 
         $gouro = CulturalPeople::where('slug', 'gouro')->firstOrFail();

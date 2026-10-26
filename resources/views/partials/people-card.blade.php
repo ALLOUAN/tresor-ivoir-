@@ -14,7 +14,7 @@
         default => null,
     };
     // Sans photo : couleur et motif stables par peuple (aplats du logo).
-    $palette = [['#b9500a', 'diamond'], ['#1b6b3a', 'cross'], ['#327661', 'ring'], ['#8a6a1f', 'diamond'], ['#497318', 'ring'], ['#9a4308', 'cross']];
+    $palette = [['#EB6E00', 'diamond'], ['#00874F', 'cross'], ['#00874F', 'ring'], ['#B85600', 'diamond'], ['#00874F', 'ring'], ['#B85600', 'cross']];
     [$pColor, $pMotif] = $palette[crc32($people->slug ?: $people->name) % count($palette)];
     $pPatternId = 'pp-'.$people->id;
 @endphp

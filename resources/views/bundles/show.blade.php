@@ -9,17 +9,17 @@
     @include('partials.theme-light-bridge')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
-        .bento-card { border: 1px solid rgba(0,0,0,0.07); background: #fdfcf9; box-shadow: 0 10px 28px rgba(20,18,12,0.06); }
-        .contact-card { border: 1px solid rgba(0,0,0,0.08); background: #fdfbf7; box-shadow: 0 20px 50px rgba(20,18,12,0.1); }
-        .btn-primary { background: #ef7c2b; color: #fff; }
-        .btn-primary:hover { background: #d96a1c; }
-        .bundle-hero { position: relative; background: #14130f; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
+        .bento-card { border: 1px solid rgba(14,59,42,0.07); background: #FFFFFF; box-shadow: 0 10px 28px rgba(14,59,42,0.06); }
+        .contact-card { border: 1px solid rgba(14,59,42,0.08); background: #FFFFFF; box-shadow: 0 20px 50px rgba(14,59,42,0.1); }
+        .btn-primary { background: #EB6E00; color: #fff; }
+        .btn-primary:hover { background: #EB6E00; }
+        .bundle-hero { position: relative; background: #0E3B2A; }
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="text-[#1c1915]">
+<body class="text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -32,9 +32,9 @@
                     <p class="text-white/80 mt-3 text-lg">{{ $bundle->localized('summary') }}</p>
                 @endif
                 <div class="flex flex-wrap gap-2 mt-5 text-sm">
-                    <span class="px-3 py-1.5 rounded-full bg-white/10"><i class="fas fa-clock mr-1.5 text-[#febf48]"></i>{{ trans_choice(':count jour|:count jours', $bundle->duration_days) }}</span>
-                    @if($bundle->city)<span class="px-3 py-1.5 rounded-full bg-white/10"><i class="fas fa-location-dot mr-1.5 text-[#febf48]"></i>{{ $bundle->city->name }}</span>@endif
-                    <span class="px-3 py-1.5 rounded-full bg-white/10"><i class="fas fa-users mr-1.5 text-[#febf48]"></i>{{ $bundle->max_people ? __(':min à :max voyageurs', ['min' => $bundle->min_people, 'max' => $bundle->max_people]) : __('À partir de :min voyageur(s)', ['min' => $bundle->min_people]) }}</span>
+                    <span class="px-3 py-1.5 rounded-full bg-white/10"><i class="fas fa-clock mr-1.5 text-[#EB6E00]"></i>{{ trans_choice(':count jour|:count jours', $bundle->duration_days) }}</span>
+                    @if($bundle->city)<span class="px-3 py-1.5 rounded-full bg-white/10"><i class="fas fa-location-dot mr-1.5 text-[#EB6E00]"></i>{{ $bundle->city->name }}</span>@endif
+                    <span class="px-3 py-1.5 rounded-full bg-white/10"><i class="fas fa-users mr-1.5 text-[#EB6E00]"></i>{{ $bundle->max_people ? __(':min à :max voyageurs', ['min' => $bundle->min_people, 'max' => $bundle->max_people]) : __('À partir de :min voyageur(s)', ['min' => $bundle->min_people]) }}</span>
                 </div>
             </div>
             <div class="lg:col-span-2">
@@ -50,7 +50,7 @@
             @if($bundle->localized('description'))
                 <section>
                     <h2 class="font-serif text-2xl font-bold mb-3">{{ __('Le programme') }}</h2>
-                    <div class="bento-card rounded-2xl p-5 text-[#3d372c] leading-relaxed whitespace-pre-line">{{ $bundle->localized('description') }}</div>
+                    <div class="bento-card rounded-2xl p-5 text-[#24503D] leading-relaxed whitespace-pre-line">{{ $bundle->localized('description') }}</div>
                 </section>
             @endif
 
@@ -59,7 +59,7 @@
                     <h2 class="font-serif text-2xl font-bold mb-3">{{ __('Ce qui est compris') }}</h2>
                     <ul class="bento-card rounded-2xl p-5 space-y-2.5">
                         @foreach($bundle->highlights as $h)
-                            <li class="flex items-start gap-2.5 text-sm"><i class="fas fa-circle-check text-[#31621c] mt-0.5"></i><span>{{ $h }}</span></li>
+                            <li class="flex items-start gap-2.5 text-sm"><i class="fas fa-circle-check text-[#00874F] mt-0.5"></i><span>{{ $h }}</span></li>
                         @endforeach
                     </ul>
                 </section>
@@ -70,10 +70,10 @@
                     <h2 class="font-serif text-2xl font-bold mb-3">{{ __('Les adresses de votre séjour') }}</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         @foreach($items as $item)
-                            <a href="{{ $item['url'] ?? '#' }}" class="bento-card rounded-2xl p-4 flex items-center gap-3 hover:border-[#31621c]/40 transition">
-                                <span class="w-10 h-10 rounded-xl bg-[#31621c]/10 text-[#31621c] flex items-center justify-center shrink-0"><i class="fas fa-map-pin"></i></span>
+                            <a href="{{ $item['url'] ?? '#' }}" class="bento-card rounded-2xl p-4 flex items-center gap-3 hover:border-[#00874F]/40 transition">
+                                <span class="w-10 h-10 rounded-xl bg-[#00874F]/10 text-[#00874F] flex items-center justify-center shrink-0"><i class="fas fa-map-pin"></i></span>
                                 <span class="min-w-0">
-                                    <span class="block text-xs text-[#6b6255]">{{ $item['label'] }}</span>
+                                    <span class="block text-xs text-[#557466]">{{ $item['label'] }}</span>
                                     <span class="block font-semibold truncate">{{ $item['model']->name }}</span>
                                 </span>
                             </a>
@@ -86,9 +86,9 @@
         <aside class="lg:col-span-2">
             <div class="lg:sticky lg:top-24 space-y-3">
                 <div class="bento-card rounded-2xl p-5">
-                    <p class="text-sm text-[#6b6255]">{{ __('Prix par personne') }}</p>
-                    <p class="text-3xl font-extrabold text-[#31621c]">{{ number_format($bundle->price_xof, 0, ',', ' ') }} FCFA</p>
-                    <p class="text-xs text-[#6b6255] mt-1">{{ __('Le prix final est confirmé par l\'organisateur, puis réglé en ligne de façon sécurisée.') }}</p>
+                    <p class="text-sm text-[#557466]">{{ __('Prix par personne') }}</p>
+                    <p class="text-3xl font-extrabold text-[#00874F]">{{ number_format($bundle->price_xof, 0, ',', ' ') }} FCFA</p>
+                    <p class="text-xs text-[#557466] mt-1">{{ __('Le prix final est confirmé par l\'organisateur, puis réglé en ligne de façon sécurisée.') }}</p>
                 </div>
                 @include('partials.booking-request-form', ['type' => 'bundle', 'target' => $bundle])
             </div>
@@ -102,7 +102,7 @@
                 @foreach($others as $o)
                     <a href="{{ route('bundles.show', $o) }}" class="bento-card rounded-2xl p-4">
                         <p class="font-semibold">{{ $o->localized('title') }}</p>
-                        <p class="text-sm text-[#31621c] font-bold mt-1">{{ number_format($o->price_xof, 0, ',', ' ') }} FCFA <span class="text-xs text-[#6b6255] font-normal">{{ __('/ personne') }}</span></p>
+                        <p class="text-sm text-[#00874F] font-bold mt-1">{{ number_format($o->price_xof, 0, ',', ' ') }} FCFA <span class="text-xs text-[#557466] font-normal">{{ __('/ personne') }}</span></p>
                     </a>
                 @endforeach
             </div>

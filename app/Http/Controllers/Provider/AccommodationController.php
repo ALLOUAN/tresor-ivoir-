@@ -32,10 +32,7 @@ class AccommodationController extends Controller
     /** Un hébergement ne peut être géré que par un prestataire de la catégorie "hôtels". */
     private function assertAccommodationCategory(Provider $provider): void
     {
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-
-        abort_unless($rootSlug === 'hotels', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Hôtels & Hébergements.');
+        abort_unless($provider->hasSector('hotels'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Hôtels & Hébergements.');
     }
 
     /** Sans fiche établissement, on renvoie vers « Ma fiche » avec un message clair plutôt qu'un 404. */

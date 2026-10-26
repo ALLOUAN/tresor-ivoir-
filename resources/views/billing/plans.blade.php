@@ -50,6 +50,12 @@
     @endif
 </div>
 
+{{-- Prestataire multi-secteurs : un abonnement par secteur, et l'ajout d'un secteur (paiement unique pour la sélection). --}}
+@php $billingProvider = \App\Models\Provider::forUser(auth()->id()); @endphp
+@if($billingProvider)
+    @include('provider.partials.sectors', ['provider' => $billingProvider])
+@endif
+
 {{-- Plans --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     @foreach($plans as $plan)

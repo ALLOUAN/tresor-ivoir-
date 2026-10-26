@@ -11,50 +11,50 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #f6f3ed; color: #1c1915; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Montserrat', sans-serif; background: #F3F8F5; color: #0E3B2A; }
+        .font-serif { font-family: 'Montserrat', serif; }
         .btn-primary { background: #C0392B; box-shadow: 0 12px 28px rgba(192,57,43,0.3); color: #fff; transition: transform .2s ease, filter .2s ease; }
         .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
-        .hero-cover { position: relative; overflow: hidden; background: #14130f; }
+        .hero-cover { position: relative; overflow: hidden; background: #0E3B2A; }
         .hero-cover img { transition: transform .6s ease; }
         .hero-cover:hover img { transform: scale(1.05); }
         .gallery-tile { position: relative; overflow: hidden; cursor: pointer; border-radius: .85rem; }
         .gallery-tile img { transition: transform .4s ease; }
         .gallery-tile:hover img { transform: scale(1.08); }
-        .bento-card { border: 1px solid rgba(0,0,0,0.07); background: #fdfcf9; box-shadow: 0 10px 28px rgba(20,18,12,0.06); }
+        .bento-card { border: 1px solid rgba(14,59,42,0.07); background: #FFFFFF; box-shadow: 0 10px 28px rgba(14,59,42,0.06); }
         .bento-icon { width: 2.2rem; height: 2.2rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; background: rgba(192, 57, 43, 0.12); color: #C0392B; }
         .section-kicker { letter-spacing: .22em; }
         /* « Notre carte » : une feuille de menu, pas une grille de tuiles. */
-        .menu-sheet { background: #fffdf8; border: 1px solid #e8e1d3; border-radius: 6px; padding: 26px 28px 22px; }
+        .menu-sheet { background: #FFFFFF; border: 1px solid #D8E9E0; border-radius: 6px; padding: 26px 28px 22px; }
         .menu-group + .menu-group { margin-top: 26px; }
         .menu-group__title { display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
             font-family: var(--font-serif, Georgia, serif); font-style: italic; font-size: 19px; font-weight: 600; color: #8a2b1f; }
-        .menu-group__title::after { content: ''; flex: 1; height: 1px; background: #e2d6c1; }
+        .menu-group__title::after { content: ''; flex: 1; height: 1px; background: #D8E9E0; }
         .menu-item { display: flex; align-items: flex-start; gap: 12px; padding: 9px 0; }
-        .menu-item + .menu-item { border-top: 1px dashed #ece4d4; }
+        .menu-item + .menu-item { border-top: 1px dashed #D8E9E0; }
         .menu-item__img { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; object-fit: cover; }
         .menu-item__line { display: flex; align-items: baseline; gap: 8px; }
-        .menu-item__name { font-size: 15px; font-weight: 600; color: #1c1915; text-decoration: none; }
-        a.menu-item__name:hover { color: #9a4308; text-decoration: underline; text-underline-offset: 3px; }
-        .menu-item.is-picked { margin: 0 -12px; padding: 9px 12px; border-radius: 12px; background: #fdf4ec; border-top-color: transparent; }
+        .menu-item__name { font-size: 15px; font-weight: 600; color: #0E3B2A; text-decoration: none; }
+        a.menu-item__name:hover { color: #B85600; text-decoration: underline; text-underline-offset: 3px; }
+        .menu-item.is-picked { margin: 0 -12px; padding: 9px 12px; border-radius: 12px; background: #F3F8F5; border-top-color: transparent; }
         .menu-item.is-picked + .menu-item { border-top-color: transparent; }
-        .menu-item.is-picked .menu-item__name { color: #9a4308; }
-        .menu-item__dots { flex: 1; min-width: 16px; border-bottom: 1px dotted #b9ab92; transform: translateY(-4px); }
-        .menu-item__price { flex-shrink: 0; font-size: 14px; font-weight: 700; color: #1c1915; font-variant-numeric: tabular-nums; }
-        .menu-item__desc { margin-top: 2px; font-size: 13px; line-height: 1.5; color: #7a705f; }
+        .menu-item.is-picked .menu-item__name { color: #B85600; }
+        .menu-item__dots { flex: 1; min-width: 16px; border-bottom: 1px dotted #8AA99B; transform: translateY(-4px); }
+        .menu-item__price { flex-shrink: 0; font-size: 14px; font-weight: 700; color: #0E3B2A; font-variant-numeric: tabular-nums; }
+        .menu-item__desc { margin-top: 2px; font-size: 13px; line-height: 1.5; color: #557466; }
         .menu-sheet__more { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; padding-top: 14px;
-            border-top: 1px solid #e8e1d3; width: 100%; font-size: 13px; font-weight: 600; color: #a5341f; }
+            border-top: 1px solid #D8E9E0; width: 100%; font-size: 13px; font-weight: 600; color: #a5341f; }
         .menu-sheet__more:hover { color: #7c2416; }
         @media (max-width: 639px) { .menu-sheet { padding: 20px 16px 16px; } .menu-item__name { font-size: 14px; } }
-        .review-card { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(20,18,12,0.05); }
-        .related-tile { border: 1px solid rgba(0,0,0,0.07); background: #ffffff; box-shadow: 0 10px 26px rgba(20,18,12,0.06); transition: transform .25s ease, box-shadow .25s ease; }
+        .review-card { border: 1px solid rgba(14,59,42,0.07); background: #ffffff; box-shadow: 0 8px 22px rgba(14,59,42,0.05); }
+        .related-tile { border: 1px solid rgba(14,59,42,0.07); background: #ffffff; box-shadow: 0 10px 26px rgba(14,59,42,0.06); transition: transform .25s ease, box-shadow .25s ease; }
         .related-tile:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(192,57,43,0.16); }
-        .contact-card { border: 1px solid rgba(0,0,0,0.08); background: #fdfbf7; box-shadow: 0 20px 50px rgba(20,18,12,0.1); }
+        .contact-card { border: 1px solid rgba(14,59,42,0.08); background: #FFFFFF; box-shadow: 0 20px 50px rgba(14,59,42,0.1); }
     </style>
     @include('partials.detail-theme')
     <link rel="stylesheet" href="{{ asset('css/tw-99914b93.css') }}?v={{ @filemtime(public_path('css/tw-99914b93.css')) }}">
 </head>
-<body class="dx text-[#1c1915]">
+<body class="dx text-[#0E3B2A]">
     @include('partials.page-background')
     @include('partials.public-top-nav')
 
@@ -73,11 +73,11 @@
 
                 {{-- ── EN-TÊTE + DESCRIPTION ──────────────────────────────── --}}
                 @if($restaurant->daily_special && $restaurant->daily_special_date?->isToday())
-                    <div class="rounded-2xl border border-[#febf48]/60 bg-[#fff8e6] px-5 py-4 flex items-center gap-4">
-                        <span class="w-11 h-11 rounded-xl bg-[#febf48] text-[#1c1915] flex items-center justify-center shrink-0"><i class="fas fa-bowl-food"></i></span>
+                    <div class="rounded-2xl border border-[#EB6E00]/60 bg-[#F3F8F5] px-5 py-4 flex items-center gap-4">
+                        <span class="w-11 h-11 rounded-xl bg-[#EB6E00] text-[#0E3B2A] flex items-center justify-center shrink-0"><i class="fas fa-bowl-food"></i></span>
                         <div class="min-w-0">
-                            <p class="text-xs font-bold text-[#c25e0a]">{{ __('Plat du jour') }}</p>
-                            <p class="font-semibold">{{ $restaurant->daily_special }}@if($restaurant->daily_special_price_xof) · <span class="text-[#31621c]">{{ number_format((int) $restaurant->daily_special_price_xof, 0, ',', ' ') }} FCFA</span>@endif</p>
+                            <p class="text-xs font-bold text-[#EB6E00]">{{ __('Plat du jour') }}</p>
+                            <p class="font-semibold">{{ $restaurant->daily_special }}@if($restaurant->daily_special_price_xof) · <span class="text-[#00874F]">{{ number_format((int) $restaurant->daily_special_price_xof, 0, ',', ' ') }} FCFA</span>@endif</p>
                         </div>
                     </div>
                 @endif
@@ -89,7 +89,7 @@
                 {{-- ── ÉQUIPEMENTS ────────────────────────────────────────── --}}
                 @if(!empty($restaurant->amenities))
                 <section class="reveal" id="equipements">
-                    <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('Confort') }}</p>
+                    <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Confort') }}</p>
                     <h2 class="font-serif text-2xl font-bold mb-5">{{ __('Équipements & services') }}</h2>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         @foreach($restaurant->amenities as $am)
@@ -105,7 +105,7 @@
                 {{-- ── NOTRE CARTE ─────────────────────────────────────────── --}}
                 @if($menuByCategory->isNotEmpty())
                 <section class="reveal" id="offre">
-                    <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('À déguster sur place') }}</p>
+                    <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('À déguster sur place') }}</p>
                     <h2 class="font-serif text-2xl font-bold mb-5">{{ __('Notre carte') }}</h2>
                     <div class="menu-sheet">
                         @foreach($menuByCategory as $categoryName => $itemGroup)
@@ -141,10 +141,10 @@
 
                 {{-- ── LOCALISATION ─────────────────────────────────────────── --}}
                 <section class="reveal" id="localisation">
-                    <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('Où se trouve l\'établissement') }}</p>
+                    <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('Où se trouve l\'établissement') }}</p>
                     <h2 class="font-serif text-2xl font-bold mb-4">{{ __('Localisation') }}</h2>
                     @if($restaurant->latitude && $restaurant->longitude)
-                        @include('partials.route-map', ['type' => 'restaurant', 'slug' => $restaurant->slug, 'lat' => $restaurant->latitude, 'lng' => $restaurant->longitude, 'name' => $restaurant->name, 'accent' => '#b9500a'])
+                        @include('partials.route-map', ['type' => 'restaurant', 'slug' => $restaurant->slug, 'lat' => $restaurant->latitude, 'lng' => $restaurant->longitude, 'name' => $restaurant->name, 'accent' => '#EB6E00'])
                         <a href="{{ route('directions.go', ['restaurant', $restaurant->slug]) }}" data-in-page-route target="_blank" rel="noopener noreferrer"
                            class="dx-route mt-3"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i> {{ __('Itinéraire') }}
                         </a>
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                     @else
-                        <p class="text-[#8a7f6b] text-sm">{{ __('Coordonnées non renseignées pour cet établissement.') }}</p>
+                        <p class="text-[#557466] text-sm">{{ __('Coordonnées non renseignées pour cet établissement.') }}</p>
                     @endif
                 </section>
 
@@ -177,7 +177,7 @@
                     @include('partials.gift-card-cta', ['provider' => $restaurant->provider])
                     <div class="contact-card rounded-3xl p-5" id="contact-card">
                         <h2 class="font-serif text-xl font-bold mb-1">{{ __('Contacter cet établissement') }}</h2>
-                        <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Posez vos questions directement, en toute sécurité, sans quitter la plateforme.') }}</p>
+                        <p class="text-[#557466] text-xs mb-4">{{ __('Posez vos questions directement, en toute sécurité, sans quitter la plateforme.') }}</p>
                         {{-- Arrivée depuis « Contacter à ce sujet » (?item=…) : rappel de l'élément choisi. --}}
                         @if(is_string(request('item')) && request('item') !== '')
                         <div class="ti-contact-item">
@@ -193,7 +193,7 @@
                                         @csrf
                                         <input type="hidden" name="provider_id" value="{{ $restaurant->provider->id }}">
                                         <textarea name="message" id="contact-message" rows="3" required maxlength="4000"
-                                                  class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm placeholder:text-[#a89f8f]"
+                                                  class="w-full bg-white border border-black/10 rounded-xl px-3.5 py-2.5 text-sm placeholder:text-[#8AA99B]"
                                                   placeholder="{{ __('Votre message...') }}"></textarea>
                                         <button type="submit" class="btn-primary btn-shine flex items-center justify-center gap-2.5 w-full px-5 py-3.5 rounded-2xl font-extrabold text-[14px]">
                                             <i class="fas fa-paper-plane text-sm"></i> {{ __('Envoyer le message') }}
@@ -204,12 +204,12 @@
                                 @endif
                             @else
                                 <div class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-5 text-center">
-                                    <p class="text-[#1c1915] font-bold text-sm mb-1">{{ __('Connectez-vous pour contacter cet établissement') }}</p>
+                                    <p class="text-[#0E3B2A] font-bold text-sm mb-1">{{ __('Connectez-vous pour contacter cet établissement') }}</p>
                                     <div class="flex items-center justify-center gap-2 mt-3">
                                         <a href="{{ route('login', ['redirect' => request()->getRequestUri()]) }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs">
                                             <i class="fas fa-right-to-bracket text-xs"></i> {{ __('Se connecter') }}
                                         </a>
-                                        <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#1c1915] transition">
+                                        <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri()]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 hover:border-orange-400/50 text-[#0E3B2A] transition">
                                             {{ __('Créer un compte') }}
                                         </a>
                                     </div>
@@ -221,7 +221,7 @@
                                 <i class="fas fa-phone text-sm"></i> {{ $restaurant->phone }}
                             </a>
                             @else
-                            <p class="text-[#8a7f6b] text-sm">{{ __('Aucun moyen de contact renseigné.') }}</p>
+                            <p class="text-[#557466] text-sm">{{ __('Aucun moyen de contact renseigné.') }}</p>
                             @endif
                         @endif
                     </div>
@@ -231,7 +231,7 @@
 
         @if($related->isNotEmpty())
         <section class="mt-16 reveal">
-            <p class="section-kicker text-[#b9500a] text-xs font-bold uppercase mb-2">{{ __('À découvrir aussi') }}</p>
+            <p class="section-kicker text-[#EB6E00] text-xs font-bold uppercase mb-2">{{ __('À découvrir aussi') }}</p>
             <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-6">{{ __('Établissements similaires') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach($related as $r)
@@ -242,7 +242,7 @@
         @endif
     </div>
 
-    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0a0907]/96 items-center justify-center p-4" onclick="closeLightbox()">
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-[#0E3B2A]/96 items-center justify-center p-4" onclick="closeLightbox()">
         <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" onclick="closeLightbox()">
             <i class="fas fa-xmark"></i>
         </button>

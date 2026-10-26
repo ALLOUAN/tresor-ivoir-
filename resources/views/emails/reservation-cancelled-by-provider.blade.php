@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Réservation annulée</title>
 </head>
-<body style="font-family: Arial, sans-serif; color: #1c1915; background:#f6f3ed; margin:0; padding:24px 0;">
-    <table role="presentation" width="100%" style="max-width:560px; margin:0 auto; background:#ffffff; border:1px solid rgba(0,0,0,.08); border-radius:14px; overflow:hidden;" cellpadding="0" cellspacing="0">
+<body style="font-family: Arial, sans-serif; color: #0E3B2A; background:#F3F8F5; margin:0; padding:24px 0;">
+    <table role="presentation" width="100%" style="max-width:560px; margin:0 auto; background:#ffffff; border:1px solid rgba(14,59,42,.08); border-radius:14px; overflow:hidden;" cellpadding="0" cellspacing="0">
         <tr>
-            <td style="background:#181511; padding:22px 26px;">
+            <td style="background:#0E3B2A; padding:22px 26px;">
                 @if(!empty($branding['logo_url']))
                     <img src="{{ $branding['logo_url'] }}" alt="{{ $branding['site_name'] }}" style="height:34px; display:block;">
                 @else
@@ -27,7 +27,7 @@
                 </ul>
 
                 @if($depositPaid)
-                    <p style="padding:12px 14px; background:#fff3e3; border-radius:8px;">
+                    <p style="padding:12px 14px; background:#F3F8F5; border-radius:8px;">
                         Votre acompte de <strong>{{ number_format((int) $reservation->deposit_amount_xof, 0, ',', ' ') }} XOF</strong> vous sera remboursé.
                         Notre équipe a été prévenue et vous contactera pour le remboursement. Le montant n'est pas versé à l'établissement.
                     </p>

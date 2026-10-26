@@ -22,9 +22,7 @@ class TouristVisitTypeController extends Controller
         $provider = Provider::forUserQuery(Auth::id())->first();
         abort_unless($provider, 404, 'Aucune fiche prestataire trouvée.');
 
-        $category = $provider->category;
-        $rootSlug = $category?->parent_id ? $category->parent?->slug : $category?->slug;
-        abort_unless($rootSlug === 'sites-touristiques', 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Sites Touristiques.');
+        abort_unless($provider->hasSector('sites-touristiques'), 403, 'Cette fonctionnalité est réservée aux prestataires de la catégorie Sites Touristiques.');
 
         $experience = $provider->touristExperience()->first();
         abort_unless($experience, 404, "Complétez d'abord la fiche établissement avant de créer des types de visite.");

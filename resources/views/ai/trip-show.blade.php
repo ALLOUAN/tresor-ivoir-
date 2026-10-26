@@ -25,7 +25,7 @@
 @endphp
 
 <main class="pb-16">
-    <section class="py-12 sm:py-14 text-center" style="background:#faf8f3">
+    <section class="py-12 sm:py-14 text-center" style="background:#FFFFFF">
         <div class="ai-wrap">
             <div class="ti-hero-card inline-block rounded-2xl px-6 py-8 sm:px-12 sm:py-10">
                 <p class="ai-kicker mb-3">{{ __('Mon séjour') }}</p>
@@ -41,7 +41,7 @@
         <section class="grid grid-cols-2 lg:grid-cols-4 gap-3" aria-label="{{ __('Synthèse') }}">
             <div class="ai-card ai-stat"><b>{{ $fcfa($s['total_cost']) }}</b><small>{{ __('Coût estimé') }} · {{ $s['travelers'] }} {{ __('pers.') }}</small></div>
             <div class="ai-card ai-stat"><b>{{ $s['budget'] > 0 ? $fcfa($s['budget']) : '—' }}</b><small>{{ __('Budget prévu') }}</small></div>
-            <div class="ai-card ai-stat"><b style="color:{{ $over ? '#c0362c' : '#1b6b3a' }}">{{ $s['remaining'] !== null ? $fcfa(abs($s['remaining'])) : '—' }}</b><small>{{ $over ? __('Dépassement') : __('Reste disponible') }}</small></div>
+            <div class="ai-card ai-stat"><b style="color:{{ $over ? '#c0362c' : '#00874F' }}">{{ $s['remaining'] !== null ? $fcfa(abs($s['remaining'])) : '—' }}</b><small>{{ $over ? __('Dépassement') : __('Reste disponible') }}</small></div>
             <div class="ai-card ai-stat"><b>{{ $s['km_total'] }} {{ __('km') }}</b><small>{{ __('Trajets estimés (route)') }}</small></div>
         </section>
         <p class="ai-muted text-sm -mt-2">{{ __('Dont hébergement :') }} {{ $fcfa($s['lodging_cost']) }} · {{ __('activités et repas :') }} {{ $fcfa($s['activities_cost']) }}.</p>
@@ -56,19 +56,19 @@
                 <header class="ai-day__head">
                     <span class="ai-day__no">{{ $d['index'] }}</span>
                     <div>
-                        <h2 id="day-{{ $d['index'] }}" class="font-bold" style="color:#1d1a16">{{ \Illuminate\Support\Carbon::parse($d['date'])->locale(app()->getLocale())->translatedFormat('l j F') }} · {{ $d['city'] }}</h2>
+                        <h2 id="day-{{ $d['index'] }}" class="font-bold" style="color:#0E3B2A">{{ \Illuminate\Support\Carbon::parse($d['date'])->locale(app()->getLocale())->translatedFormat('l j F') }} · {{ $d['city'] }}</h2>
                         <p class="ai-muted text-sm">{{ $d['km'] }} {{ __('km estimés') }} · {{ $fcfa($d['cost']) }} {{ __('(activités et repas)') }}</p>
                     </div>
                 </header>
 
                 @if($d['transfer'])
-                    <p class="px-5 py-3 text-sm" style="background:#fdf7e7;border-bottom:1px solid #f0e2b8;color:#6b4e0e">
+                    <p class="px-5 py-3 text-sm" style="background:#F3F8F5;border-bottom:1px solid #F7C396;color:#B85600">
                         <i class="fas fa-car-side mr-2"></i>{{ __('Trajet vers') }} {{ $d['transfer']['to'] }} {{ __(': environ') }} {{ $d['transfer']['km'] }} {{ __('km (≈') }} {{ intdiv($d['transfer']['minutes'], 60) }} h {{ str_pad((string) ($d['transfer']['minutes'] % 60), 2, '0', STR_PAD_LEFT) }}).
                     </p>
                 @endif
 
                 @if(!empty($story['days'][$i]))
-                    <p class="px-5 pt-4 pb-1 text-[15px] leading-relaxed" style="color:#4a443a">{{ $story['days'][$i] }}</p>
+                    <p class="px-5 pt-4 pb-1 text-[15px] leading-relaxed" style="color:#24503D">{{ $story['days'][$i] }}</p>
                 @endif
 
                 <div>
@@ -77,7 +77,7 @@
                             <span class="ai-stop__slot">{{ $st['slot'] }}</span>
                             <div>
                                 @if($st['item'])
-                                    <a href="{{ $st['item']['url'] }}" class="ai-stop__title ai-link" style="color:#1d1a16">{{ $st['title'] }}</a>
+                                    <a href="{{ $st['item']['url'] }}" class="ai-stop__title ai-link" style="color:#0E3B2A">{{ $st['title'] }}</a>
                                     <p class="ai-stop__sub">
                                         {{ $st['item']['type_label'] }}@if($st['item']['city']) · {{ $st['item']['city'] }}@endif
                                         @if($st['km'] > 0) · {{ $st['km'] }} {{ __('km depuis l\'étape précédente') }} @endif
@@ -86,7 +86,7 @@
                                     <span class="ai-stop__title">{{ $st['title'] }}</span>
                                 @endif
                                 @if(!empty($st['reasons']))
-                                    <p class="ai-stop__sub"><i class="fas fa-wand-magic-sparkles mr-1" style="color:#b8892b"></i>{{ implode(' · ', $st['reasons']) }}</p>
+                                    <p class="ai-stop__sub"><i class="fas fa-wand-magic-sparkles mr-1" style="color:#EB6E00"></i>{{ implode(' · ', $st['reasons']) }}</p>
                                 @endif
                                 @if($st['item'] && !empty($st['item']['directions']))
                                     <a href="{{ $st['item']['directions'] }}" target="_blank" rel="noopener noreferrer" class="ai-link text-sm inline-block mt-1"><i class="fas fa-diamond-turn-right text-xs mr-1"></i>{{ __('Itinéraire') }}</a>
@@ -109,8 +109,8 @@
                 @if($d['lodging'])
                     <div class="ai-lodging">
                         <div>
-                            <p class="font-bold" style="color:#14532d"><i class="fas fa-bed mr-2"></i>{{ __('Nuit à') }} {{ $d['lodging']['title'] }}</p>
-                            <p class="text-sm" style="color:#14532d">{{ __('Chambre «') }} {{ $d['lodging']['room'] }} » · {{ $fcfa($d['lodging']['nightly']) }} {{ __('la nuit ×') }} {{ $d['lodging']['rooms'] }} {{ __('chambre') }}{{ $d['lodging']['rooms'] > 1 ? 's' : '' }}</p>
+                            <p class="font-bold" style="color:#00874F"><i class="fas fa-bed mr-2"></i>{{ __('Nuit à') }} {{ $d['lodging']['title'] }}</p>
+                            <p class="text-sm" style="color:#00874F">{{ __('Chambre «') }} {{ $d['lodging']['room'] }} » · {{ $fcfa($d['lodging']['nightly']) }} {{ __('la nuit ×') }} {{ $d['lodging']['rooms'] }} {{ __('chambre') }}{{ $d['lodging']['rooms'] > 1 ? 's' : '' }}</p>
                         </div>
                         <a href="{{ $d['lodging']['book_url'] }}" class="ai-btn"><i class="fas fa-lock text-xs"></i> {{ __('Réserver (acompte sécurisé)') }}</a>
                     </div>

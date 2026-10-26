@@ -54,9 +54,13 @@
         </div>
     </div>
 
-    <a href="{{ route('subscriptions.checkout', array_merge(['plan' => $plan], $checkoutParams)) }}" class="pl-cta">
-        @guest {{ __('Choisir ce plan') }} @else {{ __('Souscrire maintenant') }} @endguest <span aria-hidden="true">→</span>
-    </a>
+    {{-- Choix du forfait de ce secteur (un par secteur) : la barre récapitulative calcule le total et mène au paiement. --}}
+    <button type="button" class="pl-cta" aria-pressed="false"
+            data-pick-plan="{{ $plan->id }}" data-sector="{{ $category->slug }}" data-sector-name="{{ $category->localized('name') }}"
+            data-plan-name="{{ $plan->localized('name') }}" data-m="{{ (float) $plan->price_monthly }}" data-y="{{ (float) $plan->price_yearly }}">
+        <span class="pl-cta__off">{{ __('Choisir ce forfait') }}</span><span class="pl-cta__on">✓ {{ __('Forfait choisi') }}</span>
+    </button>
+    <noscript><a href="{{ route('subscriptions.checkout', array_merge(['plan' => $plan], $checkoutParams)) }}" class="pl-cta">{{ __('Souscrire maintenant') }} →</a></noscript>
 
     <p class="pl-inc">{{ trans_choice(':count avantage inclus|:count avantages inclus', $included) }}</p>
     <ul class="pl-feats">

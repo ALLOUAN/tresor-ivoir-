@@ -34,11 +34,11 @@
 @endphp
 @if(($brType === 'art' || $target->provider_id) && ($brType !== 'tour' || $brTours->isNotEmpty()) && ($brType !== 'transport' || $brOffers->isNotEmpty()))
 @once
-<style>.contact-card { border: 1px solid rgba(0,0,0,0.08); background: #fdfbf7; box-shadow: 0 20px 50px rgba(20,18,12,0.1); }</style>
+<style>.contact-card { border: 1px solid rgba(14,59,42,0.08); background: #FFFFFF; box-shadow: 0 20px 50px rgba(14,59,42,0.1); }</style>
 @endonce
 <div class="contact-card rounded-3xl p-5" id="reserver">
     <h2 class="font-serif text-xl font-bold mb-1">{{ $brTitle }}</h2>
-    <p class="text-[#8a7f6b] text-xs mb-4">{{ __('Sans engagement : l\'établissement confirme votre demande par e-mail, puis vous réglez en ligne ou sur place.') }}</p>
+    <p class="text-[#557466] text-xs mb-4">{{ __('Sans engagement : l\'établissement confirme votre demande par e-mail, puis vous réglez en ligne ou sur place.') }}</p>
     @if($brCanOrder && auth()->check())
         <div class="br-tabs" role="tablist" aria-label="{{ __('Réserver ou commander') }}">
             <button type="button" role="tab" data-br-tab="table" aria-selected="{{ $brTab === 'table' ? 'true' : 'false' }}" class="{{ $brTab === 'table' ? 'is-active' : '' }}"><i class="fas fa-chair" aria-hidden="true"></i>{{ __('Réserver une table') }}</button>
@@ -47,7 +47,7 @@
     @endif
 
     @if(session('booking_success'))
-        <div class="mb-3 rounded-xl bg-[#31621c]/10 text-[#31621c] text-sm font-semibold px-3.5 py-3">
+        <div class="mb-3 rounded-xl bg-[#00874F]/10 text-[#00874F] text-sm font-semibold px-3.5 py-3">
             <i class="fas fa-circle-check mr-1"></i> {{ session('booking_success') }}
         </div>
     @endif
@@ -62,11 +62,11 @@
             <input type="hidden" name="bookable_type" value="{{ $brType }}">
             <input type="hidden" name="bookable_id" value="{{ $target->id }}">
             @if($brType === 'tour')
-                <label class="flex items-center gap-2 text-xs font-semibold text-[#3d372c] cursor-pointer">
+                <label class="flex items-center gap-2 text-xs font-semibold text-[#24503D] cursor-pointer">
                     <input type="checkbox" name="custom_quote" value="1" class="br-custom" @checked(old('custom_quote'))>
                     {{ __('Je veux un voyage sur mesure (devis personnalisé)') }}
                 </label>
-                <label class="br-tour-field block text-xs font-semibold text-[#3d372c]">{{ __('Circuit') }}
+                <label class="br-tour-field block text-xs font-semibold text-[#24503D]">{{ __('Circuit') }}
                     <select name="tour_package_id" required class="br-tour mt-1 w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm">
                         @foreach($brTours as $t)
                             @php $deps = $t->upcomingDepartures()->get()->map(fn ($d) => ['d' => $d->departure_date->toDateString(), 'left' => $d->seatsLeft(), 'price' => $d->pricePerPerson(), 'label' => $d->departure_date->locale(app()->getLocale())->isoFormat('ddd D MMM')])->values(); @endphp
@@ -76,7 +76,7 @@
                 </label>
             @endif
             @if($brType === 'leisure' && $brActivities->isNotEmpty())
-                <label class="block text-xs font-semibold text-[#3d372c]">{{ __('Activité') }}
+                <label class="block text-xs font-semibold text-[#24503D]">{{ __('Activité') }}
                     <select name="activity_id" class="mt-1 w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm">
                         <option value="">{{ __('— Au choix sur place —') }}</option>
                         @foreach($brActivities as $a)
@@ -86,7 +86,7 @@
                 </label>
             @endif
             @if($brType === 'transport')
-                <label class="block text-xs font-semibold text-[#3d372c]">{{ __('Offre') }}
+                <label class="block text-xs font-semibold text-[#24503D]">{{ __('Offre') }}
                     <select name="transport_offer_id" required class="mt-1 w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm">
                         @foreach($brOffers as $o)
                             <option value="{{ $o->id }}" @selected(old('transport_offer_id') == $o->id)>{{ $o->name }}{{ $o->price_xof ? ' — '.number_format((int) $o->price_xof, 0, ',', ' ').' FCFA' : '' }}{{ $o->max_passengers ? ' · '.$o->max_passengers.' '.__('places') : '' }}</option>
@@ -99,7 +99,7 @@
                        class="w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm">
             @endif
             <div class="grid grid-cols-2 gap-2">
-                <label class="block text-xs font-semibold text-[#3d372c]">{{ $brType === 'art' ? __('Livraison souhaitée') : (in_array($brType, ['tour', 'bundle'], true) ? __('Départ') : __('Date')) }}
+                <label class="block text-xs font-semibold text-[#24503D]">{{ $brType === 'art' ? __('Livraison souhaitée') : (in_array($brType, ['tour', 'bundle'], true) ? __('Départ') : __('Date')) }}
                     <input type="date" name="booking_date" required min="{{ now()->toDateString() }}" value="{{ old('booking_date') }}"
                            class="br-date mt-1 w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm">
                     @if($brType === 'tour')
@@ -107,7 +107,7 @@
                     @endif
                 </label>
                 @if(! in_array($brType, ['tour', 'bundle', 'art'], true))
-                <label class="block text-xs font-semibold text-[#3d372c]">{{ __('Heure') }}
+                <label class="block text-xs font-semibold text-[#24503D]">{{ __('Heure') }}
                     @if($brType === 'restaurant' && (int) ($target->table_capacity ?? 0) > 0)
                     <select name="booking_time" required data-slots-url="{{ route('restaurant.slots', $target->id) }}" class="br-slots mt-1 w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm">
                         <option value="">{{ __('Choisissez d\'abord une date') }}</option>
@@ -118,14 +118,14 @@
                 @endif
                 </label>
                 @else
-                <label class="block text-xs font-semibold text-[#3d372c]">{{ ucfirst(__($brUnit)) }}
+                <label class="block text-xs font-semibold text-[#24503D]">{{ ucfirst(__($brUnit)) }}
                     <input type="number" name="party_size" required min="1" max="200" value="{{ old('party_size', 2) }}"
                            class="mt-1 w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm">
                 </label>
                 @endif
             </div>
             @if(! in_array($brType, ['tour', 'bundle', 'art'], true))
-            <label class="block text-xs font-semibold text-[#3d372c]">{{ ucfirst(__($brUnit)) }}
+            <label class="block text-xs font-semibold text-[#24503D]">{{ ucfirst(__($brUnit)) }}
                 <input type="number" name="party_size" required min="1" max="200" value="{{ old('party_size', 2) }}"
                        class="mt-1 w-full bg-white border border-black/10 rounded-xl px-3 py-2.5 text-sm">
             </label>
@@ -189,17 +189,17 @@
                 <span><i class="fas fa-basket-shopping" aria-hidden="true"></i>{{ __('Voir mon panier') }}</span>
                 <b><span data-br-cart-total>0</span> FCFA</b>
             </button>
-            <p class="text-[#8a7f6b] text-[11px] text-center mt-2 mb-0">{{ __('Le restaurant confirme votre commande et son prix, puis vous réglez en ligne ou au retrait.') }}</p>
+            <p class="text-[#557466] text-[11px] text-center mt-2 mb-0">{{ __('Le restaurant confirme votre commande et son prix, puis vous réglez en ligne ou au retrait.') }}</p>
         </div>
         @endif
     @else
         <div class="rounded-2xl bg-black/[0.03] border border-black/8 px-4 py-5 text-center">
-            <p class="text-[#1c1915] font-bold text-sm mb-1">{{ __('Connectez-vous pour réserver') }}</p>
+            <p class="text-[#0E3B2A] font-bold text-sm mb-1">{{ __('Connectez-vous pour réserver') }}</p>
             <div class="flex items-center justify-center gap-2 mt-3">
                 <a href="{{ route('login', ['redirect' => request()->getRequestUri().'#reserver']) }}" class="btn-primary btn-shine inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs">
                     <i class="fas fa-right-to-bracket text-xs"></i> {{ __('Se connecter') }}
                 </a>
-                <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri().'#reserver']) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 text-[#1c1915] transition">
+                <a href="{{ route('register', ['role' => 'visitor', 'redirect' => request()->getRequestUri().'#reserver']) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-black/10 text-[#0E3B2A] transition">
                     {{ __('Créer un compte') }}
                 </a>
             </div>
@@ -208,37 +208,37 @@
 </div>
 @once
 <style>
-    .br-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; margin-bottom: 14px; border-radius: 999px; background: #f6f3ec; }
-    .br-tabs button { height: 40px; border: 0; border-radius: 999px; background: transparent; color: #4a443a; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer; }
-    .br-tabs button.is-active { background: #b9500a; color: #fff; box-shadow: 0 6px 16px -8px rgba(185,80,10,.7); }
-    .br-tabs button:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+    .br-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; margin-bottom: 14px; border-radius: 999px; background: #F3F8F5; }
+    .br-tabs button { height: 40px; border: 0; border-radius: 999px; background: transparent; color: #24503D; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer; }
+    .br-tabs button.is-active { background: #EB6E00; color: #fff; box-shadow: 0 6px 16px -8px rgba(235,110,0,.7); }
+    .br-tabs button:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
     .br-dishes { display: flex; flex-direction: column; gap: 6px; max-height: 300px; overflow-y: auto; padding-right: 2px; }
-    .br-dish { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 8px 6px 6px; border: 1.5px solid #ece5d6; border-radius: 14px; background: #fff; transition: border-color .15s ease, background .15s ease; }
-    .br-dish.is-on { border-color: #b9500a; background: #fdf4ec; }
-    .br-dish__img { width: 40px; height: 40px; border-radius: 10px; overflow: hidden; background: #fdf4ec; color: #ef7c2b; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+    .br-dish { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 8px 6px 6px; border: 1.5px solid #D8E9E0; border-radius: 14px; background: #fff; transition: border-color .15s ease, background .15s ease; }
+    .br-dish.is-on { border-color: #EB6E00; background: #F3F8F5; }
+    .br-dish__img { width: 40px; height: 40px; border-radius: 10px; overflow: hidden; background: #F3F8F5; color: #EB6E00; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
     .br-dish__img img { width: 100%; height: 100%; object-fit: cover; }
     .br-dish__txt { min-width: 0; display: flex; flex-direction: column; }
-    .br-dish__txt strong { font-size: 13px; font-weight: 700; color: #1d1a16; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .br-dish__txt small { font-size: 12px; color: #6b6458; }
+    .br-dish__txt strong { font-size: 13px; font-weight: 700; color: #0E3B2A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .br-dish__txt small { font-size: 12px; color: #557466; }
     .br-qty { display: inline-flex; align-items: center; gap: 4px; }
-    .br-qty button { width: 28px; height: 28px; border: 0; border-radius: 999px; background: #f6f3ec; color: #1d1a16; font-size: 11px; cursor: pointer; }
-    .br-qty button:hover { background: #b9500a; color: #fff; }
-    .br-qty button:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+    .br-qty button { width: 28px; height: 28px; border: 0; border-radius: 999px; background: #F3F8F5; color: #0E3B2A; font-size: 11px; cursor: pointer; }
+    .br-qty button:hover { background: #EB6E00; color: #fff; }
+    .br-qty button:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
     .br-qty input { width: 34px; height: 28px; border: 0; background: transparent; text-align: center; font-size: 14px; font-weight: 700; -moz-appearance: textfield; }
     .br-qty input::-webkit-outer-spin-button, .br-qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .br-total { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; background: #1b6b3a; color: #fff; font-size: 13px; }
+    .br-total { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; background: #00874F; color: #fff; font-size: 13px; }
     .br-total strong { font-size: 16px; }
     .br-modes { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
     .br-mode { position: relative; }
     .br-mode input { position: absolute; opacity: 0; pointer-events: none; }
-    .br-mode span { display: flex; align-items: center; justify-content: center; gap: 7px; height: 40px; border: 1.5px solid #ece5d6; border-radius: 12px; background: #fff; font-size: 13px; font-weight: 700; cursor: pointer; }
-    .br-mode input:checked + span { border-color: #b9500a; background: #fdf4ec; color: #9a4308; }
-    .br-mode input:focus-visible + span { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+    .br-mode span { display: flex; align-items: center; justify-content: center; gap: 7px; height: 40px; border: 1.5px solid #D8E9E0; border-radius: 12px; background: #fff; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .br-mode input:checked + span { border-color: #EB6E00; background: #F3F8F5; color: #B85600; }
+    .br-mode input:focus-visible + span { outline: 3px solid #EB6E00; outline-offset: 2px; }
     .br-qty b { min-width: 26px; text-align: center; font-size: 14px; }
-    .br-cart-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; margin-top: 10px; padding: 0 8px 0 18px; border: 0; border-radius: 999px; background: #1d1a16; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .br-cart-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; margin-top: 10px; padding: 0 8px 0 18px; border: 0; border-radius: 999px; background: #0E3B2A; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
     .br-cart-btn span { display: inline-flex; align-items: center; gap: 9px; }
-    .br-cart-btn b { height: 38px; padding: 0 14px; border-radius: 999px; background: #b9500a; display: inline-flex; align-items: center; }
-    .br-cart-btn:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+    .br-cart-btn b { height: 38px; padding: 0 14px; border-radius: 999px; background: #EB6E00; display: inline-flex; align-items: center; }
+    .br-cart-btn:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
 </style>
 <script>
 (function () {
@@ -368,43 +368,43 @@
 @endonce
 @once
 <style>
-    .br-plan { padding: 12px; border-radius: 18px; background: #f6f3ec; border: 1px solid #ece5d6; }
+    .br-plan { padding: 12px; border-radius: 18px; background: #F3F8F5; border: 1px solid #D8E9E0; }
     .br-plan__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
-    .br-plan__title { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 800; color: #1d1a16; }
-    .br-plan__title i { color: #b9500a; }
-    .br-plan__legend { display: inline-flex; gap: 10px; font-size: 11px; color: #6b6458; }
+    .br-plan__title { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 800; color: #0E3B2A; }
+    .br-plan__title i { color: #EB6E00; }
+    .br-plan__legend { display: inline-flex; gap: 10px; font-size: 11px; color: #557466; }
     .br-plan__legend span { display: inline-flex; align-items: center; gap: 4px; }
     .br-plan__legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-    .br-plan__legend i.is-free { background: #fff; border: 1.5px solid #1b6b3a; }
-    .br-plan__legend i.is-booked { background: #d9d4c9; }
+    .br-plan__legend i.is-free { background: #fff; border: 1.5px solid #00874F; }
+    .br-plan__legend i.is-booked { background: #D8E9E0; }
     .br-plan__zones { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin-bottom: 8px; }
     .br-plan__zones:empty { display: none; }
-    .br-plan__zones button { flex: none; height: 30px; padding: 0 12px; border: 1px solid #e3dccb; border-radius: 999px; background: #fff; font-size: 12px; font-weight: 700; color: #4a443a; cursor: pointer; }
-    .br-plan__zones button.is-active { background: #1d1a16; border-color: #1d1a16; color: #fff; }
-    .br-plan__room { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 10px; min-height: 84px; padding: 12px; border-radius: 14px; background: #fff; background-image: radial-gradient(#ece5d6 1px, transparent 1px); background-size: 14px 14px; }
-    .br-plan__hint { grid-column: 1 / -1; margin: auto; font-size: 12px; color: #8a7f6b; text-align: center; }
+    .br-plan__zones button { flex: none; height: 30px; padding: 0 12px; border: 1px solid #D8E9E0; border-radius: 999px; background: #fff; font-size: 12px; font-weight: 700; color: #24503D; cursor: pointer; }
+    .br-plan__zones button.is-active { background: #0E3B2A; border-color: #0E3B2A; color: #fff; }
+    .br-plan__room { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 10px; min-height: 84px; padding: 12px; border-radius: 14px; background: #fff; background-image: radial-gradient(#D8E9E0 1px, transparent 1px); background-size: 14px 14px; }
+    .br-plan__hint { grid-column: 1 / -1; margin: auto; font-size: 12px; color: #557466; text-align: center; }
     .br-tbl { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 2px; border: 0; background: transparent; cursor: pointer; font-family: inherit; }
-    .br-tbl__top { position: relative; display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 2px solid #1b6b3a; background: #eef6f0; color: #14532d; font-size: 12px; font-weight: 800; transition: transform .15s ease, background .15s ease, border-color .15s ease; }
+    .br-tbl__top { position: relative; display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 2px solid #00874F; background: #F3F8F5; color: #00874F; font-size: 12px; font-weight: 800; transition: transform .15s ease, background .15s ease, border-color .15s ease; }
     .br-tbl.is-round .br-tbl__top { border-radius: 999px; }
     .br-tbl.is-square .br-tbl__top { border-radius: 10px; }
     .br-tbl.is-long .br-tbl__top { width: 66px; height: 36px; border-radius: 10px; }
     /* Chaises autour de la table */
     .br-tbl__top::before, .br-tbl__top::after { content: ''; position: absolute; width: 14px; height: 5px; border-radius: 3px; background: currentColor; opacity: .35; }
     .br-tbl__top::before { top: -9px; } .br-tbl__top::after { bottom: -9px; }
-    .br-tbl__seats { font-size: 11px; color: #4a443a; font-weight: 600; }
+    .br-tbl__seats { font-size: 11px; color: #24503D; font-weight: 600; }
     .br-tbl:hover .br-tbl__top { transform: translateY(-2px); }
-    .br-tbl.is-selected .br-tbl__top { background: #b9500a; border-color: #b9500a; color: #fff; box-shadow: 0 0 0 4px rgba(239,124,43,.25); }
-    .br-tbl.is-selected .br-tbl__seats { color: #9a4308; font-weight: 800; }
+    .br-tbl.is-selected .br-tbl__top { background: #EB6E00; border-color: #EB6E00; color: #fff; box-shadow: 0 0 0 4px rgba(235,110,0,.25); }
+    .br-tbl.is-selected .br-tbl__seats { color: #B85600; font-weight: 800; }
     .br-tbl.is-booked, .br-tbl.is-small { cursor: not-allowed; }
-    .br-tbl.is-booked .br-tbl__top { background: #e7e3da; border-color: #d0c9bb; color: #9a9384; }
+    .br-tbl.is-booked .br-tbl__top { background: #D8E9E0; border-color: #8AA99B; color: #8AA99B; }
     .br-tbl.is-booked .br-tbl__top span { text-decoration: line-through; }
-    .br-tbl.is-booked .br-tbl__seats { color: #9a9384; }
+    .br-tbl.is-booked .br-tbl__seats { color: #8AA99B; }
     .br-tbl.is-small { opacity: .5; }
     .br-tbl.is-booked:hover .br-tbl__top, .br-tbl.is-small:hover .br-tbl__top { transform: none; }
-    .br-tbl__lock { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 999px; background: #6b6458; color: #fff; font-size: 8px; display: inline-flex; align-items: center; justify-content: center; }
-    .br-tbl:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; border-radius: 12px; }
-    .br-plan__any { display: block; width: 100%; margin-top: 8px; height: 36px; border: 1.5px dashed #d0c9bb; border-radius: 12px; background: transparent; font-size: 12px; font-weight: 700; color: #6b6458; cursor: pointer; }
-    .br-plan__any.is-on { border-style: solid; border-color: #1b6b3a; color: #14532d; background: #eef6f0; }
+    .br-tbl__lock { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 999px; background: #557466; color: #fff; font-size: 8px; display: inline-flex; align-items: center; justify-content: center; }
+    .br-tbl:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; border-radius: 12px; }
+    .br-plan__any { display: block; width: 100%; margin-top: 8px; height: 36px; border: 1.5px dashed #8AA99B; border-radius: 12px; background: transparent; font-size: 12px; font-weight: 700; color: #557466; cursor: pointer; }
+    .br-plan__any.is-on { border-style: solid; border-color: #00874F; color: #00874F; background: #F3F8F5; }
     @media (prefers-reduced-motion: reduce) { .br-tbl__top { transition: none; } }
 </style>
 <script>

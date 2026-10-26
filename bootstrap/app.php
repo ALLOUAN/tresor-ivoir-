@@ -31,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
             SecurityHeaders::class,
             OptimizeImages::class,
             TrackInteractions::class,
+            \App\Http\Middleware\TrackSiteVisit::class,   // audience du site (tableau de bord admin)
             \App\Http\Middleware\ShrinkUploadedImages::class,
         ]);
 

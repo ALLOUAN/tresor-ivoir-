@@ -13,80 +13,83 @@
     <style>
         /* Inscription client : même famille que la connexion (cadre blanc, panneau vert à motifs),
            étape 2 sur 2, libellés au-dessus, erreurs sous chaque champ, mot de passe visible et jauge. Aplats. */
-        .rv-stage { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex: 1; padding: 44px 16px 56px; background: #f6f3ed; }
+        .rv-stage { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex: 1; padding: 44px 16px 56px; background: #F3F8F5; }
         .rv-stage > .ivm .ivm-g { opacity: .22 !important; }
-        .rv-shell { position: relative; z-index: 1; width: 100%; max-width: 1040px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); overflow: hidden; border-radius: 28px; background: #fff; border: 1px solid #e8e1d3; font-family: 'Inter', sans-serif; color: #1d1a16; }
+        .rv-shell { position: relative; z-index: 1; width: 100%; max-width: 1040px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); overflow: hidden; border-radius: 28px; background: #fff; border: 1px solid #D8E9E0; font-family: 'Montserrat', sans-serif; color: #0E3B2A; }
 
-        .rv-aside { position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 40px 38px; background: #123a25; color: #fff; }
+        .rv-aside { position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 40px 38px; background: #00874F; color: #fff; }
         .rv-aside > :not(.ivm) { position: relative; z-index: 1; }
         .rv-aside .ivm-g { opacity: .06 !important; }
-        .rv-aside .ivm-g > * { stroke: #f6c38f !important; }
-        .rv-step { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #f6c38f; }
+        .rv-aside .ivm-g > * { stroke: #F7C396 !important; }
+        .rv-step { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #F7C396; }
         .rv-step i { display: inline-flex; gap: 4px; }
-        .rv-step i b { width: 22px; height: 4px; border-radius: 4px; background: #f6c38f; }
-        .rv-aside h1 { margin: 16px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(30px, 3.2vw, 40px); font-weight: 700; line-height: 1.08; color: #fff; }
-        .rv-aside h1 em { font-style: normal; color: #f6c38f; }
-        .rv-lead { margin: 14px 0 0; max-width: 34ch; font-size: 15px; line-height: 1.6; color: #cfe6d7; }
+        .rv-step i b { width: 22px; height: 4px; border-radius: 4px; background: #F7C396; }
+        .rv-aside h1 { margin: 16px 0 0; font-family: 'Montserrat', serif; font-size: clamp(30px, 3.2vw, 40px); font-weight: 700; line-height: 1.08; color: #fff; }
+        .rv-aside h1 em { font-style: normal; color: #F7C396; }
+        .rv-lead { margin: 14px 0 0; max-width: 34ch; font-size: 15px; line-height: 1.6; color: #D8E9E0; }
         .rv-perks { display: grid; gap: 14px; margin: 28px 0 0; padding: 0; list-style: none; }
         .rv-perks li { display: flex; align-items: flex-start; gap: 12px; font-size: 14.5px; line-height: 1.45; color: #fff; }
-        .rv-perks li > .ico { flex: none; width: 34px; height: 34px; margin: 0; padding: 8px; border: 0; border-radius: 11px; background: rgba(255,255,255,.1); color: #f6c38f; }
-        .rv-perks small { display: block; margin-top: 2px; font-size: 13px; color: #b9d6c4; }
-        .rv-pro { margin-top: auto; padding-top: 28px; font-size: 13.5px; color: #cfe6d7; }
+        .rv-perks li > .ico { flex: none; width: 34px; height: 34px; margin: 0; padding: 8px; border: 0; border-radius: 11px; background: rgba(255,255,255,.1); color: #F7C396; }
+        .rv-perks small { display: block; margin-top: 2px; font-size: 13px; color: #8AA99B; }
+        .rv-pro { margin-top: auto; padding-top: 28px; font-size: 13.5px; color: #D8E9E0; }
         .rv-pro a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
         .rv-main { padding: 34px 40px 32px; }
-        .rv-back { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: #6b6458; text-decoration: none; }
-        .rv-back:hover { color: #9a4308; }
+        .rv-back { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: #557466; text-decoration: none; }
+        .rv-back:hover { color: #B85600; }
         .rv-back .ico { width: 16px; height: 16px; }
-        .rv-title { margin: 18px 0 0; font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; line-height: 1.15; color: #1d1a16; }
-        .rv-sub { margin: 6px 0 22px; font-size: 14.5px; color: #6b6458; }
+        .rv-title { margin: 18px 0 0; font-family: 'Montserrat', serif; font-size: 30px; font-weight: 700; line-height: 1.15; color: #0E3B2A; }
+        .rv-sub { margin: 6px 0 22px; font-size: 14.5px; color: #557466; }
         .rv-alert { display: flex; gap: 10px; margin: 0 0 18px; padding: 12px 14px; border-radius: 14px; background: #fdeceb; border: 1px solid #f5c2bd; color: #8a241c; font-size: 14px; }
         .rv-alert .ico { flex: none; width: 18px; height: 18px; margin-top: 1px; }
 
         .rv-form { display: flex; flex-direction: column; gap: 16px; }
         .rv-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-        .rv-label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 6px; font-size: 13.5px; font-weight: 700; color: #1d1a16; }
-        .rv-label em { font-style: normal; font-weight: 500; font-size: 12.5px; color: #8a7f6b; }
+        .rv-label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 6px; font-size: 13.5px; font-weight: 700; color: #0E3B2A; }
+        .rv-label em { font-style: normal; font-weight: 500; font-size: 12.5px; color: #557466; }
         .rv-field { position: relative; }
-        .rv-field > .ico { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: #8f8778; pointer-events: none; }
-        html .rv-input { width: 100%; height: 50px; padding: 0 14px 0 44px; border-radius: 14px; border: 1.5px solid #e1d7c4 !important; background: #fbf9f5 !important; color: #1d1a16 !important; font: inherit; font-size: 15px; outline: none; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease; }
+        .rv-field > .ico { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: #557466; pointer-events: none; }
+        html .rv-input { width: 100%; height: 50px; padding: 0 14px 0 44px; border-radius: 14px; border: 1.5px solid #D8E9E0 !important; background: #FFFFFF !important; color: #0E3B2A !important; font: inherit; font-size: 15px; outline: none; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease; }
         html .rv-input.no-ico { padding-left: 14px; }
-        html .rv-input::placeholder { color: #9a8f7c; }
-        html .rv-input:hover { border-color: #cfc2a8 !important; }
-        html .rv-input:focus { border-color: #b9500a !important; background: #fff !important; box-shadow: 0 0 0 4px rgba(185,80,10,.12) !important; }
+        html .rv-input::placeholder { color: #557466; }
+        html .rv-input:hover { border-color: #F7C396 !important; }
+        html .rv-input:focus { border-color: #EB6E00 !important; background: #fff !important; box-shadow: 0 0 0 4px rgba(235,110,0,.12) !important; }
         html .rv-input[aria-invalid="true"] { border-color: #c0362c !important; background: #fff !important; }
         .rv-input.has-eye { padding-right: 50px; }
-        .rv-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: 0; border-radius: 10px; background: transparent; color: #6b6458; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
-        .rv-eye:hover { background: #f3eee4; color: #1d1a16; }
+        .rv-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: 0; border-radius: 10px; background: transparent; color: #557466; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .rv-eye:hover { background: #F3F8F5; color: #0E3B2A; }
         .rv-eye .ico { width: 18px; height: 18px; }
         .rv-err { margin: 6px 0 0; font-size: 12.5px; font-weight: 600; color: #b42318; }
-        .rv-hint { margin: 6px 0 0; font-size: 12.5px; color: #8a7f6b; }
+        .rv-exists { margin: 4px 0 0; font-size: 13px; color: #0E3B2A; }
+        .rv-exists a { color: #EB6E00; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+        .rv-exists a:hover { color: #B85600; }
+        .rv-hint { margin: 6px 0 0; font-size: 12.5px; color: #557466; }
 
         .rv-meter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 8px; }
-        .rv-meter i { height: 4px; border-radius: 4px; background: #ece5d6; transition: background .2s ease; }
+        .rv-meter i { height: 4px; border-radius: 4px; background: #D8E9E0; transition: background .2s ease; }
         .rv-meter[data-level="1"] i:nth-child(-n+1) { background: #c0362c; }
-        .rv-meter[data-level="2"] i:nth-child(-n+2) { background: #d4951c; }
-        .rv-meter[data-level="3"] i:nth-child(-n+3) { background: #4a8a2a; }
-        .rv-meter[data-level="4"] i { background: #1f7a43; }
-        .rv-meter-txt { display: flex; justify-content: space-between; gap: 8px; margin: 6px 0 0; font-size: 12.5px; color: #8a7f6b; }
-        .rv-meter-txt b { font-weight: 700; color: #4a443a; }
+        .rv-meter[data-level="2"] i:nth-child(-n+2) { background: #EB6E00; }
+        .rv-meter[data-level="3"] i:nth-child(-n+3) { background: #00874F; }
+        .rv-meter[data-level="4"] i { background: #00874F; }
+        .rv-meter-txt { display: flex; justify-content: space-between; gap: 8px; margin: 6px 0 0; font-size: 12.5px; color: #557466; }
+        .rv-meter-txt b { font-weight: 700; color: #24503D; }
         .rv-match { margin: 6px 0 0; font-size: 12.5px; font-weight: 600; }
-        .rv-match.is-ok { color: #1f7a43; }
+        .rv-match.is-ok { color: #00874F; }
         .rv-match.is-ko { color: #b42318; }
 
-        .rv-terms { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #fbf9f5; border: 1px solid #ece5d6; font-size: 13.5px; line-height: 1.5; color: #4a443a; }
-        .rv-terms input { flex: none; width: 18px; height: 18px; margin-top: 2px; accent-color: #b9500a; }
-        .rv-terms a { color: #9a4308; font-weight: 700; }
-        .rv-submit { display: flex; align-items: center; justify-content: center; gap: 9px; height: 52px; border: 0; border-radius: 999px; background: #b9500a; color: #fff; font: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer; transition: background .15s ease; }
-        .rv-submit:hover { background: #9a4308; }
+        .rv-terms { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #FFFFFF; border: 1px solid #D8E9E0; font-size: 13.5px; line-height: 1.5; color: #24503D; }
+        .rv-terms input { flex: none; width: 18px; height: 18px; margin-top: 2px; accent-color: #EB6E00; }
+        .rv-terms a { color: #B85600; font-weight: 700; }
+        .rv-submit { display: flex; align-items: center; justify-content: center; gap: 9px; height: 52px; border: 0; border-radius: 999px; background: #EB6E00; color: #fff; font: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer; transition: background .15s ease; }
+        .rv-submit:hover { background: #B85600; }
         .rv-submit .ico { width: 18px; height: 18px; }
         .rv-submit[disabled] { opacity: .7; cursor: progress; }
-        .rv-secure { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 0; font-size: 12.5px; color: #6b6458; }
-        .rv-secure .ico { width: 15px; height: 15px; color: #1f8079; }
-        .rv-login { margin-top: 22px; padding-top: 18px; border-top: 1px solid #f0eadf; text-align: center; font-size: 14px; color: #6b6458; }
-        .rv-login a { color: #9a4308; font-weight: 700; text-decoration: none; }
+        .rv-secure { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 0; font-size: 12.5px; color: #557466; }
+        .rv-secure .ico { width: 15px; height: 15px; color: #00874F; }
+        .rv-login { margin-top: 22px; padding-top: 18px; border-top: 1px solid #F3F8F5; text-align: center; font-size: 14px; color: #557466; }
+        .rv-login a { color: #B85600; font-weight: 700; text-decoration: none; }
         .rv-login a:hover, .rv-terms a:hover { text-decoration: underline; text-underline-offset: 3px; }
-        .rv-main a:focus-visible, .rv-main button:focus-visible, .rv-terms input:focus-visible, .rv-aside a:focus-visible { outline: 3px solid #ef7c2b; outline-offset: 2px; }
+        .rv-main a:focus-visible, .rv-main button:focus-visible, .rv-terms input:focus-visible, .rv-aside a:focus-visible { outline: 3px solid #EB6E00; outline-offset: 2px; }
 
         @media (max-width: 1023px) {
             .rv-shell { grid-template-columns: minmax(0, 1fr); max-width: 560px; }
@@ -113,7 +116,7 @@
     </style>
     <link rel="stylesheet" href="{{ asset('css/tw-803c04c8.css') }}?v={{ @filemtime(public_path('css/tw-803c04c8.css')) }}">
 </head>
-<body class="min-h-screen flex flex-col" style="background:#f6f3ed">
+<body class="min-h-screen flex flex-col" style="background:#F3F8F5">
 
 @include('partials.public-top-nav')
 
@@ -174,7 +177,14 @@
                         <x-icon name="chat-round-dots" />
                         <input id="email" name="email" type="email" required maxlength="255" value="{{ old('email') }}" autocomplete="email" inputmode="email" placeholder="vous@exemple.ci" class="rv-input" aria-describedby="email-hint @error('email') email-err @enderror" @error('email') aria-invalid="true" @enderror>
                     </div>
-                    @error('email')<p class="rv-err" id="email-err">{{ $message }}</p>@enderror
+                    @error('email')
+                        <p class="rv-err" id="email-err">{{ $message }}</p>
+                        {{-- Adresse déjà inscrite : proposer de se connecter plutôt que de laisser le client bloqué. --}}
+                        @if($message === 'Cette adresse e-mail est déjà utilisée.')
+                            <p class="rv-exists">{{ __('Vous avez déjà un compte avec cette adresse.') }}
+                                <a href="{{ route('login') }}">{{ __('Se connecter') }}</a> · <a href="{{ route('password.request') }}">{{ __('Mot de passe oublié ?') }}</a></p>
+                        @endif
+                    @enderror
                     <p class="rv-hint" id="email-hint">{{ __('Un code de vérification vous sera envoyé à cette adresse.') }}</p>
                 </div>
 

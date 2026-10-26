@@ -26,7 +26,7 @@
 @endif
 
 <div class="bg-green-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg shadow-green-950/20">
-    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-green-700 via-green-600 to-green-600">
+    <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-green-700">
         <div>
             <h2 class="text-white font-semibold text-lg tracking-tight">Bulles interactives — page d'accueil</h2>
             <p class="text-green-100/80 text-xs mt-0.5">Chaque bulle est positionnée sur la page d'accueil et ouvre une galerie d'images au clic.</p>
@@ -42,7 +42,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl border border-slate-800 bg-slate-800/20 hover:border-slate-700/80 transition">
             <div class="shrink-0 flex items-center gap-2">
                 <span class="inline-flex items-center justify-center w-14 h-14 rounded-full text-white text-lg shrink-0"
-                      style="background: {{ $bubble->color_hex ?: '#f2790f' }};">
+                      style="background: {{ $bubble->color_hex ?: '#EB6E00' }};">
                     <i class="{{ $bubble->icon ?: 'fas fa-image' }}"></i>
                 </span>
                 @if($bubble->images->isNotEmpty())
@@ -92,7 +92,7 @@
                         data-position-top="{{ $bubble->position_top }}"
                         data-position-left="{{ $bubble->position_left }}"
                         data-size="{{ $bubble->size }}"
-                        data-color-hex="{{ $bubble->color_hex ?: '#f2790f' }}"
+                        data-color-hex="{{ $bubble->color_hex ?: '#EB6E00' }}"
                         data-icon="{{ e($bubble->icon ?? '') }}"
                         data-link-url="{{ e($bubble->link_url ?? '') }}"
                         data-link-label="{{ e($bubble->link_label ?? '') }}"
@@ -142,7 +142,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeCreateModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center overflow-y-auto">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col my-auto">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Ajouter une bulle</h2>
                 <button type="button" onclick="closeCreateModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -163,7 +163,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeEditModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center overflow-y-auto">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col my-auto">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Modifier la bulle</h2>
                 <button type="button" onclick="closeEditModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -185,7 +185,7 @@
     <div class="absolute inset-0 bg-green-950/70" onclick="closeImagesModal()"></div>
     <div class="absolute inset-0 p-4 sm:p-6 flex items-center justify-center overflow-y-auto">
         <div class="w-full max-w-lg bg-green-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col my-auto">
-            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-gradient-to-r from-green-500 to-green-600">
+            <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-green-500">
                 <h2 class="text-white font-semibold">Images — <span id="images-modal-title"></span></h2>
                 <button type="button" onclick="closeImagesModal()" class="text-white/90 hover:text-white"><i class="fas fa-xmark text-lg"></i></button>
             </div>
@@ -223,7 +223,7 @@
         document.getElementById('edit_position_top').value = button.dataset.positionTop || '50';
         document.getElementById('edit_position_left').value = button.dataset.positionLeft || '50';
         document.getElementById('edit_size').value = button.dataset.size || 'md';
-        document.getElementById('edit_color_hex').value = button.dataset.colorHex || '#f2790f';
+        document.getElementById('edit_color_hex').value = button.dataset.colorHex || '#EB6E00';
         document.getElementById('edit_icon').value = button.dataset.icon || '';
         document.getElementById('edit_link_url').value = button.dataset.linkUrl || '';
         document.getElementById('edit_link_label').value = button.dataset.linkLabel || '';
