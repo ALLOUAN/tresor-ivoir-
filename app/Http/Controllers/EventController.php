@@ -20,20 +20,10 @@ class EventController extends Controller
         $query = Event::with(['category', 'provider'])
             ->where('status', 'published');
 
-        if ($period === 'upcoming') {
-            $query->where('starts_at', '>=', now())->orderBy('starts_at');
-        } elseif ($period === 'past') {
-            $query->where('starts_at', '<', now())->orderByDesc('starts_at');
-        } else {
-            $query->orderByDesc('starts_at');
-        }
+        $query->forPeriod($period);
 
         if ($search) {
-            $query->where(fn ($q) => $q
-                ->where('title_fr', 'like', "%{$search}%")
-                ->orWhere('description_fr', 'like', "%{$search}%")
-                ->orWhere('city', 'like', "%{$search}%")
-            );
+            $query->search($search);
         }
 
         $activeCategory = null;
@@ -53,7 +43,7 @@ class EventController extends Controller
         $cities = Event::where('status', 'published')->whereNotNull('city')->distinct()->orderBy('city')->pluck('city');
 
         $upcoming = Event::where('status', 'published')
-            ->where('starts_at', '>=', now())
+            ->notFinished()
             ->orderBy('starts_at')
             ->limit(3)
             ->get();
@@ -80,7 +70,7 @@ class EventController extends Controller
                 ->where('category_id', $event->category_id)
                 ->orWhere('city', $event->city)
             )
-            ->where('starts_at', '>=', now())
+            ->notFinished()
             ->orderByRaw('category_id = ? desc', [$event->category_id])
             ->orderBy('starts_at')
             ->limit(4)

@@ -56,6 +56,48 @@ class Event extends Model
         static::creating(fn (Event $e) => $e->uuid ??= (string) Str::uuid());
     }
 
+    /**
+     * À venir ou en cours : pas encore terminé. Fin = ends_at, ou à défaut la fin du jour de début
+     * (un événement commencé ce matin reste affiché jusqu'au soir).
+     */
+    public function scopeNotFinished(\Illuminate\Database\Eloquent\Builder $q): \Illuminate\Database\Eloquent\Builder
+    {
+        return $q->where(fn ($w) => $w
+            ->where(fn ($x) => $x->whereNotNull('ends_at')->where('ends_at', '>=', now()))
+            ->orWhere(fn ($x) => $x->whereNull('ends_at')->where('starts_at', '>=', now()->startOfDay())));
+    }
+
+    /**
+     * Période des listes publiques (site et API) : upcoming = à venir ou en cours (ordre chronologique),
+     * past = terminés (plus récents d'abord), all = tous (plus récents d'abord).
+     */
+    public function scopeForPeriod(\Illuminate\Database\Eloquent\Builder $q, string $period): \Illuminate\Database\Eloquent\Builder
+    {
+        return match ($period) {
+            'upcoming' => $q->notFinished()->orderBy('starts_at'),
+            'past' => $q->finished()->orderByDesc('starts_at'),
+            default => $q->orderByDesc('starts_at'),
+        };
+    }
+
+    /** Recherche texte des listes publiques (site et API) : titre, description, ville. */
+    public function scopeSearch(\Illuminate\Database\Eloquent\Builder $q, string $term): \Illuminate\Database\Eloquent\Builder
+    {
+        return $q->where(fn ($w) => $w
+            ->where('title_fr', 'like', "%{$term}%")
+            ->orWhere('title_en', 'like', "%{$term}%")
+            ->orWhere('description_fr', 'like', "%{$term}%")
+            ->orWhere('city', 'like', "%{$term}%"));
+    }
+
+    /** Terminé (complément exact de notFinished). */
+    public function scopeFinished(\Illuminate\Database\Eloquent\Builder $q): \Illuminate\Database\Eloquent\Builder
+    {
+        return $q->where(fn ($w) => $w
+            ->where(fn ($x) => $x->whereNotNull('ends_at')->where('ends_at', '<', now()))
+            ->orWhere(fn ($x) => $x->whereNull('ends_at')->where('starts_at', '<', now()->startOfDay())));
+    }
+
     public function category()
     {
         return $this->belongsTo(EventCategory::class, 'category_id');

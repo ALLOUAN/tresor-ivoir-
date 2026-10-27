@@ -231,7 +231,7 @@
             <select name="status" required
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100">
                 @foreach(['draft' => 'Brouillon', 'published' => 'Publié', 'cancelled' => 'Annulé'] as $value => $label)
-                    <option value="{{ $value }}" @selected(old('status', 'draft') === $value)>{{ $label }}</option>
+                    <option value="{{ $value }}" @selected(old('status', 'published') === $value)>{{ $label }}</option>
                 @endforeach
             </select>
         </div>

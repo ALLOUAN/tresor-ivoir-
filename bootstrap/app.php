@@ -15,6 +15,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -33,6 +34,12 @@ return Application::configure(basePath: dirname(__DIR__))
             TrackInteractions::class,
             \App\Http\Middleware\TrackSiteVisit::class,   // audience du site (tableau de bord admin)
             \App\Http\Middleware\ShrinkUploadedImages::class,
+        ]);
+
+        // API mobile (/api/v1) : réponses JSON et langue du téléphone.
+        $middleware->api(prepend: [
+            \App\Http\Middleware\Api\ForceJsonResponse::class,
+            \App\Http\Middleware\Api\SetApiLocale::class,
         ]);
 
         // Posé en JavaScript par la fenêtre « Astuces de Mian » (déjà vue) : lu tel quel côté serveur.
@@ -55,5 +62,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // API mobile : erreurs au format JSON avec un message lisible (FR/EN), sans détail technique.
+        \App\Exceptions\ApiExceptionRenderer::register($exceptions);
     })->create();

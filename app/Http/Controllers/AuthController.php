@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use App\Services\ClientAccountService;
-use App\Notifications\EmailVerificationCodeNotification;
 use App\Support\PlanBundle;
 use App\Support\ProviderProfileBootstrap;
 use Illuminate\Auth\Events\PasswordReset;
@@ -408,28 +407,10 @@ class AuthController extends Controller
     }
 
     /** Envoie un nouveau code ; renvoie false (erreur journalisée) si le serveur d'e-mails ne répond pas. */
+    /** Envoi du code : logique commune au site et à l'API mobile (App\Services\EmailVerificationCodeService). */
     private function sendEmailVerificationCode(User $user): bool
     {
-        $code = (string) random_int(100000, 999999);
-        $ttlMinutes = 10;
-        $expiresAtTs = now()->addMinutes($ttlMinutes)->timestamp;
-
-        Cache::put($this->verificationCodeCacheKey($user), [
-            'hash' => Hash::make($code),
-            'expires_at' => $expiresAtTs,
-        ], now()->addMinutes($ttlMinutes));
-
-        try {
-            $user->notify(new EmailVerificationCodeNotification($code, $ttlMinutes));
-        } catch (\Throwable $e) {
-            report($e);
-            // Pas de code « actif » non reçu : la page de vérification retentera l'envoi.
-            Cache::forget($this->verificationCodeCacheKey($user));
-
-            return false;
-        }
-
-        return true;
+        return app(\App\Services\EmailVerificationCodeService::class)->send($user);
     }
 
     private function hasActiveVerificationCode(User $user): bool
@@ -445,7 +426,7 @@ class AuthController extends Controller
 
     private function verificationCodeCacheKey(User $user): string
     {
-        return 'email_verification_code:'.$user->getKey();
+        return \App\Services\EmailVerificationCodeService::cacheKey($user);
     }
 
     private function resolveExpiryTimestamp(mixed $value): ?int

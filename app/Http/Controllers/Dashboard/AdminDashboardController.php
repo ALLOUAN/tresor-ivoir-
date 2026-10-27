@@ -35,7 +35,7 @@ class AdminDashboardController extends Controller
             'articles_review' => Article::where('status', 'review')->count(),
             'pending_reviews' => Review::where('status', 'pending')->count(),
             'active_subscriptions' => Subscription::where('status', 'active')->count(),
-            'upcoming_events' => Event::where('status', 'published')->where('starts_at', '>', now())->count(),
+            'upcoming_events' => Event::where('status', 'published')->notFinished()->count(),
             'monthly_revenue' => Payment::where('status', 'completed')
                 ->whereNotNull('paid_at')
                 ->whereMonth('paid_at', now()->month)

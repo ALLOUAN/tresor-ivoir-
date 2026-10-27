@@ -25,6 +25,17 @@ class AppServiceProvider extends ServiceProvider
         $this->registerSiteBrandingComposer();
         $this->registerHomepageBubblesComposer();
         $this->registerAiModeration();
+        $this->registerApiRateLimits();
+    }
+
+    /** API mobile : 120 requêtes/min par compte (ou par adresse IP), 10/min pour connexion et inscription. */
+    private function registerApiRateLimits(): void
+    {
+        \Illuminate\Support\Facades\RateLimiter::for('api', fn (\Illuminate\Http\Request $request) => \Illuminate\Cache\RateLimiting\Limit::perMinute(120)
+            ->by($request->user()?->id ?: $request->ip()));
+
+        \Illuminate\Support\Facades\RateLimiter::for('api-auth', fn (\Illuminate\Http\Request $request) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10)
+            ->by(mb_strtolower((string) $request->input('email')).'|'.$request->ip()));
     }
 
     /**

@@ -135,9 +135,9 @@ class EventController extends Controller
             $data['published_at'] = now();
         }
 
-        Event::create($data);
+        $event = Event::create($data);
 
-        return redirect()->route('editor.events.index')->with('success', 'Événement créé.');
+        return redirect()->route('editor.events.index')->with('success', $this->visibilityMessage($event, 'Événement créé.'));
     }
 
     public function edit(Event $event)
@@ -294,7 +294,7 @@ class EventController extends Controller
 
         $event->update($data);
 
-        return redirect()->route('editor.events.index')->with('success', 'Événement mis à jour.');
+        return redirect()->route('editor.events.index')->with('success', $this->visibilityMessage($event->fresh(), 'Événement mis à jour.'));
     }
 
     public function destroy(Event $event)
@@ -561,5 +561,18 @@ class EventController extends Controller
         if ($relative !== '') {
             Storage::disk('public')->delete($relative);
         }
+    }
+
+    /** Message après enregistrement : dit clairement si l'événement est visible sur le site, et sinon pourquoi. */
+    private function visibilityMessage(Event $event, string $base): string
+    {
+        if ($event->status !== 'published') {
+            return $base.' Il est en « '.($event->status === 'draft' ? 'Brouillon' : 'Annulé').' » : il n\'apparaît pas sur le site tant qu\'il n\'est pas publié.';
+        }
+        $finished = Event::whereKey($event->id)->finished()->exists();
+
+        return $finished
+            ? $base.' Ses dates sont passées : il apparaît dans les événements « Passés ».'
+            : $base.' Il est visible sur le site, dans la page Événements.';
     }
 }

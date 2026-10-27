@@ -173,7 +173,7 @@ Route::get('/', function () {
     $homeEvents = Event::query()
         ->with('category')
         ->where('status', 'published')
-        ->where('starts_at', '>=', now())
+        ->notFinished()
         ->orderBy('starts_at')
         ->limit(3)
         ->get();

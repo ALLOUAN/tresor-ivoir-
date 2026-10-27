@@ -24,7 +24,7 @@ class VisitorDashboardController extends Controller
             ->get();
 
         $upcoming_events = Event::where('status', 'published')
-            ->where('starts_at', '>', now())
+            ->notFinished()
             ->with('category')
             ->orderBy('starts_at')
             ->take(4)

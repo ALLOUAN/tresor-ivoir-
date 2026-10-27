@@ -18,7 +18,7 @@ class EditorDashboardController extends Controller
             'my_published' => Article::where('author_id', $userId)->where('status', 'published')->count(),
             'my_drafts' => Article::where('author_id', $userId)->where('status', 'draft')->count(),
             'global_review' => Article::where('status', 'review')->count(),
-            'upcoming_events' => Event::where('status', 'published')->where('starts_at', '>', now())->count(),
+            'upcoming_events' => Event::where('status', 'published')->notFinished()->count(),
             'total_views' => Article::where('author_id', $userId)->sum('views_count'),
         ];
 
@@ -35,7 +35,7 @@ class EditorDashboardController extends Controller
             ->get();
 
         $upcoming_events = Event::where('status', 'published')
-            ->where('starts_at', '>', now())
+            ->notFinished()
             ->with('category')
             ->orderBy('starts_at')
             ->take(5)
